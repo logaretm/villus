@@ -3,7 +3,7 @@ export const Query = {
   inject: ['$vql'],
   props: {
     query: {
-      type: String,
+      type: [String, Object],
       required: true
     },
     variables: {
@@ -22,15 +22,31 @@ export const Query = {
     return this.fetch();
   },
   methods: {
+    normalizeQuery(this: any, query: string | any) {
+      if (typeof query === 'string') {
+        return query;
+      }
+
+      if (query.loc) {
+        return query.loc.source.body;
+      }
+
+      return null;
+    },
     async fetch(this: any) {
       if (!this.$vql) {
         throw new Error('Could not find the VQL client, did you install the plugin correctly?');
       }
 
+      const query = this.normalizeQuery(this.query);
+      if (!query) {
+        throw new Error('A query must be provided.');
+      }
+
       try {
         this.isFetching = true;
         const { data, errors } = await this.$vql.query({
-          query: this.query,
+          query,
           variables: this.variables ? this.variables : undefined
         });
 
