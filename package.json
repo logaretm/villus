@@ -1,0 +1,28 @@
+{
+  "name": "vql",
+  "version": "0.0.1",
+  "description": "A flexible and powerful GraphQL client for Vue",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Abdelrahman Awad <logaretm1@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^8.0.0",
+    "husky": "^2.3.0",
+    "lint-staged": "^8.1.7",
+    "mkdirp": "^0.5.1",
+    "prettier": "^1.17.1",
+    "rollup": "^1.13.1",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-node-resolve": "^5.0.1",
+    "rollup-plugin-replace": "^2.2.0",
+    "rollup-plugin-typescript2": "^0.21.1",
+    "tslint": "^5.17.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.5.1",
+    "uglify-js": "^3.6.0"
+  }
+}
