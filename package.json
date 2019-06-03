@@ -16,6 +16,8 @@
   "devDependencies": {
     "@commitlint/cli": "^8.0.0",
     "chalk": "^2.4.2",
+    "filesize": "^4.1.2",
+    "gzip-size": "^5.1.1",
     "husky": "^2.3.0",
     "lint-staged": "^8.1.7",
     "mkdirp": "^0.5.1",

@@ -3,6 +3,8 @@ const fs = require('fs');
 const { rollup } = require('rollup');
 const chalk = require('chalk');
 const uglify = require('uglify-js');
+const gzipSize = require('gzip-size');
+const filesize = require('filesize');
 const typescript = require('rollup-plugin-typescript2');
 const resolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
@@ -27,12 +29,12 @@ const paths = {
 };
 
 const utils = {
-  // stats ({ path, code }) {
-  //   const { size } = fs.statSync(path);
-  //   const gzipped = gzipSize.sync(code);
+  stats({ path, code }) {
+    const { size } = fs.statSync(path);
+    const gzipped = gzipSize.sync(code);
 
-  //   return `| Size: ${filesize(size)} | Gzip: ${filesize(gzipped)}`;
-  // },
+    return `| Size: ${filesize(size)} | Gzip: ${filesize(gzipped)}`;
+  },
   async writeBundle({ input, output }, fileName, minify = false) {
     const bundle = await rollup(input);
     const {
@@ -41,17 +43,17 @@ const utils = {
 
     let outputPath = path.join(paths.dist, fileName);
     fs.writeFileSync(outputPath, code);
-    // let stats = this.stats({ code, path: outputPath });
+    let stats = this.stats({ code, path: outputPath });
     // eslint-disable-next-line
-    console.log(`${chalk.green('Output File:')} ${fileName}`);
+    console.log(`${chalk.green('Output File:')} ${fileName} ${stats}`);
 
     if (minify) {
       let minifiedFileName = fileName.replace('.js', '') + '.min.js';
       outputPath = path.join(paths.dist, minifiedFileName);
       fs.writeFileSync(outputPath, uglify.minify(code, commons.uglifyOptions).code);
-      // stats = this.stats({ code, path: outputPath });
+      stats = this.stats({ code, path: outputPath });
       // eslint-disable-next-line
-      console.log(`${chalk.green('Output File:')} ${minifiedFileName}`);
+      console.log(`${chalk.green('Output File:')} ${minifiedFileName} ${stats}`);
     }
 
     return true;
