@@ -30,5 +30,20 @@
     "tslint-config-standard": "^8.0.1",
     "typescript": "^3.5.1",
     "uglify-js": "^3.6.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint --edit -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.js": [
+      "git add"
+    ]
   }
 }
