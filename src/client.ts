@@ -2,18 +2,18 @@ type Fetcher = typeof fetch;
 
 interface VqlClientOptions {
   uri: string;
-  fetch?: Fetcher
-};
+  fetch?: Fetcher;
+}
 
 interface ClientQueryOptions {
   query: string;
   variables?: { [k: string]: any };
 }
 
-function resolveGlobalFetch (): Fetcher | undefined {
+function resolveGlobalFetch(): Fetcher | undefined {
   // tslint:disable-next-line
   if (typeof window !== 'undefined' && 'fetch' in window) {
-    return window.fetch;
+    return window.fetch.bind(window);
   }
 
   // tslint:disable-next-line
@@ -22,13 +22,13 @@ function resolveGlobalFetch (): Fetcher | undefined {
   }
 
   return undefined;
-};
+}
 
 class VqlClient {
   uri: string;
   fetch: Fetcher;
 
-  constructor (uri: string, fetch: Fetcher) {
+  constructor(uri: string, fetch: Fetcher) {
     this.uri = uri;
     this.fetch = fetch;
   }
@@ -40,7 +40,7 @@ class VqlClient {
       headers: {
         'content-type': 'application/json'
       }
-    });
+    }).then(response => response.json());
   }
 }
 
@@ -50,5 +50,4 @@ export function createClient({ uri, fetch = resolveGlobalFetch() }: VqlClientOpt
   }
 
   return new VqlClient(uri, fetch);
-};
-
+}
