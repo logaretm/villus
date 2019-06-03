@@ -24,7 +24,7 @@ function resolveGlobalFetch(): Fetcher | undefined {
   return undefined;
 }
 
-class VqlClient {
+export class VqlClient {
   uri: string;
   fetch: Fetcher;
 
