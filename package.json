@@ -4,12 +4,16 @@
   "description": "A flexible and powerful GraphQL client for Vue",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "build": "node scripts/build.js",
+    "ts:defs": "tsc --emitDeclarationOnly"
   },
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@commitlint/cli": "^8.0.0",
+    "chalk": "^2.4.2",
     "husky": "^2.3.0",
     "lint-staged": "^8.1.7",
     "mkdirp": "^0.5.1",

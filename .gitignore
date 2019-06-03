@@ -1,2 +1,15 @@
+# The usual
 node_modules
 dist
+
+# For typescript cache
+.rpt2_cache
+
+# For tests
+coverage
+.nyc_output
+
+# Editors meta files
+.idea
+.vscode
+.vs
