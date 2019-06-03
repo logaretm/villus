@@ -2,7 +2,9 @@
   "name": "vql",
   "version": "0.0.1",
   "description": "A flexible and powerful GraphQL client for Vue",
-  "main": "index.js",
+  "module": "dist/vql.esm.js",
+  "unpkg": "dist/vql.js",
+  "main": "dist/vql.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
