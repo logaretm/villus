@@ -58,7 +58,6 @@ export class VqlClient {
 
   query(operation: ClientQueryOptions) {
     const fetchOptions = this.context ? this.context().fetchOptions : {};
-    console.log(fetchOptions);
     const opts = this.makeFetchOptions(operation, fetchOptions || {});
 
     return this.fetch(this.url, opts).then(response => response.json());
