@@ -1,4 +1,5 @@
 import { normalizeVariables, normalizeQuery } from './utils';
+import { CachePolicy } from './types';
 
 export const Query = {
   name: 'VqlQuery',
@@ -24,7 +25,7 @@ export const Query = {
     return this.fetch();
   },
   methods: {
-    async fetch(this: any, vars: object = {}) {
+    async fetch(this: any, vars: object = {}, cachePolicy: CachePolicy) {
       if (!this.$vql) {
         throw new Error('Could not find the VQL client, did you install the plugin correctly?');
       }
@@ -38,7 +39,8 @@ export const Query = {
         this.fetching = true;
         const { data, errors } = await this.$vql.query({
           query,
-          variables: normalizeVariables(this.variables, vars)
+          variables: normalizeVariables(this.variables, vars),
+          cachePolicy
         });
 
         this.data = data;
@@ -64,7 +66,7 @@ export const Query = {
       errors: this.errors,
       fetching: this.fetching,
       done: this.done,
-      execute: this.fetch
+      execute: ({ cachePolicy }: { cachePolicy: CachePolicy }) => this.fetch({}, cachePolicy)
     });
 
     if (Array.isArray(slot)) {

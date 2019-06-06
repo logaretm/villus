@@ -1,3 +1,6 @@
+import { OperationResult, CachePolicy } from './types';
+import { makeCache } from './cache';
+
 type Fetcher = typeof fetch;
 
 interface FetchOptions extends Omit<RequestInit, 'body'> {}
@@ -12,11 +15,13 @@ interface VqlClientOptions {
   url: string;
   fetch?: Fetcher;
   context?: ContextFactory;
+  cachePolicy?: CachePolicy;
 }
 
 interface ClientQueryOptions {
   query: string;
   variables?: { [k: string]: any };
+  cachePolicy?: CachePolicy;
 }
 
 function resolveGlobalFetch(): Fetcher | undefined {
@@ -33,41 +38,72 @@ function resolveGlobalFetch(): Fetcher | undefined {
   return undefined;
 }
 
+function makeFetchOptions({ query, variables }: ClientQueryOptions, opts: FetchOptions) {
+  return {
+    method: 'POST',
+    body: JSON.stringify({ query, variables }),
+    ...opts,
+    headers: {
+      'content-type': 'application/json',
+      ...opts.headers
+    }
+  };
+}
+
+interface VqlClientOptionsWithFetcher extends VqlClientOptions {
+  fetch: Fetcher;
+}
+
 export class VqlClient {
   url: string;
   fetch: Fetcher;
+  defaultCachePolicy: CachePolicy;
   context?: ContextFactory;
+  cache = makeCache();
 
-  constructor(url: string, fetch: Fetcher, context?: ContextFactory) {
-    this.url = url;
-    this.fetch = fetch;
-    this.context = context;
+  constructor(opts: VqlClientOptionsWithFetcher) {
+    this.url = opts.url;
+    this.fetch = opts.fetch;
+    this.context = opts.context;
+    this.defaultCachePolicy = opts.cachePolicy || 'cache-first';
   }
 
-  makeFetchOptions({ query, variables }: ClientQueryOptions, opts: FetchOptions) {
-    return {
-      method: 'POST',
-      body: JSON.stringify({ query, variables }),
-      ...opts,
-      headers: {
-        'content-type': 'application/json',
-        ...opts.headers
-      }
-    };
-  }
-
-  query(operation: ClientQueryOptions) {
+  async query(operation: ClientQueryOptions): Promise<OperationResult> {
     const fetchOptions = this.context ? this.context().fetchOptions : {};
-    const opts = this.makeFetchOptions(operation, fetchOptions || {});
+    const opts = makeFetchOptions(operation, fetchOptions || {});
+    const policy = operation.cachePolicy || this.defaultCachePolicy;
+    let cachedResult = this.cache.getCachedResult(operation.query);
+    if (policy === 'cache-first' && cachedResult) {
+      return cachedResult;
+    }
 
-    return this.fetch(this.url, opts).then(response => response.json());
+    const lazyFetch = () =>
+      this.fetch(this.url, opts)
+        .then(response => response.json())
+        .then(result => {
+          if (policy !== 'network-only') {
+            this.cache.afterQuery(operation.query, result);
+          }
+
+          return result;
+        });
+
+    if (policy === 'cache-and-network' && cachedResult) {
+      // tslint:disable-next-line
+      lazyFetch();
+
+      return cachedResult;
+    }
+
+    return lazyFetch();
   }
 }
 
-export function createClient({ url = '/graphql', fetch = resolveGlobalFetch(), context }: VqlClientOptions) {
-  if (!fetch) {
+export function createClient(opts: VqlClientOptions) {
+  opts.fetch = opts.fetch || resolveGlobalFetch();
+  if (!opts.fetch) {
     throw new Error('Could not resolve a fetch() method, you should provide one.');
   }
 
-  return new VqlClient(url, fetch, context);
+  return new VqlClient(opts as VqlClientOptionsWithFetcher);
 }
