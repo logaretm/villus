@@ -1,5 +1,5 @@
 {
-  "name": "vql",
+  "name": "vue-gql",
   "version": "0.0.1",
   "description": "A flexible and powerful GraphQL client for Vue",
   "module": "dist/vql.esm.js",
