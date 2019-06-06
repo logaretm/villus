@@ -14,11 +14,11 @@ export const Query = {
   data: () => ({
     data: null,
     errors: null,
-    isFetching: false,
-    isDone: false
+    fetching: false,
+    done: false
   }),
   serverPrefetch(this: any) {
-    // fetch it on the serverside.
+    // fetch it on the server-side.
     return this.fetch();
   },
   methods: {
@@ -33,7 +33,19 @@ export const Query = {
 
       return null;
     },
-    async fetch(this: any) {
+    normalizeVariables(this: any, variables?: object) {
+      let normalized;
+      if (this.variables) {
+        normalized = { ...this.variables };
+      }
+
+      if (variables) {
+        normalized = { ...normalized, ...variables };
+      }
+
+      return normalized;
+    },
+    async fetch(this: any, vars: object) {
       if (!this.$vql) {
         throw new Error('Could not find the VQL client, did you install the plugin correctly?');
       }
@@ -44,10 +56,10 @@ export const Query = {
       }
 
       try {
-        this.isFetching = true;
+        this.fetching = true;
         const { data, errors } = await this.$vql.query({
           query,
-          variables: this.variables ? this.variables : undefined
+          variables: this.normalizeVariables(vars)
         });
 
         this.data = data;
@@ -56,8 +68,8 @@ export const Query = {
         this.errors = [err.message];
         this.data = null;
       } finally {
-        this.isDone = true;
-        this.isFetching = false;
+        this.done = true;
+        this.fetching = false;
       }
     }
   },
@@ -71,10 +83,15 @@ export const Query = {
     const slot = this.$scopedSlots.default({
       data: this.data,
       errors: this.errors,
-      isFetching: this.isFetching,
-      isDone: this.isDone
+      fetching: this.fetching,
+      done: this.done,
+      execute: this.fetch
     });
 
-    return h('div', {}, slot);
+    if (Array.isArray(slot)) {
+      return h('div', {}, slot);
+    }
+
+    return slot;
   }
 };
