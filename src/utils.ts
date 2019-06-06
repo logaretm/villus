@@ -1,4 +1,5 @@
 import { DocumentNode } from 'graphql';
+import { Operation } from './types';
 
 /**
  * Normalizes a list of variable objects.
@@ -30,4 +31,21 @@ export function normalizeQuery(query: string | DocumentNode): string | null {
   }
 
   return null;
+}
+
+function hash(x: string) {
+  // tslint:disable-next-line
+  let h, i, l;
+  // tslint:disable-next-line
+  for (h = 5381 | 0, i = 0, l = x.length | 0; i < l; i++) {
+    h = (h << 5) + h + x.charCodeAt(i);
+  }
+
+  return h >>> 0;
+}
+
+export function getQueryKey(operation: Operation) {
+  const variables = operation.variables ? JSON.stringify(operation.variables) : '';
+
+  return hash(`${operation.query}${variables}`);
 }

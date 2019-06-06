@@ -1,4 +1,4 @@
-import { OperationResult, CachePolicy } from './types';
+import { OperationResult, CachePolicy, Operation } from './types';
 import { makeCache } from './cache';
 
 type Fetcher = typeof fetch;
@@ -18,12 +18,6 @@ interface VqlClientOptions {
   cachePolicy?: CachePolicy;
 }
 
-interface ClientQueryOptions {
-  query: string;
-  variables?: { [k: string]: any };
-  cachePolicy?: CachePolicy;
-}
-
 function resolveGlobalFetch(): Fetcher | undefined {
   // tslint:disable-next-line
   if (typeof window !== 'undefined' && 'fetch' in window) {
@@ -38,7 +32,7 @@ function resolveGlobalFetch(): Fetcher | undefined {
   return undefined;
 }
 
-function makeFetchOptions({ query, variables }: ClientQueryOptions, opts: FetchOptions) {
+function makeFetchOptions({ query, variables }: Operation, opts: FetchOptions) {
   return {
     method: 'POST',
     body: JSON.stringify({ query, variables }),
@@ -68,11 +62,11 @@ export class VqlClient {
     this.defaultCachePolicy = opts.cachePolicy || 'cache-first';
   }
 
-  async query(operation: ClientQueryOptions): Promise<OperationResult> {
+  async query(operation: Operation): Promise<OperationResult> {
     const fetchOptions = this.context ? this.context().fetchOptions : {};
     const opts = makeFetchOptions(operation, fetchOptions || {});
     const policy = operation.cachePolicy || this.defaultCachePolicy;
-    let cachedResult = this.cache.getCachedResult(operation.query);
+    let cachedResult = this.cache.getCachedResult(operation);
     if (policy === 'cache-first' && cachedResult) {
       return cachedResult;
     }
@@ -82,7 +76,7 @@ export class VqlClient {
         .then(response => response.json())
         .then(result => {
           if (policy !== 'network-only') {
-            this.cache.afterQuery(operation.query, result);
+            this.cache.afterQuery(operation, result);
           }
 
           return result;
