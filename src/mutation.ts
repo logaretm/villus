@@ -1,7 +1,7 @@
 import { normalizeQuery } from './utils';
 
 export const Mutation = {
-  name: 'VqlMutation',
+  name: 'Mutation',
   inject: ['$vql'],
   props: {
     query: {

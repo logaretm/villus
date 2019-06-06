@@ -2,7 +2,7 @@ import { normalizeVariables, normalizeQuery } from './utils';
 import { CachePolicy } from './types';
 
 export const Query = {
-  name: 'VqlQuery',
+  name: 'Query',
   inject: ['$vql'],
   props: {
     query: {
