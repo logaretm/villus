@@ -1,8 +1,17 @@
 type Fetcher = typeof fetch;
 
+interface FetchOptions extends Omit<RequestInit, 'body'> {}
+
+interface GraphQLRequestContext {
+  fetchOptions?: FetchOptions;
+}
+
+type ContextFactory = () => GraphQLRequestContext;
+
 interface VqlClientOptions {
-  uri: string;
+  url: string;
   fetch?: Fetcher;
+  context?: ContextFactory;
 }
 
 interface ClientQueryOptions {
@@ -25,29 +34,41 @@ function resolveGlobalFetch(): Fetcher | undefined {
 }
 
 export class VqlClient {
-  uri: string;
+  url: string;
   fetch: Fetcher;
+  context?: ContextFactory;
 
-  constructor(uri: string, fetch: Fetcher) {
-    this.uri = uri;
+  constructor(url: string, fetch: Fetcher, context?: ContextFactory) {
+    this.url = url;
     this.fetch = fetch;
+    this.context = context;
   }
 
-  query({ query, variables }: ClientQueryOptions) {
-    return this.fetch(this.uri, {
-      method: 'post',
+  makeFetchOptions({ query, variables }: ClientQueryOptions, opts: FetchOptions) {
+    return {
+      method: 'POST',
       body: JSON.stringify({ query, variables }),
+      ...opts,
       headers: {
-        'content-type': 'application/json'
+        'content-type': 'application/json',
+        ...opts.headers
       }
-    }).then(response => response.json());
+    };
+  }
+
+  query(operation: ClientQueryOptions) {
+    const fetchOptions = this.context ? this.context().fetchOptions : {};
+    console.log(fetchOptions);
+    const opts = this.makeFetchOptions(operation, fetchOptions || {});
+
+    return this.fetch(this.url, opts).then(response => response.json());
   }
 }
 
-export function createClient({ uri, fetch = resolveGlobalFetch() }: VqlClientOptions) {
+export function createClient({ url = '/graphql', fetch = resolveGlobalFetch(), context }: VqlClientOptions) {
   if (!fetch) {
     throw new Error('Could not resolve a fetch() method, you should provide one.');
   }
 
-  return new VqlClient(uri, fetch);
+  return new VqlClient(url, fetch, context);
 }
