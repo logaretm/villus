@@ -34,11 +34,11 @@ import { withProvider, createClient } from 'vue-gql';
 import App from './App.vue'; // Your App Component
 
 const client = createClient({
-  uri: 'http://localhost:3002/graphql'
+  url: 'http://localhost:3002/graphql'
 });
 
 // Wrap your app component with the provider component.
-const AppWithGQL = withProvider(App);
+const AppWithGQL = withProvider(App, client);
 
 new Vue({
   render: h => h(AppWithGQL)
@@ -73,7 +73,3 @@ You can do a lot more, `vue-gql` makes frequent tasks such as re-fetching, cachi
 ## Examples
 
 TODO: NEED EXAMPLES, LIVE IF POSSIBLE.
-
-## WIP ⚠
-
-⚠⚠⚠⚠⚠ DO NOT USE IN PRODUCTION YET ⚠⚠⚠⚠⚠
