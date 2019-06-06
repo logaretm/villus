@@ -1,3 +1,5 @@
+import { DocumentNode } from 'graphql';
+
 /**
  * Normalizes a list of variable objects.
  */
@@ -18,7 +20,7 @@ export function normalizeVariables(...variables: object[]) {
 /**
  * Normalizes a query string or object to a string.
  */
-export function normalizeQuery(query: string | { loc: any }): string | null {
+export function normalizeQuery(query: string | DocumentNode): string | null {
   if (typeof query === 'string') {
     return query;
   }
