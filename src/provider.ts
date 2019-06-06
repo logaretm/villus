@@ -21,11 +21,19 @@ export const Provider = {
   }
 };
 
-export const withProvider = (component: any) => {
+export const withProvider = (component: any, client: VqlClient) => {
   return {
-    ...Provider,
+    functional: true,
     render(h: any) {
-      return h(component);
+      return h(
+        Provider,
+        {
+          props: {
+            client
+          }
+        },
+        [component]
+      );
     }
   };
 };
