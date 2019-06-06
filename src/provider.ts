@@ -20,3 +20,12 @@ export const Provider = {
     return h(rootNode);
   }
 };
+
+export const withProvider = (component: any) => {
+  return {
+    ...Provider,
+    render(h: any) {
+      return h(component);
+    }
+  };
+};
