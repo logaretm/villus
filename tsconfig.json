@@ -17,5 +17,6 @@
     "emitDecoratorMetadata": true,
     "typeRoots": ["node_modules/@types"]
   },
-  "include": ["src", "tests"]
+  "include": ["src", "test"],
+  "files": ["./vue-shims.d.ts"]
 }

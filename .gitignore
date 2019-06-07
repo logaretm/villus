@@ -13,3 +13,7 @@ coverage
 .idea
 .vscode
 .vs
+
+# logs
+
+*.log

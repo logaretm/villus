@@ -20,10 +20,10 @@ export const Query = {
     fetching: false,
     done: false
   }),
-  serverPrefetch(this: any) {
-    // fetch it on the server-side.
-    return this.fetch();
-  },
+  // serverPrefetch(this: any) {
+  //   // fetch it on the server-side.
+  //   return this.fetch();
+  // },
   methods: {
     async fetch(this: any, vars: object = {}, cachePolicy: CachePolicy) {
       if (!this.$vql) {
@@ -46,6 +46,7 @@ export const Query = {
         this.data = data;
         this.errors = errors;
       } catch (err) {
+        console.log(err);
         this.errors = [err.message];
         this.data = null;
       } finally {
@@ -70,7 +71,7 @@ export const Query = {
     });
 
     if (Array.isArray(slot)) {
-      return h('div', {}, slot);
+      return h('div', null, slot);
     }
 
     return slot;

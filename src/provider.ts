@@ -23,17 +23,17 @@ export const Provider = {
 
 export const withProvider = (component: any, client: VqlClient) => {
   return {
+    name: 'withVqlProviderHoC',
     functional: true,
     render(h: any) {
-      return h(
-        Provider,
-        {
-          props: {
-            client
-          }
+      return h(Provider, {
+        props: {
+          client
         },
-        [component]
-      );
+        scopedSlots: {
+          default: () => component
+        }
+      });
     }
   };
 };
