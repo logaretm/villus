@@ -12,6 +12,13 @@ const server = mockServer(schema, {
   }),
   Query: () => ({
     posts: () => new MockList(5)
+  }),
+  Mutation: () => ({
+    likePost: () => ({
+      success: true,
+      code: '200',
+      message: 'Operation successful'
+    })
   })
 });
 
