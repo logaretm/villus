@@ -77,6 +77,7 @@ function genConfig(options) {
   const config = {
     input: {
       input: options.input,
+      external: ['vue'],
       plugins: [
         typescript({ useTsconfigDeclarationDir: true }),
         replace({ __VERSION__: version }),
@@ -87,7 +88,10 @@ function genConfig(options) {
     output: {
       banner: commons.banner,
       format: options.format,
-      name: options.name
+      name: options.name,
+      globals: {
+        vue: 'Vue'
+      }
     }
   };
 

@@ -1,7 +1,27 @@
-import { normalizeVariables, normalizeQuery } from './utils';
+import Vue, { VueConstructor } from 'vue';
+import { normalizeVariables, normalizeQuery, normalizeChildren } from './utils';
 import { CachePolicy } from './types';
+import { VqlClient } from './client';
 
-export const Query = {
+type withVqlClient = VueConstructor<
+  Vue & {
+    $vql: VqlClient;
+  }
+>;
+
+function componentData() {
+  const data: any = null;
+  const errors: any = null;
+
+  return {
+    data,
+    errors,
+    fetching: false,
+    done: false
+  };
+}
+
+export const Query = (Vue as withVqlClient).extend({
   name: 'Query',
   inject: ['$vql'],
   props: {
@@ -14,18 +34,13 @@ export const Query = {
       default: null
     }
   },
-  data: () => ({
-    data: null,
-    errors: null,
-    fetching: false,
-    done: false
-  }),
-  // serverPrefetch(this: any) {
-  //   // fetch it on the server-side.
-  //   return this.fetch();
-  // },
+  data: componentData,
+  serverPrefetch() {
+    // fetch it on the server-side.
+    return (this as any).fetch();
+  },
   methods: {
-    async fetch(this: any, vars: object = {}, cachePolicy: CachePolicy) {
+    async fetch(vars?: object, cachePolicy?: CachePolicy) {
       if (!this.$vql) {
         throw new Error('Could not find the VQL client, did you install the plugin correctly?');
       }
@@ -39,7 +54,7 @@ export const Query = {
         this.fetching = true;
         const { data, errors } = await this.$vql.query({
           query,
-          variables: normalizeVariables(this.variables, vars),
+          variables: normalizeVariables(this.variables, vars || {}),
           cachePolicy
         });
 
@@ -55,14 +70,15 @@ export const Query = {
       }
     }
   },
-  mounted(this: any) {
+  mounted() {
     // fetch it on client side if it was not already.
     if (!this.data) {
+      // tslint:disable-next-line: no-floating-promises
       this.fetch();
     }
   },
-  render(this: any, h: any) {
-    const slot = this.$scopedSlots.default({
+  render(h) {
+    const children = normalizeChildren(this, {
       data: this.data,
       errors: this.errors,
       fetching: this.fetching,
@@ -70,10 +86,10 @@ export const Query = {
       execute: ({ cachePolicy }: { cachePolicy: CachePolicy }) => this.fetch({}, cachePolicy)
     });
 
-    if (Array.isArray(slot)) {
-      return h('div', null, slot);
+    if (!children.length) {
+      return h();
     }
 
-    return slot;
+    return children.length === 1 ? children[0] : h('span', children);
   }
-};
+});

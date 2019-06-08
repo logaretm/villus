@@ -1,5 +1,6 @@
 import { DocumentNode } from 'graphql';
 import { Operation } from './types';
+import Vue from 'vue';
 
 /**
  * Normalizes a list of variable objects.
@@ -48,4 +49,12 @@ export function getQueryKey(operation: Operation) {
   const variables = operation.variables ? JSON.stringify(operation.variables) : '';
 
   return hash(`${operation.query}${variables}`);
+}
+
+export function normalizeChildren(context: Vue, slotProps: any) {
+  if (context.$scopedSlots.default) {
+    return context.$scopedSlots.default(slotProps) || [];
+  }
+
+  return context.$slots.default || [];
 }

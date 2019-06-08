@@ -1,5 +1,5 @@
 import { mount, createLocalVue } from '@vue/test-utils';
-import * as flushPromises from 'flush-promises';
+import flushPromises from 'flush-promises';
 import { withProvider, Query, createClient } from '../src/index';
 import App from './App.vue';
 

@@ -1,6 +1,26 @@
-import { normalizeQuery } from './utils';
+import Vue, { VueConstructor } from 'vue';
+import { VqlClient } from './client';
+import { normalizeQuery, normalizeChildren } from './utils';
 
-export const Mutation = {
+type withVqlClient = VueConstructor<
+  Vue & {
+    $vql: VqlClient;
+  }
+>;
+
+function componentData() {
+  const data: any = null;
+  const errors: any = null;
+
+  return {
+    data,
+    errors,
+    fetching: false,
+    done: false
+  };
+}
+
+export const Mutation = (Vue as withVqlClient).extend({
   name: 'Mutation',
   inject: ['$vql'],
   props: {
@@ -9,14 +29,9 @@ export const Mutation = {
       required: true
     }
   },
-  data: () => ({
-    data: null,
-    errors: null,
-    fetching: false,
-    done: false
-  }),
+  data: componentData,
   methods: {
-    async mutate(this: any, vars: object = {}) {
+    async mutate(vars: object = {}) {
       if (!this.$vql) {
         throw new Error('Could not find the VQL client, did you install the plugin correctly?');
       }
@@ -48,8 +63,8 @@ export const Mutation = {
       }
     }
   },
-  render(this: any, h: any) {
-    const slot = this.$scopedSlots.default({
+  render(h) {
+    const children = normalizeChildren(this, {
       data: this.data,
       errors: this.errors,
       fetching: this.fetching,
@@ -57,10 +72,10 @@ export const Mutation = {
       execute: this.mutate
     });
 
-    if (Array.isArray(slot)) {
-      return h('div', {}, slot);
+    if (!children.length) {
+      return h();
     }
 
-    return slot;
+    return children.length === 1 ? children[0] : h('span', children);
   }
-};
+});
