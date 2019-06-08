@@ -6,6 +6,8 @@
   "unpkg": "dist/vql.js",
   "main": "dist/vql.js",
   "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
     "test": "jest",
     "test:cover": "jest --coverage",
     "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
@@ -51,7 +53,8 @@
     "uglify-js": "^3.6.0",
     "vue": "^2.6.10",
     "vue-jest": "^3.0.4",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "vuepress": "^1.0.0-rc.1"
   },
   "husky": {
     "hooks": {
