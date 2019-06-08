@@ -6,6 +6,10 @@
 - The mutation component **does not** run automatically, you have to explicitly call `execute`.
 - Cache policies do not apply to mutations as mutations represent real-time actions and will always use `network-only` policy.
 
+:::tip
+The **Mutation** component is **renderless** by default, meaning it will not render any extra HTML other than its slot, but only when exactly one child is present, if multiple children exist inside its slot it will render a `span`.
+:::
+
 ```vue
 <template>
   <div>

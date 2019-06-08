@@ -66,6 +66,10 @@ return new Vue({
 });
 ```
 
+:::tip
+The **Provider** component is **renderless** by default, meaning it will not render any extra HTML other than its slot, but only when exactly one child is present, if multiple children exist inside its slot it will render a `span`.
+:::
+
 ### Multiple Providers
 
 While uncommon, there is no limitations on how many endpoints you can use within your app, you can use as many provider as you like and that allows you to query different GraphQL APIs within the same app without hassle.
@@ -104,4 +108,4 @@ new Vue({
 
 ## Next Steps
 
-Now that you have successfully setup the GraphQL client, you can use [Query](./queries) and [Mutation]() components to execute GraphQL queries.
+Now that you have successfully setup the GraphQL client, you can use [Query](./queries.md) and [Mutation](./mutations.md) components to execute GraphQL queries.

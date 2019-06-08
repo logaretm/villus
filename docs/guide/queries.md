@@ -6,6 +6,10 @@ The **Query** component uses slots and [scoped slots](https://vuejs.org/v2/guide
 
 To run a query, the **Query** component takes a required `query` prop that can be either a `string` containing the query or a `DocumentNode` loaded by `graphql-tag/loader` from `.graphql` files.
 
+:::tip
+The **Query** component is **renderless** by default, meaning it will not render any extra HTML other than its slot, but only when exactly one child is present, if multiple children exist inside its slot it will render a `span`.
+:::
+
 ```vue
 <template>
   <div>
@@ -34,7 +38,7 @@ By default the query will run on the server-side if applicable (via `serverPrefe
 The examples from now on will omit much of the boilerplate and will only use the `Query` component to demonstrate its uses clearly.
 :::
 
-## [GraphQL Tag](https://github.com/apollographql/graphql-tag)
+## [graphql-tag](https://github.com/apollographql/graphql-tag)
 
 You can use `graphql-tag` to compile your queries or load them with the `graphql-tag/loader`.
 
