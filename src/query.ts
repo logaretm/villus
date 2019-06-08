@@ -83,7 +83,7 @@ export const Query = (Vue as withVqlClient).extend({
       errors: this.errors,
       fetching: this.fetching,
       done: this.done,
-      execute: ({ cachePolicy }: { cachePolicy: CachePolicy }) => this.fetch({}, cachePolicy)
+      execute: ({ cachePolicy }: { cachePolicy?: CachePolicy } = {}) => this.fetch({}, cachePolicy)
     });
 
     if (!children.length) {
