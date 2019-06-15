@@ -1,6 +1,6 @@
 # vue-gql
 
-A small and fast GraphQL client for Vue.js
+A small and fast GraphQL client for Vue.js.
 
 ## Features
 
@@ -12,7 +12,7 @@ A small and fast GraphQL client for Vue.js
 
 ## Documentation
 
-TODO: Document this!
+You can find the full [documentation here](https://baianat.github.io/vue-gql)
 
 ## Quick Start
 
