@@ -8,6 +8,8 @@ export default `
 
   type Query {
     posts: [Post]!
+
+    post (id: ID!): Post!
   }
 
   type LikePostMutationResponse {

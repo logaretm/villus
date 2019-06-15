@@ -103,3 +103,90 @@ test('cache policy can be overridden', async () => {
   // fetch was triggered a second time.
   expect(fetch).toBeCalledTimes(2);
 });
+
+test('variables are watched by default', async () => {
+  let client = createClient({
+    url: 'https://test.baianat.com/graphql'
+  });
+
+  const wrapper = mount(
+    {
+      data: () => ({
+        client,
+        id: 12
+      }),
+      components: {
+        Query,
+        Provider
+      },
+      template: `
+      <div>
+        <Provider :client="client">
+          <div>
+            <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="{ id }" v-slot="{ data }">
+              <div v-if="data">
+                <h1>{{ data.post.title }}</h1>
+              </div>
+            </Query>
+          </div>
+        </Provider>
+      </div>
+    `
+    },
+    { sync: false }
+  );
+
+  await flushPromises();
+  expect(fetch).toBeCalledTimes(1);
+  expect(wrapper.find('h1').text()).toContain('12');
+  wrapper.setData({
+    id: 13
+  });
+  await flushPromises();
+  // fetch was triggered a second time, due to variable change.
+  expect(fetch).toBeCalledTimes(2);
+  expect(wrapper.find('h1').text()).toContain('13');
+});
+
+test('variable watcher can be disabled', async () => {
+  let client = createClient({
+    url: 'https://test.baianat.com/graphql'
+  });
+
+  const wrapper = mount(
+    {
+      data: () => ({
+        client,
+        id: 12
+      }),
+      components: {
+        Query,
+        Provider
+      },
+      template: `
+      <div>
+        <Provider :client="client">
+          <div>
+            <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="{ id }" :refetch="false" v-slot="{ data }">
+              <div v-if="data">
+                <h1>{{ data.post.title }}</h1>
+              </div>
+            </Query>
+          </div>
+        </Provider>
+      </div>
+    `
+    },
+    { sync: false }
+  );
+
+  await flushPromises();
+  expect(fetch).toBeCalledTimes(1);
+  expect(wrapper.find('h1').text()).toContain('12');
+  wrapper.setData({
+    id: 13
+  });
+  await flushPromises();
+  expect(fetch).toBeCalledTimes(1);
+  expect(wrapper.find('h1').text()).toContain('12');
+});

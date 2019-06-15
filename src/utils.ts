@@ -34,7 +34,7 @@ export function normalizeQuery(query: string | DocumentNode): string | null {
   return null;
 }
 
-function hash(x: string) {
+export function hash(x: string) {
   // tslint:disable-next-line
   let h, i, l;
   // tslint:disable-next-line

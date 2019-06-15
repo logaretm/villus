@@ -11,7 +11,14 @@ const server = mockServer(schema, {
     slug: () => 'hello-world'
   }),
   Query: () => ({
-    posts: () => new MockList(5)
+    posts: () => new MockList(5),
+    post: (_: any, { id }: any) => {
+      return {
+        id,
+        title: `Hello World: ${id}`,
+        slug: 'hello-world'
+      };
+    }
   }),
   Mutation: () => ({
     likePost: () => ({

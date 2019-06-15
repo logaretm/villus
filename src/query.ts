@@ -1,10 +1,11 @@
 import Vue, { VueConstructor } from 'vue';
-import { normalizeVariables, normalizeQuery, normalizeChildren } from './utils';
+import { normalizeVariables, normalizeQuery, normalizeChildren, hash } from './utils';
 import { CachePolicy } from './types';
 import { VqlClient } from './client';
 
 type withVqlClient = VueConstructor<
   Vue & {
+    _cachedVars?: number;
     $vql: VqlClient;
   }
 >;
@@ -41,12 +42,35 @@ export const Query = (Vue as withVqlClient).extend({
 
         return isValid;
       }
+    },
+    refetch: {
+      type: Boolean,
+      default: true
     }
   },
   data: componentData,
   serverPrefetch() {
     // fetch it on the server-side.
     return (this as any).fetch();
+  },
+  watch: {
+    variables: {
+      deep: true,
+      handler(value) {
+        if (this.refetch === false) {
+          return;
+        }
+
+        const id = hash(JSON.stringify(value));
+        if (id === this._cachedVars) {
+          return;
+        }
+
+        this._cachedVars = id;
+        // tslint:disable-next-line: no-floating-promises
+        this.fetch();
+      }
+    }
   },
   methods: {
     async fetch(vars?: object, cachePolicy?: CachePolicy) {
