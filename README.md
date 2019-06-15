@@ -70,6 +70,10 @@ export default {
 
 You can do a lot more, `vue-gql` makes frequent tasks such as re-fetching, caching, mutation responses, error handling, subscriptions a breeze. Consult the documentation for more use-cases and examples.
 
+## Compatibility
+
+This library relies on the `fetch` web API to run queries, you can use `unfetch` (client-side) or `node-fetch` (server-side) to use as a polyfill.
+
 ## Examples
 
 TODO: NEED EXAMPLES, LIVE IF POSSIBLE.
