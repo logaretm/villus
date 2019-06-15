@@ -10,10 +10,13 @@
 The **Mutation** component is **renderless** by default, meaning it will not render any extra HTML other than its slot, but only when exactly one child is present, if multiple children exist inside its slot it will render a `span`.
 :::
 
-```vue
+```vue{3,4,5,6,10,11}
 <template>
   <div>
-    <Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ data, execute }">
+    <Mutation
+      query="mutation { likePost (id: 123) { message } }"
+      v-slot="{ data, execute }"
+    >
       <div v-if="data">
         <p>{{ data.likePost.message }}</p>
       </div>
@@ -33,12 +36,15 @@ export default {
 </script>
 ```
 
-## Variables
+## Passing Variables
 
 Since the **Mutation** component does not accept `variables` you can pass them to the `execute` method instead:
 
-```vue
-<Mutation query="mutation Like ($id: ID!) { likePost (id: $id) { message } }" v-slot="{ data, execute }">
+```vue{3,8}
+<Mutation
+  query="mutation Like ($id: ID!) { likePost (id: $id) { message } }"
+  v-slot="{ data, execute }"
+>
   <div v-if="data">
     <p>{{ data.likePost.message }}</p>
   </div>
@@ -54,8 +60,11 @@ Usually you would wrap your `forms` with the **Mutation** component and handle s
 
 The **Mutation** slot props contain more useful information that you can use to build better experience for your users, for example you can use the `fetching` slot prop to display a loading indicator while the form submits.
 
-```vue
-<Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ data, execute, fetching }">
+```vue{3,5}
+<Mutation
+  query="mutation { likePost (id: 123) { message } }"
+  v-slot="{ data, execute, fetching }"
+>
   <Loading v-if="fetching" />
 
   <div v-if="data">
@@ -74,8 +83,11 @@ The `done` slot prop is a boolean that indicates that the query has been complet
 
 The `errors` slot prop contains all errors encountered when running the query.
 
-```vue
-<Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ data, errors, execute }">
+```vue{3,6}
+<Mutation
+  query="mutation { likePost (id: 123) { message } }"
+  v-slot="{ data, errors, execute }"
+>
   <!-- Your Custom component to handle error display -->
   <ErrorPage v-if="errors" :errors="errors" />
 
@@ -88,8 +100,11 @@ The `errors` slot prop contains all errors encountered when running the query.
 
 Like you previously saw, the `execute` slot prop is a function that executes the mutation, it accepts the variables object if specified, and unlike the same slot prop in the **Query** component it does not affect caching.
 
-```vue
-<Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ data, execute }">
+```vue{3,9}
+<Mutation
+  query="mutation { likePost (id: 123) { message } }"
+  v-slot="{ data, execute }"
+>
   <div v-if="data">
     <ul>
       <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>

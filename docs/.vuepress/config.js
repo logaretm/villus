@@ -20,7 +20,7 @@ module.exports = {
     docsDir: 'docs',
     repo: 'baianat/vue-gql',
     nav: [{ text: 'Home', link: '/' }, { text: 'Guide', link: '/guide/' }],
-    sidebarDepth: 2,
+    sidebarDepth: 1,
     sidebar: {
       '/guide/': genSidebarConfig('Guide')
     },

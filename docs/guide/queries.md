@@ -22,7 +22,7 @@ The **Query** component is **renderless** by default, meaning it will not render
 </template>
 
 <script>
-import { Query } from 'vue-gql`;
+import { Query } from 'vue-gql';
 
 export default {
   components: {
@@ -61,7 +61,7 @@ const todos = gql`
 
 Here we are using `require` with the `graphql-tag/loader`:
 
-```vue
+```vue{1}
 <Query :query="require('@/graphql/todos').Todos" v-slot="{ data }">
   <div v-if="data">
     <p v-for="todo in data.todos">{{ todo.text }}</p>
@@ -73,7 +73,7 @@ Here we are using `require` with the `graphql-tag/loader`:
 
 You can provide variables to your queries using the `variables` optional prop, which is an object containing the variables you would normally send to a GraphQL request.
 
-```vue
+```vue{2}
 <template>
   <Query :query="todo" :variables="{ id: 123 }" v-slot="{ data }">
     <div v-if="data">
@@ -106,9 +106,8 @@ export default {
 
 The **Query** slot props contain more useful information that you can use to build better experience for your users, for example you can use the `fetching` slot prop to display a loading indicator.
 
-```vue
+```vue{1,3}
 <Query query="{ todos { text } }" v-slot="{ data, fetching }">
-
   <!-- Your Loading Indicator Component -->
   <Loading v-if="fetching" />
 
@@ -127,7 +126,7 @@ The `done` slot prop is a boolean that indicates that the query has been complet
 
 The `errors` slot prop contains all errors encountered when running the query.
 
-```vue
+```vue{1,3}
 <Query query="{ todos { text } }" v-slot="{ data, errors }">
   <!-- Your Custom component to handle error display -->
   <ErrorPage v-if="errors" :errors="errors" />
@@ -143,7 +142,7 @@ The `errors` slot prop contains all errors encountered when running the query.
 
 Sometimes you want to re-fetch the query or run it after some action, the `execute` slot prop is a function that re-runs the query. This example executes the query after the button has been clicked, note that the query is still fetched initially.
 
-```vue
+```vue{1,6}
 <Query query="{ posts { id title } }" v-slot="{ data, execute }">
   <div v-if="data">
     <ul>
@@ -166,7 +165,7 @@ By default the client uses `cache-first` policy to handle queries, the full list
 
 You can force the **Query** component to fetch using any of the policies mentioned, you can do this by passing a `cachePolicy` option to the `execute` slot prop:
 
-```vue
+```vue{6}
 <Query query="{ posts { id title } }" v-slot="{ data, execute }">
   <div v-if="data">
     <ul>
@@ -185,7 +184,7 @@ Calling `execute` with a different cache policy will not change the default poli
 
 You can set the default policy when you are [providing the GraphQL client](./client.md) by passing `cachePolicy` option to the `createClient` function.
 
-```js
+```js{3}
 const client = createClient({
   url: '/graphql', // Your endpoint
   cachePolicy: 'network-only'
@@ -198,12 +197,53 @@ This will make all the **Query** components under the **Provider** tree use the 
 
 You could also pass the `cachePolicy` prop to the `Query` component to set its default caching policy explicitly.
 
-```vue
-<Query query="{ posts { id title } }" cache-policy="network-only" v-slot="{ data }">
+```vue{3}
+<Query
+  query="{ posts { id title } }"
+  cache-policy="network-only"
+  v-slot="{ data }"
+>
   <div v-if="data">
     <ul>
       <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
     </ul>
+  </div>
+</Query>
+```
+
+## Watching Variables
+
+Often you want to re-fetch the query when a variable changes, this is done for you by default as long as the query uses `variables` prop.
+
+```vue{3}
+<Query
+  query="query getPost ($id: ID!) { post (id: $id) { id title } }"
+  :variables="{ id }"
+  v-slot="{ data }"
+>
+  <div v-if="data">
+    <h1>{{ data.post.title }}</h1>
+  </div>
+</Query>
+```
+
+:::tip
+This examples re-runs the query whenever the `id` changes, the results of re-fetched queries follows the configured cache-policy.
+:::
+
+### Disabling variable watching
+
+You can disable the mentioned behavior by setting `refetch` prop to false.
+
+```vue{4}
+<Query
+  query="query getPost ($id: ID!) { post (id: $id) { id title } }"
+  :variables="{ id }"
+  :refetch="false"
+  v-slot="{ data }"
+>
+  <div v-if="data">
+    <h1>{{ data.post.title }}</h1>
   </div>
 </Query>
 ```
