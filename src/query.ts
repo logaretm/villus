@@ -43,9 +43,9 @@ export const Query = (Vue as withVqlClient).extend({
         return isValid;
       }
     },
-    refetch: {
+    pause: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data: componentData,
@@ -57,7 +57,7 @@ export const Query = (Vue as withVqlClient).extend({
     variables: {
       deep: true,
       handler(value) {
-        if (this.refetch === false) {
+        if (this.pause) {
           return;
         }
 

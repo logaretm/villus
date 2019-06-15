@@ -233,13 +233,13 @@ This examples re-runs the query whenever the `id` changes, the results of re-fet
 
 ### Disabling variable watching
 
-You can disable the mentioned behavior by setting `refetch` prop to false.
+You can disable the mentioned behavior by setting `pause` prop to `true`.
 
 ```vue{4}
 <Query
   query="query getPost ($id: ID!) { post (id: $id) { id title } }"
   :variables="{ id }"
-  :refetch="false"
+  :pause="true"
   v-slot="{ data }"
 >
   <div v-if="data">
