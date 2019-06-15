@@ -26,7 +26,7 @@ This library is inspired by [URQL](https://github.com/FormidableLabs/urql).
 
 ## Compatibility
 
-This library relies on the `fetch` web API to run queries, and on the ES6 `Map` object.
+This library relies on the `fetch` web API to run queries, you can use `unfetch` (client-side) or `node-fetch` (server-side) to use as a polyfill.
 
 ## Alternatives
 
