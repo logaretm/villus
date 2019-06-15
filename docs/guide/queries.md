@@ -193,3 +193,17 @@ const client = createClient({
 ```
 
 This will make all the **Query** components under the **Provider** tree use the `network-only` policy by default, you can still override with the `execute` slot prop.
+
+### Cache Prop
+
+You could also pass the `cachePolicy` prop to the `Query` component to set its default caching policy explicitly.
+
+```vue
+<Query query="{ posts { id title } }" cache-policy="network-only" v-slot="{ data }">
+  <div v-if="data">
+    <ul>
+      <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+    </ul>
+  </div>
+</Query>
+```

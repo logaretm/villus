@@ -32,6 +32,15 @@ export const Query = (Vue as withVqlClient).extend({
     variables: {
       type: Object,
       default: null
+    },
+    cachePolicy: {
+      type: String,
+      default: null,
+      validator(value) {
+        const isValid = ['cache-and-network', 'network-only', 'cache-first'].indexOf(value) > -1;
+
+        return isValid;
+      }
     }
   },
   data: componentData,
@@ -55,7 +64,7 @@ export const Query = (Vue as withVqlClient).extend({
         const { data, errors } = await this.$vql.query({
           query,
           variables: normalizeVariables(this.variables, vars || {}),
-          cachePolicy
+          cachePolicy: cachePolicy || (this.cachePolicy as CachePolicy)
         });
 
         this.data = data;
