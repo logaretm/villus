@@ -64,7 +64,7 @@ const builds = {
   umd: {
     input: 'src/index.ts',
     format: 'umd',
-    name: 'VeeValidate',
+    name: 'VueGql',
     env: 'production'
   },
   esm: {
