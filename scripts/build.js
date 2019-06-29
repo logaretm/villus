@@ -5,7 +5,7 @@ const { configs, utils, paths } = require('./config');
 
 const mkdirp = promisify(mkdirpNode);
 
-async function build () {
+async function build() {
   await mkdirp(paths.dist);
   // eslint-disable-next-line
   console.log(chalk.cyan('Generating ESM build...'));
@@ -18,6 +18,6 @@ async function build () {
   await utils.writeBundle(configs.umd, 'vql.js', true);
   // eslint-disable-next-line
   console.log(chalk.cyan('Done!'));
-};
+}
 
 build();

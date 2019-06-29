@@ -53,12 +53,12 @@ test('caches queries by default', async () => {
   );
 
   await flushPromises();
-  expect(fetch).toBeCalledTimes(1);
+  expect(fetch).toHaveBeenCalledTimes(1);
 
   wrapper.find('button').trigger('click');
   await flushPromises();
   // cache was used.
-  expect(fetch).toBeCalledTimes(1);
+  expect(fetch).toHaveBeenCalledTimes(1);
 });
 
 test('cache policy can be overridden', async () => {
@@ -96,12 +96,12 @@ test('cache policy can be overridden', async () => {
   );
 
   await flushPromises();
-  expect(fetch).toBeCalledTimes(1);
+  expect(fetch).toHaveBeenCalledTimes(1);
 
   wrapper.find('button').trigger('click');
   await flushPromises();
   // fetch was triggered a second time.
-  expect(fetch).toBeCalledTimes(2);
+  expect(fetch).toHaveBeenCalledTimes(2);
 });
 
 test('variables are watched by default', async () => {
@@ -137,14 +137,14 @@ test('variables are watched by default', async () => {
   );
 
   await flushPromises();
-  expect(fetch).toBeCalledTimes(1);
+  expect(fetch).toHaveBeenCalledTimes(1);
   expect(wrapper.find('h1').text()).toContain('12');
   wrapper.setData({
     id: 13
   });
   await flushPromises();
   // fetch was triggered a second time, due to variable change.
-  expect(fetch).toBeCalledTimes(2);
+  expect(fetch).toHaveBeenCalledTimes(2);
   expect(wrapper.find('h1').text()).toContain('13');
 });
 
@@ -181,12 +181,12 @@ test('variable watcher can be disabled', async () => {
   );
 
   await flushPromises();
-  expect(fetch).toBeCalledTimes(1);
+  expect(fetch).toHaveBeenCalledTimes(1);
   expect(wrapper.find('h1').text()).toContain('12');
   wrapper.setData({
     id: 13
   });
   await flushPromises();
-  expect(fetch).toBeCalledTimes(1);
+  expect(fetch).toHaveBeenCalledTimes(1);
   expect(wrapper.find('h1').text()).toContain('12');
 });

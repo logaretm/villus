@@ -35,11 +35,11 @@ test('runs mutations', async () => {
   );
 
   await flushPromises();
-  expect(fetch).toBeCalledTimes(0);
+  expect(fetch).toHaveBeenCalledTimes(0);
 
   wrapper.find('button').trigger('click');
   await flushPromises();
   // cache was used.
-  expect(fetch).toBeCalledTimes(1);
+  expect(fetch).toHaveBeenCalledTimes(1);
   expect(wrapper.find('p').text()).toBe('Operation successful');
 });

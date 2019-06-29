@@ -3,7 +3,7 @@ import { makeCache } from './cache';
 
 type Fetcher = typeof fetch;
 
-interface FetchOptions extends Omit<RequestInit, 'body'> {}
+type FetchOptions = Omit<RequestInit, 'body'>;
 
 interface GraphQLRequestContext {
   fetchOptions?: FetchOptions;
@@ -49,20 +49,20 @@ interface VqlClientOptionsWithFetcher extends VqlClientOptions {
 }
 
 export class VqlClient {
-  url: string;
-  fetch: Fetcher;
-  defaultCachePolicy: CachePolicy;
-  context?: ContextFactory;
-  cache = makeCache();
+  private url: string;
+  private fetch: Fetcher;
+  private defaultCachePolicy: CachePolicy;
+  private context?: ContextFactory;
+  private cache = makeCache();
 
-  constructor(opts: VqlClientOptionsWithFetcher) {
+  public constructor(opts: VqlClientOptionsWithFetcher) {
     this.url = opts.url;
     this.fetch = opts.fetch;
     this.context = opts.context;
     this.defaultCachePolicy = opts.cachePolicy || 'cache-first';
   }
 
-  async query(operation: Operation): Promise<OperationResult> {
+  public async query(operation: Operation): Promise<OperationResult> {
     const fetchOptions = this.context ? this.context().fetchOptions : {};
     const opts = makeFetchOptions(operation, fetchOptions || {});
     const policy = operation.cachePolicy || this.defaultCachePolicy;

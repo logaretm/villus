@@ -6,7 +6,7 @@ import Vue from 'vue';
  * Normalizes a list of variable objects.
  */
 export function normalizeVariables(...variables: object[]) {
-  let normalized = undefined;
+  let normalized;
   const length = variables.length;
   for (let i = 0; i < length; i++) {
     if (!normalized) {
