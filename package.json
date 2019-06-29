@@ -91,7 +91,5 @@
       "git add"
     ]
   },
-  "dependencies": {
-    "@types/fetch-mock": "^7.3.0"
-  }
+  "dependencies": {}
 }
