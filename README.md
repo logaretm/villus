@@ -76,7 +76,7 @@ This library relies on the `fetch` web API to run queries, you can use `unfetch`
 
 ## Examples
 
-TODO: NEED EXAMPLES, LIVE IF POSSIBLE.
+SOON
 
 ## License
 
