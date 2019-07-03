@@ -8,6 +8,7 @@
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
+    "docs:deploy": "./scripts/deploy.sh",
     "test": "jest",
     "test:cover": "jest --coverage",
     "lint": "eslint . '**/*.{js,jsx,ts,tsx}' --fix",
