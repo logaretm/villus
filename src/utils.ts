@@ -1,5 +1,6 @@
 import { DocumentNode } from 'graphql';
 import { Operation } from './types';
+import stringify from 'fast-json-stable-stringify';
 import Vue from 'vue';
 
 /**
@@ -46,7 +47,7 @@ export function hash(x: string) {
 }
 
 export function getQueryKey(operation: Operation) {
-  const variables = operation.variables ? JSON.stringify(operation.variables) : '';
+  const variables = operation.variables ? stringify(operation.variables) : '';
 
   return hash(`${operation.query}${variables}`);
 }
