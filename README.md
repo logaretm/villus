@@ -2,6 +2,14 @@
 
 A small and fast GraphQL client for Vue.js.
 
+<p align="center">
+
+[![codecov](https://codecov.io/gh/baianat/vue-gql/branch/master/graph/badge.svg)](https://codecov.io/gh/baianat/vue-gql)
+[![Build Status](https://travis-ci.org/baianat/vue-gql.svg?branch=master)](https://travis-ci.org/baianat/vue-gql)
+[![Bundle Size](https://badgen.net/bundlephobia/minzip/vue-gql)](https://bundlephobia.com/result?p=vue-gql@0.1.0)
+
+</p>
+
 ## Features
 
 - 📦 **No dependencies:** Its all you need to query GQL APIs.
