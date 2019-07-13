@@ -1,21 +1,23 @@
 import { OperationResult, Operation } from './types';
 import { getQueryKey } from './utils';
 
-type ResultCache = Map<number, OperationResult>;
+interface ResultCache {
+  [k: string]: OperationResult;
+}
 
 export function makeCache() {
-  let resultCache = new Map() as ResultCache;
+  const resultCache: ResultCache = {};
 
   function afterQuery(operation: Operation, result: OperationResult) {
     const key = getQueryKey(operation);
 
-    resultCache.set(key, result);
+    resultCache[key] = result;
   }
 
   function getCachedResult(operation: Operation): OperationResult | undefined {
     const key = getQueryKey(operation);
 
-    return resultCache.get(key);
+    return resultCache[key];
   }
 
   return {

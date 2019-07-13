@@ -80,7 +80,7 @@ You can do a lot more, `vue-gql` makes frequent tasks such as re-fetching, cachi
 
 ## Compatibility
 
-This library relies on the `fetch` web API to run queries, you can use `unfetch` (client-side) or `node-fetch` (server-side) to use as a polyfill.
+This library relies on the `fetch` web API to run queries, you can use [`unfetch`](https://github.com/developit/unfetch) (client-side) or [`node-fetch`](https://www.npmjs.com/package/node-fetch) (server-side) to use as a polyfill.
 
 ## Examples
 
