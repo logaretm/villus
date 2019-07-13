@@ -18,7 +18,7 @@ This library is inspired by [URQL](https://github.com/FormidableLabs/urql).
 
 ## Features
 
-- Small bundle size, no dependencies.
+- Very small bundle size.
 - API is exposed as minimal Vue components that do most of the work for you.
 - Query caching by default with sensible configurable policies: `cache-first`, `network-only`, `cache-and-network`.
 - SSR support.

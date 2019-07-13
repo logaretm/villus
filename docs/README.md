@@ -9,7 +9,7 @@ features:
   - title: Declarative
     details: Use minimal Vue.js components to work with GraphQL
   - title: Fast
-    details: A lightweight footprint with no dependencies.
+    details: A lightweight footprint.
   - title: Caching
     details: Reasonable caching behavior out of the box.
   - title: TypeScript

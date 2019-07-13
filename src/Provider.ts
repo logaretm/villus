@@ -1,5 +1,5 @@
-import { VqlClient } from './client';
 import Vue from 'vue';
+import { VqlClient } from './client';
 import { normalizeChildren } from './utils';
 
 export const Provider = Vue.extend({

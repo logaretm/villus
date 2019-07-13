@@ -12,8 +12,8 @@ A small and fast GraphQL client for Vue.js.
 
 ## Features
 
-- 📦 **No dependencies:** Its all you need to query GQL APIs.
-- 🦐 **Tiny:** only (3.5kb gzipped).
+- 📦 **Minimal:** Its all you need to query GQL APIs.
+- 🦐 **Tiny:** Very small footprint.
 - 🗄 **Caching:** Simple and convenient query caching by default.
 - 💪 **TypeScript**: Written in Typescript.
 - 💚 Minimal Vue.js Components.

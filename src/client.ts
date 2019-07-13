@@ -1,5 +1,5 @@
-import { OperationResult, CachePolicy, Operation } from './types';
 import { makeCache } from './cache';
+import { OperationResult, CachePolicy, Operation, ObservableLike } from './types';
 
 type Fetcher = typeof fetch;
 
@@ -11,11 +11,14 @@ interface GraphQLRequestContext {
 
 type ContextFactory = () => GraphQLRequestContext;
 
+type SubscriptionForwarder = (operation: Operation) => ObservableLike<OperationResult>;
+
 interface VqlClientOptions {
   url: string;
   fetch?: Fetcher;
   context?: ContextFactory;
   cachePolicy?: CachePolicy;
+  subscriptionForwarder?: SubscriptionForwarder;
 }
 
 function resolveGlobalFetch(): Fetcher | undefined {
@@ -54,12 +57,14 @@ export class VqlClient {
   private defaultCachePolicy: CachePolicy;
   private context?: ContextFactory;
   private cache = makeCache();
+  private subscriptionForwarder?: SubscriptionForwarder;
 
   public constructor(opts: VqlClientOptionsWithFetcher) {
     this.url = opts.url;
     this.fetch = opts.fetch;
     this.context = opts.context;
     this.defaultCachePolicy = opts.cachePolicy || 'cache-first';
+    this.subscriptionForwarder = opts.subscriptionForwarder;
   }
 
   public async query(operation: Operation): Promise<OperationResult> {
@@ -90,6 +95,14 @@ export class VqlClient {
     }
 
     return lazyFetch();
+  }
+
+  public subscribe(operation: Operation) {
+    if (!this.subscriptionForwarder) {
+      throw new Error('No subscription forwarder was set.');
+    }
+
+    return this.subscriptionForwarder(operation);
   }
 }
 

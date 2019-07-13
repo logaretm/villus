@@ -1,7 +1,7 @@
 module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/server/setup.ts'],
   testMatch: ['**/test/**/*.ts'],
-  testPathIgnorePatterns: ['/server/'],
+  testPathIgnorePatterns: ['/server/', '/dist/'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.jsx?$': 'babel-jest',

@@ -1,7 +1,7 @@
 import Vue, { VueConstructor } from 'vue';
-import { normalizeVariables, normalizeQuery, normalizeChildren, hash } from './utils';
 import { CachePolicy } from './types';
 import { VqlClient } from './client';
+import { normalizeVariables, normalizeQuery, normalizeChildren, hash } from './utils';
 
 type withVqlClient = VueConstructor<
   Vue & {

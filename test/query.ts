@@ -7,7 +7,7 @@ const Vue = createLocalVue();
 Vue.component('Query', Query);
 
 test('executes queries on mounted', async () => {
-  let client = createClient({
+  const client = createClient({
     url: 'https://test.baianat.com/graphql'
   });
 
@@ -19,7 +19,7 @@ test('executes queries on mounted', async () => {
 });
 
 test('caches queries by default', async () => {
-  let client = createClient({
+  const client = createClient({
     url: 'https://test.baianat.com/graphql'
   });
 
@@ -62,7 +62,7 @@ test('caches queries by default', async () => {
 });
 
 test('cache policy can be overridden', async () => {
-  let client = createClient({
+  const client = createClient({
     url: 'https://test.baianat.com/graphql'
   });
 
@@ -105,7 +105,7 @@ test('cache policy can be overridden', async () => {
 });
 
 test('variables are watched by default', async () => {
-  let client = createClient({
+  const client = createClient({
     url: 'https://test.baianat.com/graphql'
   });
 
@@ -149,7 +149,7 @@ test('variables are watched by default', async () => {
 });
 
 test('variable watcher can be disabled', async () => {
-  let client = createClient({
+  const client = createClient({
     url: 'https://test.baianat.com/graphql'
   });
 

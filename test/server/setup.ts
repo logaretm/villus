@@ -41,4 +41,9 @@ beforeEach(() => {
       }
     });
   });
+
+  (global as any).sleep = (time: number) =>
+    new Promise(resolve => {
+      setTimeout(resolve, time);
+    });
 });
