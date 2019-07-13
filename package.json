@@ -96,5 +96,8 @@
   },
   "dependencies": {
     "fast-json-stable-stringify": "^2.0.0"
+  },
+  "peerDependencies": {
+    "vue": "^2.5.18"
   }
 }
