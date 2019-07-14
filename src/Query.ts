@@ -1,4 +1,5 @@
 import Vue, { VueConstructor } from 'vue';
+import stringify from 'fast-json-stable-stringify';
 import { CachePolicy } from './types';
 import { VqlClient } from './client';
 import { normalizeVariables, normalizeQuery, normalizeChildren, hash } from './utils';
@@ -36,9 +37,9 @@ export const Query = (Vue as withVqlClient).extend({
     },
     cachePolicy: {
       type: String,
-      default: null,
+      default: undefined,
       validator(value) {
-        const isValid = ['cache-and-network', 'network-only', 'cache-first'].indexOf(value) > -1;
+        const isValid = [undefined, 'cache-and-network', 'network-only', 'cache-first'].indexOf(value) !== -1;
 
         return isValid;
       }
@@ -61,7 +62,7 @@ export const Query = (Vue as withVqlClient).extend({
           return;
         }
 
-        const id = hash(JSON.stringify(value));
+        const id = hash(stringify(value));
         if (id === this._cachedVars) {
           return;
         }
@@ -75,7 +76,7 @@ export const Query = (Vue as withVqlClient).extend({
   methods: {
     async fetch(vars?: object, cachePolicy?: CachePolicy) {
       if (!this.$vql) {
-        throw new Error('Could not find the VQL client, did you install the plugin correctly?');
+        throw new Error('Could not detect Client Provider');
       }
 
       const query = normalizeQuery(this.query);
@@ -94,7 +95,6 @@ export const Query = (Vue as withVqlClient).extend({
         this.data = data;
         this.errors = errors;
       } catch (err) {
-        console.log(err);
         this.errors = [err.message];
         this.data = null;
       } finally {
