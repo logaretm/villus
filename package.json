@@ -1,6 +1,6 @@
 {
   "name": "vue-gql",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A small and fast GraphQL client for Vue.js",
   "module": "dist/vql.esm.js",
   "unpkg": "dist/vql.js",
@@ -72,6 +72,11 @@
       "commit-msg": "commitlint --edit -E HUSKY_GIT_PARAMS"
     }
   },
+  "files": [
+    "dist/*.js",
+    "dist/locale/*.js",
+    "dist/types/**/*.d.ts"
+  ],
   "bundlesize": [
     {
       "path": "./dist/*.min.js",
