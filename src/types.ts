@@ -1,3 +1,5 @@
+import { DocumentNode } from 'graphql';
+
 export interface OperationResult {
   data: any;
   errors: any;
@@ -6,7 +8,7 @@ export interface OperationResult {
 export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first';
 
 export interface Operation {
-  query: string;
+  query: string | DocumentNode;
   variables?: { [k: string]: any };
   cachePolicy?: CachePolicy;
 }

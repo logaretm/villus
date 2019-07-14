@@ -79,15 +79,10 @@ export const Query = (Vue as withVqlClient).extend({
         throw new Error('Could not detect Client Provider');
       }
 
-      const query = normalizeQuery(this.query);
-      if (!query) {
-        throw new Error('A query must be provided.');
-      }
-
       try {
         this.fetching = true;
         const { data, errors } = await this.$vql.query({
-          query,
+          query: this.query,
           variables: normalizeVariables(this.variables, vars || {}),
           cachePolicy: cachePolicy || (this.cachePolicy as CachePolicy)
         });

@@ -1,5 +1,6 @@
 import { makeCache } from './cache';
 import { OperationResult, CachePolicy, Operation, ObservableLike } from './types';
+import { normalizeQuery } from './utils';
 
 type Fetcher = typeof fetch;
 
@@ -34,9 +35,14 @@ function resolveGlobalFetch(): Fetcher | undefined {
 }
 
 function makeFetchOptions({ query, variables }: Operation, opts: FetchOptions) {
+  const normalizedQuery = normalizeQuery(query);
+  if (!normalizedQuery) {
+    throw new Error('A query must be provided.');
+  }
+
   return {
     method: 'POST',
-    body: JSON.stringify({ query, variables }),
+    body: JSON.stringify({ query: normalizedQuery, variables }),
     ...opts,
     headers: {
       'content-type': 'application/json',

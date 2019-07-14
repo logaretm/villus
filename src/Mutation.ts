@@ -36,18 +36,13 @@ export const Mutation = (Vue as withVqlClient).extend({
         throw new Error('Could not find the VQL client, did you install the plugin correctly?');
       }
 
-      const query = normalizeQuery(this.query);
-      if (!query) {
-        throw new Error('A query must be provided.');
-      }
-
       try {
         this.data = null;
         this.errors = null;
         this.fetching = true;
         this.done = false;
         const { data, errors } = await this.$vql.query({
-          query,
+          query: this.query,
           variables: vars || undefined
         });
 
