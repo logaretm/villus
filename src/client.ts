@@ -22,12 +22,10 @@ interface VqlClientOptions {
 }
 
 function resolveGlobalFetch(): Fetcher | undefined {
-  // tslint:disable-next-line
   if (typeof window !== 'undefined' && 'fetch' in window) {
     return window.fetch.bind(window);
   }
 
-  // tslint:disable-next-line
   if (typeof global !== 'undefined' && 'fetch' in global) {
     return (global as any).fetch;
   }
@@ -53,10 +51,15 @@ interface VqlClientOptionsWithFetcher extends VqlClientOptions {
 
 export class VqlClient {
   private url: string;
+
   private fetch: Fetcher;
+
   private defaultCachePolicy: CachePolicy;
+
   private context?: ContextFactory;
+
   private cache = makeCache();
+
   private subscriptionForwarder?: SubscriptionForwarder;
 
   public constructor(opts: VqlClientOptionsWithFetcher) {
@@ -71,7 +74,7 @@ export class VqlClient {
     const fetchOptions = this.context ? this.context().fetchOptions : {};
     const opts = makeFetchOptions(operation, fetchOptions || {});
     const policy = operation.cachePolicy || this.defaultCachePolicy;
-    let cachedResult = this.cache.getCachedResult(operation);
+    const cachedResult = this.cache.getCachedResult(operation);
     if (policy === 'cache-first' && cachedResult) {
       return cachedResult;
     }
@@ -88,7 +91,6 @@ export class VqlClient {
         });
 
     if (policy === 'cache-and-network' && cachedResult) {
-      // tslint:disable-next-line
       lazyFetch();
 
       return cachedResult;

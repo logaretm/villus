@@ -36,9 +36,7 @@ export function normalizeQuery(query: string | DocumentNode): string | null {
 }
 
 export function hash(x: string) {
-  // tslint:disable-next-line
   let h, i, l;
-  // tslint:disable-next-line
   for (h = 5381 | 0, i = 0, l = x.length | 0; i < l; i++) {
     h = (h << 5) + h + x.charCodeAt(i);
   }
