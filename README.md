@@ -27,11 +27,11 @@ You can find the full [documentation here](https://baianat.github.io/vue-gql)
 First install `vue-gql`:
 
 ```bash
-yarn add vue-gql
+yarn add vue-gql graphql
 
 # or npm
 
-npm install vue-gql --save
+npm install vue-gql graphql --save
 ```
 
 Setup the GraphQL client/endpoint:

@@ -1,7 +1,7 @@
-import { DocumentNode } from 'graphql';
-import { Operation } from './types';
+import { DocumentNode, print } from 'graphql';
 import stringify from 'fast-json-stable-stringify';
 import Vue from 'vue';
+import { Operation } from './types';
 
 /**
  * Normalizes a list of variable objects.
@@ -29,7 +29,7 @@ export function normalizeQuery(query: string | DocumentNode): string | null {
   }
 
   if (query.loc) {
-    return query.loc.source.body;
+    return print(query);
   }
 
   return null;
@@ -46,8 +46,9 @@ export function hash(x: string) {
 
 export function getQueryKey(operation: Operation) {
   const variables = operation.variables ? stringify(operation.variables) : '';
+  const query = normalizeQuery(operation.query);
 
-  return hash(`${operation.query}${variables}`);
+  return hash(`${query}${variables}`);
 }
 
 export function normalizeChildren(context: Vue, slotProps: any) {

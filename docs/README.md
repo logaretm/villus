@@ -28,11 +28,11 @@ meta:
 ## install
 
 ```bash
-# install with npm
-npm install vee-validate
-
 # install with yarn
-yarn add vee-validate
+yarn add vue-gql graphql
+
+# install with npm
+npm install vue-gql graphql
 ```
 
 ## Use

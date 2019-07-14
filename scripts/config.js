@@ -77,7 +77,7 @@ function genConfig(options) {
   const config = {
     input: {
       input: options.input,
-      external: ['vue', 'fast-json-stable-stringify'],
+      external: ['vue', 'fast-json-stable-stringify', 'graphql'],
       plugins: [
         typescript({ useTsconfigDeclarationDir: true }),
         replace({ __VERSION__: version }),
