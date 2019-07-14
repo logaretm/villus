@@ -55,7 +55,7 @@ export const Mutation = (Vue as withVqlClient).extend({
         this.errors = errors;
         this.done = true;
       } catch (err) {
-        this.errors = [err.message];
+        this.errors = [err];
         this.data = null;
         this.done = false;
       } finally {

@@ -95,7 +95,7 @@ export const Query = (Vue as withVqlClient).extend({
         this.data = data;
         this.errors = errors;
       } catch (err) {
-        this.errors = [err.message];
+        this.errors = [err];
         this.data = null;
       } finally {
         this.done = true;

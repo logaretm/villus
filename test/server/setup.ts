@@ -30,8 +30,18 @@ const server = mockServer(schema, {
 });
 
 beforeEach(() => {
+  const fetchController = {
+    simulateNetworkError: false
+  };
+
+  (global as any).fetchController = fetchController;
+
   // setup a fetch mock
   (global as any).fetch = jest.fn(async function mockedAPI(url: string, opts: RequestInit) {
+    if (fetchController.simulateNetworkError) {
+      throw new Error('Network Error');
+    }
+
     const body = JSON.parse(opts.body as string);
     const res = await server.query(body.query, body.variables);
 

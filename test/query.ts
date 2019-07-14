@@ -319,3 +319,39 @@ test('Handles query errors', async () => {
   await flushPromises();
   expect(wrapper.find('#error').text()).toMatch(/Cannot query field/);
 });
+
+test('Handles external errors', async () => {
+  const client = createClient({
+    url: 'https://test.baianat.com/graphql'
+  });
+
+  (global as any).fetchController.simulateNetworkError = true;
+
+  const wrapper = mount(
+    {
+      data: () => ({
+        client
+      }),
+      components: {
+        Query,
+        Provider
+      },
+      template: `
+        <Provider :client="client">
+          <div>
+            <Query query="{ posts { id title propNotFound } }" v-slot="{ data, errors }">
+              <ul v-if="data">
+                <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+              </ul>
+              <p id="error" v-if="errors">{{ errors[0].message }}</p>
+            </Query>
+          </div>
+        </Provider>
+      `
+    },
+    { sync: false }
+  );
+
+  await flushPromises();
+  expect(wrapper.find('#error').text()).toMatch(/Network Error/);
+});
