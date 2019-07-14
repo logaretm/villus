@@ -6,6 +6,10 @@ type Fetcher = typeof fetch;
 
 type FetchOptions = Omit<RequestInit, 'body'>;
 
+interface CachedOperation extends Operation {
+  cachePolicy?: CachePolicy;
+}
+
 interface GraphQLRequestContext {
   fetchOptions?: FetchOptions;
 }
@@ -76,7 +80,7 @@ export class VqlClient {
     this.subscriptionForwarder = opts.subscriptionForwarder;
   }
 
-  public async query(operation: Operation): Promise<OperationResult> {
+  public async executeQuery(operation: CachedOperation): Promise<OperationResult> {
     const fetchOptions = this.context ? this.context().fetchOptions : {};
     const opts = makeFetchOptions(operation, fetchOptions || {});
     const policy = operation.cachePolicy || this.defaultCachePolicy;
@@ -105,7 +109,14 @@ export class VqlClient {
     return lazyFetch();
   }
 
-  public subscribe(operation: Operation) {
+  public async executeMutation(operation: Operation): Promise<OperationResult> {
+    const fetchOptions = this.context ? this.context().fetchOptions : {};
+    const opts = makeFetchOptions(operation, fetchOptions || {});
+
+    return this.fetch(this.url, opts).then(response => response.json());
+  }
+
+  public executeSubscription(operation: Operation) {
     if (!this.subscriptionForwarder) {
       throw new Error('No subscription forwarder was set.');
     }

@@ -10,7 +10,6 @@ export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first';
 export interface Operation {
   query: string | DocumentNode;
   variables?: { [k: string]: any };
-  cachePolicy?: CachePolicy;
 }
 
 export interface ObserverLike<T> {

@@ -1,6 +1,6 @@
 import Vue, { VueConstructor } from 'vue';
 import { VqlClient } from './client';
-import { normalizeQuery, normalizeChildren } from './utils';
+import { normalizeChildren } from './utils';
 
 type withVqlClient = VueConstructor<
   Vue & {
@@ -41,7 +41,7 @@ export const Mutation = (Vue as withVqlClient).extend({
         this.errors = null;
         this.fetching = true;
         this.done = false;
-        const { data, errors } = await this.$vql.query({
+        const { data, errors } = await this.$vql.executeMutation({
           query: this.query,
           variables: vars || undefined
         });

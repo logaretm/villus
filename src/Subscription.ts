@@ -47,7 +47,7 @@ export const Subscription = (Vue as withVqlClient).extend({
 
     const self = this;
     this.$observer = this.$vql
-      .subscribe({
+      .executeSubscription({
         query: this.query,
         variables: this.variables
       })

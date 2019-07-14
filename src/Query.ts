@@ -2,7 +2,7 @@ import Vue, { VueConstructor } from 'vue';
 import stringify from 'fast-json-stable-stringify';
 import { CachePolicy } from './types';
 import { VqlClient } from './client';
-import { normalizeVariables, normalizeQuery, normalizeChildren, hash } from './utils';
+import { normalizeVariables, normalizeChildren, hash } from './utils';
 
 type withVqlClient = VueConstructor<
   Vue & {
@@ -81,7 +81,7 @@ export const Query = (Vue as withVqlClient).extend({
 
       try {
         this.fetching = true;
-        const { data, errors } = await this.$vql.query({
+        const { data, errors } = await this.$vql.executeQuery({
           query: this.query,
           variables: normalizeVariables(this.variables, vars || {}),
           cachePolicy: cachePolicy || (this.cachePolicy as CachePolicy)
