@@ -17,14 +17,14 @@ function componentData() {
 type withVqlClient = VueConstructor<
   Vue & {
     _cachedVars?: number;
-    $vql: VqlClient;
+    $villus: VqlClient;
     $observer?: Unsub;
   }
 >;
 
 export const Subscription = (Vue as withVqlClient).extend({
   name: 'Subscription',
-  inject: ['$vql'],
+  inject: ['$villus'],
   props: {
     query: {
       type: [String, Object],
@@ -41,12 +41,12 @@ export const Subscription = (Vue as withVqlClient).extend({
   },
   data: componentData,
   mounted() {
-    if (!this.$vql) {
-      throw new Error('Cannot detect Client Provider');
+    if (!this.$villus) {
+      throw new Error('Cannot detect villus Client Provider');
     }
 
     const self = this;
-    this.$observer = this.$vql
+    this.$observer = this.$villus
       .executeSubscription({
         query: this.query,
         variables: this.variables

@@ -4,7 +4,7 @@ import { normalizeChildren } from './utils';
 
 type withVqlClient = VueConstructor<
   Vue & {
-    $vql: VqlClient;
+    $villus: VqlClient;
   }
 >;
 
@@ -22,7 +22,7 @@ function componentData() {
 
 export const Mutation = (Vue as withVqlClient).extend({
   name: 'Mutation',
-  inject: ['$vql'],
+  inject: ['$villus'],
   props: {
     query: {
       type: [String, Object],
@@ -32,8 +32,8 @@ export const Mutation = (Vue as withVqlClient).extend({
   data: componentData,
   methods: {
     async mutate(vars: object = {}) {
-      if (!this.$vql) {
-        throw new Error('Could not find the VQL client, did you install the plugin correctly?');
+      if (!this.$villus) {
+        throw new Error('Could not find the villus client, did you install the plugin correctly?');
       }
 
       try {
@@ -41,7 +41,7 @@ export const Mutation = (Vue as withVqlClient).extend({
         this.errors = null;
         this.fetching = true;
         this.done = false;
-        const { data, errors } = await this.$vql.executeMutation({
+        const { data, errors } = await this.$villus.executeMutation({
           query: this.query,
           variables: vars || undefined
         });

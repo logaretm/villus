@@ -7,7 +7,7 @@ import { normalizeVariables, normalizeChildren, hash } from './utils';
 type withVqlClient = VueConstructor<
   Vue & {
     _cachedVars?: number;
-    $vql: VqlClient;
+    $villus: VqlClient;
   }
 >;
 
@@ -25,7 +25,7 @@ function componentData() {
 
 export const Query = (Vue as withVqlClient).extend({
   name: 'Query',
-  inject: ['$vql'],
+  inject: ['$villus'],
   props: {
     query: {
       type: [String, Object],
@@ -75,13 +75,13 @@ export const Query = (Vue as withVqlClient).extend({
   },
   methods: {
     async fetch(vars?: object, cachePolicy?: CachePolicy) {
-      if (!this.$vql) {
+      if (!this.$villus) {
         throw new Error('Could not detect Client Provider');
       }
 
       try {
         this.fetching = true;
-        const { data, errors } = await this.$vql.executeQuery({
+        const { data, errors } = await this.$villus.executeQuery({
           query: this.query,
           variables: normalizeVariables(this.variables, vars || {}),
           cachePolicy: cachePolicy || (this.cachePolicy as CachePolicy)

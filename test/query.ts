@@ -1,7 +1,6 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
 import { withProvider, Query, createClient, Provider } from '../src/index';
-import App from './App.vue';
 
 const Vue = createLocalVue();
 Vue.component('Query', Query);
@@ -11,7 +10,20 @@ test('executes queries on mounted', async () => {
     url: 'https://test.com/graphql'
   });
 
-  const AppWithGQL = withProvider(App, client);
+  const AppWithGQL = withProvider(
+    {
+      template: `<div>
+        <Query query="{ posts { id title } }" v-slot="{ data }">
+          <div v-if="data">
+            <ul>
+              <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+            </ul>
+          </div>
+        </Query>
+      </div>`
+    },
+    client
+  );
 
   const wrapper = mount(AppWithGQL, { sync: false, localVue: Vue });
   await flushPromises();

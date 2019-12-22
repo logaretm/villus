@@ -12,7 +12,7 @@ export const Provider = Vue.extend({
   },
   provide() {
     return {
-      $vql: (this as any).client as VqlClient
+      $villus: (this as any).client as VqlClient
     };
   },
   render(h: any) {
