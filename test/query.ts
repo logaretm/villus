@@ -8,7 +8,7 @@ Vue.component('Query', Query);
 
 test('executes queries on mounted', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql'
+    url: 'https://test.com/graphql'
   });
 
   const AppWithGQL = withProvider(App, client);
@@ -20,7 +20,7 @@ test('executes queries on mounted', async () => {
 
 test('caches queries by default', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql'
+    url: 'https://test.com/graphql'
   });
 
   const wrapper = mount(
@@ -63,7 +63,7 @@ test('caches queries by default', async () => {
 
 test('cache policy can be overridden with execute function', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql'
+    url: 'https://test.com/graphql'
   });
 
   const wrapper = mount(
@@ -106,7 +106,7 @@ test('cache policy can be overridden with execute function', async () => {
 
 test('cache policy can be overridden with cachePolicy prop', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql'
+    url: 'https://test.com/graphql'
   });
 
   const wrapper = mount(
@@ -149,7 +149,7 @@ test('cache policy can be overridden with cachePolicy prop', async () => {
 
 test('variables are watched by default', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql'
+    url: 'https://test.com/graphql'
   });
 
   const wrapper = mount(
@@ -193,7 +193,7 @@ test('variables are watched by default', async () => {
 
 test('variables watcher can be disabled', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql'
+    url: 'https://test.com/graphql'
   });
 
   const wrapper = mount(
@@ -236,7 +236,7 @@ test('variables watcher can be disabled', async () => {
 
 test('variables prop arrangement does not trigger queries', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql'
+    url: 'https://test.com/graphql'
   });
 
   const wrapper = mount(
@@ -288,7 +288,7 @@ test('variables prop arrangement does not trigger queries', async () => {
 
 test('Handles query errors', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql'
+    url: 'https://test.com/graphql'
   });
 
   const wrapper = mount(
@@ -322,7 +322,7 @@ test('Handles query errors', async () => {
 
 test('Handles external errors', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql'
+    url: 'https://test.com/graphql'
   });
 
   (global as any).fetchController.simulateNetworkError = true;

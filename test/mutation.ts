@@ -4,7 +4,7 @@ import { Mutation, createClient, Provider } from '../src/index';
 
 test('runs mutations', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql'
+    url: 'https://test.com/graphql'
   });
 
   const wrapper = mount(
@@ -45,7 +45,7 @@ test('runs mutations', async () => {
 
 test('handles errors', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql'
+    url: 'https://test.com/graphql'
   });
 
   (global as any).fetchController.simulateNetworkError = true;

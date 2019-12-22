@@ -36,7 +36,7 @@ function makeObservable(throws = false) {
 
 test('Handles subscriptions', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql',
+    url: 'https://test.com/graphql',
     subscriptionForwarder: () => {
       return makeObservable();
     }
@@ -84,7 +84,7 @@ test('Handles subscriptions', async () => {
 
 test('Handles observer errors', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql',
+    url: 'https://test.com/graphql',
     subscriptionForwarder: () => {
       return makeObservable(true);
     }
@@ -120,7 +120,7 @@ test('Handles observer errors', async () => {
 
 test('renders a span if multiple root is found', async () => {
   const client = createClient({
-    url: 'https://test.baianat.com/graphql',
+    url: 'https://test.com/graphql',
     subscriptionForwarder: () => {
       return makeObservable(true);
     }
