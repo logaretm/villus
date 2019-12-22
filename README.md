@@ -1,12 +1,16 @@
-# vue-gql
+# villus
+
+> Villus is a finger-like structures in the small intestine. They help to absorb digested food. Think of GraphQL data as food!
 
 A small and fast GraphQL client for Vue.js.
 
+This is forked from my previous work at [villus](https://github.com/baianat/villus) before they decide to go for a different direction with this library.
+
 <p align="center">
 
-[![codecov](https://codecov.io/gh/baianat/vue-gql/branch/master/graph/badge.svg)](https://codecov.io/gh/baianat/vue-gql)
-[![Build Status](https://travis-ci.org/baianat/vue-gql.svg?branch=master)](https://travis-ci.org/baianat/vue-gql)
-[![Bundle Size](https://badgen.net/bundlephobia/minzip/vue-gql)](https://bundlephobia.com/result?p=vue-gql@0.1.0)
+[![codecov](https://codecov.io/gh/logaretm/villus/branch/master/graph/badge.svg)](https://codecov.io/gh/logaretm/villus)
+[![Build Status](https://travis-ci.org/logaretm/villus.svg?branch=master)](https://travis-ci.org/logaretm/villus)
+[![Bundle Size](https://badgen.net/bundlephobia/minzip/villus)](https://bundlephobia.com/result?p=villus@0.1.0)
 
 </p>
 
@@ -18,27 +22,33 @@ A small and fast GraphQL client for Vue.js.
 - 💪 **TypeScript**: Written in Typescript.
 - 💚 Minimal Vue.js Components.
 
+## Why use this
+
+GraphQL is just a simple HTTP request. This library is meant to serve a tiny client without all the bells and whistles attached to Apollo and its ecosystem, it offers simple strategies to cache and batch your GraphQL requests.
+
+If you are looking for a more full-featured client use [vue-apollo](https://github.com/vue/vue-apollo), it has everything you need.
+
 ## Documentation
 
-You can find the full [documentation here](https://baianat.github.io/vue-gql)
+You can find the full [documentation here](https://logaretm.github.io/villus)
 
 ## Quick Start
 
-First install `vue-gql`:
+First install `villus`:
 
 ```bash
-yarn add vue-gql graphql
+yarn add villus graphql
 
 # or npm
 
-npm install vue-gql graphql --save
+npm install villus graphql --save
 ```
 
 Setup the GraphQL client/endpoint:
 
 ```js
 import Vue from 'vue';
-import { withProvider, createClient } from 'vue-gql';
+import { withProvider, createClient } from 'villus';
 import App from './App.vue'; // Your App Component
 
 const client = createClient({
@@ -66,7 +76,7 @@ Now you can use the `Query` and `Mutation` components to run queries:
 </template>
 
 <script>
-import { Query } from 'vue-gql';
+import { Query } from 'villus';
 
 export default {
   components: {
@@ -76,7 +86,7 @@ export default {
 </script>
 ```
 
-You can do a lot more, `vue-gql` makes frequent tasks such as re-fetching, caching, mutation responses, error handling, subscriptions a breeze. Consult the documentation for more use-cases and examples.
+You can do a lot more, `villus` makes frequent tasks such as re-fetching, caching, mutation responses, error handling, subscriptions a breeze. Consult the documentation for more use-cases and examples.
 
 ## Compatibility
 
