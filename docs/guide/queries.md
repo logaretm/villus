@@ -22,7 +22,7 @@ The **Query** component is **renderless** by default, meaning it will not render
 </template>
 
 <script>
-import { Query } from 'vue-gql';
+import { Query } from 'villus';
 
 export default {
   components: {

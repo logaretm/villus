@@ -1,13 +1,13 @@
 # Subscriptions
 
-`vue-gql` handles subscriptions with the `Subscription` component in the same way as the `Query` component.
+`villus` handles subscriptions with the `Subscription` component in the same way as the `Query` component.
 
 To add support for subscriptions you need to pass a `subscriptionForwarder` function to the `createClient` function, which in turn will call your subscription client. The `subscriptionForwarder` expects an object that follows the [observable spec](https://github.com/tc39/proposal-observable) to be returned.
 
 The following example uses `apollo-server` with the `subscriptions-transport-ws` package:
 
 ```js
-import { createClient } from 'vue-gql';
+import { createClient } from 'villus';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 const subscriptionClient = new SubscriptionClient('ws://localhost:4001/graphql', {});
@@ -30,7 +30,7 @@ The `Subscription` component exposes `data`, `error` on the slot props.
 </template>
 
 <script>
-import { Subscription } from 'vue-gql';
+import { Subscription } from 'villus';
 
 export default {
   components: {
@@ -97,7 +97,7 @@ And in the parent component:
 </template>
 
 <script>
-import { Subscription } from 'vue-gql';
+import { Subscription } from 'villus';
 import Chatbox from '@/components/Chatbox';
 
 export default {

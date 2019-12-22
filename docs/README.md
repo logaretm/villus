@@ -1,5 +1,5 @@
 ---
-title: Vue-gql
+title: villus
 lang: en-US
 home: true
 heroImage: /logo.png
@@ -14,11 +14,11 @@ features:
     details: Reasonable caching behavior out of the box.
   - title: TypeScript
     details: Everything is written in TypeScript.
-footer: MIT Licensed | Copyright © 2019-present Baianat
+footer: MIT Licensed | Copyright © 2019-present Abdelrahman Awad
 description: A small and fast GraphQL client for Vue.js
 meta:
   - name: og:title
-    content: Vue-gql
+    content: villus
   - name: og:description
     content: A small and fast GraphQL client for Vue.js
 ---
@@ -29,10 +29,10 @@ meta:
 
 ```bash
 # install with yarn
-yarn add vue-gql graphql
+yarn add villus graphql
 
 # install with npm
-npm install vue-gql graphql
+npm install villus graphql
 ```
 
 ## Use
@@ -41,7 +41,7 @@ In your entry file, import the required modules:
 
 ```js
 import Vue from 'vue';
-import { createClient, withProvider } from 'vue-gql';
+import { createClient, withProvider } from 'villus';
 import App from './App.vue';
 
 const client = createClient({
@@ -71,7 +71,7 @@ Now you can use the `Query` component to run GQL queries:
 </template>
 
 <script>
-import { Query } from 'vue-gql';
+import { Query } from 'villus';
 
 export default {
   components: {

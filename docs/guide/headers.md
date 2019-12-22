@@ -19,7 +19,7 @@ type ContextFactory = () => GraphQLRequestContext;
 This means you are able to change the headers sent with the requests, for example:
 
 ```js
-import { createClient } from 'vue-gql';
+import { createClient } from 'villus';
 
 const client = createClient({
   endpoint: '/graphql',

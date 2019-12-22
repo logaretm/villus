@@ -13,13 +13,16 @@ function genSidebarConfig(...names) {
 }
 
 module.exports = {
-  base: '/vue-gql/',
-  title: 'Vue-gql',
+  base: '/villus/',
+  title: 'Villus',
   description: 'A small and fast GraphQL client for Vue.js',
   themeConfig: {
     docsDir: 'docs',
-    repo: 'baianat/vue-gql',
-    nav: [{ text: 'Home', link: '/' }, { text: 'Guide', link: '/guide/' }],
+    repo: 'logaretm/villus',
+    nav: [
+      { text: 'Home', link: '/' },
+      { text: 'Guide', link: '/guide/' }
+    ],
     sidebarDepth: 1,
     sidebar: {
       '/guide/': genSidebarConfig('Guide')

@@ -1,6 +1,6 @@
 # Mutations
 
-**vue-gql** exposes a **Mutation** component that is very similar to the **[Query](./queries.md)** component but with few distinct differences:
+**villus** exposes a **Mutation** component that is very similar to the **[Query](./queries.md)** component but with few distinct differences:
 
 - The mutation component **does not** have a `variables` prop.
 - The mutation component **does not** run automatically, you have to explicitly call `execute`.
@@ -26,7 +26,7 @@ The **Mutation** component is **renderless** by default, meaning it will not ren
 </template>
 
 <script>
-import { Mutation } from 'vue-gql`;
+import { Mutation } from 'villus`;
 
 export default {
   components: {

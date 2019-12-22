@@ -1,9 +1,9 @@
 # Client
 
-To start querying GraphQL endpoints, you need to setup a client for that endpoint. **vue-gql** exposes a `createClient` function that allows you to create GraphQL clients for your endpoints.
+To start querying GraphQL endpoints, you need to setup a client for that endpoint. **villus** exposes a `createClient` function that allows you to create GraphQL clients for your endpoints.
 
 ```js
-import { createClient } from 'vue-gql';
+import { createClient } from 'villus';
 
 const client = createClient({
   url: '/graphql' // your endpoint.
@@ -14,7 +14,7 @@ After you've created a client, you need to **provide** the client instance to yo
 
 ## Provider component
 
-**vue-gql** exports a `Provider` component that accepts a single prop, the `client` created by `createClient` function.
+**villus** exports a `Provider` component that accepts a single prop, the `client` created by `createClient` function.
 
 ### SFC
 
@@ -26,7 +26,7 @@ After you've created a client, you need to **provide** the client instance to yo
 </template>
 
 <script>
-import { Provider, createClient } from 'vue-gql';
+import { Provider, createClient } from 'villus';
 
 const client = createClient({
   url: '/graphql'
@@ -48,7 +48,7 @@ export default {
 This can be much easier if you are using JSX:
 
 ```jsx
-import { Provider, createClient } from 'vue-gql';
+import { Provider, createClient } from 'villus';
 
 const client = createClient({
   url: '/graphql'
@@ -86,11 +86,11 @@ While uncommon, there is no limitations on how many endpoints you can use within
 
 ## withProvider function
 
-**vue-gql** exposes a `withProvider` function that takes a Vue component and returns the same component wrapped by the `Provider` component, it is very handy to use in JS components and render functions.
+**villus** exposes a `withProvider` function that takes a Vue component and returns the same component wrapped by the `Provider` component, it is very handy to use in JS components and render functions.
 
 ```js
 import Vue from 'vue';
-import { createClient, withProvider } from 'vue-gql';
+import { createClient, withProvider } from 'villus';
 import App from './App.vue';
 
 const client = createClient({
