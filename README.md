@@ -4,7 +4,7 @@
 
 A small and fast GraphQL client for Vue.js.
 
-This is forked from my previous work at [villus](https://github.com/baianat/villus) before they decide to go for a different direction with this library.
+This is forked from my previous work at [vue-gql](https://github.com/baianat/vue-gql) before they decide to go for a different direction with this library.
 
 <p align="center">
 
