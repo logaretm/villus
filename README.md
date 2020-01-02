@@ -6,8 +6,8 @@
 [![Build Status](https://travis-ci.org/logaretm/villus.svg?branch=master)](https://travis-ci.org/logaretm/villus)
 [![Bundle Size](https://badgen.net/bundlephobia/minzip/villus)](https://bundlephobia.com/result?p=villus@0.1.0)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8d6ba0a78903476dac459c15506ff312)](https://www.codacy.com/app/logaretm/villus?utm_source=github.com&utm_medium=referral&utm_content=logaretm/villus&utm_campaign=Badge_Grade)
-[![npm](https://img.shields.io/npm/dm/vee-validate.svg)](https://npm-stat.com/charts.html?package=vee-validate)
-[![npm](https://img.shields.io/npm/v/vee-validate.svg)](https://www.npmjs.com/package/vee-validate)
+[![npm](https://img.shields.io/npm/dm/villus.svg)](https://npm-stat.com/charts.html?package=villus)
+[![npm](https://img.shields.io/npm/v/villus.svg)](https://www.npmjs.com/package/villus)
 
 </p>
 
