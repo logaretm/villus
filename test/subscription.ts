@@ -5,6 +5,8 @@ import { Subscription, createClient, Provider } from '../src/index';
 const Vue = createLocalVue();
 Vue.component('Subscription', Subscription);
 
+jest.useFakeTimers();
+
 function makeObservable(throws = false) {
   let interval: any;
   let counter = 0;
@@ -76,7 +78,7 @@ test('Handles subscriptions', async () => {
     { sync: false }
   );
 
-  await (global as any).sleep(510);
+  jest.advanceTimersByTime(510);
   await flushPromises();
   expect(wrapper.findAll('li')).toHaveLength(5);
   wrapper.destroy();
@@ -112,7 +114,7 @@ test('Handles observer errors', async () => {
     { sync: false }
   );
 
-  await (global as any).sleep(150);
+  jest.advanceTimersByTime(150);
   await flushPromises();
   expect(wrapper.find('p').text()).toBe('oops!');
   wrapper.destroy();
