@@ -33,6 +33,38 @@ test('runs mutations', async () => {
   expect(vm.$el.querySelector('p')?.textContent).toBe('Operation successful');
 });
 
+test('passes variables via execute method', async () => {
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+
+      const { data, execute } = useMutation({
+        query: 'mutation LikePost ($id: ID!) { likePost (id: $id) { message } }'
+      });
+
+      return { data, execute };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <p>{{ data.likePost.message }}</p>
+      </div>
+      <button @click="execute({ id: 123 })"></button>
+    </div>`
+  });
+
+  await flushPromises();
+  expect(fetch).toHaveBeenCalledTimes(0);
+
+  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+  await flushPromises();
+  expect(fetch).toHaveBeenCalledTimes(1);
+
+  expect(vm.$el.querySelector('p')?.textContent).toBe('Operation successful');
+});
+
 test('handles external errors', async () => {
   (global as any).fetchController.simulateNetworkError = true;
 

@@ -13,14 +13,14 @@ export function useMutation({ query }: MutationCompositeOptions) {
   const done = ref(false);
   const errors: Ref<any[] | null> = ref(null);
 
-  async function execute(opts: { variables?: Operation['variables'] } = {}) {
+  async function execute(variables: Operation['variables'] = {}) {
     if (!client) {
       throw new Error('Could not detect GraphQL Client');
     }
 
     try {
       fetching.value = true;
-      const vars = opts.variables || {};
+      const vars = variables || {};
       const res = await client.executeMutation({
         query,
         variables: vars
