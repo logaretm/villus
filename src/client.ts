@@ -18,7 +18,7 @@ type ContextFactory = () => GraphQLRequestContext;
 
 type SubscriptionForwarder = (operation: Operation) => ObservableLike<OperationResult>;
 
-interface VqlClientOptions {
+export interface VqlClientOptions {
   url: string;
   fetch?: Fetcher;
   context?: ContextFactory;
