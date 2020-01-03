@@ -45,6 +45,7 @@ export const Subscription = (Vue as withVqlClient).extend({
       throw new Error('Cannot detect villus Client Provider');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     this.$observer = this.$villus
       .executeSubscription({
@@ -56,6 +57,7 @@ export const Subscription = (Vue as withVqlClient).extend({
           self.data = result.data;
           self.errors = result.errors;
         },
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         complete() {},
         error(err) {
           self.data = undefined;
