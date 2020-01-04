@@ -24,6 +24,7 @@ This is forked from my previous work at [vue-gql](https://github.com/baianat/vue
 - 🗄 **Caching:** Simple and convenient query caching by default.
 - 💪 **TypeScript**: Written in Typescript.
 - 💚 Minimal Vue.js Components.
+- 🖇 Composition API support.
 
 ## Why use this
 
@@ -47,7 +48,54 @@ yarn add villus graphql
 npm install villus graphql --save
 ```
 
-Setup the GraphQL client/endpoint:
+You can now use it with either the new Vue composition API or higher order components:
+
+### Composition API
+
+If you are using `Vue@2.x` make sure to install `@vue/composition-api` and use the `villus@0.x` releases, if you are rocking the `Vue@3.x` releases, then use `villus@1.x`.
+
+Configure the GraphQL client for your root component:
+
+```js
+import { useClient } from 'villus';
+
+export default {
+  name: 'App',
+  setup() {
+    useClient({
+      url: 'http://localhost:3002/graphql'
+    });
+  }
+};
+```
+
+Then you can use `useQuery` in any child component:
+
+```vue
+<template>
+  <div>
+    <div v-if="data">
+      <pre>{{ data }}</pre>
+    </div>
+  </div>
+</template>
+
+<script>
+import { useQuery } from 'villus';
+
+export default {
+  setup() {
+    const { data } = useQuery({
+      query: '{ posts { title } }'
+    });
+
+    return { data };
+  }
+};
+</script>
+```
+
+### Higher Order Components
 
 ```js
 import Vue from 'vue';
@@ -70,8 +118,8 @@ Now you can use the `Query` and `Mutation` components to run queries:
 
 ```vue
 <template>
-  <Query query="{ posts { title } }" v-slot="{ data, fetching }">
-    <div v-if="fetching">Is Fetching ...</div>
+  <Query query="{ posts { title } }" v-slot="{ data }">
+    <div v-if="!data">Is Fetching ...</div>
     <div v-else>
       <pre>{{ data }}</pre>
     </div>
@@ -89,7 +137,9 @@ export default {
 </script>
 ```
 
-You can do a lot more, `villus` makes frequent tasks such as re-fetching, caching, mutation responses, error handling, subscriptions a breeze. Consult the documentation for more use-cases and examples.
+---
+
+You can do a lot more than that, `villus` makes frequent tasks such as re-fetching, caching, mutations, and subscriptions a breeze. Consult the documentation for more use-cases and examples.
 
 ## Compatibility
 
