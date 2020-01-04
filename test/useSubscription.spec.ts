@@ -1,39 +1,41 @@
+/* eslint-disable no-unused-expressions */
 import flushPromises from 'flush-promises';
 import { mount } from './helpers/mount';
+import { makeObservable } from './helpers/observer';
 import { useClient, useSubscription } from '../src/index';
 
 jest.useFakeTimers();
 
-function makeObservable(throws = false) {
-  let interval: any;
-  let counter = 0;
-  const observable = {
-    subscribe: function({ next, error }: { error: Function; next: Function }) {
-      interval = setInterval(() => {
-        if (throws) {
-          error(new Error('oops!'));
-          return;
+test('Default reducer', async () => {
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        subscriptionForwarder: () => {
+          return makeObservable();
         }
-
-        next({ data: { message: 'New message', id: counter++ } });
-      }, 100);
-
-      afterAll(() => {
-        clearTimeout(interval);
       });
 
-      return {
-        unsubscribe() {
-          clearTimeout(interval);
-        }
-      };
-    }
-  };
+      const { data } = useSubscription({ query: `subscription { newMessages }` });
 
-  return observable;
-}
+      return { messages: data };
+    },
+    template: `
+      <div>
+        <div v-if="messages">
+          <span>{{ messages.id }}</span>
+        </div>
+      </div>
+    `
+  });
 
-test('Handles subscriptions', async () => {
+  jest.advanceTimersByTime(501);
+  await flushPromises();
+  expect(vm.$el.querySelector('span')?.textContent).toBe('4');
+  vm.$destroy();
+});
+
+test('Handles subscriptions with a custom reducer', async () => {
   const vm = mount({
     setup() {
       useClient({
@@ -105,6 +107,56 @@ test('Handles observer errors', async () => {
   jest.advanceTimersByTime(150);
   await flushPromises();
   expect(vm.$el.querySelector('#error')?.textContent).toBe('oops!');
+  vm.$destroy();
+});
+
+test('Pauses and resumes subscriptions', async () => {
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        subscriptionForwarder: () => {
+          return makeObservable();
+        }
+      });
+
+      function reduce(oldMessages: string[], response: any) {
+        if (!response.data) {
+          return oldMessages || [];
+        }
+
+        return [...oldMessages, response.data.message];
+      }
+
+      const { data, pause, resume, paused } = useSubscription({ query: `subscription { newMessages }` }, reduce);
+
+      return { messages: data, pause, resume, paused };
+    },
+    template: `
+      <div>
+        <ul v-for="message in messages">
+          <li>{{ message.id }}</li>
+        </ul>
+        <button @click="paused ? resume() : pause()"></button>
+        <span id="status">{{ paused }}</span>
+      </div>
+    `
+  });
+
+  await flushPromises();
+  jest.advanceTimersByTime(201);
+  // pauses subscription
+  expect(vm.$el.querySelector('#status')?.textContent).toBe('false');
+  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+  await flushPromises();
+  expect(vm.$el.querySelectorAll('li')).toHaveLength(2);
+  expect(vm.$el.querySelector('#status')?.textContent).toBe('true');
+  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+  jest.advanceTimersByTime(201);
+  await flushPromises();
+
+  expect(vm.$el.querySelectorAll('li')).toHaveLength(4);
+  expect(vm.$el.querySelector('#status')?.textContent).toBe('false');
   vm.$destroy();
 });
 

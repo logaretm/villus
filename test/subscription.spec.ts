@@ -1,38 +1,10 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
 import { Subscription, createClient, Provider } from '../src/index';
+import { makeObservable } from './helpers/observer';
 
 const Vue = createLocalVue();
 Vue.component('Subscription', Subscription);
-
-function makeObservable(throws = false) {
-  let interval: any;
-  let counter = 0;
-  const observable = {
-    subscribe: function({ next, error }: { error: Function; next: Function }) {
-      interval = setInterval(() => {
-        if (throws) {
-          error(new Error('oops!'));
-          return;
-        }
-
-        next({ data: { message: 'New message', id: counter++ } });
-      }, 100);
-
-      afterAll(() => {
-        clearTimeout(interval);
-      });
-
-      return {
-        unsubscribe() {
-          clearTimeout(interval);
-        }
-      };
-    }
-  };
-
-  return observable;
-}
 
 test('Handles subscriptions', async () => {
   const client = createClient({

@@ -9,7 +9,10 @@ interface SubscriptionCompositeOptions {
 
 type Reducer = (prev: any, value: OperationResult) => any;
 
-export function useSubscription({ query, variables }: SubscriptionCompositeOptions, reduce: Reducer = (_, val) => val) {
+export function useSubscription(
+  { query, variables }: SubscriptionCompositeOptions,
+  reduce: Reducer = (_, val) => val.data
+) {
   const client = inject('$villus') as VqlClient;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
@@ -24,6 +27,8 @@ export function useSubscription({ query, variables }: SubscriptionCompositeOptio
       data.value = reduce(data.value, result);
       errors.value = result.errors;
     }
+
+    paused.value = false;
 
     return client
       .executeSubscription({
@@ -48,6 +53,8 @@ export function useSubscription({ query, variables }: SubscriptionCompositeOptio
   });
 
   function pause() {
+    if (!observer) return;
+
     observer.unsubscribe();
     paused.value = true;
   }
