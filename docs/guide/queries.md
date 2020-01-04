@@ -25,6 +25,8 @@ export default {
     const { data } = useQuery({
       query: '{ todos { text } }'
     });
+
+    return { data };
   }
 };
 </script>
