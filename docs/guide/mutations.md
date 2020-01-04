@@ -1,22 +1,47 @@
 # Mutations
 
-**villus** exposes a **Mutation** component that is very similar to the **[Query](./queries.md)** component but with few distinct differences:
+**villus** offers both a `useMutation` function and a `Mutation` component that are very similar their **[querying](./queries.md)** counterparts but with few distinct differences:
 
-- The mutation component **does not** have a `variables` prop.
-- The mutation component **does not** run automatically, you have to explicitly call `execute`.
-- Cache policies do not apply to mutations as mutations represent real-time actions and will always use `network-only` policy.
+- They **do not** accept a `variables` prop.
+- They **do not** run automatically, you have to explicitly call `execute`.
+- Cache policies do not apply to mutations as mutations represent user actions and will always use `network-only` policy.
 
-:::tip
-The **Mutation** component is **renderless** by default, meaning it will not render any extra HTML other than its slot, but only when exactly one child is present, if multiple children exist inside its slot it will render a `span`.
-:::
+Here is an example for the `useMutation` function:
 
-```vue{3,4,5,6,10,11}
+```vue
 <template>
   <div>
-    <Mutation
-      query="mutation { likePost (id: 123) { message } }"
-      v-slot="{ data, execute }"
-    >
+    <div v-if="data">
+      <p>{{ data.likePost.message }}</p>
+    </div>
+    <button @click="execute()">Submit</button>
+  </div>
+</template>
+
+<script>
+import { useMutation } from 'villus';
+
+export default {
+  setup () {
+    const { data, execute } = useMutation(
+      query: `mutation { likePost (id: 123) { message } }`
+    );
+
+    return {
+      data,
+      execute
+    };
+  }
+};
+</script>
+```
+
+Here is a basic example for the `Mutation` component:
+
+```vue
+<template>
+  <div>
+    <Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ data, execute }">
       <div v-if="data">
         <p>{{ data.likePost.message }}</p>
       </div>
@@ -36,15 +61,31 @@ export default {
 </script>
 ```
 
+:::tip
+The `Mutation` component is **renderless**, meaning it will not render any extra HTML other than its slot.
+:::
+
 ## Passing Variables
 
-Since the **Mutation** component does not accept `variables` you can pass them to the `execute` method instead:
+Since the `useMutation` function does not accept a `variables` property you can pass them to the `execute` method returned:
+
+```js
+// in setup
+const { data, execute } = useMutation({
+  query: 'mutation Like ($id: ID!) { likePost (id: $id) { message } }'
+});
+
+function submit() {
+  execute({ id: 123 });
+}
+
+return { submit, data };
+```
+
+For the `Mutation` component you can pass the `variables` to the `execute` method instead:
 
 ```vue{3,8}
-<Mutation
-  query="mutation Like ($id: ID!) { likePost (id: $id) { message } }"
-  v-slot="{ data, execute }"
->
+<Mutation query="mutation Like ($id: ID!) { likePost (id: $id) { message } }" v-slot="{ data, execute }">
   <div v-if="data">
     <p>{{ data.likePost.message }}</p>
   </div>
@@ -52,19 +93,16 @@ Since the **Mutation** component does not accept `variables` you can pass them t
 </Mutation>
 ```
 
-Usually you would wrap your `forms` with the **Mutation** component and handle submits by executing the mutation.
+Usually you would wrap your `forms` with the `Mutation` component and handle submits by executing the mutation.
 
-## Slot Props
+## Other Properties
 
 ### fetching
 
-The **Mutation** slot props contain more useful information that you can use to build better experience for your users, for example you can use the `fetching` slot prop to display a loading indicator while the form submits.
+The `Mutation` slot props contain more useful information that you can use to build better experience for your users, for example you can use the `fetching` slot prop to display a loading indicator while the form submits.
 
 ```vue{3,5}
-<Mutation
-  query="mutation { likePost (id: 123) { message } }"
-  v-slot="{ data, execute, fetching }"
->
+<Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ data, execute, fetching }">
   <Loading v-if="fetching" />
 
   <div v-if="data">
@@ -96,20 +134,13 @@ The `errors` slot prop contains all errors encountered when running the query.
 </Mutation>
 ```
 
-### execute
+:::tip
+You can also extract the same properties mentioned above from the `useMutation` function:
 
-Like you previously saw, the `execute` slot prop is a function that executes the mutation, it accepts the variables object if specified, and unlike the same slot prop in the **Query** component it does not affect caching.
-
-```vue{3,9}
-<Mutation
-  query="mutation { likePost (id: 123) { message } }"
-  v-slot="{ data, execute }"
->
-  <div v-if="data">
-    <ul>
-      <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
-    </ul>
-    <button @click="execute()">Submit</button>
-  </div>
-</Mutation>
+```js
+const { fetching, done, errors } = useMutation({
+  // ...
+});
 ```
+
+:::

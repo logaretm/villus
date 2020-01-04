@@ -1,3 +1,4 @@
+import { Ref } from '@vue/composition-api';
 import { DocumentNode } from 'graphql';
 
 export interface OperationResult {
@@ -26,3 +27,5 @@ export interface Unsub {
 export interface ObservableLike<T> {
   subscribe(observer: ObserverLike<T>): Unsub;
 }
+
+export type MaybeReactive<T> = T | Ref<T>;
