@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { ref } from '@vue/composition-api';
+import { ref, computed } from '@vue/composition-api';
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
 import { useClient, useQuery } from '../src/index';
@@ -53,6 +53,44 @@ test('caches queries by default', async () => {
   await flushPromises();
   // cache was used.
   expect(fetch).toHaveBeenCalledTimes(1);
+});
+
+test('re-runs reactive queries automatically', async () => {
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+
+      const id = ref(12);
+      const query = computed(() => {
+        return `{ post (id: ${id.value}) { id title } }`;
+      });
+
+      const { data } = useQuery({
+        query
+      });
+
+      return { data, id };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <h1>{{ data.post.title }}</h1>
+      </div>
+      <button @click="id = 13"></button>
+    </div>`
+  });
+
+  await flushPromises();
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(vm.$el.querySelector('h1')?.textContent).toContain('12');
+  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+
+  await flushPromises();
+  // fetch was triggered a second time, due to variable change.
+  expect(fetch).toHaveBeenCalledTimes(2);
+  expect(vm.$el.querySelector('h1')?.textContent).toContain('13');
 });
 
 test('cache policy can be overridden with execute function', async () => {
