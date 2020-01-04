@@ -290,3 +290,25 @@ test('Handles external errors', async () => {
   await flushPromises();
   expect(vm.$el.querySelector('#error')?.textContent).toMatch(/Network Error/);
 });
+
+test('Fails if provider was not resolved', () => {
+  try {
+    mount({
+      setup() {
+        const { data, errors } = useQuery({ query: `{ posts { id title } }` });
+
+        return { messages: data, errors };
+      },
+      template: `
+      <div>
+        <ul v-if="data">
+          <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+        </ul>
+      </div>
+    `
+    });
+  } catch (err) {
+    // eslint-disable-next-line jest/no-try-expect
+    expect(err.message).toContain('Cannot detect villus Client');
+  }
+});

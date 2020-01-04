@@ -92,3 +92,25 @@ test('handles external errors', async () => {
   await flushPromises();
   expect(vm.$el.querySelector('#error')?.textContent).toBe('Network Error');
 });
+
+test('Fails if provider was not resolved', () => {
+  try {
+    mount({
+      setup() {
+        const { data, execute } = useMutation({ query: 'mutation { likePost (id: 123) { message } }' });
+
+        return { data, execute };
+      },
+      template: `
+        <div>
+          <div v-if="data">
+            <p>{{ data.likePost.message }}</p>
+          </div>
+          <button @click="execute()"></button>
+        </div>`
+    });
+  } catch (err) {
+    // eslint-disable-next-line jest/no-try-expect
+    expect(err.message).toContain('Cannot detect villus Client');
+  }
+});

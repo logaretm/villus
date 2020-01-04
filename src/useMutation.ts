@@ -8,16 +8,16 @@ interface MutationCompositeOptions {
 
 export function useMutation({ query }: MutationCompositeOptions) {
   const client = inject('$villus') as VqlClient;
+  if (!client) {
+    throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
+  }
+
   const data: Ref<Record<string, any> | null> = ref(null);
   const fetching = ref(false);
   const done = ref(false);
   const errors: Ref<any[] | null> = ref(null);
 
   async function execute(variables: Operation['variables'] = {}) {
-    if (!client) {
-      throw new Error('Could not detect GraphQL Client');
-    }
-
     try {
       fetching.value = true;
       const vars = variables || {};
