@@ -1,6 +1,6 @@
 # Subscriptions
 
-`villus` handles subscriptions with the `Subscription` component in the same way as the `Query` component.
+`villus` handles subscriptions with the `useSubscription` or the `Subscription` component in the same way as the `useQuery` or the `Query` component.
 
 To add support for subscriptions you need to pass a `subscriptionForwarder` function to the `createClient` function, which in turn will call your subscription client. The `subscriptionForwarder` expects an object that follows the [observable spec](https://github.com/tc39/proposal-observable) to be returned.
 
@@ -18,7 +18,9 @@ const client = createClient({
 });
 ```
 
-Once you've setup the `subscriptionForwarder` function, you can now use the `Subscription` component in the same way as the `Query` component.
+Once you've setup the `subscriptionForwarder` function, you can now use the `useSubscription` function or the `Subscription`.
+
+## Subscription Component
 
 The `Subscription` component exposes `data`, `error` on the slot props.
 
@@ -53,7 +55,7 @@ export default {
 
 The `data` prop will be updated whenever a new value is received from the subscription.
 
-## Using Subscriptions
+### Usage
 
 Having a subscription component printing the data probably isn't that useful, for example in a chat app you would append new messages to the old ones to do that you need refactor your code to do the following:
 
@@ -119,3 +121,82 @@ export default {
 };
 </script>
 ```
+
+## useSubscription
+
+The `useSubscription` function has a similar API as it exposes a `data` property that you can watch
+
+```vue
+<template>
+  <ul>
+    <li v-for="message in messages">{{ message }}</li>
+  </ul>
+</template>
+
+<script>
+import { watch, ref } from 'vue'; // or @vue/composition-api
+import { useSubscription } from 'villus';
+
+export default {
+  setup() {
+    const { data } = useSubscription({
+      query: `
+        subscription NewMessages {
+          newMessages {
+            id
+            from
+            message
+          }
+        }
+      `
+    });
+
+    const messages = ref([]);
+    watch(data, incoming => {
+      // do stuff with incoming data
+      messages.value.push(incoming);
+    });
+
+    return { messages };
+  }
+};
+</script>
+```
+
+This isn't very useful as usually you would like to be able to use the `data` as a continuos value rather than a reference to the last received value, that is why you can pass a custom `reducer` as the second argument to the `useSubscription` function.
+
+Here is the last example with a custom reducer, we will be covering the `setup` function only since the rest of the component is mostly the same:
+
+```js{1-8,23}
+function reduce(oldValue, response) {
+  oldValue = oldValue || [];
+  if (!response.data || response.errors) {
+    return oldValue;
+  }
+
+  return [...oldValue, response.data.newMessages];
+}
+
+const { data } = useSubscription(
+  {
+    query: `
+    subscription NewMessages {
+      newMessages {
+        id
+        from
+        message
+      }
+    }
+  `
+  },
+  reduce
+);
+
+return { messages: data };
+```
+
+The `reduce` function will act as a reducer for the incoming data, whenever a new response is received it will be passed to `reduce` function as the second argument, the first argument will always be the initial value.
+
+:::tip
+Keep in mind that initially we have `null` for the initial value so we needed to provide a fallback for that.
+:::
