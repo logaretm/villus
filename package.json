@@ -26,7 +26,6 @@
     "@types/jest": "^24.0.25",
     "@typescript-eslint/eslint-plugin": "^2.14.0",
     "@typescript-eslint/parser": "^2.14.0",
-    "@vue/composition-api": "^0.3.4",
     "@vue/test-utils": "^1.0.0-beta.29",
     "babel-jest": "^24.9.0",
     "bundlesize": "^0.18.0",
@@ -59,7 +58,7 @@
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.4",
     "uglify-js": "^3.7.3",
-    "vue": "^2.6.11",
+    "vue": "^3.0.0-alpha.1",
     "vue-jest": "^3.0.5",
     "vue-template-compiler": "^2.6.11",
     "vuepress": "^1.2.0"
