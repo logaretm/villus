@@ -1,11 +1,10 @@
-import Vue from 'vue';
-import VueCompositionAPI from '@vue/composition-api';
-
-Vue.config.productionTip = false;
-Vue.config.devtools = false;
-
-Vue.use(VueCompositionAPI);
+// @ts-ignore
+import * as stuff from 'vue/dist/vue.global.js';
 
 export function mount(component: Record<string, any>) {
-  return new Vue(component).$mount();
+  const app = stuff.createApp();
+  app.config.devtools = false;
+  document.body.innerHTML = `<div id="app"></div>`;
+
+  return app.mount(component, '#app');
 }

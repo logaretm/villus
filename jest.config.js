@@ -11,7 +11,6 @@ module.exports = {
   collectCoverageFrom: ['<rootDir>/src/**/*.{ts,js}'],
   coveragePathIgnorePatterns: ['<rootDir>/src.*/index.ts'],
   moduleNameMapper: {
-    '^vue$': 'vue/dist/vue.common.js',
     '^@/(.*)$': '<rootDir>/src/$1'
   }
 };
