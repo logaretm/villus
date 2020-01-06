@@ -1,8 +1,13 @@
-import Vue from 'vue';
+import { SetupContext } from 'vue';
 import { VqlClient } from './client';
 import { normalizeChildren } from './utils';
+import { useClient } from './useClient';
 
-export const Provider = Vue.extend({
+interface ProviderProps {
+  client: VqlClient;
+}
+
+export const Provider = {
   name: 'VqlProvider',
   props: {
     client: {
@@ -10,36 +15,11 @@ export const Provider = Vue.extend({
       required: true
     }
   },
-  provide() {
-    return {
-      $villus: (this as any).client as VqlClient
+  setup(props: ProviderProps, ctx: SetupContext) {
+    useClient(props.client);
+
+    return () => {
+      return normalizeChildren(ctx, {});
     };
-  },
-  render(h: any) {
-    const children = normalizeChildren(this, {});
-    if (!children.length) {
-      return h();
-    }
-
-    return children.length <= 1 ? children[0] : h('span', children);
   }
-});
-
-export const withProvider = (component: any, client: VqlClient) => {
-  const options = 'options' in component ? component.options : component;
-
-  return Vue.extend({
-    name: 'withVqlProviderHoC',
-    functional: true,
-    render(h: any) {
-      return h(Provider, {
-        props: {
-          client
-        },
-        scopedSlots: {
-          default: () => h(options)
-        }
-      });
-    }
-  });
 };

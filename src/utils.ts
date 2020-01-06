@@ -1,6 +1,6 @@
 import { DocumentNode, print } from 'graphql';
 import stringify from 'fast-json-stable-stringify';
-import Vue from 'vue';
+import { SetupContext } from 'vue';
 import { Operation } from './types';
 
 /**
@@ -51,10 +51,10 @@ export function getQueryKey(operation: Operation) {
   return hash(`${query}${variables}`);
 }
 
-export function normalizeChildren(context: Vue, slotProps: any) {
-  if (context.$scopedSlots.default) {
-    return context.$scopedSlots.default(slotProps) || [];
+export function normalizeChildren(context: SetupContext, slotProps: any) {
+  if (!context.slots.default) {
+    return [];
   }
 
-  return context.$slots.default || [];
+  return context.slots.default(slotProps) || [];
 }

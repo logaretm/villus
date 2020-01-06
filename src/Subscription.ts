@@ -1,30 +1,15 @@
-import Vue, { VueConstructor } from 'vue';
-import { VqlClient } from './client';
+import { SetupContext } from 'vue';
 import { normalizeChildren } from './utils';
-import { Unsub } from './types';
+import { useSubscription } from './useSubscription';
+import { DocumentNode } from 'graphql';
 
-function componentData() {
-  const data: any = null;
-  const errors: any = null;
-
-  return {
-    data,
-    errors,
-    fetching: false
-  };
+interface SubscriptionProps {
+  query: string | DocumentNode;
+  variables?: Record<string, any>;
 }
 
-type withVqlClient = VueConstructor<
-  Vue & {
-    _cachedVars?: number;
-    $villus: VqlClient;
-    $observer?: Unsub;
-  }
->;
-
-export const Subscription = (Vue as withVqlClient).extend({
+export const Subscription = {
   name: 'Subscription',
-  inject: ['$villus'],
   props: {
     query: {
       type: [String, Object],
@@ -39,48 +24,19 @@ export const Subscription = (Vue as withVqlClient).extend({
       default: false
     }
   },
-  data: componentData,
-  mounted() {
-    if (!this.$villus) {
-      throw new Error('Cannot detect villus Client Provider');
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-    this.$observer = this.$villus
-      .executeSubscription({
-        query: this.query,
-        variables: this.variables
-      })
-      .subscribe({
-        next(result) {
-          self.data = result.data;
-          self.errors = result.errors;
-        },
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        complete() {},
-        error(err) {
-          self.data = undefined;
-          self.errors = [err];
-        }
-      });
-  },
-  beforeDestroy() {
-    if (this.$observer) {
-      this.$observer.unsubscribe();
-    }
-  },
-  render(h) {
-    const children = normalizeChildren(this, {
-      data: this.data,
-      errors: this.errors,
-      fetching: this.fetching
+  setup(props: SubscriptionProps, ctx: SetupContext) {
+    const { data, errors, pause, paused, resume } = useSubscription({
+      ...props
     });
 
-    if (!children.length) {
-      return h();
-    }
-
-    return children.length === 1 ? children[0] : h('span', children);
+    return () => {
+      return normalizeChildren(ctx, {
+        data: data.value,
+        errors: errors.value,
+        pause,
+        paused: paused.value,
+        resume
+      });
+    };
   }
-});
+};

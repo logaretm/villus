@@ -1,76 +1,33 @@
-import Vue, { VueConstructor } from 'vue';
-import { VqlClient } from './client';
+import { SetupContext } from 'vue';
+import { useMutation } from './useMutation';
 import { normalizeChildren } from './utils';
+import { DocumentNode } from 'graphql';
 
-type withVqlClient = VueConstructor<
-  Vue & {
-    $villus: VqlClient;
-  }
->;
-
-function componentData() {
-  const data: any = null;
-  const errors: any = null;
-
-  return {
-    data,
-    errors,
-    fetching: false,
-    done: false
-  };
+interface MutationProps {
+  query: string | DocumentNode;
 }
 
-export const Mutation = (Vue as withVqlClient).extend({
+export const Mutation = {
   name: 'Mutation',
-  inject: ['$villus'],
   props: {
     query: {
       type: [String, Object],
       required: true
     }
   },
-  data: componentData,
-  methods: {
-    async mutate(vars: object = {}) {
-      if (!this.$villus) {
-        throw new Error('Could not find the villus client, did you install the plugin correctly?');
-      }
-
-      try {
-        this.data = null;
-        this.errors = null;
-        this.fetching = true;
-        this.done = false;
-        const { data, errors } = await this.$villus.executeMutation({
-          query: this.query,
-          variables: vars || undefined
-        });
-
-        this.data = data;
-        this.errors = errors;
-        this.done = true;
-      } catch (err) {
-        this.errors = [err];
-        this.data = null;
-        this.done = false;
-      } finally {
-        this.fetching = false;
-      }
-    }
-  },
-  render(h) {
-    const children = normalizeChildren(this, {
-      data: this.data,
-      errors: this.errors,
-      fetching: this.fetching,
-      done: this.done,
-      execute: this.mutate
+  setup(props: MutationProps, ctx: SetupContext) {
+    const { data, fetching, done, errors, execute } = useMutation({
+      ...props
     });
 
-    if (!children.length) {
-      return h();
-    }
-
-    return children.length === 1 ? children[0] : h('span', children);
+    return () => {
+      return normalizeChildren(ctx, {
+        data: data.value,
+        fetching: fetching.value,
+        done: done.value,
+        errors: errors.value,
+        execute
+      });
+    };
   }
-});
+};

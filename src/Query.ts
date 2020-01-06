@@ -1,31 +1,18 @@
-import Vue, { VueConstructor } from 'vue';
-import stringify from 'fast-json-stable-stringify';
+import { SetupContext } from 'vue';
+import { useQuery } from './useQuery';
 import { CachePolicy } from './types';
-import { VqlClient } from './client';
-import { normalizeVariables, normalizeChildren, hash } from './utils';
+import { normalizeChildren } from './utils';
+import { DocumentNode } from 'graphql';
 
-type withVqlClient = VueConstructor<
-  Vue & {
-    _cachedVars?: number;
-    $villus: VqlClient;
-  }
->;
-
-function componentData() {
-  const data: any = null;
-  const errors: any = null;
-
-  return {
-    data,
-    errors,
-    fetching: false,
-    done: false
-  };
+interface QueryProps {
+  query: string | DocumentNode;
+  variables?: Record<string, any>;
+  cachePolicy?: CachePolicy;
+  lazy?: boolean;
 }
 
-export const Query = (Vue as withVqlClient).extend({
+export const Query = {
   name: 'Query',
-  inject: ['$villus'],
   props: {
     query: {
       type: [String, Object],
@@ -38,7 +25,7 @@ export const Query = (Vue as withVqlClient).extend({
     cachePolicy: {
       type: String,
       default: undefined,
-      validator(value) {
+      validator(value: string) {
         const isValid = [undefined, 'cache-and-network', 'network-only', 'cache-first'].indexOf(value) !== -1;
 
         return isValid;
@@ -49,75 +36,19 @@ export const Query = (Vue as withVqlClient).extend({
       default: false
     }
   },
-  data: componentData,
-  serverPrefetch() {
-    // fetch it on the server-side.
-    return (this as any).fetch();
-  },
-  watch: {
-    variables: {
-      deep: true,
-      handler(value) {
-        if (this.pause) {
-          return;
-        }
-
-        const id = hash(stringify(value));
-        if (id === this._cachedVars) {
-          return;
-        }
-
-        this._cachedVars = id;
-        // tslint:disable-next-line: no-floating-promises
-        this.fetch();
-      }
-    }
-  },
-  methods: {
-    async fetch(vars?: object, cachePolicy?: CachePolicy) {
-      if (!this.$villus) {
-        throw new Error('Could not detect Client Provider');
-      }
-
-      try {
-        this.fetching = true;
-        const { data, errors } = await this.$villus.executeQuery({
-          query: this.query,
-          variables: normalizeVariables(this.variables, vars || {}),
-          cachePolicy: cachePolicy || (this.cachePolicy as CachePolicy)
-        });
-
-        this.data = data;
-        this.errors = errors;
-      } catch (err) {
-        this.errors = [err];
-        this.data = null;
-      } finally {
-        this.done = true;
-        this.fetching = false;
-      }
-    }
-  },
-  mounted() {
-    // fetch it on client side if it was not already.
-    if (!this.data) {
-      // tslint:disable-next-line: no-floating-promises
-      this.fetch();
-    }
-  },
-  render(h) {
-    const children = normalizeChildren(this, {
-      data: this.data,
-      errors: this.errors,
-      fetching: this.fetching,
-      done: this.done,
-      execute: ({ cachePolicy }: { cachePolicy?: CachePolicy } = {}) => this.fetch({}, cachePolicy)
+  setup(props: QueryProps, ctx: SetupContext) {
+    const { data, errors, fetching, done, execute } = useQuery({
+      ...props
     });
 
-    if (!children.length) {
-      return h();
-    }
-
-    return children.length === 1 ? children[0] : h('span', children);
+    return () => {
+      return normalizeChildren(ctx, {
+        data: data.value,
+        errors: errors.value,
+        fetching: fetching.value,
+        done: done.value,
+        execute
+      });
+    };
   }
-});
+};
