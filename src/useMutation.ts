@@ -1,4 +1,4 @@
-import { ref, Ref, inject } from '@vue/composition-api';
+import { ref, Ref, inject } from 'vue';
 import { Operation } from './types';
 import { VqlClient } from './client';
 

@@ -1,6 +1,6 @@
+import { inject, ref, Ref, onMounted } from 'vue';
 import { VqlClient } from './client';
 import { Unsub, Operation, OperationResult } from './types';
-import { inject, ref, Ref, onMounted } from '@vue/composition-api';
 
 interface SubscriptionCompositeOptions {
   query: Operation['query'];

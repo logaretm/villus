@@ -52,8 +52,6 @@ You can now use it with either the new Vue composition API or higher order compo
 
 ### Composition API
 
-If you are using `Vue@2.x` make sure to install `@vue/composition-api` and use the `villus@0.x` releases, if you are rocking the `Vue@3.x` releases, then use `villus@1.x`.
-
 Configure the GraphQL client for your root component:
 
 ```js

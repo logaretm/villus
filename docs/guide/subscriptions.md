@@ -134,7 +134,7 @@ The `useSubscription` function has a similar API as it exposes a `data` property
 </template>
 
 <script>
-import { watch, ref } from 'vue'; // or @vue/composition-api
+import { watch, ref } from 'vue';
 import { useSubscription } from 'villus';
 
 export default {

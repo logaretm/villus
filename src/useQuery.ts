@@ -1,5 +1,5 @@
 import stringify from 'fast-json-stable-stringify';
-import { ref, Ref, inject, isRef, onMounted, watch } from '@vue/composition-api';
+import { ref, Ref, inject, isRef, onMounted, watch } from 'vue';
 import { CachePolicy, MaybeReactive, Operation } from './types';
 import { VqlClient } from './client';
 import { hash } from './utils';

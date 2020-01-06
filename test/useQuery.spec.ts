@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { ref, computed } from '@vue/composition-api';
+import { ref, computed } from 'vue';
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
 import { useClient, useQuery } from '../src/index';
