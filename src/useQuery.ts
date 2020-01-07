@@ -1,5 +1,5 @@
 import stringify from 'fast-json-stable-stringify';
-import { ref, Ref, inject, isRef, onMounted, watch } from 'vue';
+import { ref, Ref, inject, isRef, onMounted, watch, readonly } from 'vue';
 import { CachePolicy, MaybeReactive, Operation } from './types';
 import { VqlClient } from './client';
 import { hash } from './utils';
@@ -81,17 +81,19 @@ export function useQuery({ query, variables, cachePolicy, lazy }: QueryComposite
   }
 
   function pause() {
-    if (unwatch) {
-      unwatch();
-      paused.value = true;
-    }
+    if (paused.value) return;
+
+    unwatch();
+    paused.value = true;
   }
 
   function resume() {
+    if (!paused.value) return;
+
     watchVars();
   }
 
   watchVars();
 
-  return { data, fetching, done, errors, execute, pause, paused, resume };
+  return { data, fetching, done, errors, execute, pause, paused: readonly(paused), resume };
 }

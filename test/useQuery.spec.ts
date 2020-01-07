@@ -151,7 +151,7 @@ test('cache policy can be overridden with cachePolicy option', async () => {
   expect(fetch).toHaveBeenCalledTimes(2);
 });
 
-test('variables are watched by default', async () => {
+test('variables are watched by default if reactive', async () => {
   const vm = mount({
     setup() {
       useClient({

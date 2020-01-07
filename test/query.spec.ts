@@ -1,33 +1,45 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+/* eslint-disable no-unused-expressions */
+import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
-import { withProvider, Query, createClient, Provider } from '../src/index';
-
-const Vue = createLocalVue();
-Vue.component('Query', Query);
+import { Query, createClient, Provider } from '../src/index';
 
 test('executes queries on mounted', async () => {
   const client = createClient({
     url: 'https://test.com/graphql'
   });
 
-  const AppWithGQL = withProvider(
-    {
-      template: `<div>
-        <Query query="{ posts { id title } }" v-slot="{ data }">
-          <div v-if="data">
-            <ul>
-              <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
-            </ul>
-          </div>
-        </Query>
-      </div>`
+  const vm = mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Query,
+      Provider
     },
-    client
-  );
+    template: `
+      <div>
+        <Provider :client="client">
+          <div>
+            <Query query="{ posts { id title } }" v-slot="{ data }">
+              <div v-if="data">
+                <ul>
+                  <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+                </ul>
+              </div>
+            </Query>
+          </div>
+        </Provider>
+      </div>
+    `
+  });
 
-  const wrapper = mount(AppWithGQL, { sync: false, localVue: Vue });
   await flushPromises();
-  expect(wrapper.findAll('li').length).toBe(5);
+  expect(fetch).toHaveBeenCalledTimes(1);
+
+  await flushPromises();
+  // cache was used.
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(vm.$el.querySelectorAll('li').length).toBe(5);
 });
 
 test('caches queries by default', async () => {
@@ -35,16 +47,15 @@ test('caches queries by default', async () => {
     url: 'https://test.com/graphql'
   });
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client
-      }),
-      components: {
-        Query,
-        Provider
-      },
-      template: `
+  mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Query,
+      Provider
+    },
+    template: `
       <div>
         <Provider :client="client">
           <div>
@@ -60,14 +71,12 @@ test('caches queries by default', async () => {
         </Provider>
       </div>
     `
-    },
-    { sync: false }
-  );
+  });
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
 
-  wrapper.find('button').trigger('click');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
   // cache was used.
   expect(fetch).toHaveBeenCalledTimes(1);
@@ -78,16 +87,15 @@ test('cache policy can be overridden with execute function', async () => {
     url: 'https://test.com/graphql'
   });
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client
-      }),
-      components: {
-        Query,
-        Provider
-      },
-      template: `
+  mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Query,
+      Provider
+    },
+    template: `
       <div>
         <Provider :client="client">
           <div>
@@ -103,14 +111,12 @@ test('cache policy can be overridden with execute function', async () => {
         </Provider>
       </div>
     `
-    },
-    { sync: false }
-  );
+  });
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
 
-  wrapper.find('button').trigger('click');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
   // fetch was triggered a second time.
   expect(fetch).toHaveBeenCalledTimes(2);
@@ -121,16 +127,15 @@ test('cache policy can be overridden with cachePolicy prop', async () => {
     url: 'https://test.com/graphql'
   });
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client
-      }),
-      components: {
-        Query,
-        Provider
-      },
-      template: `
+  mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Query,
+      Provider
+    },
+    template: `
       <div>
         <Provider :client="client">
           <div>
@@ -146,14 +151,12 @@ test('cache policy can be overridden with cachePolicy prop', async () => {
         </Provider>
       </div>
     `
-    },
-    { sync: false }
-  );
+  });
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
 
-  wrapper.find('button').trigger('click');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
   // fetch was triggered a second time.
   expect(fetch).toHaveBeenCalledTimes(2);
@@ -164,17 +167,16 @@ test('variables are watched by default', async () => {
     url: 'https://test.com/graphql'
   });
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client,
-        id: 12
-      }),
-      components: {
-        Query,
-        Provider
-      },
-      template: `
+  const vm = mount({
+    data: () => ({
+      client,
+      id: 12
+    }),
+    components: {
+      Query,
+      Provider
+    },
+    template: `
       <div>
         <Provider :client="client">
           <div>
@@ -187,20 +189,16 @@ test('variables are watched by default', async () => {
         </Provider>
       </div>
     `
-    },
-    { sync: false }
-  );
+  });
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
-  expect(wrapper.find('h1').text()).toContain('12');
-  wrapper.setData({
-    id: 13
-  });
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  (vm as any).id = 13;
   await flushPromises();
   // fetch was triggered a second time, due to variable change.
   expect(fetch).toHaveBeenCalledTimes(2);
-  expect(wrapper.find('h1').text()).toContain('13');
+  expect(document.querySelector('h1')?.textContent).toContain('13');
 });
 
 test('variables watcher can be disabled', async () => {
@@ -208,17 +206,16 @@ test('variables watcher can be disabled', async () => {
     url: 'https://test.com/graphql'
   });
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client,
-        id: 12
-      }),
-      components: {
-        Query,
-        Provider
-      },
-      template: `
+  const vm = mount({
+    data: () => ({
+      client,
+      id: 12
+    }),
+    components: {
+      Query,
+      Provider
+    },
+    template: `
       <div>
         <Provider :client="client">
           <div>
@@ -231,19 +228,15 @@ test('variables watcher can be disabled', async () => {
         </Provider>
       </div>
     `
-    },
-    { sync: false }
-  );
+  });
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
-  expect(wrapper.find('h1').text()).toContain('12');
-  wrapper.setData({
-    id: 13
-  });
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  (vm as any).id = 13;
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
-  expect(wrapper.find('h1').text()).toContain('12');
+  expect(document.querySelector('h1')?.textContent).toContain('12');
 });
 
 test('variables prop arrangement does not trigger queries', async () => {
@@ -251,20 +244,19 @@ test('variables prop arrangement does not trigger queries', async () => {
     url: 'https://test.com/graphql'
   });
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client,
-        vars: {
-          id: 12,
-          type: 'test'
-        }
-      }),
-      components: {
-        Query,
-        Provider
-      },
-      template: `
+  const vm = mount({
+    data: () => ({
+      client,
+      vars: {
+        id: 12,
+        type: 'test'
+      }
+    }),
+    components: {
+      Query,
+      Provider
+    },
+    template: `
       <div>
         <Provider :client="client">
           <div>
@@ -277,25 +269,23 @@ test('variables prop arrangement does not trigger queries', async () => {
         </Provider>
       </div>
     `
-    },
-    { sync: false }
-  );
+  });
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
-  expect(wrapper.find('h1').text()).toContain('12');
-  (wrapper.vm as any).vars = {
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  (vm as any).vars = {
     type: 'test',
     id: 12
   };
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
 
-  (wrapper.vm as any).vars.id = 13;
+  (vm as any).vars.id = 13;
   await flushPromises();
   // fetch was triggered a second time, due to variable change.
   expect(fetch).toHaveBeenCalledTimes(2);
-  expect(wrapper.find('h1').text()).toContain('13');
+  expect(document.querySelector('h1')?.textContent).toContain('13');
 });
 
 test('Handles query errors', async () => {
@@ -303,16 +293,15 @@ test('Handles query errors', async () => {
     url: 'https://test.com/graphql'
   });
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client
-      }),
-      components: {
-        Query,
-        Provider
-      },
-      template: `
+  mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Query,
+      Provider
+    },
+    template: `
         <Provider :client="client">
           <div>
             <Query query="{ posts { id title propNotFound } }" v-slot="{ data, errors }">
@@ -324,12 +313,10 @@ test('Handles query errors', async () => {
           </div>
         </Provider>
       `
-    },
-    { sync: false }
-  );
+  });
 
   await flushPromises();
-  expect(wrapper.find('#error').text()).toMatch(/Cannot query field/);
+  expect(document.querySelector('#error')?.textContent).toMatch(/Cannot query field/);
 });
 
 test('Handles external errors', async () => {
@@ -339,16 +326,15 @@ test('Handles external errors', async () => {
 
   (global as any).fetchController.simulateNetworkError = true;
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client
-      }),
-      components: {
-        Query,
-        Provider
-      },
-      template: `
+  mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Query,
+      Provider
+    },
+    template: `
         <Provider :client="client">
           <div>
             <Query query="{ posts { id title propNotFound } }" v-slot="{ data, errors }">
@@ -360,10 +346,8 @@ test('Handles external errors', async () => {
           </div>
         </Provider>
       `
-    },
-    { sync: false }
-  );
+  });
 
   await flushPromises();
-  expect(wrapper.find('#error').text()).toMatch(/Network Error/);
+  expect(document.querySelector('#error')?.textContent).toMatch(/Network Error/);
 });

@@ -1,4 +1,4 @@
-import { SetupContext } from 'vue';
+import { SetupContext, toRefs, watch } from 'vue';
 import { useQuery } from './useQuery';
 import { CachePolicy } from './types';
 import { normalizeChildren } from './utils';
@@ -9,6 +9,7 @@ interface QueryProps {
   variables?: Record<string, any>;
   cachePolicy?: CachePolicy;
   lazy?: boolean;
+  pause?: boolean;
 }
 
 export const Query = {
@@ -37,9 +38,23 @@ export const Query = {
     }
   },
   setup(props: QueryProps, ctx: SetupContext) {
-    const { data, errors, fetching, done, execute } = useQuery({
-      ...props
+    const { data, errors, fetching, done, execute, pause, resume } = useQuery({
+      ...toRefs(props),
+      lazy: props.lazy,
+      cachePolicy: props.cachePolicy
     });
+
+    watch(
+      () => {
+        if (props.pause === true) {
+          pause();
+          return;
+        }
+
+        resume();
+      },
+      { lazy: true }
+    );
 
     return () => {
       return normalizeChildren(ctx, {
