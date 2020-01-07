@@ -1,4 +1,5 @@
-import { mount } from '@vue/test-utils';
+/* eslint-disable no-unused-expressions */
+import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
 import { Mutation, createClient, Provider } from '../src/index';
 
@@ -7,16 +8,15 @@ test('runs mutations', async () => {
     url: 'https://test.com/graphql'
   });
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client
-      }),
-      components: {
-        Mutation,
-        Provider
-      },
-      template: `
+  mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Mutation,
+      Provider
+    },
+    template: `
       <div>
         <Provider :client="client">
           <div>
@@ -30,17 +30,15 @@ test('runs mutations', async () => {
         </Provider>
       </div>
     `
-    },
-    { sync: false }
-  );
+  });
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(0);
 
-  wrapper.find('button').trigger('click');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
-  expect(wrapper.find('p').text()).toBe('Operation successful');
+  expect(document.querySelector('p')?.textContent).toBe('Operation successful');
 });
 
 test('handles errors', async () => {
@@ -50,16 +48,15 @@ test('handles errors', async () => {
 
   (global as any).fetchController.simulateNetworkError = true;
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client
-      }),
-      components: {
-        Mutation,
-        Provider
-      },
-      template: `
+  mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Mutation,
+      Provider
+    },
+    template: `
       <div>
         <Provider :client="client">
           <div>
@@ -73,11 +70,9 @@ test('handles errors', async () => {
         </Provider>
       </div>
     `
-    },
-    { sync: false }
-  );
+  });
 
-  wrapper.find('button').trigger('click');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  expect(wrapper.find('p').text()).toBe('Network Error');
+  expect(document.querySelector('p')?.textContent).toBe('Network Error');
 });
