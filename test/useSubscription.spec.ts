@@ -178,3 +178,29 @@ test('Fails if provider was not resolved', () => {
     expect(err.message).toContain('Cannot detect villus Client');
   }
 });
+
+test('Fails if subscription forwarder was not set', () => {
+  try {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql'
+        });
+        const { data, errors } = useSubscription({ query: `subscription { newMessages }` });
+
+        return { messages: data, errors };
+      },
+      template: `
+      <div>
+        <ul v-for="message in messages">
+          <li>{{ message.id }}</li>
+        </ul>
+        <p id="error" v-if="errors">{{ errors[0].message }}</p>
+      </div>
+    `
+    });
+  } catch (err) {
+    // eslint-disable-next-line jest/no-try-expect
+    expect(err.message).toContain('No subscription forwarder was set');
+  }
+});

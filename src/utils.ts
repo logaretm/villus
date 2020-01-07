@@ -11,7 +11,7 @@ export function normalizeQuery(query: string | DocumentNode): string | null {
     return query;
   }
 
-  if (query.loc) {
+  if (query && query.loc) {
     return print(query);
   }
 

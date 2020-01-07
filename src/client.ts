@@ -27,7 +27,7 @@ export interface VqlClientOptions {
 }
 
 function resolveGlobalFetch(): Fetcher | undefined {
-  if (typeof window !== 'undefined' && 'fetch' in window) {
+  if (typeof window !== 'undefined' && 'fetch' in window && window.fetch) {
     return window.fetch.bind(window);
   }
 
