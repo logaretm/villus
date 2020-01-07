@@ -1,10 +1,7 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
 import { Subscription, createClient, Provider } from '../src/index';
 import { makeObservable } from './helpers/observer';
-
-const Vue = createLocalVue();
-Vue.component('Subscription', Subscription);
 
 test('Handles subscriptions', async () => {
   const client = createClient({
@@ -14,44 +11,69 @@ test('Handles subscriptions', async () => {
     }
   });
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client
-      }),
-      components: {
-        Subscription,
-        Provider,
-        Child: {
-          props: ['newMessages'],
-          data: () => ({ messages: [] }),
-          watch: {
-            newMessages(this: any, message: object) {
-              this.messages.push(message);
-            }
-          },
-          template: `
-            <ul>
-              <li v-for="msg in messages">{{ msg.id }}</li>
-            </ul>
-          `
-        }
-      },
-      template: `
-        <Provider :client="client">
-          <Subscription query="subscription { newMessages }" v-slot="{ data }">
-            <Child :newMessages="data" />
-          </Subscription>
-        </Provider>
-    `
+  mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Subscription,
+      Provider
     },
-    { sync: false }
-  );
+    template: `
+      <Provider :client="client">
+        <Subscription query="subscription { newMessages }" v-slot="{ data }">
+          <div>
+            <span>{{ data.id }}</span>
+          </div>
+        </Subscription>
+      </Provider>
+    `
+  });
 
   await (global as any).sleep(510);
   await flushPromises();
-  expect(wrapper.findAll('li')).toHaveLength(5);
-  wrapper.destroy();
+  expect(document.querySelector('span')?.textContent).toBe('4');
+});
+
+test('Can provide a custom reducer', async () => {
+  const client = createClient({
+    url: 'https://test.com/graphql',
+    subscriptionForwarder: () => {
+      return makeObservable();
+    }
+  });
+
+  function reduce(oldMessages: string[], response: any) {
+    if (!response.data) {
+      return oldMessages || [];
+    }
+
+    return [...oldMessages, response.data.message];
+  }
+
+  mount({
+    data: () => ({
+      client,
+      reduce
+    }),
+    components: {
+      Subscription,
+      Provider
+    },
+    template: `
+      <Provider :client="client">
+        <Subscription query="subscription { newMessages }" :reduce="reduce" v-slot="{ data }">
+          <ul>
+            <li v-for="msg in data">{{ msg.id }}</li>
+          </ul>
+        </Subscription>
+      </Provider>
+    `
+  });
+
+  await (global as any).sleep(510);
+  await flushPromises();
+  expect(document.querySelectorAll('li')).toHaveLength(5);
 });
 
 test('Handles observer errors', async () => {
@@ -62,16 +84,15 @@ test('Handles observer errors', async () => {
     }
   });
 
-  const wrapper = mount(
-    {
-      data: () => ({
-        client
-      }),
-      components: {
-        Subscription,
-        Provider
-      },
-      template: `
+  mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Subscription,
+      Provider
+    },
+    template: `
       <div>
         <Provider :client="client">
           <Subscription query="subscription { newMessages }" v-slot="{ errors }">
@@ -80,64 +101,27 @@ test('Handles observer errors', async () => {
         </Provider>
       </div>
     `
-    },
-    { sync: false }
-  );
+  });
 
   await (global as any).sleep(150);
   await flushPromises();
-  expect(wrapper.find('p').text()).toBe('oops!');
-  wrapper.destroy();
-});
-
-test('renders a span if multiple root is found', async () => {
-  const client = createClient({
-    url: 'https://test.com/graphql',
-    subscriptionForwarder: () => {
-      return makeObservable(true);
-    }
-  });
-
-  const wrapper = mount(
-    {
-      data: () => ({
-        client
-      }),
-      components: {
-        Subscription,
-        Provider
-      },
-      template: `
-        <Provider :client="client">
-          <Subscription query="subscription { newMessages }" v-slot="{ data }">
-            <span>{{ data }}</span>
-            <span>{{ data }}</span>
-          </Subscription>
-       </Provider>
-    `
-    },
-    { sync: false }
-  );
-
-  await flushPromises();
-  expect(wrapper.findAll('span')).toHaveLength(3);
-  wrapper.destroy();
+  expect(document.querySelector('p')?.textContent).toBe('oops!');
 });
 
 test('Fails if provider was not resolved', async () => {
-  expect(() => {
-    mount(
-      {
-        components: {
-          Subscription
-        },
-        template: `
+  try {
+    mount({
+      components: {
+        Subscription
+      },
+      template: `
           <Subscription query="subscription { newMessages }" v-slot="{ data }">
             {{ data }}
           </Subscription>
         `
-      },
-      { sync: false }
-    );
-  }).toThrow(/Client Provider/);
+    });
+  } catch (err) {
+    // eslint-disable-next-line jest/no-try-expect
+    expect(err.message).toMatch(/Client Provider/);
+  }
 });

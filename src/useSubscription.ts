@@ -7,12 +7,11 @@ interface SubscriptionCompositeOptions {
   variables?: Operation['variables'];
 }
 
-type Reducer = (prev: any, value: OperationResult) => any;
+export type Reducer = (prev: any, value: OperationResult) => any;
 
-export function useSubscription(
-  { query, variables }: SubscriptionCompositeOptions,
-  reduce: Reducer = (_, val) => val.data
-) {
+export const defaultReducer: Reducer = (_, val) => val.data;
+
+export function useSubscription({ query, variables }: SubscriptionCompositeOptions, reduce: Reducer = defaultReducer) {
   const client = inject('$villus') as VqlClient;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');

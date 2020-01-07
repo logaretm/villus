@@ -1,11 +1,12 @@
 import { SetupContext } from 'vue';
 import { normalizeChildren } from './utils';
-import { useSubscription } from './useSubscription';
+import { useSubscription, defaultReducer, Reducer } from './useSubscription';
 import { DocumentNode } from 'graphql';
 
 interface SubscriptionProps {
   query: string | DocumentNode;
   variables?: Record<string, any>;
+  reduce?: Reducer;
 }
 
 export const Subscription = {
@@ -22,12 +23,19 @@ export const Subscription = {
     pause: {
       type: Boolean,
       default: false
+    },
+    reduce: {
+      type: Function,
+      default: undefined
     }
   },
   setup(props: SubscriptionProps, ctx: SetupContext) {
-    const { data, errors, pause, paused, resume } = useSubscription({
-      ...props
-    });
+    const { data, errors, pause, paused, resume } = useSubscription(
+      {
+        ...props
+      },
+      props.reduce || defaultReducer
+    );
 
     return () => {
       return normalizeChildren(ctx, {
