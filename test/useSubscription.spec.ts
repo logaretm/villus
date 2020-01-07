@@ -32,7 +32,6 @@ test('Default reducer', async () => {
   jest.advanceTimersByTime(501);
   await flushPromises();
   expect(vm.$el.querySelector('span')?.textContent).toBe('4');
-  vm.$destroy();
 });
 
 test('Handles subscriptions with a custom reducer', async () => {
@@ -69,7 +68,6 @@ test('Handles subscriptions with a custom reducer', async () => {
   jest.advanceTimersByTime(501);
   await flushPromises();
   expect(vm.$el.querySelectorAll('li')).toHaveLength(5);
-  vm.$destroy();
 });
 
 test('Handles observer errors', async () => {
@@ -107,7 +105,6 @@ test('Handles observer errors', async () => {
   jest.advanceTimersByTime(150);
   await flushPromises();
   expect(vm.$el.querySelector('#error')?.textContent).toBe('oops!');
-  vm.$destroy();
 });
 
 test('Pauses and resumes subscriptions', async () => {
@@ -157,7 +154,6 @@ test('Pauses and resumes subscriptions', async () => {
 
   expect(vm.$el.querySelectorAll('li')).toHaveLength(4);
   expect(vm.$el.querySelector('#status')?.textContent).toBe('false');
-  vm.$destroy();
 });
 
 test('Fails if provider was not resolved', () => {
