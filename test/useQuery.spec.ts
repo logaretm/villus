@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { ref, computed } from 'vue';
+import gql from 'graphql-tag';
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
 import { useClient, useQuery } from '../src/index';
@@ -12,6 +13,38 @@ test('executes hook queries on mounted', async () => {
       });
 
       const { data } = useQuery({ query: '{ posts { id title } }' });
+
+      return { data };
+    },
+    template: `
+    <div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </div>`
+  });
+
+  await flushPromises();
+  expect(vm.$el.querySelectorAll('li').length).toBe(5);
+});
+
+test('works with tagged queries', async () => {
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+
+      const { data } = useQuery({
+        query: gql`
+          {
+            posts {
+              id
+              title
+            }
+          }
+        `
+      });
 
       return { data };
     },

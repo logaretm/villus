@@ -41,6 +41,7 @@
     "filesize": "^6.0.1",
     "flush-promises": "^1.0.2",
     "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
     "graphql-tools": "^4.0.6",
     "gzip-size": "^5.1.1",
     "husky": "^3.1.0",
