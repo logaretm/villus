@@ -11,7 +11,7 @@ interface QueryCompositeOptions {
   lazy?: boolean;
 }
 
-export function useQuery({ query, variables, cachePolicy, lazy }: QueryCompositeOptions) {
+function _useQuery({ query, variables, cachePolicy }: QueryCompositeOptions) {
   const client = inject('$villus') as VqlClient;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
@@ -41,13 +41,6 @@ export function useQuery({ query, variables, cachePolicy, lazy }: QueryComposite
       done.value = true;
       fetching.value = false;
     }
-  }
-
-  // Fetch on mounted if lazy is disabled.
-  if (!lazy) {
-    onMounted(() => {
-      execute();
-    });
   }
 
   if (isRef(query)) {
@@ -97,3 +90,26 @@ export function useQuery({ query, variables, cachePolicy, lazy }: QueryComposite
 
   return { data, fetching, done, errors, execute, pause, paused: readonly(paused), resume };
 }
+
+function useQuery(opts: QueryCompositeOptions) {
+  const api = _useQuery(opts);
+  // Fetch on mounted if lazy is disabled.
+  if (!opts.lazy) {
+    onMounted(() => {
+      api.execute();
+    });
+  }
+
+  return api;
+}
+
+async function useQueryAsync(opts: QueryCompositeOptions) {
+  const api = _useQuery(opts);
+  await api.execute();
+
+  return api;
+}
+
+useQuery.suspend = useQueryAsync;
+
+export { useQuery };
