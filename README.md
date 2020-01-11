@@ -2,6 +2,12 @@
 
 <p align="center">
 
+![alt text](https://raw.githubusercontent.com/logaretm/villus/master/logo.png)
+
+</p>
+
+<p align="center">
+
 [![codecov](https://codecov.io/gh/logaretm/villus/branch/master/graph/badge.svg)](https://codecov.io/gh/logaretm/villus)
 [![Build Status](https://travis-ci.org/logaretm/villus.svg?branch=master)](https://travis-ci.org/logaretm/villus)
 [![Bundle Size](https://badgen.net/bundlephobia/minzip/villus)](https://bundlephobia.com/result?p=villus@0.1.0)
@@ -11,7 +17,7 @@
 
 </p>
 
-> Villus is a finger-like structures in the small intestine. They help to absorb digested food. Think of GraphQL data as food!
+> Villus is a finger-like structures in the small intestine. They help to absorb digested food.
 
 A small and fast GraphQL client for Vue.js.
 
