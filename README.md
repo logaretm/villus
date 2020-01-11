@@ -40,7 +40,7 @@ GraphQL is just a simple HTTP request. This library is meant to serve a tiny cli
 
 If you are looking for a more full-featured client use [vue-apollo](https://github.com/vue/vue-apollo), it has everything you need.
 
-You can read more about it in the [announcement post]().
+You can read more about it in the [announcement post](https://logaretm.com/blog/2020-01-11-announcing-villus/).
 
 ## Documentation
 
