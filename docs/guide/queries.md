@@ -440,3 +440,77 @@ const { data, fetching, done, errors } = useQuery({
 ```
 
 :::
+
+## Suspense <Badge text="Only for Vue 3.x" />
+
+Both the `useQuery` and `Query` component can take advantage of the `Suspense` component shipped by Vue 3.x.
+
+For the `useQuery` function, instead of call it directly, you can call the `useQuery.suspend` instead, which has the exact same and behaves the same except it can be used to suspend components like this:
+
+```vue
+<template>
+  <ul>
+    <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+  </ul>
+</template>
+
+<script>
+// Listing.vue
+import { useQuery } from 'villus';
+
+export default {
+  name: 'Listing',
+  async setup() {
+    const { data } = await useQuery.suspend({
+      query: '{ posts { id title } }'
+    });
+
+    return { data };
+  }
+};
+</script>
+```
+
+Then you can suspend the `Listing.vue` component like this:
+
+```vue
+<template>
+<div>
+  <Suspense>
+    <template #default>
+      <Listing />
+    </template>
+    <template #fallback>
+      <span>Loading...</span>
+    </template>
+  </Suspense>
+</div>
+</template>
+
+<script>
+import Listing from '@/components/Listing.vue';
+
+export default {
+  components: {
+    Listing
+  }
+};
+<script>
+```
+
+And that is it! For the `Query` component you can do the same with the `suspend` prop:
+
+```vue
+<Suspense>
+  <template #default>
+    <Query query="{ posts { id title } }" v-slot="{ data }" :suspend="true">
+      <ul>
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </Query>
+  </template>
+  <template #fallback>
+    <span>Loading...</span>
+  </template>
+</Suspense>
+```
