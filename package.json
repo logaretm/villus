@@ -83,7 +83,8 @@
   "eslintIgnore": [
     "locale",
     "dist",
-    "scripts"
+    "scripts",
+    "examples"
   ],
   "lint-staged": {
     "*.ts": [
