@@ -10,6 +10,7 @@ interface QueryProps {
   cachePolicy?: CachePolicy;
   lazy?: boolean;
   pause?: boolean;
+  suspend?: boolean;
 }
 
 export const Query = {
@@ -35,35 +36,49 @@ export const Query = {
     pause: {
       type: Boolean,
       default: false
+    },
+    suspend: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props: QueryProps, ctx: SetupContext) {
-    const { data, errors, fetching, done, execute, pause, resume } = useQuery({
+    // Checks if its suspended.
+    const query = (props.suspend ? useQuery.suspend : useQuery)({
       ...toRefs(props),
       lazy: props.lazy,
       cachePolicy: props.cachePolicy
     });
 
-    watch(
-      () => {
-        if (props.pause === true) {
-          pause();
-          return;
-        }
+    function createRenderFn(api: ReturnType<typeof useQuery>) {
+      const { data, errors, fetching, done, execute, pause, resume } = api;
+      watch(
+        () => {
+          if (props.pause === true) {
+            pause();
+            return;
+          }
 
-        resume();
-      },
-      { lazy: true }
-    );
+          resume();
+        },
+        { lazy: true }
+      );
 
-    return () => {
-      return normalizeChildren(ctx, {
-        data: data.value,
-        errors: errors.value,
-        fetching: fetching.value,
-        done: done.value,
-        execute
-      });
-    };
+      return () => {
+        return normalizeChildren(ctx, {
+          data: data.value,
+          errors: errors.value,
+          fetching: fetching.value,
+          done: done.value,
+          execute
+        });
+      };
+    }
+
+    if (query instanceof Promise) {
+      return query.then(createRenderFn);
+    }
+
+    return createRenderFn(query);
   }
 };
