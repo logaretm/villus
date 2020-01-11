@@ -288,6 +288,47 @@ test('variables prop arrangement does not trigger queries', async () => {
   expect(document.querySelector('h1')?.textContent).toContain('13');
 });
 
+// have no clue how to test this yet
+// eslint-disable-next-line jest/no-disabled-tests
+test.skip('can be suspended', async () => {
+  const client = createClient({
+    url: 'https://test.com/graphql'
+  });
+
+  (global as any).fetchController.delay = 100;
+  const vm = mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Query,
+      Provider
+    },
+    template: `
+      <div>
+        <Provider :client="client">
+          <Suspense>
+            <template #default>
+              <Query query="{ posts { id title } }" v-slot="{ data }" suspend>
+                <ul>
+                  <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+                </ul>
+              </Query>
+            </template>
+            <template #fallback>
+              <span>Loading...</span>
+            </template>
+          </Suspense>
+        </Provider>
+      </div>
+    `
+  });
+
+  expect(document.body.textContent).toBe('Loading...');
+  await flushPromises();
+  expect(vm.$el.querySelectorAll('li').length).toBe(5);
+});
+
 test('Handles query errors', async () => {
   const client = createClient({
     url: 'https://test.com/graphql'
