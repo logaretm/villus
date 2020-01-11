@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { ref, computed } from 'vue';
+import { ref, computed, compile } from 'vue';
 import gql from 'graphql-tag';
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
@@ -306,6 +306,45 @@ test('variables prop arrangement does not trigger queries', async () => {
   vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
+});
+
+test('can be suspended', async () => {
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+    },
+    components: {
+      Listing: {
+        async setup() {
+          const { data } = await useQuery.suspend({ query: '{ posts { id title } }' });
+
+          return { data };
+        },
+        render: compile(`
+          <ul>
+            <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+          </ul>
+        `)
+      }
+    },
+    template: `
+      <div>
+        <Suspense>
+          <template #default>
+            <Listing />
+          </template>
+          <template #fallback>
+            <span>Loading...</span>
+          </template>
+        </Suspense>
+      </div>`
+  });
+
+  expect(document.body.textContent).toBe('Loading...');
+  await flushPromises();
+  expect(vm.$el.querySelectorAll('li').length).toBe(5);
 });
 
 test('Handles query errors', async () => {
