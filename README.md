@@ -26,11 +26,15 @@ This is forked from my previous work at [vue-gql](https://github.com/baianat/vue
 - 💚 Minimal Vue.js Components.
 - 🖇 Composition API support.
 
+**It is Vue 3.0-ready!**
+
 ## Why use this
 
 GraphQL is just a simple HTTP request. This library is meant to serve a tiny client without all the bells and whistles attached to Apollo and its ecosystem, it offers simple strategies to cache and batch your GraphQL requests.
 
 If you are looking for a more full-featured client use [vue-apollo](https://github.com/vue/vue-apollo), it has everything you need.
+
+You can read more about it in the [announcement post]().
 
 ## Documentation
 
@@ -41,12 +45,14 @@ You can find the full [documentation here](https://logaretm.github.io/villus)
 First install `villus`:
 
 ```bash
-yarn add villus graphql
+yarn add villus@next graphql
 
 # or npm
 
-npm install villus graphql --save
+npm install villus@next graphql --save
 ```
+
+> If you are using Vue 2 with the @vue/composition-api don't use the `next` tag.
 
 You can now use it with either the new Vue composition API or higher order components:
 
@@ -95,47 +101,7 @@ export default {
 </script>
 ```
 
-### Higher Order Components
-
-```js
-import Vue from 'vue';
-import { withProvider, createClient } from 'villus';
-import App from './App.vue'; // Your App Component
-
-const client = createClient({
-  url: 'http://localhost:3002/graphql'
-});
-
-// Wrap your app component with the provider component.
-const AppWithGQL = withProvider(App, client);
-
-new Vue({
-  render: h => h(AppWithGQL)
-}).$mount('#app');
-```
-
-Now you can use the `Query` and `Mutation` components to run queries:
-
-```vue
-<template>
-  <Query query="{ posts { title } }" v-slot="{ data }">
-    <div v-if="!data">Is Fetching ...</div>
-    <div v-else>
-      <pre>{{ data }}</pre>
-    </div>
-  </Query>
-</template>
-
-<script>
-import { Query } from 'villus';
-
-export default {
-  components: {
-    Query
-  }
-};
-</script>
-```
+There is also the higher-order component flavor if you prefer to use them instead. Check the docs for more examples and details.
 
 ---
 
