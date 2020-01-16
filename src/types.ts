@@ -8,7 +8,7 @@ export interface OperationResult<TData = any> {
 
 export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first';
 
-export type QueryVariables = { [k: string]: any };
+export type QueryVariables = Record<string, any>;
 
 export interface Operation<TVars = QueryVariables> {
   query: string | DocumentNode;

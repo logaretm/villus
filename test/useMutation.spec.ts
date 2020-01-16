@@ -2,6 +2,7 @@
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
 import { useClient, useMutation } from '../src/index';
+import { LikePostMutationResponse } from './server/typedSchema';
 
 test('runs mutations', async () => {
   const vm = mount({
@@ -10,7 +11,9 @@ test('runs mutations', async () => {
         url: 'https://test.com/graphql'
       });
 
-      const { data, execute } = useMutation({ query: 'mutation { likePost (id: 123) { message } }' });
+      const { data, execute } = useMutation<LikePostMutationResponse>({
+        query: 'mutation { likePost (id: 123) { message } }'
+      });
 
       return { data, execute };
     },

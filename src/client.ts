@@ -111,11 +111,15 @@ export class VqlClient {
     return lazyFetch();
   }
 
-  public async executeMutation(operation: Operation): Promise<OperationResult> {
+  public async executeMutation<TData = any, TVars = QueryVariables>(
+    operation: Operation<TVars>
+  ): Promise<OperationResult> {
     const fetchOptions = this.context ? this.context().fetchOptions : {};
     const opts = makeFetchOptions(operation, fetchOptions || {});
 
-    return this.fetch(this.url, opts).then(response => response.json());
+    return this.fetch(this.url, opts)
+      .then(response => response.json())
+      .then(res => res as OperationResult<TData>);
   }
 
   public executeSubscription(operation: Operation) {
