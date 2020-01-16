@@ -43,13 +43,6 @@ export const Query = {
     }
   },
   setup(props: QueryProps, ctx: SetupContext) {
-    // Checks if its suspended.
-    const query = (props.suspend ? useQuery.suspend : useQuery)({
-      ...toRefs(props),
-      lazy: props.lazy,
-      cachePolicy: props.cachePolicy
-    });
-
     function createRenderFn(api: ReturnType<typeof useQuery>) {
       const { data, errors, fetching, done, execute, pause, resume } = api;
       watch(
@@ -75,10 +68,16 @@ export const Query = {
       };
     }
 
-    if (query instanceof Promise) {
-      return query.then(createRenderFn);
+    const queryProps = {
+      ...toRefs(props),
+      lazy: props.lazy,
+      cachePolicy: props.cachePolicy
+    };
+
+    if (props.suspend) {
+      return useQuery.suspend(queryProps).then(createRenderFn);
     }
 
-    return createRenderFn(query);
+    return createRenderFn(useQuery(queryProps));
   }
 };

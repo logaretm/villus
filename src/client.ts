@@ -1,12 +1,12 @@
 import { makeCache } from './cache';
-import { OperationResult, CachePolicy, Operation, ObservableLike } from './types';
+import { OperationResult, CachePolicy, Operation, ObservableLike, QueryVariables } from './types';
 import { normalizeQuery } from './utils';
 
 type Fetcher = typeof fetch;
 
 type FetchOptions = Omit<RequestInit, 'body'>;
 
-interface CachedOperation extends Operation {
+interface CachedOperation<TVars = QueryVariables> extends Operation<TVars> {
   cachePolicy?: CachePolicy;
 }
 
@@ -80,7 +80,9 @@ export class VqlClient {
     this.subscriptionForwarder = opts.subscriptionForwarder;
   }
 
-  public async executeQuery(operation: CachedOperation): Promise<OperationResult> {
+  public async executeQuery<TData = any, TVars = QueryVariables>(
+    operation: CachedOperation<TVars>
+  ): Promise<OperationResult> {
     const fetchOptions = this.context ? this.context().fetchOptions : {};
     const opts = makeFetchOptions(operation, fetchOptions || {});
     const policy = operation.cachePolicy || this.defaultCachePolicy;
@@ -97,7 +99,7 @@ export class VqlClient {
             this.cache.afterQuery(operation, result);
           }
 
-          return result;
+          return result as OperationResult<TData>;
         });
 
     if (policy === 'cache-and-network' && cachedResult) {

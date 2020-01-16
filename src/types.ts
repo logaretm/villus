@@ -1,16 +1,18 @@
 import { Ref } from 'vue';
 import { DocumentNode } from 'graphql';
 
-export interface OperationResult {
-  data: any;
+export interface OperationResult<TData = any> {
+  data: TData;
   errors: any;
 }
 
 export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first';
 
-export interface Operation {
+export type QueryVariables = { [k: string]: any };
+
+export interface Operation<TVars = QueryVariables> {
   query: string | DocumentNode;
-  variables?: { [k: string]: any };
+  variables?: TVars;
 }
 
 export interface ObserverLike<T> {

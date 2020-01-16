@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
 import { useClient, useQuery } from '../src/index';
+import { Post } from './server/typedSchema';
 
 test('executes hook queries on mounted', async () => {
   const vm = mount({
@@ -12,7 +13,7 @@ test('executes hook queries on mounted', async () => {
         url: 'https://test.com/graphql'
       });
 
-      const { data } = useQuery({ query: '{ posts { id title } }' });
+      const { data } = useQuery<{ posts: Post[] }>({ query: '{ posts { id title } }' });
 
       return { data };
     },
