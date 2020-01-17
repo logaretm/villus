@@ -453,3 +453,59 @@ test('Fails if provider was not resolved', () => {
     expect(err.message).toContain('Cannot detect villus Client');
   }
 });
+
+test('Errors are stringified nicely to their messages', async () => {
+  (global as any).fetchController.simulateNetworkError = true;
+
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+
+      const { data, error } = useQuery({
+        query: '{ posts { id title } }'
+      });
+
+      return { data, error };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <h1>It shouldn't work!</h1>
+      </div>
+      <p id="error" v-if="error">{{ error.toString() }}</p>
+    </div>`
+  });
+
+  await flushPromises();
+  expect(document.querySelector('#error')?.textContent).toMatch(/Network Error/);
+});
+
+test('Errors can be separated by type', async () => {
+  (global as any).fetchController.simulateNetworkError = true;
+
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+
+      const { data, error } = useQuery({
+        query: '{ posts { id title } }'
+      });
+
+      return { data, error };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <h1>It shouldn't work!</h1>
+      </div>
+      <p id="error" v-if="error">{{ error.isGraphQLError ? 'GraphQL' : 'Network' }}</p>
+    </div>`
+  });
+
+  await flushPromises();
+  expect(document.querySelector('#error')?.textContent).toBe('Network');
+});
