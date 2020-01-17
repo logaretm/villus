@@ -8,11 +8,11 @@ interface SubscriptionCompositeOptions<TVars> {
   variables?: TVars;
 }
 
-export type Reducer<TData = any, TResult = any> = (prev: TResult | null, value: OperationResult<TData>) => TResult;
+export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value: OperationResult<TData>) => TResult;
 
 export const defaultReducer: Reducer = (_, val) => val.data;
 
-export function useSubscription<TData = any, TResult = any, TVars = QueryVariables>(
+export function useSubscription<TData = any, TResult = TData, TVars = QueryVariables>(
   { query, variables }: SubscriptionCompositeOptions<TVars>,
   reduce: Reducer<TData, TResult> = defaultReducer
 ) {
