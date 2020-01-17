@@ -1,41 +1,36 @@
 import { ref, Ref, inject } from 'vue';
-import { Operation } from './types';
+import { Operation, QueryVariables } from './types';
 import { VqlClient } from './client';
+import { CombinedError } from './utils';
 
 interface MutationCompositeOptions {
   query: Operation['query'];
 }
 
-export function useMutation({ query }: MutationCompositeOptions) {
+export function useMutation<TData = any, TVars = QueryVariables>({ query }: MutationCompositeOptions) {
   const client = inject('$villus') as VqlClient;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  const data: Ref<Record<string, any> | null> = ref(null);
+  const data: Ref<TData | null> = ref(null);
   const fetching = ref(false);
   const done = ref(false);
-  const errors: Ref<any[] | null> = ref(null);
+  const error: Ref<CombinedError | null> = ref(null);
 
-  async function execute(variables: Operation['variables'] = {}) {
-    try {
-      fetching.value = true;
-      const vars = variables || {};
-      const res = await client.executeMutation({
-        query,
-        variables: vars
-      });
+  async function execute(variables: TVars) {
+    fetching.value = true;
+    const vars = variables || {};
+    const res = await client.executeMutation<TData, TVars>({
+      query,
+      variables: vars as TVars // FIXME: fix this casting
+    });
 
-      data.value = res.data;
-      errors.value = res.errors;
-    } catch (err) {
-      errors.value = [err];
-      data.value = null;
-    } finally {
-      done.value = true;
-      fetching.value = false;
-    }
+    data.value = res.data;
+    error.value = res.error;
+    done.value = true;
+    fetching.value = false;
   }
 
-  return { data, fetching, done, errors, execute };
+  return { data, fetching, done, error, execute };
 }

@@ -1,7 +1,6 @@
 import { DocumentNode, print } from 'graphql';
 import stringify from 'fast-json-stable-stringify';
-import { SetupContext } from 'vue';
-import { Operation } from './types';
+import { Operation } from '../types';
 
 /**
  * Normalizes a query string or object to a string.
@@ -32,12 +31,4 @@ export function getQueryKey(operation: Operation) {
   const query = normalizeQuery(operation.query);
 
   return hash(`${query}${variables}`);
-}
-
-export function normalizeChildren(context: SetupContext, slotProps: any) {
-  if (!context.slots.default) {
-    return [];
-  }
-
-  return context.slots.default(slotProps) || [];
 }

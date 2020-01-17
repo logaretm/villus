@@ -16,7 +16,7 @@ export const Mutation = {
     }
   },
   setup(props: MutationProps, ctx: SetupContext) {
-    const { data, fetching, done, errors, execute } = useMutation({
+    const { data, fetching, done, error, execute } = useMutation({
       ...props
     });
 
@@ -25,7 +25,7 @@ export const Mutation = {
         data: data.value,
         fetching: fetching.value,
         done: done.value,
-        errors: errors.value,
+        error: error.value,
         execute
       });
     };

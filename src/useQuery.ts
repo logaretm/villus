@@ -1,46 +1,40 @@
 import stringify from 'fast-json-stable-stringify';
 import { ref, Ref, inject, isRef, onMounted, watch, readonly } from 'vue';
-import { CachePolicy, MaybeReactive, Operation } from './types';
+import { CachePolicy, MaybeReactive, Operation, QueryVariables } from './types';
 import { VqlClient } from './client';
-import { hash } from './utils';
+import { hash, CombinedError } from './utils';
 
-interface QueryCompositeOptions {
+interface QueryCompositeOptions<TVars> {
   query: MaybeReactive<Operation['query']>;
-  variables?: MaybeReactive<Operation['variables']>;
+  variables?: MaybeReactive<TVars>;
   cachePolicy?: CachePolicy;
   lazy?: boolean;
 }
 
-function _useQuery({ query, variables, cachePolicy }: QueryCompositeOptions) {
+function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryCompositeOptions<TVars>) {
   const client = inject('$villus') as VqlClient;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  const data: Ref<Record<string, any> | null> = ref(null);
+  const data: Ref<TData | null> = ref(null);
   const fetching = ref(false);
   const done = ref(false);
-  const errors: Ref<any[] | null> = ref(null);
+  const error: Ref<CombinedError | null> = ref(null);
 
   async function execute(overrideOpts: { cachePolicy?: CachePolicy } = {}) {
-    try {
-      fetching.value = true;
-      const vars = (isRef(variables) ? variables.value : variables) || {};
-      const res = await client.executeQuery({
-        query: isRef(query) ? query.value : query,
-        variables: vars,
-        cachePolicy: overrideOpts?.cachePolicy || cachePolicy
-      });
+    fetching.value = true;
+    const vars = (isRef(variables) ? variables.value : variables) || {};
+    const res = await client.executeQuery<TData, TVars>({
+      query: isRef(query) ? query.value : query,
+      variables: vars as TVars, // FIXME: Try to avoid casting
+      cachePolicy: overrideOpts?.cachePolicy || cachePolicy
+    });
 
-      data.value = res.data;
-      errors.value = res.errors;
-    } catch (err) {
-      errors.value = [err];
-      data.value = null;
-    } finally {
-      done.value = true;
-      fetching.value = false;
-    }
+    data.value = res.data;
+    error.value = res.error;
+    done.value = true;
+    fetching.value = false;
   }
 
   if (isRef(query)) {
@@ -88,11 +82,11 @@ function _useQuery({ query, variables, cachePolicy }: QueryCompositeOptions) {
 
   watchVars();
 
-  return { data, fetching, done, errors, execute, pause, paused: readonly(paused), resume };
+  return { data, fetching, done, error, execute, pause, paused: readonly(paused), resume };
 }
 
-function useQuery(opts: QueryCompositeOptions) {
-  const api = _useQuery(opts);
+function useQuery<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptions<TVars>) {
+  const api = _useQuery<TData, TVars>(opts);
   // Fetch on mounted if lazy is disabled.
   if (!opts.lazy) {
     onMounted(() => {
@@ -103,8 +97,8 @@ function useQuery(opts: QueryCompositeOptions) {
   return api;
 }
 
-async function useQueryAsync(opts: QueryCompositeOptions) {
-  const api = _useQuery(opts);
+async function useQueryAsync<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptions<TVars>) {
+  const api = _useQuery<TData, TVars>(opts);
   await api.execute();
 
   return api;

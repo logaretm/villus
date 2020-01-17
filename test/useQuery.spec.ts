@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
 import { useClient, useQuery } from '../src/index';
+import { Post } from './server/typedSchema';
 
 test('executes hook queries on mounted', async () => {
   const vm = mount({
@@ -12,12 +13,13 @@ test('executes hook queries on mounted', async () => {
         url: 'https://test.com/graphql'
       });
 
-      const { data } = useQuery({ query: '{ posts { id title } }' });
+      const { data, error } = useQuery<{ posts: Post[] }>({ query: '{ posts { id title } }' });
 
-      return { data };
+      return { data, error };
     },
     template: `
-    <div>
+    <div>'
+      <div>{{ error }}</div>
       <ul v-if="data">
         <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
       </ul>
@@ -25,7 +27,8 @@ test('executes hook queries on mounted', async () => {
   });
 
   await flushPromises();
-  expect(vm.$el.querySelectorAll('li').length).toBe(5);
+
+  expect(document.querySelectorAll('li').length).toBe(5);
 });
 
 test('works with tagged queries', async () => {
@@ -57,7 +60,7 @@ test('works with tagged queries', async () => {
   });
 
   await flushPromises();
-  expect(vm.$el.querySelectorAll('li').length).toBe(5);
+  expect(document.querySelectorAll('li').length).toBe(5);
 });
 
 test('caches queries by default', async () => {
@@ -82,7 +85,7 @@ test('caches queries by default', async () => {
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
 
-  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
   // cache was used.
   expect(fetch).toHaveBeenCalledTimes(1);
@@ -117,13 +120,13 @@ test('re-runs reactive queries automatically', async () => {
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
-  expect(vm.$el.querySelector('h1')?.textContent).toContain('12');
-  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
 
   await flushPromises();
   // fetch was triggered a second time, due to variable change.
   expect(fetch).toHaveBeenCalledTimes(2);
-  expect(vm.$el.querySelector('h1')?.textContent).toContain('13');
+  expect(document.querySelector('h1')?.textContent).toContain('13');
 });
 
 test('cache policy can be overridden with execute function', async () => {
@@ -149,7 +152,7 @@ test('cache policy can be overridden with execute function', async () => {
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
 
-  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
   // fetch was triggered a second time.
   expect(fetch).toHaveBeenCalledTimes(2);
@@ -178,7 +181,7 @@ test('cache policy can be overridden with cachePolicy option', async () => {
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
 
-  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
   // fetch was triggered a second time.
   expect(fetch).toHaveBeenCalledTimes(2);
@@ -213,13 +216,61 @@ test('variables are watched by default if reactive', async () => {
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
-  expect(vm.$el.querySelector('h1')?.textContent).toContain('12');
-  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
 
   await flushPromises();
   // fetch was triggered a second time, due to variable change.
   expect(fetch).toHaveBeenCalledTimes(2);
-  expect(vm.$el.querySelector('h1')?.textContent).toContain('13');
+  expect(document.querySelector('h1')?.textContent).toContain('13');
+});
+
+test('cached variables are matched by equality not reference', async () => {
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+
+      const variables = ref({
+        id: 12
+      });
+
+      const { data } = useQuery({
+        query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
+        variables
+      });
+
+      function updateRef() {
+        variables.value = { id: 12 };
+      }
+
+      return { data, variables, updateRef };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <h1>{{ data.post.title }}</h1>
+      </div>
+      <button @click="updateRef"></button>
+    </div>`
+  });
+
+  await flushPromises();
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+
+  await flushPromises();
+  // fetch was triggered a second time, due to variable change.
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+
+  await flushPromises();
+  // fetch was triggered a second time, due to variable change.
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(document.querySelector('h1')?.textContent).toContain('12');
 });
 
 test('variables watcher can be disabled', async () => {
@@ -253,22 +304,22 @@ test('variables watcher can be disabled', async () => {
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
-  expect(vm.$el.querySelector('h1')?.textContent).toContain('12');
-  vm.$el.querySelector('#toggle')?.dispatchEvent(new Event('click'));
-  vm.$el.querySelector('#change')?.dispatchEvent(new Event('click'));
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  document.querySelector('#toggle')?.dispatchEvent(new Event('click'));
+  document.querySelector('#change')?.dispatchEvent(new Event('click'));
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
-  expect(vm.$el.querySelector('h1')?.textContent).toContain('12');
-  expect(vm.$el.querySelector('#status')?.textContent).toContain('true');
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  expect(document.querySelector('#status')?.textContent).toContain('true');
 
   // toggle it back
-  vm.$el.querySelector('#toggle')?.dispatchEvent(new Event('click'));
-  vm.$el.querySelector('#change')?.dispatchEvent(new Event('click'));
+  document.querySelector('#toggle')?.dispatchEvent(new Event('click'));
+  document.querySelector('#change')?.dispatchEvent(new Event('click'));
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(2);
-  expect(vm.$el.querySelector('h1')?.textContent).toContain('14');
-  expect(vm.$el.querySelector('#status')?.textContent).toContain('false');
+  expect(document.querySelector('h1')?.textContent).toContain('14');
+  expect(document.querySelector('#status')?.textContent).toContain('false');
 });
 
 test('variables prop arrangement does not trigger queries', async () => {
@@ -301,9 +352,9 @@ test('variables prop arrangement does not trigger queries', async () => {
 
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
-  expect(vm.$el.querySelector('h1')?.textContent).toContain('12');
+  expect(document.querySelector('h1')?.textContent).toContain('12');
 
-  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
 });
@@ -344,7 +395,7 @@ test('can be suspended', async () => {
 
   expect(document.body.textContent).toBe('Loading...');
   await flushPromises();
-  expect(vm.$el.querySelectorAll('li').length).toBe(5);
+  expect(document.querySelectorAll('li').length).toBe(5);
 });
 
 test('Handles query errors', async () => {
@@ -354,26 +405,54 @@ test('Handles query errors', async () => {
         url: 'https://test.com/graphql'
       });
 
-      const { data, errors } = useQuery({
+      const { data, error } = useQuery({
         query: '{ posts { id title propNotFound } }'
       });
 
-      return { data, errors };
+      return { data, error };
     },
     template: `
     <div>
       <div v-if="data">
         <h1>It shouldn't work!</h1>
       </div>
-      <p id="error" v-if="errors">{{ errors[0].message }}</p>
+      <p id="error" v-if="error">{{ error.message }}</p>
     </div>`
   });
 
   await flushPromises();
-  expect(vm.$el.querySelector('#error')?.textContent).toMatch(/Cannot query field/);
+  expect(document.querySelector('#error')?.textContent).toMatch(/Cannot query field/);
 });
 
-test('Handles external errors', async () => {
+test('Handles parse errors', async () => {
+  (global as any).fetchController.simulateParseError = true;
+
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+
+      const { data, error } = useQuery({
+        query: '{ posts { id title } }'
+      });
+
+      return { data, error };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <h1>It shouldn't work!</h1>
+      </div>
+      <p id="error" v-if="error">{{ error.message }}</p>
+    </div>`
+  });
+
+  await flushPromises();
+  expect(document.querySelector('#error')?.textContent).toMatch(/Error parsing/);
+});
+
+test('Handles network errors', async () => {
   (global as any).fetchController.simulateNetworkError = true;
 
   const vm = mount({
@@ -382,32 +461,32 @@ test('Handles external errors', async () => {
         url: 'https://test.com/graphql'
       });
 
-      const { data, errors } = useQuery({
+      const { data, error } = useQuery({
         query: '{ posts { id title } }'
       });
 
-      return { data, errors };
+      return { data, error };
     },
     template: `
     <div>
       <div v-if="data">
         <h1>It shouldn't work!</h1>
       </div>
-      <p id="error" v-if="errors">{{ errors[0].message }}</p>
+      <p id="error" v-if="error">{{ error.message }}</p>
     </div>`
   });
 
   await flushPromises();
-  expect(vm.$el.querySelector('#error')?.textContent).toMatch(/Network Error/);
+  expect(document.querySelector('#error')?.textContent).toMatch(/Network Error/);
 });
 
 test('Fails if provider was not resolved', () => {
   try {
     mount({
       setup() {
-        const { data, errors } = useQuery({ query: `{ posts { id title } }` });
+        const { data, error } = useQuery({ query: `{ posts { id title } }` });
 
-        return { messages: data, errors };
+        return { messages: data, error };
       },
       template: `
       <div>
@@ -421,4 +500,60 @@ test('Fails if provider was not resolved', () => {
     // eslint-disable-next-line jest/no-try-expect
     expect(err.message).toContain('Cannot detect villus Client');
   }
+});
+
+test('Errors are stringified nicely to their messages', async () => {
+  (global as any).fetchController.simulateNetworkError = true;
+
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+
+      const { data, error } = useQuery({
+        query: '{ posts { id title } }'
+      });
+
+      return { data, error };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <h1>It shouldn't work!</h1>
+      </div>
+      <p id="error" v-if="error">{{ error.toString() }}</p>
+    </div>`
+  });
+
+  await flushPromises();
+  expect(document.querySelector('#error')?.textContent).toMatch(/Network Error/);
+});
+
+test('Errors can be separated by type', async () => {
+  (global as any).fetchController.simulateNetworkError = true;
+
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+
+      const { data, error } = useQuery({
+        query: '{ posts { id title } }'
+      });
+
+      return { data, error };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <h1>It shouldn't work!</h1>
+      </div>
+      <p id="error" v-if="error">{{ error.isGraphQLError ? 'GraphQL' : 'Network' }}</p>
+    </div>`
+  });
+
+  await flushPromises();
+  expect(document.querySelector('#error')?.textContent).toBe('Network');
 });

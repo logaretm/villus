@@ -1,30 +1,35 @@
 import { inject, ref, Ref, onMounted } from 'vue';
 import { VqlClient } from './client';
-import { Unsub, Operation, OperationResult } from './types';
+import { Unsub, Operation, OperationResult, QueryVariables } from './types';
+import { CombinedError } from './utils';
 
-interface SubscriptionCompositeOptions {
+interface SubscriptionCompositeOptions<TVars> {
   query: Operation['query'];
-  variables?: Operation['variables'];
+  variables?: TVars;
 }
 
-export type Reducer = (prev: any, value: OperationResult) => any;
+export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value: OperationResult<TData>) => TResult;
 
 export const defaultReducer: Reducer = (_, val) => val.data;
 
-export function useSubscription({ query, variables }: SubscriptionCompositeOptions, reduce: Reducer = defaultReducer) {
+export function useSubscription<TData = any, TResult = TData, TVars = QueryVariables>(
+  { query, variables }: SubscriptionCompositeOptions<TVars>,
+  reduce: Reducer<TData, TResult> = defaultReducer
+) {
   const client = inject('$villus') as VqlClient;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  const data: Ref<Record<string, any> | null> = ref(reduce(null, { data: null, errors: null }));
-  const errors: Ref<Error[] | null> = ref(null);
+  const data: Ref<TResult | null> = ref(reduce(null, { data: null, error: null }));
+  const error: Ref<CombinedError | null> = ref(null);
   const paused = ref(false);
 
   function initObserver() {
-    function handleState(result: OperationResult) {
-      data.value = reduce(data.value, result);
-      errors.value = result.errors;
+    function handler(result: OperationResult<TData>) {
+      // FIXME: very confused here.
+      data.value = reduce(data.value as TResult, result) as any;
+      error.value = result.error;
     }
 
     paused.value = false;
@@ -35,13 +40,13 @@ export function useSubscription({ query, variables }: SubscriptionCompositeOptio
         variables: variables || {}
       })
       .subscribe({
-        next: handleState,
+        next: handler,
         // eslint-disable-next-line
         complete() {},
         error(err) {
-          const result = { data: null, errors: [err] };
+          const result = { data: null, error: new CombinedError({ networkError: err, response: null }) };
 
-          return handleState(result);
+          return handler(result);
         }
       });
   }
@@ -62,5 +67,5 @@ export function useSubscription({ query, variables }: SubscriptionCompositeOptio
     observer = initObserver();
   }
 
-  return { data, errors, paused, pause, resume };
+  return { data, error, paused, pause, resume };
 }

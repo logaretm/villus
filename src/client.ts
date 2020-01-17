@@ -1,12 +1,13 @@
 import { makeCache } from './cache';
-import { OperationResult, CachePolicy, Operation, ObservableLike } from './types';
-import { normalizeQuery } from './utils';
+import { OperationResult, CachePolicy, Operation, ObservableLike, QueryVariables } from './types';
+import { normalizeQuery, CombinedError } from './utils';
+import { parseResponse } from './utils/network';
 
 type Fetcher = typeof fetch;
 
 type FetchOptions = Omit<RequestInit, 'body'>;
 
-interface CachedOperation extends Operation {
+interface CachedOperation<TVars = QueryVariables> extends Operation<TVars> {
   cachePolicy?: CachePolicy;
 }
 
@@ -16,7 +17,9 @@ interface GraphQLRequestContext {
 
 type ContextFactory = () => GraphQLRequestContext;
 
-type SubscriptionForwarder = (operation: Operation) => ObservableLike<OperationResult>;
+type SubscriptionForwarder<TData = any, TVars = QueryVariables> = (
+  operation: Operation<TVars>
+) => ObservableLike<OperationResult<TData>>;
 
 export interface VqlClientOptions {
   url: string;
@@ -80,7 +83,37 @@ export class VqlClient {
     this.subscriptionForwarder = opts.subscriptionForwarder;
   }
 
-  public async executeQuery(operation: CachedOperation): Promise<OperationResult> {
+  /**
+   * Executes an operation and returns a normalized response.
+   */
+  private async execute<TData>(opts: ReturnType<typeof makeFetchOptions>): Promise<OperationResult<TData>> {
+    let response;
+    try {
+      response = await this.fetch(this.url, opts);
+    } catch (err) {
+      return {
+        data: null,
+        error: new CombinedError({ response, networkError: err })
+      };
+    }
+
+    const parsed = await parseResponse<TData>(response);
+    if (!parsed.ok || !parsed.body) {
+      return {
+        data: null,
+        error: new CombinedError({ response: parsed, networkError: new Error(parsed.statusText) })
+      };
+    }
+
+    return {
+      data: parsed.body.data,
+      error: parsed.body.errors ? new CombinedError({ response: parsed, graphqlErrors: parsed.body.errors }) : null
+    };
+  }
+
+  public async executeQuery<TData = any, TVars = QueryVariables>(
+    operation: CachedOperation<TVars>
+  ): Promise<OperationResult> {
     const fetchOptions = this.context ? this.context().fetchOptions : {};
     const opts = makeFetchOptions(operation, fetchOptions || {});
     const policy = operation.cachePolicy || this.defaultCachePolicy;
@@ -89,39 +122,38 @@ export class VqlClient {
       return cachedResult;
     }
 
-    const lazyFetch = () =>
-      this.fetch(this.url, opts)
-        .then(response => response.json())
-        .then(result => {
-          if (policy !== 'network-only') {
-            this.cache.afterQuery(operation, result);
-          }
+    const cacheResult = (result: OperationResult<TData>) => {
+      if (policy !== 'network-only') {
+        this.cache.afterQuery(operation, result);
+      }
 
-          return result;
-        });
+      return result;
+    };
 
     if (policy === 'cache-and-network' && cachedResult) {
-      lazyFetch();
+      this.execute<TData>(opts).then(cacheResult);
 
       return cachedResult;
     }
 
-    return lazyFetch();
+    return this.execute<TData>(opts).then(cacheResult);
   }
 
-  public async executeMutation(operation: Operation): Promise<OperationResult> {
+  public async executeMutation<TData = any, TVars = QueryVariables>(
+    operation: Operation<TVars>
+  ): Promise<OperationResult> {
     const fetchOptions = this.context ? this.context().fetchOptions : {};
     const opts = makeFetchOptions(operation, fetchOptions || {});
 
-    return this.fetch(this.url, opts).then(response => response.json());
+    return this.execute<TData>(opts);
   }
 
-  public executeSubscription(operation: Operation) {
+  public executeSubscription<TData = any, TVars = QueryVariables>(operation: Operation<TVars>) {
     if (!this.subscriptionForwarder) {
       throw new Error('No subscription forwarder was set.');
     }
 
-    return this.subscriptionForwarder(operation);
+    return (this.subscriptionForwarder as SubscriptionForwarder<TData, TVars>)(operation);
   }
 }
 

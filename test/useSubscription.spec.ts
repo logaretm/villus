@@ -6,6 +6,11 @@ import { useClient, useSubscription } from '../src/index';
 
 jest.useFakeTimers();
 
+interface Message {
+  id: number;
+  message: string;
+}
+
 test('Default reducer', async () => {
   const vm = mount({
     setup() {
@@ -16,7 +21,7 @@ test('Default reducer', async () => {
         }
       });
 
-      const { data } = useSubscription({ query: `subscription { newMessages }` });
+      const { data } = useSubscription<Message>({ query: `subscription { newMessages }` });
 
       return { messages: data };
     },
@@ -31,7 +36,7 @@ test('Default reducer', async () => {
 
   jest.advanceTimersByTime(501);
   await flushPromises();
-  expect(vm.$el.querySelector('span')?.textContent).toBe('4');
+  expect(document.querySelector('span')?.textContent).toBe('4');
 });
 
 test('Handles subscriptions with a custom reducer', async () => {
@@ -44,15 +49,16 @@ test('Handles subscriptions with a custom reducer', async () => {
         }
       });
 
-      function reduce(oldMessages: string[], response: any) {
-        if (!response.data) {
-          return oldMessages || [];
+      const { data } = useSubscription<Message, string[]>(
+        { query: `subscription { newMessages }` },
+        (oldMessages, response) => {
+          if (!response.data || !oldMessages) {
+            return oldMessages || [];
+          }
+
+          return [...oldMessages, response.data.message];
         }
-
-        return [...oldMessages, response.data.message];
-      }
-
-      const { data } = useSubscription({ query: `subscription { newMessages }` }, reduce);
+      );
 
       return { messages: data };
     },
@@ -67,7 +73,7 @@ test('Handles subscriptions with a custom reducer', async () => {
 
   jest.advanceTimersByTime(501);
   await flushPromises();
-  expect(vm.$el.querySelectorAll('li')).toHaveLength(5);
+  expect(document.querySelectorAll('li')).toHaveLength(5);
 });
 
 test('Handles observer errors', async () => {
@@ -80,31 +86,31 @@ test('Handles observer errors', async () => {
         }
       });
 
-      function reduce(oldMessages: string[], response: any) {
-        if (!response.data) {
+      function reduce(oldMessages: string[] | null, response: any): string[] {
+        if (!response.data || !oldMessages) {
           return oldMessages || [];
         }
 
         return [...oldMessages, response.data.message];
       }
 
-      const { data, errors } = useSubscription({ query: `subscription { newMessages }` }, reduce);
+      const { data, error } = useSubscription({ query: `subscription { newMessages }` }, reduce);
 
-      return { messages: data, errors };
+      return { messages: data, error };
     },
     template: `
       <div>
         <ul v-for="message in messages">
           <li>{{ message.id }}</li>
         </ul>
-        <p id="error" v-if="errors">{{ errors[0].message }}</p>
+        <p id="error" v-if="error">{{ error.message }}</p>
       </div>
     `
   });
 
   jest.advanceTimersByTime(150);
   await flushPromises();
-  expect(vm.$el.querySelector('#error')?.textContent).toBe('oops!');
+  expect(document.querySelector('#error')?.textContent).toContain('oops!');
 });
 
 test('Pauses and resumes subscriptions', async () => {
@@ -117,8 +123,8 @@ test('Pauses and resumes subscriptions', async () => {
         }
       });
 
-      function reduce(oldMessages: string[], response: any) {
-        if (!response.data) {
+      function reduce(oldMessages: string[] | null, response: any) {
+        if (!response.data || !oldMessages) {
           return oldMessages || [];
         }
 
@@ -143,33 +149,33 @@ test('Pauses and resumes subscriptions', async () => {
   await flushPromises();
   jest.advanceTimersByTime(201);
   // pauses subscription
-  expect(vm.$el.querySelector('#status')?.textContent).toBe('false');
-  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+  expect(document.querySelector('#status')?.textContent).toBe('false');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  expect(vm.$el.querySelectorAll('li')).toHaveLength(2);
-  expect(vm.$el.querySelector('#status')?.textContent).toBe('true');
-  vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
+  expect(document.querySelectorAll('li')).toHaveLength(2);
+  expect(document.querySelector('#status')?.textContent).toBe('true');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
   jest.advanceTimersByTime(201);
   await flushPromises();
 
-  expect(vm.$el.querySelectorAll('li')).toHaveLength(4);
-  expect(vm.$el.querySelector('#status')?.textContent).toBe('false');
+  expect(document.querySelectorAll('li')).toHaveLength(4);
+  expect(document.querySelector('#status')?.textContent).toBe('false');
 });
 
 test('Fails if provider was not resolved', () => {
   try {
     mount({
       setup() {
-        const { data, errors } = useSubscription({ query: `subscription { newMessages }` });
+        const { data, error } = useSubscription({ query: `subscription { newMessages }` });
 
-        return { messages: data, errors };
+        return { messages: data, error };
       },
       template: `
       <div>
         <ul v-for="message in messages">
           <li>{{ message.id }}</li>
         </ul>
-        <p id="error" v-if="errors">{{ errors[0].message }}</p>
+        <p id="error" v-if="errors">{{ error.message }}</p>
       </div>
     `
     });
@@ -186,16 +192,16 @@ test('Fails if subscription forwarder was not set', () => {
         useClient({
           url: 'https://test.com/graphql'
         });
-        const { data, errors } = useSubscription({ query: `subscription { newMessages }` });
+        const { data, error } = useSubscription({ query: `subscription { newMessages }` });
 
-        return { messages: data, errors };
+        return { messages: data, error };
       },
       template: `
       <div>
         <ul v-for="message in messages">
           <li>{{ message.id }}</li>
         </ul>
-        <p id="error" v-if="errors">{{ errors[0].message }}</p>
+        <p id="error" v-if="error">{{ error.message }}</p>
       </div>
     `
     });

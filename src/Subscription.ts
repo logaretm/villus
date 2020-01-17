@@ -30,7 +30,7 @@ export const Subscription = {
     }
   },
   setup(props: SubscriptionProps, ctx: SetupContext) {
-    const { data, errors, pause, paused, resume } = useSubscription(
+    const { data, error, pause, paused, resume } = useSubscription(
       {
         ...props
       },
@@ -40,7 +40,7 @@ export const Subscription = {
     return () => {
       return normalizeChildren(ctx, {
         data: data.value,
-        errors: errors.value,
+        error: error.value,
         pause,
         paused: paused.value,
         resume
