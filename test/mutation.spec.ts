@@ -60,9 +60,9 @@ test('handles errors', async () => {
       <div>
         <Provider :client="client">
           <div>
-            <Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ errors, execute }">
-              <div v-if="errors">
-                <p>{{ errors[0].message }}</p>
+            <Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ error, execute }">
+              <div v-if="error">
+                <p>{{ error.message }}</p>
               </div>
               <button @click="execute()"></button>
             </Mutation>
@@ -74,5 +74,5 @@ test('handles errors', async () => {
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  expect(document.querySelector('p')?.textContent).toBe('Network Error');
+  expect(document.querySelector('p')?.textContent).toContain('Network Error');
 });

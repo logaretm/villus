@@ -44,7 +44,7 @@ export const Query = {
   },
   setup(props: QueryProps, ctx: SetupContext) {
     function createRenderFn(api: ReturnType<typeof useQuery>) {
-      const { data, errors, fetching, done, execute, pause, resume } = api;
+      const { data, error, fetching, done, execute, pause, resume } = api;
       watch(
         () => {
           if (props.pause === true) {
@@ -60,7 +60,7 @@ export const Query = {
       return () => {
         return normalizeChildren(ctx, {
           data: data.value,
-          errors: errors.value,
+          error: error.value,
           fetching: fetching.value,
           done: done.value,
           execute

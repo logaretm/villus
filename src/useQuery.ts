@@ -2,7 +2,7 @@ import stringify from 'fast-json-stable-stringify';
 import { ref, Ref, inject, isRef, onMounted, watch, readonly } from 'vue';
 import { CachePolicy, MaybeReactive, Operation, QueryVariables } from './types';
 import { VqlClient } from './client';
-import { hash } from './utils';
+import { hash, CombinedError } from './utils';
 
 interface QueryCompositeOptions<TVars> {
   query: MaybeReactive<Operation['query']>;
@@ -20,7 +20,7 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
   const data: Ref<TData | null> = ref(null);
   const fetching = ref(false);
   const done = ref(false);
-  const errors: Ref<any[] | null> = ref(null);
+  const error: Ref<CombinedError | null> = ref(null);
 
   async function execute(overrideOpts: { cachePolicy?: CachePolicy } = {}) {
     try {
@@ -33,9 +33,9 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
       });
 
       data.value = res.data;
-      errors.value = res.errors;
+      error.value = res.error;
     } catch (err) {
-      errors.value = [err];
+      error.value = err;
       data.value = null;
     } finally {
       done.value = true;
@@ -88,7 +88,7 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
 
   watchVars();
 
-  return { data, fetching, done, errors, execute, pause, paused: readonly(paused), resume };
+  return { data, fetching, done, error, execute, pause, paused: readonly(paused), resume };
 }
 
 function useQuery<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptions<TVars>) {

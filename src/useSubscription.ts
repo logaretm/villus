@@ -1,6 +1,7 @@
 import { inject, ref, Ref, onMounted } from 'vue';
 import { VqlClient } from './client';
 import { Unsub, Operation, OperationResult, QueryVariables } from './types';
+import { CombinedError } from './utils';
 
 interface SubscriptionCompositeOptions<TVars> {
   query: Operation['query'];
@@ -20,15 +21,15 @@ export function useSubscription<TData = any, TResult = any, TVars = QueryVariabl
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  const data: Ref<TResult | null> = ref(reduce(null, { data: null, errors: null }));
-  const errors: Ref<Error[] | null> = ref(null);
+  const data: Ref<TResult | null> = ref(reduce(null, { data: null, error: null }));
+  const error: Ref<CombinedError | null> = ref(null);
   const paused = ref(false);
 
   function initObserver() {
     function handler(result: OperationResult<TData>) {
       // FIXME: very confused here.
       data.value = reduce(data.value as TResult, result) as any;
-      errors.value = result.errors;
+      error.value = result.error;
     }
 
     paused.value = false;
@@ -43,7 +44,7 @@ export function useSubscription<TData = any, TResult = any, TVars = QueryVariabl
         // eslint-disable-next-line
         complete() {},
         error(err) {
-          const result = { data: null, errors: [err] };
+          const result = { data: null, error: new CombinedError({ networkError: err, response: null }) };
 
           return handler(result);
         }
@@ -66,5 +67,5 @@ export function useSubscription<TData = any, TResult = any, TVars = QueryVariabl
     observer = initObserver();
   }
 
-  return { data, errors, paused, pause, resume };
+  return { data, error, paused, pause, resume };
 }

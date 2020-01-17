@@ -1,6 +1,7 @@
 import { ref, Ref, inject } from 'vue';
 import { Operation, QueryVariables } from './types';
 import { VqlClient } from './client';
+import { CombinedError } from './utils';
 
 interface MutationCompositeOptions {
   query: Operation['query'];
@@ -15,7 +16,7 @@ export function useMutation<TData = any, TVars = QueryVariables>({ query }: Muta
   const data: Ref<TData | null> = ref(null);
   const fetching = ref(false);
   const done = ref(false);
-  const errors: Ref<any[] | null> = ref(null);
+  const error: Ref<CombinedError | null> = ref(null);
 
   async function execute(variables: TVars) {
     try {
@@ -27,9 +28,9 @@ export function useMutation<TData = any, TVars = QueryVariables>({ query }: Muta
       });
 
       data.value = res.data;
-      errors.value = res.errors;
+      error.value = res.error;
     } catch (err) {
-      errors.value = [err];
+      error.value = err;
       data.value = null;
     } finally {
       done.value = true;
@@ -37,5 +38,5 @@ export function useMutation<TData = any, TVars = QueryVariables>({ query }: Muta
     }
   }
 
-  return { data, fetching, done, errors, execute };
+  return { data, fetching, done, error, execute };
 }

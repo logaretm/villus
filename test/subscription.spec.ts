@@ -95,8 +95,8 @@ test('Handles observer errors', async () => {
     template: `
       <div>
         <Provider :client="client">
-          <Subscription query="subscription { newMessages }" v-slot="{ errors }">
-            <p v-if="errors">{{ errors[0].message }}</p>
+          <Subscription query="subscription { newMessages }" v-slot="{ error }">
+            <p v-if="error">{{ error.message }}</p>
           </Subscription>
         </Provider>
       </div>
@@ -105,7 +105,7 @@ test('Handles observer errors', async () => {
 
   await (global as any).sleep(150);
   await flushPromises();
-  expect(document.querySelector('p')?.textContent).toBe('oops!');
+  expect(document.querySelector('p')?.textContent).toContain('oops!');
 });
 
 test('Fails if provider was not resolved', async () => {

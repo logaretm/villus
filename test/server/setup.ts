@@ -46,6 +46,9 @@ beforeEach(() => {
     const res = await server.query(body.query, body.variables);
 
     return Promise.resolve({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
       json() {
         return res;
       }

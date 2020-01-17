@@ -1,9 +1,10 @@
 import { Ref } from 'vue';
 import { DocumentNode } from 'graphql';
+import { CombinedError } from './utils';
 
 export interface OperationResult<TData = any> {
   data: TData | null;
-  errors: any | null;
+  error: CombinedError | null;
 }
 
 export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first';
@@ -31,3 +32,8 @@ export interface ObservableLike<T> {
 }
 
 export type MaybeReactive<T> = T | Ref<T>;
+
+export interface GraphQLResponse<TData> {
+  data: TData;
+  errors: any;
+}
