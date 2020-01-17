@@ -392,3 +392,31 @@ test('Handles external errors', async () => {
   await flushPromises();
   expect(document.querySelector('#error')?.textContent).toMatch(/Network Error/);
 });
+
+test('Handles empty slots', async () => {
+  const client = createClient({
+    url: 'https://test.com/graphql'
+  });
+
+  (global as any).fetchController.simulateNetworkError = true;
+
+  mount({
+    data: () => ({
+      client
+    }),
+    components: {
+      Query,
+      Provider
+    },
+    template: `
+        <Provider :client="client">
+          <div id="body">
+            <Query query="{ posts { id title propNotFound } }" v-slot="{ data, error }"></Query>
+          </div>
+        </Provider>
+      `
+  });
+
+  await flushPromises();
+  expect(document.querySelector('#body')?.textContent).toBe('');
+});
