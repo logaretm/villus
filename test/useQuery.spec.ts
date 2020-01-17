@@ -225,6 +225,54 @@ test('variables are watched by default if reactive', async () => {
   expect(document.querySelector('h1')?.textContent).toContain('13');
 });
 
+test('cached variables are matched by equality not reference', async () => {
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+
+      const variables = ref({
+        id: 12
+      });
+
+      const { data } = useQuery({
+        query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
+        variables
+      });
+
+      function updateRef() {
+        variables.value = { id: 12 };
+      }
+
+      return { data, variables, updateRef };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <h1>{{ data.post.title }}</h1>
+      </div>
+      <button @click="updateRef"></button>
+    </div>`
+  });
+
+  await flushPromises();
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+
+  await flushPromises();
+  // fetch was triggered a second time, due to variable change.
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+
+  await flushPromises();
+  // fetch was triggered a second time, due to variable change.
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+});
+
 test('variables watcher can be disabled', async () => {
   const vm = mount({
     setup() {
