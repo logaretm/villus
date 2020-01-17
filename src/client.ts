@@ -16,7 +16,9 @@ interface GraphQLRequestContext {
 
 type ContextFactory = () => GraphQLRequestContext;
 
-type SubscriptionForwarder = (operation: Operation) => ObservableLike<OperationResult>;
+type SubscriptionForwarder<TData = any, TVars = QueryVariables> = (
+  operation: Operation<TVars>
+) => ObservableLike<OperationResult<TData>>;
 
 export interface VqlClientOptions {
   url: string;
@@ -122,12 +124,12 @@ export class VqlClient {
       .then(res => res as OperationResult<TData>);
   }
 
-  public executeSubscription(operation: Operation) {
+  public executeSubscription<TData = any, TVars = QueryVariables>(operation: Operation<TVars>) {
     if (!this.subscriptionForwarder) {
       throw new Error('No subscription forwarder was set.');
     }
 
-    return this.subscriptionForwarder(operation);
+    return (this.subscriptionForwarder as SubscriptionForwarder<TData, TVars>)(operation);
   }
 }
 

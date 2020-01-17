@@ -1,28 +1,31 @@
 import { inject, ref, Ref, onMounted } from 'vue';
 import { VqlClient } from './client';
-import { Unsub, Operation, OperationResult } from './types';
+import { Unsub, Operation, OperationResult, QueryVariables } from './types';
 
-interface SubscriptionCompositeOptions {
+interface SubscriptionCompositeOptions<TVars> {
   query: Operation['query'];
-  variables?: Operation['variables'];
+  variables?: TVars;
 }
 
-export type Reducer = (prev: any, value: OperationResult) => any;
+export type Reducer<TData = any, TResult = any> = (prev: TResult, value: OperationResult<TData>) => TResult;
 
 export const defaultReducer: Reducer = (_, val) => val.data;
 
-export function useSubscription({ query, variables }: SubscriptionCompositeOptions, reduce: Reducer = defaultReducer) {
+export function useSubscription<TData = any, TVars = QueryVariables>(
+  { query, variables }: SubscriptionCompositeOptions<TVars>,
+  reduce: Reducer<TData> = defaultReducer
+) {
   const client = inject('$villus') as VqlClient;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  const data: Ref<Record<string, any> | null> = ref(reduce(null, { data: null, errors: null }));
+  const data: Ref<TData | null> = ref(reduce(null, { data: null, errors: null }));
   const errors: Ref<Error[] | null> = ref(null);
   const paused = ref(false);
 
   function initObserver() {
-    function handleState(result: OperationResult) {
+    function handleState(result: OperationResult<TData>) {
       data.value = reduce(data.value, result);
       errors.value = result.errors;
     }

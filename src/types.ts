@@ -2,8 +2,8 @@ import { Ref } from 'vue';
 import { DocumentNode } from 'graphql';
 
 export interface OperationResult<TData = any> {
-  data: TData;
-  errors: any;
+  data: TData | null;
+  errors: any | null;
 }
 
 export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first';

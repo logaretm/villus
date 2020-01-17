@@ -6,6 +6,11 @@ import { useClient, useSubscription } from '../src/index';
 
 jest.useFakeTimers();
 
+interface Message {
+  id: number;
+  message: string;
+}
+
 test('Default reducer', async () => {
   const vm = mount({
     setup() {
@@ -16,7 +21,7 @@ test('Default reducer', async () => {
         }
       });
 
-      const { data } = useSubscription({ query: `subscription { newMessages }` });
+      const { data } = useSubscription<Message>({ query: `subscription { newMessages }` });
 
       return { messages: data };
     },
@@ -44,15 +49,13 @@ test('Handles subscriptions with a custom reducer', async () => {
         }
       });
 
-      function reduce(oldMessages: string[], response: any) {
+      const { data } = useSubscription<Message>({ query: `subscription { newMessages }` }, (oldMessages, response) => {
         if (!response.data) {
           return oldMessages || [];
         }
 
         return [...oldMessages, response.data.message];
-      }
-
-      const { data } = useSubscription({ query: `subscription { newMessages }` }, reduce);
+      });
 
       return { messages: data };
     },
