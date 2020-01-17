@@ -19,23 +19,17 @@ export function useMutation<TData = any, TVars = QueryVariables>({ query }: Muta
   const error: Ref<CombinedError | null> = ref(null);
 
   async function execute(variables: TVars) {
-    try {
-      fetching.value = true;
-      const vars = variables || {};
-      const res = await client.executeMutation<TData, TVars>({
-        query,
-        variables: vars as TVars // FIXME: fix this casting
-      });
+    fetching.value = true;
+    const vars = variables || {};
+    const res = await client.executeMutation<TData, TVars>({
+      query,
+      variables: vars as TVars // FIXME: fix this casting
+    });
 
-      data.value = res.data;
-      error.value = res.error;
-    } catch (err) {
-      error.value = err;
-      data.value = null;
-    } finally {
-      done.value = true;
-      fetching.value = false;
-    }
+    data.value = res.data;
+    error.value = res.error;
+    done.value = true;
+    fetching.value = false;
   }
 
   return { data, fetching, done, error, execute };

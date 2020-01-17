@@ -31,7 +31,8 @@ const server = mockServer(schema, {
 
 beforeEach(() => {
   const fetchController = {
-    simulateNetworkError: false
+    simulateNetworkError: false,
+    simulateParseError: false
   };
 
   (global as any).fetchController = fetchController;
@@ -50,6 +51,10 @@ beforeEach(() => {
       status: 200,
       statusText: 'OK',
       json() {
+        if (fetchController.simulateParseError) {
+          throw new Error('Error parsing, unexpected token <');
+        }
+
         return res;
       }
     });

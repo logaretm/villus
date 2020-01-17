@@ -376,7 +376,35 @@ test('Handles query errors', async () => {
   expect(document.querySelector('#error')?.textContent).toMatch(/Cannot query field/);
 });
 
-test('Handles external errors', async () => {
+test('Handles parse errors', async () => {
+  (global as any).fetchController.simulateParseError = true;
+
+  const vm = mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql'
+      });
+
+      const { data, error } = useQuery({
+        query: '{ posts { id title } }'
+      });
+
+      return { data, error };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <h1>It shouldn't work!</h1>
+      </div>
+      <p id="error" v-if="error">{{ error.message }}</p>
+    </div>`
+  });
+
+  await flushPromises();
+  expect(document.querySelector('#error')?.textContent).toMatch(/Error parsing/);
+});
+
+test('Handles network errors', async () => {
   (global as any).fetchController.simulateNetworkError = true;
 
   const vm = mount({

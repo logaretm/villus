@@ -23,24 +23,18 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
   const error: Ref<CombinedError | null> = ref(null);
 
   async function execute(overrideOpts: { cachePolicy?: CachePolicy } = {}) {
-    try {
-      fetching.value = true;
-      const vars = (isRef(variables) ? variables.value : variables) || {};
-      const res = await client.executeQuery<TData, TVars>({
-        query: isRef(query) ? query.value : query,
-        variables: vars as TVars, // FIXME: Try to avoid casting
-        cachePolicy: overrideOpts?.cachePolicy || cachePolicy
-      });
+    fetching.value = true;
+    const vars = (isRef(variables) ? variables.value : variables) || {};
+    const res = await client.executeQuery<TData, TVars>({
+      query: isRef(query) ? query.value : query,
+      variables: vars as TVars, // FIXME: Try to avoid casting
+      cachePolicy: overrideOpts?.cachePolicy || cachePolicy
+    });
 
-      data.value = res.data;
-      error.value = res.error;
-    } catch (err) {
-      error.value = err;
-      data.value = null;
-    } finally {
-      done.value = true;
-      fetching.value = false;
-    }
+    data.value = res.data;
+    error.value = res.error;
+    done.value = true;
+    fetching.value = false;
   }
 
   if (isRef(query)) {

@@ -9,16 +9,24 @@ interface ParsedResponse<TData> {
 
 export async function parseResponse<TData>(response: Response): Promise<ParsedResponse<TData>> {
   let json: GraphQLResponse<TData>;
+  const responseData = {
+    ok: response.ok,
+    statusText: response.statusText,
+    status: response.status
+  };
+
   try {
     json = await response.json();
-  } catch {
-    return response as ParsedResponse<TData>;
+  } catch (err) {
+    return {
+      ...responseData,
+      statusText: err.message,
+      body: null
+    };
   }
 
   return {
-    ok: response.ok,
-    statusText: response.statusText,
-    status: response.status,
+    ...responseData,
     body: json
   };
 }
