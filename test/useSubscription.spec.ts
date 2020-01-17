@@ -49,13 +49,16 @@ test('Handles subscriptions with a custom reducer', async () => {
         }
       });
 
-      const { data } = useSubscription<Message>({ query: `subscription { newMessages }` }, (oldMessages, response) => {
-        if (!response.data) {
-          return oldMessages || [];
-        }
+      const { data } = useSubscription<Message, string[]>(
+        { query: `subscription { newMessages }` },
+        (oldMessages, response) => {
+          if (!response.data || !oldMessages) {
+            return oldMessages || [];
+          }
 
-        return [...oldMessages, response.data.message];
-      });
+          return [...oldMessages, response.data.message];
+        }
+      );
 
       return { messages: data };
     },
@@ -83,8 +86,8 @@ test('Handles observer errors', async () => {
         }
       });
 
-      function reduce(oldMessages: string[], response: any) {
-        if (!response.data) {
+      function reduce(oldMessages: string[] | null, response: any): string[] {
+        if (!response.data || !oldMessages) {
           return oldMessages || [];
         }
 
@@ -120,8 +123,8 @@ test('Pauses and resumes subscriptions', async () => {
         }
       });
 
-      function reduce(oldMessages: string[], response: any) {
-        if (!response.data) {
+      function reduce(oldMessages: string[] | null, response: any) {
+        if (!response.data || !oldMessages) {
           return oldMessages || [];
         }
 

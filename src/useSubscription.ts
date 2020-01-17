@@ -7,26 +7,27 @@ interface SubscriptionCompositeOptions<TVars> {
   variables?: TVars;
 }
 
-export type Reducer<TData = any, TResult = any> = (prev: TResult, value: OperationResult<TData>) => TResult;
+export type Reducer<TData = any, TResult = any> = (prev: TResult | null, value: OperationResult<TData>) => TResult;
 
 export const defaultReducer: Reducer = (_, val) => val.data;
 
-export function useSubscription<TData = any, TVars = QueryVariables>(
+export function useSubscription<TData = any, TResult = any, TVars = QueryVariables>(
   { query, variables }: SubscriptionCompositeOptions<TVars>,
-  reduce: Reducer<TData> = defaultReducer
+  reduce: Reducer<TData, TResult> = defaultReducer
 ) {
   const client = inject('$villus') as VqlClient;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  const data: Ref<TData | null> = ref(reduce(null, { data: null, errors: null }));
+  const data: Ref<TResult | null> = ref(reduce(null, { data: null, errors: null }));
   const errors: Ref<Error[] | null> = ref(null);
   const paused = ref(false);
 
   function initObserver() {
-    function handleState(result: OperationResult<TData>) {
-      data.value = reduce(data.value, result);
+    function handler(result: OperationResult<TData>) {
+      // FIXME: very confused here.
+      data.value = reduce(data.value as TResult, result) as any;
       errors.value = result.errors;
     }
 
@@ -38,13 +39,13 @@ export function useSubscription<TData = any, TVars = QueryVariables>(
         variables: variables || {}
       })
       .subscribe({
-        next: handleState,
+        next: handler,
         // eslint-disable-next-line
         complete() {},
         error(err) {
           const result = { data: null, errors: [err] };
 
-          return handleState(result);
+          return handler(result);
         }
       });
   }
