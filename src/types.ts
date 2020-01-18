@@ -37,3 +37,7 @@ export interface GraphQLResponse<TData> {
   data: TData;
   errors: any;
 }
+
+export type Fetcher = typeof fetch;
+
+export type FetchOptions = Omit<RequestInit, 'body'>;

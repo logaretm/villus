@@ -7,3 +7,4 @@ export { useClient } from './useClient';
 export { useQuery } from './useQuery';
 export { useMutation } from './useMutation';
 export { useSubscription } from './useSubscription';
+export * from './composers';
