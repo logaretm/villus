@@ -90,11 +90,11 @@
     "*.ts": [
       "eslint --fix",
       "prettier --write",
-      "git add",
       "jest --maxWorkers=1 --bail --findRelatedTests"
     ],
     "*.js": [
-      "git add"
+      "eslint --fix",
+      "prettier --write"
     ]
   },
   "dependencies": {
