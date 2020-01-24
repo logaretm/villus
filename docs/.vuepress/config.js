@@ -1,5 +1,14 @@
 const sidebars = {
-  guide: ['', 'client', 'queries', 'mutations', 'headers', 'subscriptions', 'using-the-client-manually']
+  guide: [
+    '',
+    'client',
+    'queries',
+    'mutations',
+    'headers',
+    'subscriptions',
+    'query-batching',
+    'using-the-client-manually'
+  ]
 };
 
 function genSidebarConfig(...names) {
