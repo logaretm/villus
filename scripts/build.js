@@ -1,9 +1,6 @@
-const mkdirpNode = require('mkdirp');
+const mkdirp = require('mkdirp');
 const chalk = require('chalk');
-const { promisify } = require('util');
 const { configs, utils, paths } = require('./config');
-
-const mkdirp = promisify(mkdirpNode);
 
 async function build() {
   await mkdirp(paths.dist);
