@@ -18,7 +18,7 @@ interface GraphQLRequestContext {
   fetchOptions?: FetchOptions;
 }
 
-type ContextFactory = () => GraphQLRequestContext;
+type ContextFactory = () => GraphQLRequestContext | Promise<GraphQLRequestContext>;
 
 type SubscriptionForwarder<TData = any, TVars = QueryVariables> = (
   operation: Operation<TVars>
@@ -88,7 +88,13 @@ export class VqlClient {
   public async executeQuery<TData = any, TVars = QueryVariables>(
     operation: CachedOperation<TVars>
   ): Promise<OperationResult> {
-    const fetchOptions = this.context ? this.context().fetchOptions : {};
+    let fetchOptions = null;
+    const contextResult = this.context ? this.context() : {};
+    if (contextResult instanceof Promise) {
+      fetchOptions = (await contextResult).fetchOptions;
+    } else {
+      fetchOptions = contextResult.fetchOptions;
+    }
     const opts = makeFetchOptions(operation, fetchOptions || {});
     const policy = operation.cachePolicy || this.defaultCachePolicy;
     const cachedResult = this.cache.getCachedResult(operation);
@@ -116,7 +122,13 @@ export class VqlClient {
   public async executeMutation<TData = any, TVars = QueryVariables>(
     operation: Operation<TVars>
   ): Promise<OperationResult> {
-    const fetchOptions = this.context ? this.context().fetchOptions : {};
+    let fetchOptions = null;
+    const contextResult = this.context ? this.context() : {};
+    if (contextResult instanceof Promise) {
+      fetchOptions = (await contextResult).fetchOptions;
+    } else {
+      fetchOptions = contextResult.fetchOptions;
+    }
     const opts = makeFetchOptions(operation, fetchOptions || {});
 
     return this.execute<TData>(opts);
