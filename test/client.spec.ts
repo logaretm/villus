@@ -23,3 +23,24 @@ test('fails if executes an non-provided query', async () => {
     expect(err.message).toMatch(/A query must be provide/);
   }
 });
+
+test('supports async context', async () => {
+  const client = createClient({
+    url: 'https://test.com/graphql',
+    context: async () => {
+      return {
+        fetchOptions: {
+          headers: {
+            Authorization: 'bearer TOKEN'
+          }
+        }
+      };
+    }
+  });
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
+  const { data } = await client.executeQuery({ query: '{ posts { id title } }' });
+
+  expect(data).toBeDefined();
+});
