@@ -2,7 +2,7 @@
 import { ref, computed } from '@vue/composition-api';
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
-import { useClient, useQuery } from '../src/index';
+import { useClient, useQuery, batcher } from '../src/index';
 
 test('executes hook queries on mounted', async () => {
   const vm = mount({
@@ -349,4 +349,35 @@ test('Fails if provider was not resolved', () => {
     // eslint-disable-next-line jest/no-try-expect
     expect(err.message).toContain('Cannot detect villus Client');
   }
+});
+
+test('batches queries with batcher', async () => {
+  jest.useFakeTimers();
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        fetch: batcher()
+      });
+
+      const firstQuery = useQuery({ query: '{ posts { title } }' });
+      const secondQuery = useQuery({ query: '{ posts { id } }' });
+
+      return { postsWithTitle: firstQuery.data, postsWithId: secondQuery.data };
+    },
+    template: `
+    <div>
+      <ul v-if="postsWithTitle">
+        <li v-for="post in postsWithTitle.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+      <ul v-if="postsWithId">
+        <li v-for="post in postsWithId.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </div>`
+  });
+
+  jest.advanceTimersByTime(100);
+  await flushPromises();
+  expect(fetch).toHaveBeenCalledTimes(1);
+  jest.useRealTimers();
 });
