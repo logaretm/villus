@@ -1,6 +1,7 @@
 import { VqlClient } from './client';
 import { Unsub, Operation, OperationResult } from './types';
 import { inject, ref, Ref, onMounted } from '@vue/composition-api';
+import { CombinedError } from './utils';
 
 interface SubscriptionCompositeOptions {
   query: Operation['query'];
@@ -18,14 +19,14 @@ export function useSubscription(
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  const data: Ref<Record<string, any> | null> = ref(reduce(null, { data: null, errors: null }));
-  const errors: Ref<Error[] | null> = ref(null);
+  const data: Ref<Record<string, any> | null> = ref(reduce(null, { data: null, error: null }));
+  const error: Ref<CombinedError | null> = ref(null);
   const paused = ref(false);
 
   function initObserver() {
     function handleState(result: OperationResult) {
       data.value = reduce(data.value, result);
-      errors.value = result.errors;
+      error.value = result.error;
     }
 
     paused.value = false;
@@ -40,7 +41,7 @@ export function useSubscription(
         // eslint-disable-next-line
         complete() {},
         error(err) {
-          const result = { data: null, errors: [err] };
+          const result = { data: null, error: new CombinedError({ response: null, networkError: err }) };
 
           return handleState(result);
         }
@@ -63,5 +64,5 @@ export function useSubscription(
     observer = initObserver();
   }
 
-  return { data, errors, paused, pause, resume };
+  return { data, error, paused, pause, resume };
 }

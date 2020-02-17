@@ -2,7 +2,7 @@ import stringify from 'fast-json-stable-stringify';
 import { ref, Ref, inject, isRef, onMounted, watch } from '@vue/composition-api';
 import { CachePolicy, MaybeReactive, Operation } from './types';
 import { VqlClient } from './client';
-import { hash } from './utils';
+import { hash, CombinedError } from './utils';
 
 interface QueryCompositeOptions {
   query: MaybeReactive<Operation['query']>;
@@ -20,7 +20,7 @@ export function useQuery({ query, variables, cachePolicy, lazy }: QueryComposite
   const data: Ref<Record<string, any> | null> = ref(null);
   const fetching = ref(false);
   const done = ref(false);
-  const errors: Ref<any[] | null> = ref(null);
+  const error: Ref<CombinedError | null> = ref(null);
 
   async function execute(overrideOpts: { cachePolicy?: CachePolicy } = {}) {
     try {
@@ -33,9 +33,9 @@ export function useQuery({ query, variables, cachePolicy, lazy }: QueryComposite
       });
 
       data.value = res.data;
-      errors.value = res.errors;
+      error.value = res.error;
     } catch (err) {
-      errors.value = [err];
+      error.value = new CombinedError({ networkError: err, response: null });
       data.value = null;
     } finally {
       done.value = true;
@@ -93,5 +93,5 @@ export function useQuery({ query, variables, cachePolicy, lazy }: QueryComposite
 
   watchVars();
 
-  return { data, fetching, done, errors, execute, pause, paused, resume };
+  return { data, fetching, done, error, execute, pause, paused, resume };
 }
