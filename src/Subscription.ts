@@ -1,15 +1,15 @@
 import Vue, { VueConstructor } from 'vue';
 import { VqlClient } from './client';
-import { normalizeChildren } from './utils';
+import { normalizeChildren, CombinedError } from './utils';
 import { Unsub } from './types';
 
 function componentData() {
   const data: any = null;
-  const errors: any = null;
+  const error: CombinedError | null = null;
 
   return {
     data,
-    errors,
+    error,
     fetching: false
   };
 }
@@ -55,13 +55,17 @@ export const Subscription = (Vue as withVqlClient).extend({
       .subscribe({
         next(result) {
           self.data = result.data;
-          self.errors = result.errors;
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
+          self.error = result.error;
         },
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         complete() {},
         error(err) {
           self.data = undefined;
-          self.errors = [err];
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
+          self.error = new CombinedError({ networkError: err, response: null });
         }
       });
   },
@@ -73,7 +77,7 @@ export const Subscription = (Vue as withVqlClient).extend({
   render(h) {
     const children = normalizeChildren(this, {
       data: this.data,
-      errors: this.errors,
+      error: this.error,
       fetching: this.fetching
     });
 

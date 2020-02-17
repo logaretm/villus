@@ -1,6 +1,6 @@
 import Vue, { VueConstructor } from 'vue';
 import { VqlClient } from './client';
-import { normalizeChildren } from './utils';
+import { normalizeChildren, CombinedError } from './utils';
 
 type withVqlClient = VueConstructor<
   Vue & {
@@ -10,11 +10,11 @@ type withVqlClient = VueConstructor<
 
 function componentData() {
   const data: any = null;
-  const errors: any = null;
+  const error: CombinedError | null = null;
 
   return {
     data,
-    errors,
+    error,
     fetching: false,
     done: false
   };
@@ -38,19 +38,23 @@ export const Mutation = (Vue as withVqlClient).extend({
 
       try {
         this.data = null;
-        this.errors = null;
+        this.error = null;
         this.fetching = true;
         this.done = false;
-        const { data, errors } = await this.$villus.executeMutation({
+        const { data, error } = await this.$villus.executeMutation({
           query: this.query,
           variables: vars || undefined
         });
 
         this.data = data;
-        this.errors = errors;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        this.error = error;
         this.done = true;
       } catch (err) {
-        this.errors = [err];
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        this.error = new CombinedError({ networkError: err, response: null });
         this.data = null;
         this.done = false;
       } finally {
@@ -61,7 +65,7 @@ export const Mutation = (Vue as withVqlClient).extend({
   render(h) {
     const children = normalizeChildren(this, {
       data: this.data,
-      errors: this.errors,
+      error: this.error,
       fetching: this.fetching,
       done: this.done,
       execute: this.mutate

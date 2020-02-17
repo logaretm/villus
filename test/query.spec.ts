@@ -315,11 +315,11 @@ test('Handles query errors', async () => {
       template: `
         <Provider :client="client">
           <div>
-            <Query query="{ posts { id title propNotFound } }" v-slot="{ data, errors }">
+            <Query query="{ posts { id title propNotFound } }" v-slot="{ data, error }">
               <ul v-if="data">
                 <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
               </ul>
-              <p id="error" v-if="errors">{{ errors[0].message }}</p>
+              <p id="error" v-if="error">{{ error.message }}</p>
             </Query>
           </div>
         </Provider>
@@ -351,11 +351,11 @@ test('Handles external errors', async () => {
       template: `
         <Provider :client="client">
           <div>
-            <Query query="{ posts { id title propNotFound } }" v-slot="{ data, errors }">
+            <Query query="{ posts { id title propNotFound } }" v-slot="{ data, error }">
               <ul v-if="data">
                 <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
               </ul>
-              <p id="error" v-if="errors">{{ errors[0].message }}</p>
+              <p id="error" v-if="error">{{ error.message }}</p>
             </Query>
           </div>
         </Provider>

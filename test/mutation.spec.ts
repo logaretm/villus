@@ -63,9 +63,9 @@ test('handles errors', async () => {
       <div>
         <Provider :client="client">
           <div>
-            <Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ errors, execute }">
-              <div v-if="errors">
-                <p>{{ errors[0].message }}</p>
+            <Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ error, execute }">
+              <div v-if="error">
+                <p>{{ error.message }}</p>
               </div>
               <button @click="execute()"></button>
             </Mutation>
@@ -79,5 +79,5 @@ test('handles errors', async () => {
 
   wrapper.find('button').trigger('click');
   await flushPromises();
-  expect(wrapper.find('p').text()).toBe('Network Error');
+  expect(wrapper.find('p').text()).toContain('Network Error');
 });

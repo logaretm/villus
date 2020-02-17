@@ -282,18 +282,18 @@ test('Handles query errors', async () => {
         url: 'https://test.com/graphql'
       });
 
-      const { data, errors } = useQuery({
+      const { data, error } = useQuery({
         query: '{ posts { id title propNotFound } }'
       });
 
-      return { data, errors };
+      return { data, error };
     },
     template: `
     <div>
       <div v-if="data">
         <h1>It shouldn't work!</h1>
       </div>
-      <p id="error" v-if="errors">{{ errors[0].message }}</p>
+      <p id="error" v-if="error">{{ error.message }}</p>
     </div>`
   });
 
@@ -310,18 +310,18 @@ test('Handles external errors', async () => {
         url: 'https://test.com/graphql'
       });
 
-      const { data, errors } = useQuery({
+      const { data, error } = useQuery({
         query: '{ posts { id title } }'
       });
 
-      return { data, errors };
+      return { data, error };
     },
     template: `
     <div>
       <div v-if="data">
         <h1>It shouldn't work!</h1>
       </div>
-      <p id="error" v-if="errors">{{ errors[0].message }}</p>
+      <p id="error" v-if="error">{{ error.message }}</p>
     </div>`
   });
 
@@ -333,9 +333,9 @@ test('Fails if provider was not resolved', () => {
   try {
     mount({
       setup() {
-        const { data, errors } = useQuery({ query: `{ posts { id title } }` });
+        const { data, error } = useQuery({ query: `{ posts { id title } }` });
 
-        return { messages: data, errors };
+        return { messages: data, error };
       },
       template: `
       <div>

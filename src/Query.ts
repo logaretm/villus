@@ -2,7 +2,7 @@ import Vue, { VueConstructor } from 'vue';
 import stringify from 'fast-json-stable-stringify';
 import { CachePolicy } from './types';
 import { VqlClient } from './client';
-import { normalizeVariables, normalizeChildren, hash } from './utils';
+import { normalizeChildren, hash, CombinedError } from './utils';
 
 type withVqlClient = VueConstructor<
   Vue & {
@@ -13,11 +13,11 @@ type withVqlClient = VueConstructor<
 
 function componentData() {
   const data: any = null;
-  const errors: any = null;
+  const error: CombinedError | null = null;
 
   return {
     data,
-    errors,
+    error,
     fetching: false,
     done: false
   };
@@ -50,10 +50,6 @@ export const Query = (Vue as withVqlClient).extend({
     }
   },
   data: componentData,
-  serverPrefetch() {
-    // fetch it on the server-side.
-    return (this as any).fetch();
-  },
   watch: {
     variables: {
       deep: true,
@@ -81,16 +77,20 @@ export const Query = (Vue as withVqlClient).extend({
 
       try {
         this.fetching = true;
-        const { data, errors } = await this.$villus.executeQuery({
+        const { data, error } = await this.$villus.executeQuery({
           query: this.query,
-          variables: normalizeVariables(this.variables, vars || {}),
+          variables: { ...this.variables, ...vars },
           cachePolicy: cachePolicy || (this.cachePolicy as CachePolicy)
         });
 
         this.data = data;
-        this.errors = errors;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        this.error = error as CombinedError;
       } catch (err) {
-        this.errors = [err];
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        this.error = new CombinedError({ networkError: err, response: null });
         this.data = null;
       } finally {
         this.done = true;
@@ -108,7 +108,7 @@ export const Query = (Vue as withVqlClient).extend({
   render(h) {
     const children = normalizeChildren(this, {
       data: this.data,
-      errors: this.errors,
+      error: this.error,
       fetching: this.fetching,
       done: this.done,
       execute: ({ cachePolicy }: { cachePolicy?: CachePolicy } = {}) => this.fetch({}, cachePolicy)

@@ -90,23 +90,23 @@ test('Handles observer errors', async () => {
         return [...oldMessages, response.data.message];
       }
 
-      const { data, errors } = useSubscription({ query: `subscription { newMessages }` }, reduce);
+      const { data, error } = useSubscription({ query: `subscription { newMessages }` }, reduce);
 
-      return { messages: data, errors };
+      return { messages: data, error };
     },
     template: `
       <div>
         <ul v-for="message in messages">
           <li>{{ message.id }}</li>
         </ul>
-        <p id="error" v-if="errors">{{ errors[0].message }}</p>
+        <p id="error" v-if="error">{{ error.message }}</p>
       </div>
     `
   });
 
   jest.advanceTimersByTime(150);
   await flushPromises();
-  expect(vm.$el.querySelector('#error')?.textContent).toBe('oops!');
+  expect(vm.$el.querySelector('#error')?.textContent).toContain('oops!');
   vm.$destroy();
 });
 
@@ -164,16 +164,16 @@ test('Fails if provider was not resolved', () => {
   try {
     mount({
       setup() {
-        const { data, errors } = useSubscription({ query: `subscription { newMessages }` });
+        const { data, error } = useSubscription({ query: `subscription { newMessages }` });
 
-        return { messages: data, errors };
+        return { messages: data, error };
       },
       template: `
       <div>
         <ul v-for="message in messages">
           <li>{{ message.id }}</li>
         </ul>
-        <p id="error" v-if="errors">{{ errors[0].message }}</p>
+        <p id="error" v-if="error">{{ error.message }}</p>
       </div>
     `
     });

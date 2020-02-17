@@ -74,23 +74,23 @@ test('handles external errors', async () => {
         url: 'https://test.com/graphql'
       });
 
-      const { data, execute, errors } = useMutation({ query: 'mutation { likePost (id: 123) { message } }' });
+      const { data, execute, error } = useMutation({ query: 'mutation { likePost (id: 123) { message } }' });
 
-      return { data, execute, errors };
+      return { data, execute, error };
     },
     template: `
     <div>
       <div v-if="data">
         <p>{{ data.likePost.message }}</p>
       </div>
-      <p id="error" v-if="errors">{{ errors[0].message }}</p>
+      <p id="error" v-if="error">{{ error.message }}</p>
       <button @click="execute()"></button>
     </div>`
   });
 
   vm.$el.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  expect(vm.$el.querySelector('#error')?.textContent).toBe('Network Error');
+  expect(vm.$el.querySelector('#error')?.textContent).toContain('Network Error');
 });
 
 test('Fails if provider was not resolved', () => {
