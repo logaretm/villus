@@ -5,7 +5,7 @@
   "module": "dist/villus.esm.js",
   "unpkg": "dist/villus.js",
   "main": "dist/villus.js",
-  "types": "dist/types/src",
+  "types": "dist/villus.d.ts",
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
@@ -13,14 +13,16 @@
     "test": "jest",
     "test:cover": "jest --coverage",
     "lint": "eslint . '**/*.{js,jsx,ts,tsx}' --fix",
-    "build": "node scripts/build.js && npm run ts:defs",
+    "build": "node scripts/build.js && npm run ts:defs && npm run ts:bundle",
     "ts:defs": "tsc --emitDeclarationOnly",
+    "ts:bundle": "api-extractor run --local --verbose",
     "prepublishOnly": "npm run build"
   },
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
+    "@microsoft/api-extractor": "^7.7.8",
     "@types/fast-json-stable-stringify": "^2.0.0",
     "@types/graphql": "^14.5.0",
     "@types/jest": "^25.1.3",
@@ -71,8 +73,7 @@
   },
   "files": [
     "dist/*.js",
-    "dist/locale/*.js",
-    "dist/types/**/*.d.ts"
+    "dist/villus.d.ts"
   ],
   "bundlesize": [
     {
