@@ -38,7 +38,7 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
   }
 
   if (isRef(query)) {
-    watch(query, () => execute(), { lazy: true });
+    watch(query, () => execute());
   }
 
   let unwatch: ReturnType<typeof watch>;
@@ -63,7 +63,7 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
         oldCache = id;
         execute();
       },
-      { deep: true, lazy: true }
+      { deep: true }
     );
   }
 
