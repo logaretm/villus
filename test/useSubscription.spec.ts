@@ -12,7 +12,7 @@ interface Message {
 }
 
 test('Default reducer', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql',
@@ -40,7 +40,7 @@ test('Default reducer', async () => {
 });
 
 test('Handles subscriptions with a custom reducer', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql',
@@ -77,7 +77,7 @@ test('Handles subscriptions with a custom reducer', async () => {
 });
 
 test('Handles observer errors', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql',
@@ -114,7 +114,7 @@ test('Handles observer errors', async () => {
 });
 
 test('Pauses and resumes subscriptions', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql',

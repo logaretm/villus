@@ -7,7 +7,7 @@ import { useClient, useQuery, batcher } from '../src/index';
 import { Post } from './server/typedSchema';
 
 test('executes hook queries on mounted', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -32,7 +32,7 @@ test('executes hook queries on mounted', async () => {
 });
 
 test('works with tagged queries', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -64,7 +64,7 @@ test('works with tagged queries', async () => {
 });
 
 test('caches queries by default', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -123,7 +123,7 @@ test('batches queries with batcher', async () => {
 });
 
 test('re-runs reactive queries automatically', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -161,7 +161,7 @@ test('re-runs reactive queries automatically', async () => {
 });
 
 test('cache policy can be overridden with execute function', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -190,7 +190,7 @@ test('cache policy can be overridden with execute function', async () => {
 });
 
 test('cache policy can be overridden with cachePolicy option', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -219,7 +219,7 @@ test('cache policy can be overridden with cachePolicy option', async () => {
 });
 
 test('variables are watched by default if reactive', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -257,7 +257,7 @@ test('variables are watched by default if reactive', async () => {
 });
 
 test('cached variables are matched by equality not reference', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -305,7 +305,7 @@ test('cached variables are matched by equality not reference', async () => {
 });
 
 test('variables watcher can be disabled', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -354,7 +354,7 @@ test('variables watcher can be disabled', async () => {
 });
 
 test('variables prop arrangement does not trigger queries', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -391,7 +391,7 @@ test('variables prop arrangement does not trigger queries', async () => {
 });
 
 test('can be suspended', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -430,7 +430,7 @@ test('can be suspended', async () => {
 });
 
 test('Handles query errors', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -458,7 +458,7 @@ test('Handles query errors', async () => {
 test('Handles parse errors', async () => {
   (global as any).fetchController.simulateParseError = true;
 
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -486,7 +486,7 @@ test('Handles parse errors', async () => {
 test('Handles network errors', async () => {
   (global as any).fetchController.simulateNetworkError = true;
 
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -536,7 +536,7 @@ test('Fails if provider was not resolved', () => {
 test('Errors are stringified nicely to their messages', async () => {
   (global as any).fetchController.simulateNetworkError = true;
 
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -564,7 +564,7 @@ test('Errors are stringified nicely to their messages', async () => {
 test('Errors can be separated by type', async () => {
   (global as any).fetchController.simulateNetworkError = true;
 
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'

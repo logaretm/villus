@@ -8,7 +8,7 @@ test('executes queries on mounted', async () => {
     url: 'https://test.com/graphql'
   });
 
-  const vm = mount({
+  mount({
     data: () => ({
       client
     }),
@@ -296,7 +296,7 @@ test.skip('can be suspended', async () => {
   });
 
   (global as any).fetchController.delay = 100;
-  const vm = mount({
+  mount({
     data: () => ({
       client
     }),

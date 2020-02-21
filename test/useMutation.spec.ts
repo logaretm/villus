@@ -5,7 +5,7 @@ import { useClient, useMutation } from '../src/index';
 import { LikePostMutationResponse } from './server/typedSchema';
 
 test('runs mutations', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -37,7 +37,7 @@ test('runs mutations', async () => {
 });
 
 test('passes variables via execute method', async () => {
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
@@ -71,7 +71,7 @@ test('passes variables via execute method', async () => {
 test('handles external errors', async () => {
   (global as any).fetchController.simulateNetworkError = true;
 
-  const vm = mount({
+  mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql'
