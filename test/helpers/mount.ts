@@ -1,7 +1,8 @@
-import { createApp, compile } from 'vue';
+import { createApp, compile, defineComponent, ComponentOptionsWithoutProps } from 'vue';
 
-export function mount(component: Record<string, any>) {
-  const app = createApp();
+export function mount(component: ComponentOptionsWithoutProps) {
+  const comp = defineComponent(component);
+  const app = createApp(comp);
   app.config.devtools = false;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   app.config.warnHandler = () => {};
@@ -15,8 +16,6 @@ export function mount(component: Record<string, any>) {
   };
 
   document.body.innerHTML = `<div id="app"></div>`;
-  component.render = compile(component.template);
-  component.template = undefined;
 
-  return app.mount(component, '#app');
+  return app.mount('#app');
 }
