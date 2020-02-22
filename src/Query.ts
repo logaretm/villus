@@ -1,4 +1,4 @@
-import { SetupContext, toRefs, watch } from 'vue';
+import { SetupContext, toRefs, watchEffect } from 'vue';
 import { useQuery } from './useQuery';
 import { CachePolicy } from './types';
 import { normalizeChildren } from './utils';
@@ -45,7 +45,7 @@ export const Query = {
   setup(props: QueryProps, ctx: SetupContext) {
     function createRenderFn(api: ReturnType<typeof useQuery>) {
       const { data, error, fetching, done, execute, pause, resume } = api;
-      watch(() => {
+      watchEffect(() => {
         if (props.pause === true) {
           pause();
           return;
