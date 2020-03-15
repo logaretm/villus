@@ -416,12 +416,12 @@ The `done` slot prop is a boolean that indicates that the query has been complet
 
 ### errors
 
-The `errors` slot prop contains all errors encountered when running the query.
+The `error` slot prop contains all errors encountered when running the query.
 
 ```vue{1,3}
-<Query query="{ todos { text } }" v-slot="{ data, errors }">
+<Query query="{ todos { text } }" v-slot="{ data, error }">
   <!-- Your Custom component to handle error display -->
-  <ErrorPage v-if="errors" :errors="errors" />
+  <ErrorPage v-if="error" :error="error" />
 
   <div v-else>
     <p v-for="todo in data.todos">{{ todo.text }}</p>
@@ -434,7 +434,7 @@ The `errors` slot prop contains all errors encountered when running the query.
 You can also extract the same properties mentioned above from the `useQuery` function:
 
 ```js
-const { data, fetching, done, errors } = useQuery({
+const { data, fetching, done, error } = useQuery({
   // ...
 });
 ```
