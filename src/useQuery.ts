@@ -23,6 +23,7 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
   const error = ref<CombinedError | null>(null);
 
   async function execute(overrideOpts: { cachePolicy?: CachePolicy } = {}) {
+    done.value = false;
     fetching.value = true;
     const vars = (isRef(variables) ? variables.value : variables) || {};
     const res = await client.executeQuery<TData, TVars>({
