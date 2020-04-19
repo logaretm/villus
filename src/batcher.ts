@@ -1,5 +1,5 @@
-import { Fetcher, GraphQLResponse } from '../types';
-import { resolveGlobalFetch, DEFAULT_FETCH_OPTS, parseResponse } from '../utils';
+import { Fetcher, GraphQLResponse } from './types';
+import { resolveGlobalFetch, DEFAULT_FETCH_OPTS, parseResponse } from './utils';
 
 interface BatchOptions {
   fetch?: Fetcher;
@@ -28,7 +28,6 @@ export function batcher(opts?: BatchOptions): Fetcher {
         clearTimeout(scheduledConsume);
       }
 
-      const operationIndex = operations.length;
       operations.push({ resolve, body: init?.body as string });
       scheduledConsume = setTimeout(async () => {
         const pending = operations;
@@ -44,15 +43,16 @@ export function batcher(opts?: BatchOptions): Fetcher {
         });
 
         parseResponse<any>(res).then(response => {
-          const resInit: ResponseInit = {
+          const resInit: Partial<Response> = {
+            ok: response.ok,
             status: response.status,
             statusText: response.statusText,
             headers: response.headers
           };
 
-          pending.forEach(o => {
+          pending.forEach((o, oIdx) => {
             o.resolve({
-              json: () => ((response.body as unknown) as BatchedGraphQLResponse)[operationIndex],
+              json: () => ((response.body as unknown) as BatchedGraphQLResponse)[oIdx],
               ...resInit
             });
           });
