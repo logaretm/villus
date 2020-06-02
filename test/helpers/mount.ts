@@ -1,14 +1,17 @@
-import { createApp, compile } from 'vue';
+import { createApp } from 'vue';
 
-export function mount(component: any) {
-  const compiled = { ...component };
-  compiled.render = compile(component.template);
-  delete compiled.template;
-  const app = createApp(compiled);
+export function mount(component: Record<string, any>) {
+  const app = createApp(component);
   app.config.devtools = false;
-  app.config.warnHandler = () => {};
+  app.config.warnHandler = () => {
+    // Do nothing
+  };
   app.config.errorHandler = err => {
-    if (err.message === 'data is not defined') {
+    if ((err as Error).message === 'data is not defined') {
+      return;
+    }
+
+    if (/Cannot detect villus Client/.test((err as Error).message)) {
       return;
     }
 

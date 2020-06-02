@@ -21,7 +21,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  const data: Ref<TResult | null> = ref(reduce(null, { data: null, error: null }));
+  const data = ref<TResult | null>(reduce(null, { data: null, error: null }));
   const error: Ref<CombinedError | null> = ref(null);
   const paused = ref(false);
 

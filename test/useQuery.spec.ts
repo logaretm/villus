@@ -404,11 +404,11 @@ test('can be suspended', async () => {
 
           return { data };
         },
-        render: compile(`
+        template: `
           <ul>
             <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
           </ul>
-        `)
+        `
       }
     },
     template: `
