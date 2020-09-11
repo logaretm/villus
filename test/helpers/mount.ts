@@ -2,7 +2,6 @@ import { createApp } from 'vue';
 
 export function mount(component: Record<string, any>) {
   const app = createApp(component);
-  app.config.devtools = false;
   app.config.warnHandler = () => {
     // Do nothing
   };
