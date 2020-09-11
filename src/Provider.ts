@@ -1,4 +1,4 @@
-import { SetupContext } from 'vue';
+import { defineComponent, h, SetupContext } from 'vue';
 import { VqlClient } from './client';
 import { normalizeChildren } from './utils';
 import { useClient } from './useClient';
@@ -23,3 +23,15 @@ export const Provider = {
     };
   }
 };
+
+export function withProvider(component: any, client: VqlClient) {
+  return defineComponent({
+    setup(props, ctx: SetupContext) {
+      useClient(client);
+
+      return () => {
+        return h(component, { ...props, ...ctx.attrs }, normalizeChildren(ctx, {}));
+      };
+    }
+  });
+}
