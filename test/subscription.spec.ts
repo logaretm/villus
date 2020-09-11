@@ -1,7 +1,15 @@
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
 import { Subscription, createClient, Provider } from '../src/index';
-import { makeObservable } from './helpers/observer';
+import { makeObservable, tick } from './helpers/observer';
+
+beforeAll(() => {
+  jest.useFakeTimers();
+});
+
+afterAll(() => {
+  jest.useRealTimers();
+});
 
 test('Handles subscriptions', async () => {
   const client = createClient({
@@ -23,14 +31,14 @@ test('Handles subscriptions', async () => {
       <Provider :client="client">
         <Subscription query="subscription { newMessages }" v-slot="{ data }">
           <div>
-            <span>{{ data.id }}</span>
+            <span>{{ data && data.id }}</span>
           </div>
         </Subscription>
       </Provider>
     `
   });
 
-  await (global as any).sleep(510);
+  tick(5);
   await flushPromises();
   expect(document.querySelector('span')?.textContent).toBe('4');
 });
@@ -71,7 +79,7 @@ test('Can provide a custom reducer', async () => {
     `
   });
 
-  await (global as any).sleep(510);
+  tick(5);
   await flushPromises();
   expect(document.querySelectorAll('li')).toHaveLength(5);
 });
@@ -103,7 +111,7 @@ test('Handles observer errors', async () => {
     `
   });
 
-  await (global as any).sleep(150);
+  tick(2);
   await flushPromises();
   expect(document.querySelector('p')?.textContent).toContain('oops!');
 });

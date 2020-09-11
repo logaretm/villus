@@ -3,10 +3,7 @@ import schema from './schema';
 
 const server = mockServer(schema, {
   Post: () => ({
-    id: () =>
-      Math.random()
-        .toString(36)
-        .substring(7),
+    id: () => Math.random().toString(36).substring(7),
     title: () => 'Hello World',
     slug: () => 'hello-world'
   }),

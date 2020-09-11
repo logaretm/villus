@@ -2,7 +2,7 @@ export function makeObservable(throws = false) {
   let interval: any;
   let counter = 0;
   const observable = {
-    subscribe: function({ next, error }: { error: Function; next: Function }) {
+    subscribe({ next, error }: { error: (err: Error) => any; next: (value: any) => any }) {
       interval = setInterval(() => {
         if (throws) {
           error(new Error('oops!'));
@@ -25,4 +25,8 @@ export function makeObservable(throws = false) {
   };
 
   return observable;
+}
+
+export function tick(ticks = 1) {
+  jest.advanceTimersByTime(ticks * 100);
 }
