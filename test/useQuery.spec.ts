@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { ref, computed, compile } from 'vue';
+import { ref, computed } from 'vue';
 import gql from 'graphql-tag';
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
@@ -528,7 +528,7 @@ test('Fails if provider was not resolved', () => {
     `
     });
   } catch (err) {
-    // eslint-disable-next-line jest/no-try-expect
+    // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
     expect(err.message).toContain('Cannot detect villus Client');
   }
 });

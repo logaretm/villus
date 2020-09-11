@@ -121,7 +121,7 @@ test('Fails if provider was not resolved', async () => {
         `
     });
   } catch (err) {
-    // eslint-disable-next-line jest/no-try-expect
+    // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
     expect(err.message).toMatch(/Client Provider/);
   }
 });

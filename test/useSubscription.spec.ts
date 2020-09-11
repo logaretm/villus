@@ -180,7 +180,7 @@ test('Fails if provider was not resolved', () => {
     `
     });
   } catch (err) {
-    // eslint-disable-next-line jest/no-try-expect
+    // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
     expect(err.message).toContain('Cannot detect villus Client');
   }
 });
@@ -206,7 +206,7 @@ test('Fails if subscription forwarder was not set', () => {
     `
     });
   } catch (err) {
-    // eslint-disable-next-line jest/no-try-expect
+    // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
     expect(err.message).toContain('No subscription forwarder was set');
   }
 });
