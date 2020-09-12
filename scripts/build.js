@@ -1,20 +1,51 @@
-const mkdirp = require('mkdirp');
+const path = require('path');
+const fs = require('fs-extra');
+const { rollup } = require('rollup');
 const chalk = require('chalk');
-const { configs, utils, paths } = require('./config');
+const Terser = require('terser');
+const { createConfig } = require('./config');
+const { reportSize } = require('./info');
+const { generateDts } = require('./generate-dts');
 
-async function build() {
-  await mkdirp(paths.dist);
-  // eslint-disable-next-line
-  console.log(chalk.cyan('Generating ESM build...'));
-  await utils.writeBundle(configs.esm, 'villus.esm.js');
-  // eslint-disable-next-line
-  console.log(chalk.cyan('Done!'));
+async function minify({ code, pkg, bundleName }) {
+  const pkgout = path.join(__dirname, `../dist`);
+  const output = await Terser.minify(code, {
+    compress: true,
+    mangle: true
+  });
 
-  // eslint-disable-next-line
-  console.log(chalk.cyan('Generating UMD build...'));
-  await utils.writeBundle(configs.umd, 'villus.js', true);
-  // eslint-disable-next-line
-  console.log(chalk.cyan('Done!'));
+  const fileName = bundleName.replace(/\.js$/, '.min.js');
+  const filePath = `${pkgout}/${fileName}`;
+  fs.outputFileSync(filePath, output.code);
+  const stats = reportSize({ code: output.code, path: filePath });
+  console.log(`${chalk.green('Output File:')} ${fileName} ${stats}`);
 }
 
-build();
+async function build(pkg) {
+  const pkgout = path.join(__dirname, `../dist`);
+  for (const format of ['es', 'umd']) {
+    const { input, output, bundleName } = createConfig(pkg, format);
+    const bundle = await rollup(input);
+    const {
+      output: [{ code }]
+    } = await bundle.generate(output);
+
+    const outputPath = path.join(pkgout, bundleName);
+    fs.outputFileSync(outputPath, code);
+    const stats = reportSize({ code, path: outputPath });
+    // eslint-disable-next-line
+    console.log(`${chalk.green('Output File:')} ${bundleName} ${stats}`);
+
+    if (format === 'umd') {
+      await minify({ bundleName, pkg, code });
+    }
+  }
+
+  await generateDts(pkg);
+
+  return true;
+}
+
+(async function Bundle() {
+  await build('villus');
+})();
