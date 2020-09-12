@@ -13,16 +13,13 @@
     "test": "jest",
     "test:cover": "jest --coverage",
     "lint": "eslint . '**/*.{js,jsx,ts,tsx}' --fix",
-    "build": "node scripts/build.js && npm run ts:defs && npm run ts:bundle",
-    "ts:defs": "tsc --emitDeclarationOnly",
-    "ts:bundle": "api-extractor run --local --verbose",
+    "build": "node scripts/build.js",
     "prepublishOnly": "npm run build"
   },
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@commitlint/cli": "^9.1.2",
-    "@microsoft/api-extractor": "^7.9.14",
     "@types/fast-json-stable-stringify": "^2.0.0",
     "@types/graphql": "^14.5.0",
     "@types/jest": "^26.0.13",
@@ -54,13 +51,14 @@
     "prettier": "^2.1.1",
     "rollup": "^2.26.11",
     "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-dts": "^1.4.13",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-typescript2": "^0.27.2",
     "ts-jest": "^26.3.0",
     "typescript": "^4.0.2",
     "uglify-js": "^3.10.4",
-    "vue": "^3.0.0-beta.15",
+    "vue": "^3.0.0-rc.7",
     "vue-jest": "^3.0.6",
     "vue-template-compiler": "^2.6.11",
     "vuepress": "^1.5.3"
@@ -103,6 +101,6 @@
   },
   "peerDependencies": {
     "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0",
-    "vue": "^3.0.0-alpha.6"
+    "vue": "^3.0.0-rc.10"
   }
 }
