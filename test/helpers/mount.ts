@@ -14,6 +14,10 @@ export function mount(component: Record<string, any>) {
       return;
     }
 
+    if (/No subscription forwarder was set/.test((err as Error).message)) {
+      return;
+    }
+
     // eslint-disable-next-line no-console
     console.error(err);
   };
