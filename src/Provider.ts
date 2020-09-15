@@ -30,7 +30,7 @@ export function withProvider(component: any, client: VqlClient) {
       useClient(client);
 
       return () => {
-        return h(component, { ...props, ...ctx.attrs }, normalizeChildren(ctx, {}));
+        return h(component, { ...props, ...ctx.attrs }, ctx.slots);
       };
     }
   });
