@@ -1,4 +1,9 @@
-# Client
+---
+title: Setting up the GraphQL Client
+order: 2
+---
+
+# Setting up the GraphQL Client
 
 To start querying GraphQL endpoints, you need to setup a client for that endpoint. **villus** exposes both a `useClient` and `createClient` functions that allows you to create GraphQL clients for your endpoints.
 

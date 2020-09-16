@@ -1,3 +1,9 @@
+---
+title: Subscriptions
+description: Learn how to run GraphQL subscriptions
+order: 5
+---
+
 # Subscriptions
 
 `villus` handles subscriptions with the `useSubscription` or the `Subscription` component in the same way as the `useQuery` or the `Query` component.

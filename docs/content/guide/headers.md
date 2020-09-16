@@ -1,3 +1,8 @@
+---
+title: Headers
+order: 7
+---
+
 # Headers
 
 You often need to add authorization token to your outgoing requests like `Authorization` or localization info like `Content-Language`header.

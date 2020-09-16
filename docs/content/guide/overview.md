@@ -1,9 +1,6 @@
 ---
-title: Introduction
-lang: en-US
-meta:
-  - name: og:title
-    content: Introduction | villus
+title: Overview
+order: 1
 ---
 
 # Introduction

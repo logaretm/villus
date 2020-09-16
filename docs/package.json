@@ -1,0 +1,33 @@
+{
+  "name": "headless-magento-frontend-docs",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build --modern",
+    "start": "nuxt start --modern",
+    "generate": "nuxt generate",
+    "export": "nuxt export",
+    "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "lint": "yarn lint:js"
+  },
+  "lint-staged": {
+    "*.{js,vue}": "eslint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "dependencies": {
+    "@nuxt/content": "^1.9.0",
+    "@nuxtjs/pwa": "^3.0.2",
+    "lodash.groupby": "^4.6.0",
+    "nuxt": "^2.14.5"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config": "^3.1.0",
+    "@nuxtjs/tailwindcss": "^3.0.2",
+    "postcss-nested": "^4.2.3"
+  }
+}

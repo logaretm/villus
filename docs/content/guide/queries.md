@@ -1,3 +1,9 @@
+---
+title: Queries
+description: Learn how to run GraphQL queries
+order: 3
+---
+
 # Queries
 
 You can query GraphQL APIs with the `useQuery` function or `Query` component after you've setup the [GraphQL Client](./client.md).

@@ -1,3 +1,9 @@
+---
+title: Query Batching
+description: Learn how to run batch multiple GraphQL queries
+order: 6
+---
+
 # Query Batching
 
 Villus has support for query batching but it is not configured out of the box, this is because not all GraphQL implementations support query-batching. So you would need to manually import it and configure it with `villus` client.

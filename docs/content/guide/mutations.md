@@ -1,3 +1,9 @@
+---
+title: Mutations
+description: Learn how to run GraphQL mutations
+order: 4
+---
+
 # Mutations
 
 **villus** offers both a `useMutation` function and a `Mutation` component that are very similar their **[querying](./queries.md)** counterparts but with few distinct differences:

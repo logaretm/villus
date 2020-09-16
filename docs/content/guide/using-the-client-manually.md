@@ -1,3 +1,7 @@
+---
+title: Using the Client Manually
+---
+
 # Using The Client Manually
 
 You don't have to use any of the functions/components to make use of `villus`. You can still use the core client manually to run arbitrary GraphQL queries and still get most of the benefits like caching queries and batching requests.
