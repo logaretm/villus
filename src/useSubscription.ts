@@ -1,4 +1,4 @@
-import { inject, ref, Ref, onMounted } from 'vue';
+import { inject, ref, Ref, onMounted } from 'vue-demi';
 import { VqlClient } from './client';
 import { Unsub, Operation, OperationResult, QueryVariables } from './types';
 import { CombinedError } from './utils';

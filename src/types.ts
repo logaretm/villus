@@ -1,4 +1,4 @@
-import { Ref } from 'vue';
+import { Ref } from 'vue-demi';
 import { DocumentNode } from 'graphql';
 import { CombinedError } from './utils';
 

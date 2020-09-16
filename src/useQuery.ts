@@ -1,5 +1,5 @@
 import stringify from 'fast-json-stable-stringify';
-import { inject, isRef, onMounted, Ref, ref, watch } from 'vue';
+import { inject, isRef, onMounted, Ref, ref, watch } from 'vue-demi';
 import { CachePolicy, MaybeReactive, Operation, QueryVariables } from './types';
 import { VqlClient } from './client';
 import { hash, CombinedError } from './utils';

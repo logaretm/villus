@@ -1,4 +1,4 @@
-import { ref, Ref, inject } from 'vue';
+import { ref, Ref, inject } from 'vue-demi';
 import { Operation, QueryVariables } from './types';
 import { VqlClient } from './client';
 import { CombinedError } from './utils';

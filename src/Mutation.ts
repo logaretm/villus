@@ -1,4 +1,4 @@
-import { SetupContext } from 'vue';
+import { SetupContext } from 'vue-demi';
 import { useMutation } from './useMutation';
 import { normalizeChildren } from './utils';
 import { DocumentNode } from 'graphql';

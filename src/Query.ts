@@ -1,4 +1,4 @@
-import { SetupContext, toRefs, watchEffect } from 'vue';
+import { SetupContext, toRefs, watchEffect } from 'vue-demi';
 import { useQuery } from './useQuery';
 import { CachePolicy } from './types';
 import { normalizeChildren } from './utils';

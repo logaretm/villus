@@ -1,4 +1,4 @@
-import { SetupContext } from 'vue';
+import { SetupContext } from 'vue-demi';
 import { normalizeChildren } from './utils';
 import { useSubscription, defaultReducer, Reducer } from './useSubscription';
 import { DocumentNode } from 'graphql';

@@ -29,7 +29,7 @@ function createConfig(pkg, format) {
   const config = {
     input: {
       input: path.resolve(__dirname, `../src/index.ts`),
-      external: ['vue', 'fast-json-stable-stringify', 'graphql'],
+      external: ['vue', 'fast-json-stable-stringify', 'graphql', 'vue-demi'],
       plugins: [tsPlugin, replace({ __VERSION__: version })]
     },
     output: {
@@ -41,7 +41,8 @@ function createConfig(pkg, format) {
       format,
       name: format === 'umd' ? formatNameMap[pkg] : undefined,
       globals: {
-        vue: 'Vue'
+        vue: 'Vue',
+        'vue-demi': 'VueDemi'
       }
     }
   };

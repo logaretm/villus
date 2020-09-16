@@ -1,4 +1,4 @@
-import { provide } from 'vue';
+import { provide } from 'vue-demi';
 import { createClient, VqlClientOptions, VqlClient } from './client';
 
 export function useClient(opts: VqlClientOptions | VqlClient) {

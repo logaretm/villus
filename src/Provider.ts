@@ -1,4 +1,4 @@
-import { defineComponent, h, SetupContext } from 'vue';
+import { defineComponent, h, SetupContext } from 'vue-demi';
 import { VqlClient } from './client';
 import { normalizeChildren } from './utils';
 import { useClient } from './useClient';
