@@ -31,8 +31,7 @@ This is forked from my previous work at [vue-gql](https://github.com/baianat/vue
 - 💪 **TypeScript**: Written in Typescript.
 - 💚 Minimal Vue.js Components.
 - 🖇 Composition API support.
-
-**It is Vue 3.0-ready!**
+- Supports both Vue 2.x (with @vue/composition-api) and 3.0
 
 ## Why use this
 
@@ -51,16 +50,14 @@ You can find the full [documentation here](https://logaretm.github.io/villus)
 First install `villus`:
 
 ```bash
-yarn add villus@next graphql
+yarn add villus graphql
 
 # or npm
 
-npm install villus@next graphql --save
+npm install villus graphql --save
 ```
 
-> If you are using Vue 2 with the @vue/composition-api don't use the `next` tag.
-
-You can now use it with either the new Vue composition API or higher order components:
+You can now use it with either the new Vue composition API or higher order components.
 
 ### Composition API
 
