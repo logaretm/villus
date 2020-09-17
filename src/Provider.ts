@@ -12,8 +12,8 @@ export const Provider = {
   props: {
     client: {
       type: VqlClient,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props: ProviderProps, ctx: SetupContext) {
     useClient(props.client);
@@ -21,7 +21,7 @@ export const Provider = {
     return () => {
       return normalizeChildren(ctx, {});
     };
-  }
+  },
 };
 
 export function withProvider(component: any, client: VqlClient) {
@@ -32,6 +32,6 @@ export function withProvider(component: any, client: VqlClient) {
       return () => {
         return h(component, { ...props, ...ctx.attrs }, ctx.slots);
       };
-    }
+    },
   });
 }

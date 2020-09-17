@@ -14,25 +14,25 @@ export const Subscription = {
   props: {
     query: {
       type: [String, Object],
-      required: true
+      required: true,
     },
     variables: {
       type: Object,
-      default: null
+      default: null,
     },
     pause: {
       type: Boolean,
-      default: false
+      default: false,
     },
     reduce: {
       type: Function,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
   setup(props: SubscriptionProps, ctx: SetupContext) {
     const { data, error, pause, paused, resume } = useSubscription(
       {
-        ...props
+        ...props,
       },
       props.reduce || defaultReducer
     );
@@ -43,8 +43,8 @@ export const Subscription = {
         error: error.value,
         pause,
         paused: paused.value,
-        resume
+        resume,
       });
     };
-  }
+  },
 };

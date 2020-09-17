@@ -22,6 +22,6 @@ export function makeCache() {
 
   return {
     afterQuery,
-    getCachedResult
+    getCachedResult,
   };
 }

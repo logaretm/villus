@@ -7,7 +7,7 @@ import {
   ObservableLike,
   QueryVariables,
   FetchOptions,
-  Fetcher
+  Fetcher,
 } from './types';
 
 interface CachedOperation<TVars = QueryVariables> extends Operation<TVars> {
@@ -67,7 +67,7 @@ export class VqlClient {
     } catch (err) {
       return {
         data: null,
-        error: new CombinedError({ response, networkError: err })
+        error: new CombinedError({ response, networkError: err }),
       };
     }
 
@@ -75,13 +75,13 @@ export class VqlClient {
     if (!parsed.ok || !parsed.body) {
       return {
         data: null,
-        error: new CombinedError({ response: parsed, networkError: new Error(parsed.statusText) })
+        error: new CombinedError({ response: parsed, networkError: new Error(parsed.statusText) }),
       };
     }
 
     return {
       data: parsed.body.data,
-      error: parsed.body.errors ? new CombinedError({ response: parsed, graphqlErrors: parsed.body.errors }) : null
+      error: parsed.body.errors ? new CombinedError({ response: parsed, graphqlErrors: parsed.body.errors }) : null,
     };
   }
 

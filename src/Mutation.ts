@@ -12,12 +12,12 @@ export const Mutation = {
   props: {
     query: {
       type: [String, Object],
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props: MutationProps, ctx: SetupContext) {
     const { data, fetching, done, error, execute } = useMutation({
-      ...props
+      ...props,
     });
 
     return () => {
@@ -26,8 +26,8 @@ export const Mutation = {
         fetching: fetching.value,
         done: done.value,
         error: error.value,
-        execute
+        execute,
       });
     };
-  }
+  },
 };

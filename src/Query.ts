@@ -18,11 +18,11 @@ export const Query = {
   props: {
     query: {
       type: [String, Object],
-      required: true
+      required: true,
     },
     variables: {
       type: Object,
-      default: null
+      default: null,
     },
     cachePolicy: {
       type: String,
@@ -31,16 +31,16 @@ export const Query = {
         const isValid = [undefined, 'cache-and-network', 'network-only', 'cache-first'].indexOf(value) !== -1;
 
         return isValid;
-      }
+      },
     },
     pause: {
       type: Boolean,
-      default: false
+      default: false,
     },
     suspend: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   setup(props: QueryProps, ctx: SetupContext) {
     function createRenderFn(api: ReturnType<typeof useQuery>) {
@@ -60,7 +60,7 @@ export const Query = {
           error: error.value,
           fetching: fetching.value,
           done: done.value,
-          execute
+          execute,
         });
       };
     }
@@ -68,7 +68,7 @@ export const Query = {
     const queryProps = {
       ...toRefs(props),
       lazy: props.lazy,
-      cachePolicy: props.cachePolicy
+      cachePolicy: props.cachePolicy,
     };
 
     if (props.suspend) {
@@ -76,5 +76,5 @@ export const Query = {
     }
 
     return createRenderFn(useQuery(queryProps));
-  }
+  },
 };

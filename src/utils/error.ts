@@ -46,7 +46,7 @@ export class CombinedError extends Error {
   constructor({
     response,
     networkError,
-    graphqlErrors
+    graphqlErrors,
   }: {
     response: any;
     networkError?: Error;

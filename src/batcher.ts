@@ -10,7 +10,7 @@ type BatchedGraphQLResponse = GraphQLResponse<any>[];
 
 const defaultOpts = (): BatchOptions => ({
   fetch: resolveGlobalFetch(),
-  timeout: 10
+  timeout: 10,
 });
 
 export function batcher(opts?: BatchOptions): Fetcher {
@@ -36,10 +36,10 @@ export function batcher(opts?: BatchOptions): Fetcher {
         const res = await fetch(url, {
           method: DEFAULT_FETCH_OPTS.method,
           headers: {
-            ...DEFAULT_FETCH_OPTS.headers
+            ...DEFAULT_FETCH_OPTS.headers,
           },
           ...opts,
-          body
+          body,
         });
 
         parseResponse<any>(res).then(response => {
@@ -47,13 +47,13 @@ export function batcher(opts?: BatchOptions): Fetcher {
             ok: response.ok,
             status: response.status,
             statusText: response.statusText,
-            headers: response.headers
+            headers: response.headers,
           };
 
           pending.forEach((o, oIdx) => {
             o.resolve({
               json: () => ((response.body as unknown) as BatchedGraphQLResponse)[oIdx],
-              ...resInit
+              ...resInit,
             });
           });
         });

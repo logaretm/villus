@@ -15,7 +15,7 @@ export async function parseResponse<TData>(response: Response): Promise<ParsedRe
     ok: response.ok,
     statusText: response.statusText,
     status: response.status,
-    headers: response.headers
+    headers: response.headers,
   };
 
   try {
@@ -24,13 +24,13 @@ export async function parseResponse<TData>(response: Response): Promise<ParsedRe
     return {
       ...responseData,
       statusText: err.message,
-      body: null
+      body: null,
     };
   }
 
   return {
     ...responseData,
-    body: json
+    body: json,
   };
 }
 
@@ -49,8 +49,8 @@ export function resolveGlobalFetch(): Fetcher | undefined {
 export const DEFAULT_FETCH_OPTS = {
   method: 'POST',
   headers: {
-    'content-type': 'application/json'
-  }
+    'content-type': 'application/json',
+  },
 } as const;
 
 export function makeFetchOptions({ query, variables }: Operation, opts: FetchOptions) {
@@ -65,7 +65,7 @@ export function makeFetchOptions({ query, variables }: Operation, opts: FetchOpt
     ...opts,
     headers: {
       ...DEFAULT_FETCH_OPTS.headers,
-      ...opts.headers
-    }
+      ...opts.headers,
+    },
   };
 }

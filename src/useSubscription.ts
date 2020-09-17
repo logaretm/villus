@@ -37,7 +37,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     return client
       .executeSubscription({
         query,
-        variables: variables || {}
+        variables: variables || {},
       })
       .subscribe({
         next: handler,
@@ -47,7 +47,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
           const result = { data: null, error: new CombinedError({ networkError: err, response: null }) };
 
           return handler(result);
-        }
+        },
       });
   }
 
