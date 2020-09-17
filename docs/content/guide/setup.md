@@ -1,15 +1,15 @@
 ---
-title: Setting up the GraphQL Client
+title: Application Setup
 order: 2
 ---
 
-# Setting up the GraphQL Client
+# Application Setup
 
-To start querying GraphQL endpoints, you need to setup a client for that endpoint. **villus** exposes both a `useClient` and `createClient` functions that allows you to create GraphQL clients for your endpoints.
+To start querying GraphQL endpoints, you need to setup a client for that endpoint. **villus** exposes multiple functions and components that allow you to create GraphQL clients for your endpoints.
 
 ## Composition API
 
-If you are using the new composition API you will use the `useClient` function along with `useXXX` variants of the API for your queries, mutations and subscriptions.
+The `useClient` composition API function allows your components to define a GraphQL endpoint that all children of that component will query against.
 
 To create a GraphQL client with the composition API:
 
@@ -20,29 +20,27 @@ import { useClient } from 'villus';
 export default {
   setup() {
     useClient({
-      url: '/graphql' // your endpoint.
+      url: '/graphql', // your endpoint.
     });
-  }
+  },
 };
 ```
 
+Internally it uses `provide/inject` API to inject the client into your components or composable functions.
+
 ## Provider Component
 
-If you prefer to use the higher-order components API you need to use the `createClient`:
+If you prefer to use higher-order components you can use the `<Provider />` component, but you will need to create a GraphQL client first. The `createClient` function allows you to create a raw villus client that you can pass around as a prop.
 
 ```js
 import { createClient } from 'villus';
 
 const client = createClient({
-  url: '/graphql' // your endpoint.
+  url: '/graphql', // your endpoint.
 });
 ```
 
-After you've created a client, you need to **provide** the client instance to your app, you can do this via two ways.
-
-**villus** exports a `Provider` component that accepts a single prop, the `client` created by `createClient` function.
-
-### SFC
+After you've created a client, you need to pass client instance to your `<Provider />` component's `client` prop. Here is a full example:
 
 ```vue
 <template>
@@ -55,46 +53,25 @@ After you've created a client, you need to **provide** the client instance to yo
 import { Provider, createClient } from 'villus';
 
 const client = createClient({
-  url: '/graphql'
+  url: '/graphql',
 });
 
 export default {
   components: {
-    Provider
+    Provider,
   },
   data: () => ({
-    client
-  })
+    client,
+  }),
 };
 </script>
 ```
 
-### JSX
+<doc-tip>
 
-This can be much easier if you are using JSX:
+The **Provider** component is **renderless** by default. It will not render any extra HTML other than its slot.
 
-```jsx
-import { Provider, createClient } from 'villus';
-
-const client = createClient({
-  url: '/graphql'
-});
-
-return new Vue({
-  el: '#app',
-  render() {
-    return (
-      <Provider client="{client}">
-        <App />
-      </Provider>
-    );
-  }
-});
-```
-
-:::tip
-The **Provider** component is **renderless** by default, meaning it will not render any extra HTML other than its slot, but only when exactly one child is present, if multiple children exist inside its slot it will render a `span`.
-:::
+</doc-tip>
 
 ### withProvider function
 
@@ -106,7 +83,7 @@ import { createClient, withProvider } from 'villus';
 import App from './App.vue';
 
 const client = createClient({
-  url: '/graphql' // Your endpoint
+  url: '/graphql', // Your endpoint
 });
 
 // use this instead of your App
@@ -114,11 +91,11 @@ const AppWithClient = withProvider(App, client);
 
 new Vue({
   // Render the wrapped version instead.
-  render: h => h(AppWithClient)
+  render: h => h(AppWithClient),
 }).mount('#app');
 ```
 
-### Multiple Providers
+## Multiple Providers
 
 While uncommon, there is no limitations on how many endpoints you can use within your app, you can use as many clients as you like and that allows you to query different GraphQL APIs within the same app without hassle.
 
@@ -140,9 +117,9 @@ export default {
   name: 'GitHubProvider',
   setup() {
     useClient({
-      url: '{GITHUB_API_ENDPOINT}'
+      url: '{GITHUB_API_ENDPOINT}',
     });
-  }
+  },
 };
 
 // Component B
@@ -150,11 +127,17 @@ export default {
   name: 'AppAPI',
   setup() {
     useClient({
-      url: '{MY_API}'
+      url: '{MY_API}',
     });
-  }
+  },
 };
 ```
+
+<doc-tip>
+
+You can mix between higher-order components and composable API as higher-order components actually use the composable functions under the hood.
+
+</doc-tip>
 
 ## Next Steps
 

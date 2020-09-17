@@ -1,7 +1,7 @@
 ---
-title: Query Batching
+title: Batching Queries
 description: Learn how to run batch multiple GraphQL queries
-order: 6
+order: 1
 ---
 
 # Query Batching
@@ -19,9 +19,9 @@ export default {
   setup() {
     useClient({
       url: 'https://test.com/graphql',
-      fetch: batcher()
+      fetch: batcher(),
     });
-  }
+  },
 };
 ```
 
@@ -49,7 +49,7 @@ export default {
     const secondQuery = useQuery({ query: '{ posts { id } }' });
 
     return { postsWithTitle: firstQuery.data, postsWithId: secondQuery.data };
-  }
+  },
 };
 </script>
 ```
@@ -68,10 +68,10 @@ export default {
     useClient({
       url: 'https://test.com/graphql',
       fetch: batcher({
-        timeout: 50
-      })
+        timeout: 50,
+      }),
     });
-  }
+  },
 };
 ```
 

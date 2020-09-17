@@ -1,6 +1,6 @@
 ---
 title: Headers
-order: 7
+order: 6
 ---
 
 # Headers
@@ -32,10 +32,10 @@ const client = createClient({
     return {
       fetchOptions: {
         headers: {
-          Authorization: 'bearer TOKEN'
-        }
-      }
+          Authorization: 'bearer TOKEN',
+        },
+      },
     };
-  }
+  },
 });
 ```

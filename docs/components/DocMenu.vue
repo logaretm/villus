@@ -25,6 +25,10 @@ const GROUPS = [
     name: 'guide',
     contentPath: '/guide',
   },
+  {
+    name: 'plugins',
+    contentPath: '/plugins',
+  },
 ];
 
 export default {
@@ -32,7 +36,7 @@ export default {
   async fetch() {
     const categories = (
       await Promise.all(
-        GROUPS.map((group) => {
+        GROUPS.map(group => {
           return this.$content(group.contentPath).only(['title', 'path', 'order', 'group']).fetch();
         })
       )
