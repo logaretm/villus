@@ -6,9 +6,11 @@ order: 4
 
 # Mutations
 
+## Mutations Basics
+
 **villus** offers both a `useMutation` function and a `Mutation` component that are very similar their **[querying](./queries.md)** counterparts but with few distinct differences:
 
-- They **do not** accept a `variables` prop.
+- They **do not** accept a `variables` prop or argument.
 - They **do not** run automatically, you have to explicitly call `execute`.
 - Cache policies do not apply to mutations as mutations represent user actions and will always use `network-only` policy.
 
@@ -28,125 +30,75 @@ Here is an example for the `useMutation` function:
 import { useMutation } from 'villus';
 
 export default {
-  setup () {
-    const { data, execute } = useMutation(
-      query: `mutation { likePost (id: 123) { message } }`
-    );
+  setup() {
+    const LikePost = `
+      mutation {
+        likePost (id: 123) {
+          message
+        }
+      }
+    `;
+    const { data, execute } = useMutation(LikePost);
 
     return {
       data,
-      execute
+      execute,
     };
-  }
+  },
 };
 </script>
 ```
-
-Here is a basic example for the `Mutation` component:
-
-```vue
-<template>
-  <div>
-    <Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ data, execute }">
-      <div v-if="data">
-        <p>{{ data.likePost.message }}</p>
-      </div>
-      <button @click="execute()">Submit</button>
-    </Mutation>
-  </div>
-</template>
-
-<script>
-import { Mutation } from 'villus`;
-
-export default {
-  components: {
-    Mutation
-  }
-};
-</script>
-```
-
-:::tip
-The `Mutation` component is **renderless**, meaning it will not render any extra HTML other than its slot.
-:::
 
 ## Passing Variables
 
-Since the `useMutation` function does not accept a `variables` property you can pass them to the `execute` method returned:
+Since the `useMutation` function does not accept a `variables` property you can pass them to the `execute` function:
 
 ```js
+const LikePost = `
+  mutation LikePost ($id: ID!) {
+    likePost (id: $id) {
+      message
+    }
+  }
+`;
+
 // in setup
-const { data, execute } = useMutation({
-  query: 'mutation Like ($id: ID!) { likePost (id: $id) { message } }'
-});
+const { data, execute } = useMutation(LikePost);
+const variables = {
+  id: 123,
+};
 
-function submit() {
-  execute({ id: 123 });
+function onSubmit() {
+  execute(variables);
 }
-
-return { submit, data };
 ```
 
-For the `Mutation` component you can pass the `variables` to the `execute` method instead:
+## Handling Errors
 
-```vue{3,8}
-<Mutation query="mutation Like ($id: ID!) { likePost (id: $id) { message } }" v-slot="{ data, execute }">
-  <div v-if="data">
-    <p>{{ data.likePost.message }}</p>
-  </div>
-  <button @click="execute({ id: 123 })">Submit</button>
-</Mutation>
-```
-
-Usually you would wrap your `forms` with the `Mutation` component and handle submits by executing the mutation.
-
-## Other Properties
-
-### fetching
-
-The `Mutation` slot props contain more useful information that you can use to build better experience for your users, for example you can use the `fetching` slot prop to display a loading indicator while the form submits.
-
-```vue{3,5}
-<Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ data, execute, fetching }">
-  <Loading v-if="fetching" />
-
-  <div v-if="data">
-    <p>{{ data.likePost.message }}</p>
-  </div>
-
-  <button @click="execute()" :disabled="fetching">Submit</button>
-</Mutation>
-```
-
-### done
-
-The `done` slot prop is a boolean that indicates that the query has been completed.
-
-### errors
-
-The `errors` slot prop contains all errors encountered when running the query.
-
-```vue{3,6}
-<Mutation
-  query="mutation { likePost (id: 123) { message } }"
-  v-slot="{ data, errors, execute }"
->
-  <!-- Your Custom component to handle error display -->
-  <ErrorPage v-if="errors" :errors="errors" />
-
-
-  <button @click="execute()"">Submit</button>
-</Mutation>
-```
-
-:::tip
-You can also extract the same properties mentioned above from the `useMutation` function:
+You can handle errors by either grabbing the `error` ref returned from the `useMutation` function or by checking the result of the `execute` promise, the latter is preferable as it makes more sense in most situations. The `execute` function doesn't throw and collects all encountered errors into a `CombinedError` instance that contains any GraphQL or network errors encountered.
 
 ```js
-const { fetching, done, errors } = useMutation({
-  // ...
-});
+const LikePost = `
+  mutation LikePost ($id: ID!) {
+    likePost (id: $id) {
+      message
+    }
+  }
+`;
+
+// in setup
+const { data, execute } = useMutation(LikePost);
+const variables = {
+  id: 123,
+};
+
+function onSubmit() {
+  execute(variables).then(result => {
+    if (result.error) {
+      // Do something
+    }
+  });
+}
 ```
 
-:::
+There are more stuff you can do with mutations, like displaying progress for users. Check the API documentation for [useMutation](../api/use-mutation) and [Mutation component](../api/mutation).

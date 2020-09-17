@@ -8,7 +8,7 @@ order: 3
 
 You can query GraphQL APIs with the `useQuery` function or `Query` component after you've setup the [GraphQL Client](./setup.md). This guide will focus on using the composable API because it is more flexible and concise, everything covered in this guide can be done with the `Query` component.
 
-## useQuery
+## Queries Basics
 
 The `useQuery` function is a composable function that provides query state and various helper methods around managing the query.
 
@@ -319,16 +319,16 @@ Then you can suspend the `Listing.vue` component like this:
 
 ```vue
 <template>
-<div>
-  <Suspense>
-    <template #default>
-      <Listing />
-    </template>
-    <template #fallback>
-      <span>Loading...</span>
-    </template>
-  </Suspense>
-</div>
+  <div>
+    <Suspense>
+      <template #default>
+        <Listing />
+      </template>
+      <template #fallback>
+        <span>Loading...</span>
+      </template>
+    </Suspense>
+  </div>
 </template>
 
 <script>
