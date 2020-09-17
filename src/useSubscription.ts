@@ -13,7 +13,7 @@ export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value
 export const defaultReducer: Reducer = (_, val) => val.data;
 
 export function useSubscription<TData = any, TResult = TData, TVars = QueryVariables>(
-  { query, variables }: SubscriptionCompositeOptions<TVars>,
+  opts: SubscriptionCompositeOptions<TVars> | Operation['query'],
   reduce: Reducer<TData, TResult> = defaultReducer
 ) {
   const client = inject('$villus') as VqlClient;
@@ -21,6 +21,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
+  const { query, variables } = typeof opts !== 'string' && 'query' in opts ? opts : { query: opts, variables: {} };
   const data = ref<TResult | null>(reduce(null, { data: null, error: null }));
   const error: Ref<CombinedError | null> = ref(null);
   const paused = ref(false);
