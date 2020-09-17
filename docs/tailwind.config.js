@@ -41,9 +41,9 @@ module.exports = {
         'dark-light': '#151518',
         dark: 'hsl(240 6% 9%)',
         carbon: '#333',
-        'accent-900': '#8B5D8B',
-        'accent-800': 'var(--accent, #8B5D8B)',
-        'accent-100': '#8B5D8B',
+        'accent-900': '#A05E95',
+        'accent-800': 'var(--accent, #A05E95)',
+        'accent-100': '#A05E95',
 
         warning: 'hsl(14deg 36% 34%)',
         error: '#cf6679',
