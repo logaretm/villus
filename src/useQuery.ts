@@ -35,6 +35,8 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
     error.value = res.error;
     done.value = true;
     fetching.value = false;
+
+    return { data: data.value, error: error.value };
   }
 
   if (isRef(query)) {
