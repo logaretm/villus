@@ -36,6 +36,36 @@ test('runs mutations', async () => {
   expect(document.querySelector('p')?.textContent).toBe('Operation successful');
 });
 
+test('runs mutations - alternate signature', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+
+      const { data, execute } = useMutation<LikePostMutationResponse>('mutation { likePost (id: 123) { message } }');
+
+      return { data, execute };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <p>{{ data.likePost.message }}</p>
+      </div>
+      <button @click="execute()"></button>
+    </div>`,
+  });
+
+  await flushPromises();
+  expect(fetch).toHaveBeenCalledTimes(0);
+
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+  await flushPromises();
+  expect(fetch).toHaveBeenCalledTimes(1);
+
+  expect(document.querySelector('p')?.textContent).toBe('Operation successful');
+});
+
 test('passes variables via execute method', async () => {
   mount({
     setup() {

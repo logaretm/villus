@@ -31,6 +31,31 @@ test('executes hook queries on mounted', async () => {
   expect(document.querySelectorAll('li').length).toBe(5);
 });
 
+test('alternate signature', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+
+      const { data, error } = useQuery<{ posts: Post[] }>('{ posts { id title } }');
+
+      return { data, error };
+    },
+    template: `
+    <div>'
+      <div>{{ error }}</div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </div>`,
+  });
+
+  await flushPromises();
+
+  expect(document.querySelectorAll('li').length).toBe(5);
+});
+
 test('works with tagged queries', async () => {
   mount({
     setup() {
