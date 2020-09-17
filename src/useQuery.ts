@@ -28,7 +28,7 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
     const res = await client.executeQuery<TData, TVars>({
       query: isRef(query) ? query.value : query,
       variables: vars as TVars, // FIXME: Try to avoid casting
-      cachePolicy: overrideOpts?.cachePolicy || cachePolicy
+      cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
     });
 
     data.value = res.data;
@@ -85,10 +85,15 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
   return { data, fetching, done, error, execute, pause, paused, resume };
 }
 
-function useQuery<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptions<TVars>) {
-  const api = _useQuery<TData, TVars>(opts);
+type QueryComposable = ReturnType<typeof _useQuery>;
+
+function useQuery<TData = any, TVars = QueryVariables>(
+  opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query']
+): QueryComposable {
+  const normalizedOpts = normalizeOptions(opts);
+  const api = _useQuery<TData, TVars>(normalizedOpts);
   // Fetch on mounted if lazy is disabled.
-  if (!opts.lazy) {
+  if (!normalizedOpts.lazy) {
     onMounted(() => {
       api.execute();
     });
@@ -97,13 +102,38 @@ function useQuery<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptio
   return api;
 }
 
-async function useQueryAsync<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptions<TVars>) {
-  const api = _useQuery<TData, TVars>(opts);
+function useQueryAsync<TData = any, TVars = QueryVariables>(
+  query: QueryCompositeOptions<TVars>['query'],
+  variables?: QueryCompositeOptions<TVars>['variables']
+): Promise<QueryComposable>;
+
+function useQueryAsync<TData = any, TVars = QueryVariables>(
+  query: QueryCompositeOptions<TVars>
+): Promise<QueryComposable>;
+
+async function useQueryAsync<TData = any, TVars = QueryVariables>(
+  opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query']
+) {
+  const api = _useQuery<TData, TVars>(normalizeOptions(opts));
   await api.execute();
 
   return api;
 }
 
 useQuery.suspend = useQueryAsync;
+
+function normalizeOptions<TVars>(
+  opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],
+  variables?: QueryCompositeOptions<TVars>['variables']
+): QueryCompositeOptions<TVars> {
+  if (typeof opts !== 'string' && 'query' in opts) {
+    return opts;
+  }
+
+  return {
+    query: opts,
+    variables,
+  };
+}
 
 export { useQuery };

@@ -7,7 +7,7 @@ interface MutationCompositeOptions {
   query: Operation['query'];
 }
 
-export function useMutation<TData = any, TVars = QueryVariables>({ query }: MutationCompositeOptions) {
+export function useMutation<TData = any, TVars = QueryVariables>(opts: MutationCompositeOptions | Operation['query']) {
   const client = inject('$villus') as VqlClient;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
@@ -22,8 +22,8 @@ export function useMutation<TData = any, TVars = QueryVariables>({ query }: Muta
     fetching.value = true;
     const vars = variables || {};
     const res = await client.executeMutation<TData, TVars>({
-      query,
-      variables: vars as TVars // FIXME: fix this casting
+      query: typeof opts !== 'string' && 'query' in opts ? opts.query : opts,
+      variables: vars as TVars, // FIXME: fix this casting
     });
 
     data.value = res.data;
