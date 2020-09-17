@@ -30,6 +30,8 @@ export function useMutation<TData = any, TVars = QueryVariables>(opts: MutationC
     error.value = res.error;
     done.value = true;
     fetching.value = false;
+
+    return { data: data.value, error: error.value };
   }
 
   return { data, fetching, done, error, execute };
