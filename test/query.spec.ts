@@ -5,16 +5,16 @@ import { Query, createClient, Provider } from '../src/index';
 
 test('executes queries on mounted', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Query,
-      Provider
+      Provider,
     },
     template: `
       <div>
@@ -30,7 +30,7 @@ test('executes queries on mounted', async () => {
           </div>
         </Provider>
       </div>
-    `
+    `,
   });
 
   await flushPromises();
@@ -44,16 +44,16 @@ test('executes queries on mounted', async () => {
 
 test('caches queries by default', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Query,
-      Provider
+      Provider,
     },
     template: `
       <div>
@@ -70,7 +70,7 @@ test('caches queries by default', async () => {
           </div>
         </Provider>
       </div>
-    `
+    `,
   });
 
   await flushPromises();
@@ -84,16 +84,16 @@ test('caches queries by default', async () => {
 
 test('cache policy can be overridden with execute function', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Query,
-      Provider
+      Provider,
     },
     template: `
       <div>
@@ -110,7 +110,7 @@ test('cache policy can be overridden with execute function', async () => {
           </div>
         </Provider>
       </div>
-    `
+    `,
   });
 
   await flushPromises();
@@ -124,16 +124,16 @@ test('cache policy can be overridden with execute function', async () => {
 
 test('cache policy can be overridden with cachePolicy prop', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Query,
-      Provider
+      Provider,
     },
     template: `
       <div>
@@ -150,7 +150,7 @@ test('cache policy can be overridden with cachePolicy prop', async () => {
           </div>
         </Provider>
       </div>
-    `
+    `,
   });
 
   await flushPromises();
@@ -164,17 +164,17 @@ test('cache policy can be overridden with cachePolicy prop', async () => {
 
 test('variables are watched by default', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   const vm = mount({
     data: () => ({
       client,
-      id: 12
+      id: 12,
     }),
     components: {
       Query,
-      Provider
+      Provider,
     },
     template: `
       <div>
@@ -188,7 +188,7 @@ test('variables are watched by default', async () => {
           </div>
         </Provider>
       </div>
-    `
+    `,
   });
 
   await flushPromises();
@@ -203,17 +203,17 @@ test('variables are watched by default', async () => {
 
 test('variables watcher can be disabled', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   const vm = mount({
     data: () => ({
       client,
-      id: 12
+      id: 12,
     }),
     components: {
       Query,
-      Provider
+      Provider,
     },
     template: `
       <div>
@@ -227,7 +227,7 @@ test('variables watcher can be disabled', async () => {
           </div>
         </Provider>
       </div>
-    `
+    `,
   });
 
   await flushPromises();
@@ -241,7 +241,7 @@ test('variables watcher can be disabled', async () => {
 
 test('variables prop arrangement does not trigger queries', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   const vm = mount({
@@ -249,12 +249,12 @@ test('variables prop arrangement does not trigger queries', async () => {
       client,
       vars: {
         id: 12,
-        type: 'test'
-      }
+        type: 'test',
+      },
     }),
     components: {
       Query,
-      Provider
+      Provider,
     },
     template: `
       <div>
@@ -268,7 +268,7 @@ test('variables prop arrangement does not trigger queries', async () => {
           </div>
         </Provider>
       </div>
-    `
+    `,
   });
 
   await flushPromises();
@@ -276,7 +276,7 @@ test('variables prop arrangement does not trigger queries', async () => {
   expect(document.querySelector('h1')?.textContent).toContain('12');
   (vm as any).vars = {
     type: 'test',
-    id: 12
+    id: 12,
   };
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
@@ -292,17 +292,17 @@ test('variables prop arrangement does not trigger queries', async () => {
 // eslint-disable-next-line jest/no-disabled-tests
 test.skip('can be suspended', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   (global as any).fetchController.delay = 100;
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Query,
-      Provider
+      Provider,
     },
     template: `
       <div>
@@ -321,7 +321,7 @@ test.skip('can be suspended', async () => {
           </Suspense>
         </Provider>
       </div>
-    `
+    `,
   });
 
   expect(document.body.textContent).toBe('Loading...');
@@ -331,16 +331,16 @@ test.skip('can be suspended', async () => {
 
 test('Handles query errors', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Query,
-      Provider
+      Provider,
     },
     template: `
         <Provider :client="client">
@@ -353,7 +353,7 @@ test('Handles query errors', async () => {
             </Query>
           </div>
         </Provider>
-      `
+      `,
   });
 
   await flushPromises();
@@ -362,18 +362,18 @@ test('Handles query errors', async () => {
 
 test('Handles external errors', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   (global as any).fetchController.simulateNetworkError = true;
 
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Query,
-      Provider
+      Provider,
     },
     template: `
         <Provider :client="client">
@@ -386,7 +386,7 @@ test('Handles external errors', async () => {
             </Query>
           </div>
         </Provider>
-      `
+      `,
   });
 
   await flushPromises();
@@ -395,18 +395,18 @@ test('Handles external errors', async () => {
 
 test('Handles empty slots', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   (global as any).fetchController.simulateNetworkError = true;
 
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Query,
-      Provider
+      Provider,
     },
     template: `
         <Provider :client="client">
@@ -414,7 +414,7 @@ test('Handles empty slots', async () => {
             <Query query="{ posts { id title propNotFound } }" v-slot="{ data, error }"></Query>
           </div>
         </Provider>
-      `
+      `,
   });
 
   await flushPromises();

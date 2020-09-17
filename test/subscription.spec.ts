@@ -16,16 +16,16 @@ test('Handles subscriptions', async () => {
     url: 'https://test.com/graphql',
     subscriptionForwarder: () => {
       return makeObservable();
-    }
+    },
   });
 
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Subscription,
-      Provider
+      Provider,
     },
     template: `
       <Provider :client="client">
@@ -35,7 +35,7 @@ test('Handles subscriptions', async () => {
           </div>
         </Subscription>
       </Provider>
-    `
+    `,
   });
 
   tick(5);
@@ -48,7 +48,7 @@ test('Can provide a custom reducer', async () => {
     url: 'https://test.com/graphql',
     subscriptionForwarder: () => {
       return makeObservable();
-    }
+    },
   });
 
   function reduce(oldMessages: string[], response: any) {
@@ -62,11 +62,11 @@ test('Can provide a custom reducer', async () => {
   mount({
     data: () => ({
       client,
-      reduce
+      reduce,
     }),
     components: {
       Subscription,
-      Provider
+      Provider,
     },
     template: `
       <Provider :client="client">
@@ -76,7 +76,7 @@ test('Can provide a custom reducer', async () => {
           </ul>
         </Subscription>
       </Provider>
-    `
+    `,
   });
 
   tick(5);
@@ -89,16 +89,16 @@ test('Handles observer errors', async () => {
     url: 'https://test.com/graphql',
     subscriptionForwarder: () => {
       return makeObservable(true);
-    }
+    },
   });
 
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Subscription,
-      Provider
+      Provider,
     },
     template: `
       <div>
@@ -108,7 +108,7 @@ test('Handles observer errors', async () => {
           </Subscription>
         </Provider>
       </div>
-    `
+    `,
   });
 
   tick(2);
@@ -120,13 +120,13 @@ test('Fails if provider was not resolved', async () => {
   try {
     mount({
       components: {
-        Subscription
+        Subscription,
       },
       template: `
           <Subscription query="subscription { newMessages }" v-slot="{ data }">
             {{ data }}
           </Subscription>
-        `
+        `,
     });
   } catch (err) {
     // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect

@@ -18,7 +18,7 @@ test('Default reducer', async () => {
         url: 'https://test.com/graphql',
         subscriptionForwarder: () => {
           return makeObservable();
-        }
+        },
       });
 
       const { data } = useSubscription<Message>({ query: `subscription { newMessages }` });
@@ -31,7 +31,7 @@ test('Default reducer', async () => {
           <span>{{ messages.id }}</span>
         </div>
       </div>
-    `
+    `,
   });
 
   jest.advanceTimersByTime(501);
@@ -46,7 +46,7 @@ test('Handles subscriptions with a custom reducer', async () => {
         url: 'https://test.com/graphql',
         subscriptionForwarder: () => {
           return makeObservable();
-        }
+        },
       });
 
       const { data } = useSubscription<Message, string[]>(
@@ -68,7 +68,7 @@ test('Handles subscriptions with a custom reducer', async () => {
           <li>{{ message.id }}</li>
         </ul>
       </div>
-    `
+    `,
   });
 
   jest.advanceTimersByTime(501);
@@ -83,7 +83,7 @@ test('Handles observer errors', async () => {
         url: 'https://test.com/graphql',
         subscriptionForwarder: () => {
           return makeObservable(true);
-        }
+        },
       });
 
       function reduce(oldMessages: string[] | null, response: any): string[] {
@@ -105,7 +105,7 @@ test('Handles observer errors', async () => {
         </ul>
         <p id="error" v-if="error">{{ error.message }}</p>
       </div>
-    `
+    `,
   });
 
   jest.advanceTimersByTime(150);
@@ -120,7 +120,7 @@ test('Pauses and resumes subscriptions', async () => {
         url: 'https://test.com/graphql',
         subscriptionForwarder: () => {
           return makeObservable();
-        }
+        },
       });
 
       function reduce(oldMessages: string[] | null, response: any) {
@@ -143,7 +143,7 @@ test('Pauses and resumes subscriptions', async () => {
         <button @click="paused ? resume() : pause()"></button>
         <span id="status">{{ paused }}</span>
       </div>
-    `
+    `,
   });
 
   await flushPromises();
@@ -177,7 +177,7 @@ test('Fails if provider was not resolved', () => {
         </ul>
         <p id="error" v-if="errors">{{ error.message }}</p>
       </div>
-    `
+    `,
     });
   } catch (err) {
     // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
@@ -190,7 +190,7 @@ test('Fails if subscription forwarder was not set', () => {
     mount({
       setup() {
         useClient({
-          url: 'https://test.com/graphql'
+          url: 'https://test.com/graphql',
         });
         const { data, error } = useSubscription({ query: `subscription { newMessages }` });
 
@@ -203,7 +203,7 @@ test('Fails if subscription forwarder was not set', () => {
         </ul>
         <p id="error" v-if="error">{{ error.message }}</p>
       </div>
-    `
+    `,
     });
   } catch (err) {
     // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect

@@ -19,9 +19,9 @@ export function makeObservable(throws = false) {
       return {
         unsubscribe() {
           clearTimeout(interval);
-        }
+        },
       };
-    }
+    },
   };
 
   return observable;

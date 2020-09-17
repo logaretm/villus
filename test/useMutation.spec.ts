@@ -8,11 +8,11 @@ test('runs mutations', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, execute } = useMutation<LikePostMutationResponse>({
-        query: 'mutation { likePost (id: 123) { message } }'
+        query: 'mutation { likePost (id: 123) { message } }',
       });
 
       return { data, execute };
@@ -23,7 +23,7 @@ test('runs mutations', async () => {
         <p>{{ data.likePost.message }}</p>
       </div>
       <button @click="execute()"></button>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -40,11 +40,11 @@ test('passes variables via execute method', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, execute } = useMutation({
-        query: 'mutation LikePost ($id: ID!) { likePost (id: $id) { message } }'
+        query: 'mutation LikePost ($id: ID!) { likePost (id: $id) { message } }',
       });
 
       return { data, execute };
@@ -55,7 +55,7 @@ test('passes variables via execute method', async () => {
         <p>{{ data.likePost.message }}</p>
       </div>
       <button @click="execute({ id: 123 })"></button>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -74,7 +74,7 @@ test('handles external errors', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, execute, error } = useMutation({ query: 'mutation { likePost (id: 123) { message } }' });
@@ -88,7 +88,7 @@ test('handles external errors', async () => {
       </div>
       <p id="error" v-if="error">{{ error.message }}</p>
       <button @click="execute()"></button>
-    </div>`
+    </div>`,
   });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
@@ -110,7 +110,7 @@ test('Fails if provider was not resolved', () => {
             <p>{{ data.likePost.message }}</p>
           </div>
           <button @click="execute()"></button>
-        </div>`
+        </div>`,
     });
   } catch (err) {
     // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect

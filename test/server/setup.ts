@@ -5,7 +5,7 @@ const server = mockServer(schema, {
   Post: () => ({
     id: () => Math.random().toString(36).substring(7),
     title: () => 'Hello World',
-    slug: () => 'hello-world'
+    slug: () => 'hello-world',
   }),
   Query: () => ({
     posts: () => new MockList(5),
@@ -13,23 +13,23 @@ const server = mockServer(schema, {
       return {
         id,
         title: `Hello World: ${id}`,
-        slug: 'hello-world'
+        slug: 'hello-world',
       };
-    }
+    },
   }),
   Mutation: () => ({
     likePost: () => ({
       success: true,
       code: '200',
-      message: 'Operation successful'
-    })
-  })
+      message: 'Operation successful',
+    }),
+  }),
 });
 
 beforeEach(() => {
   const fetchController = {
     simulateNetworkError: false,
-    simulateParseError: false
+    simulateParseError: false,
   };
 
   (global as any).fetchController = fetchController;
@@ -53,7 +53,7 @@ beforeEach(() => {
         }
 
         return res;
-      }
+      },
     });
   });
 

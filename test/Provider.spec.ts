@@ -6,7 +6,7 @@ import { Post } from './server/typedSchema';
 
 test('creates HOC withProvider', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   mount(
@@ -23,7 +23,7 @@ test('creates HOC withProvider', async () => {
       <ul v-if="data">
         <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
       </ul>
-    </div>`
+    </div>`,
       },
       client
     )

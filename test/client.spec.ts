@@ -11,7 +11,7 @@ test('fails if a fetcher was not provided', () => {
 test('fails if executes an non-provided query', async () => {
   try {
     const client = createClient({
-      url: ''
+      url: '',
     });
 
     // @ts-expect-error Checking for run-time error
@@ -29,11 +29,11 @@ test('supports async context', async () => {
       return {
         fetchOptions: {
           headers: {
-            Authorization: 'bearer TOKEN'
-          }
-        }
+            Authorization: 'bearer TOKEN',
+          },
+        },
       };
-    }
+    },
   });
 
   const { data } = await client.executeQuery({ query: '{ posts { id title } }' });

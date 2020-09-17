@@ -5,16 +5,16 @@ import { Mutation, createClient, Provider } from '../src/index';
 
 test('runs mutations', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Mutation,
-      Provider
+      Provider,
     },
     template: `
       <div>
@@ -29,7 +29,7 @@ test('runs mutations', async () => {
           </div>
         </Provider>
       </div>
-    `
+    `,
   });
 
   await flushPromises();
@@ -43,18 +43,18 @@ test('runs mutations', async () => {
 
 test('handles errors', async () => {
   const client = createClient({
-    url: 'https://test.com/graphql'
+    url: 'https://test.com/graphql',
   });
 
   (global as any).fetchController.simulateNetworkError = true;
 
   mount({
     data: () => ({
-      client
+      client,
     }),
     components: {
       Mutation,
-      Provider
+      Provider,
     },
     template: `
       <div>
@@ -69,7 +69,7 @@ test('handles errors', async () => {
           </div>
         </Provider>
       </div>
-    `
+    `,
   });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));

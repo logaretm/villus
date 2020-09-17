@@ -10,7 +10,7 @@ test('executes hook queries on mounted', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, error } = useQuery<{ posts: Post[] }>({ query: '{ posts { id title } }' });
@@ -23,7 +23,7 @@ test('executes hook queries on mounted', async () => {
       <ul v-if="data">
         <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
       </ul>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -35,7 +35,7 @@ test('works with tagged queries', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data } = useQuery({
@@ -46,7 +46,7 @@ test('works with tagged queries', async () => {
               title
             }
           }
-        `
+        `,
       });
 
       return { data };
@@ -56,7 +56,7 @@ test('works with tagged queries', async () => {
       <ul v-if="data">
         <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
       </ul>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -67,7 +67,7 @@ test('caches queries by default', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, execute } = useQuery({ query: '{ posts { id title } }' });
@@ -80,7 +80,7 @@ test('caches queries by default', async () => {
         <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
       </ul>
       <button @click="execute()"></button>
-    </div>`
+    </div>`,
   });
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
@@ -97,7 +97,7 @@ test('batches queries with batcher', async () => {
     setup() {
       useClient({
         url: 'https://test.com/graphql',
-        fetch: batcher()
+        fetch: batcher(),
       });
 
       const firstQuery = useQuery({ query: '{ posts { title } }' });
@@ -113,7 +113,7 @@ test('batches queries with batcher', async () => {
       <ul v-if="postsWithId">
         <li v-for="post in postsWithId.posts" :key="post.id">{{ post.title }}</li>
       </ul>
-    </div>`
+    </div>`,
   });
 
   jest.advanceTimersByTime(100);
@@ -126,7 +126,7 @@ test('re-runs reactive queries automatically', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const id = ref(12);
@@ -135,7 +135,7 @@ test('re-runs reactive queries automatically', async () => {
       });
 
       const { data } = useQuery({
-        query
+        query,
       });
 
       return { data, id };
@@ -146,7 +146,7 @@ test('re-runs reactive queries automatically', async () => {
         <h1>{{ data.post.title }}</h1>
       </div>
       <button @click="id = 13"></button>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -164,7 +164,7 @@ test('cache policy can be overridden with execute function', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, execute } = useQuery({ query: '{ posts { id title } }' });
@@ -177,7 +177,7 @@ test('cache policy can be overridden with execute function', async () => {
         <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
       </ul>
       <button @click="execute({ cachePolicy: 'cache-and-network' })"></button>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -193,7 +193,7 @@ test('cache policy can be overridden with cachePolicy option', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, execute } = useQuery({ query: '{ posts { id title } }', cachePolicy: 'cache-and-network' });
@@ -206,7 +206,7 @@ test('cache policy can be overridden with cachePolicy option', async () => {
         <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
       </ul>
       <button @click="execute()"></button>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -222,16 +222,16 @@ test('variables are watched by default if reactive', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const variables = ref({
-        id: 12
+        id: 12,
       });
 
       const { data } = useQuery({
         query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
-        variables
+        variables,
       });
 
       return { data, variables };
@@ -242,7 +242,7 @@ test('variables are watched by default if reactive', async () => {
         <h1>{{ data.post.title }}</h1>
       </div>
       <button @click="variables.id = 13"></button>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -260,16 +260,16 @@ test('cached variables are matched by equality not reference', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const variables = ref({
-        id: 12
+        id: 12,
       });
 
       const { data } = useQuery({
         query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
-        variables
+        variables,
       });
 
       function updateRef() {
@@ -284,7 +284,7 @@ test('cached variables are matched by equality not reference', async () => {
         <h1>{{ data.post.title }}</h1>
       </div>
       <button @click="updateRef"></button>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -308,16 +308,16 @@ test('variables watcher can be disabled', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const variables = ref({
-        id: 12
+        id: 12,
       });
 
       const { data, pause, paused, resume } = useQuery({
         query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
-        variables
+        variables,
       });
 
       return { data, variables, pause, resume, paused };
@@ -330,7 +330,7 @@ test('variables watcher can be disabled', async () => {
       <button id="change" @click="variables.id = variables.id + 1"></button>
       <button id="toggle" @click="paused ? resume() : pause()"></button>
       <span id="status">{{ paused }}</span>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -357,17 +357,17 @@ test('variables prop arrangement does not trigger queries', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const variables = ref({
         id: 12,
-        type: 'test'
+        type: 'test',
       });
 
       const { data } = useQuery({
         query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
-        variables
+        variables,
       });
 
       return { data, variables };
@@ -378,7 +378,7 @@ test('variables prop arrangement does not trigger queries', async () => {
         <h1>{{ data.post.title }}</h1>
       </div>
       <button @click="variables = { type: 'test', id: 12 }"></button>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -394,7 +394,7 @@ test('can be suspended', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
     },
     components: {
@@ -408,8 +408,8 @@ test('can be suspended', async () => {
           <ul>
             <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
           </ul>
-        `
-      }
+        `,
+      },
     },
     template: `
       <div>
@@ -421,7 +421,7 @@ test('can be suspended', async () => {
             <span>Loading...</span>
           </template>
         </Suspense>
-      </div>`
+      </div>`,
   });
 
   expect(document.body.textContent).toBe('Loading...');
@@ -433,11 +433,11 @@ test('Handles query errors', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, error } = useQuery({
-        query: '{ posts { id title propNotFound } }'
+        query: '{ posts { id title propNotFound } }',
       });
 
       return { data, error };
@@ -448,7 +448,7 @@ test('Handles query errors', async () => {
         <h1>It shouldn't work!</h1>
       </div>
       <p id="error" v-if="error">{{ error.message }}</p>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -461,11 +461,11 @@ test('Handles parse errors', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, error } = useQuery({
-        query: '{ posts { id title } }'
+        query: '{ posts { id title } }',
       });
 
       return { data, error };
@@ -476,7 +476,7 @@ test('Handles parse errors', async () => {
         <h1>It shouldn't work!</h1>
       </div>
       <p id="error" v-if="error">{{ error.message }}</p>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -489,11 +489,11 @@ test('Handles network errors', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, error } = useQuery({
-        query: '{ posts { id title } }'
+        query: '{ posts { id title } }',
       });
 
       return { data, error };
@@ -504,7 +504,7 @@ test('Handles network errors', async () => {
         <h1>It shouldn't work!</h1>
       </div>
       <p id="error" v-if="error">{{ error.message }}</p>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -525,7 +525,7 @@ test('Fails if provider was not resolved', () => {
           <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
         </ul>
       </div>
-    `
+    `,
     });
   } catch (err) {
     // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
@@ -539,11 +539,11 @@ test('Errors are stringified nicely to their messages', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, error } = useQuery({
-        query: '{ posts { id title } }'
+        query: '{ posts { id title } }',
       });
 
       return { data, error };
@@ -554,7 +554,7 @@ test('Errors are stringified nicely to their messages', async () => {
         <h1>It shouldn't work!</h1>
       </div>
       <p id="error" v-if="error">{{ error.toString() }}</p>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
@@ -567,11 +567,11 @@ test('Errors can be separated by type', async () => {
   mount({
     setup() {
       useClient({
-        url: 'https://test.com/graphql'
+        url: 'https://test.com/graphql',
       });
 
       const { data, error } = useQuery({
-        query: '{ posts { id title } }'
+        query: '{ posts { id title } }',
       });
 
       return { data, error };
@@ -582,7 +582,7 @@ test('Errors can be separated by type', async () => {
         <h1>It shouldn't work!</h1>
       </div>
       <p id="error" v-if="error">{{ error.isGraphQLError ? 'GraphQL' : 'Network' }}</p>
-    </div>`
+    </div>`,
   });
 
   await flushPromises();
