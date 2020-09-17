@@ -29,6 +29,10 @@ const GROUPS = [
     name: 'plugins',
     contentPath: '/plugins',
   },
+  {
+    name: 'api reference',
+    contentPath: '/api',
+  },
 ];
 
 export default {

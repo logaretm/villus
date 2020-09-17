@@ -16,11 +16,11 @@ export default {
   name: 'DocToc',
   computed: {
     headings() {
-      if (!this.$store.doc) {
+      if (!this.$store.state.doc) {
         return [];
       }
 
-      return this.$store.doc.toc;
+      return this.$store.state.doc.toc;
     },
   },
 };
