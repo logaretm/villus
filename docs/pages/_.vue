@@ -15,7 +15,7 @@ export default {
     };
   },
   mounted() {
-    const linkify = (node) => {
+    const linkify = node => {
       const anchor = document.createElement('a');
       const slug = slugify(node.textContent);
       anchor.href = `${this.$config.appURL}${this.$route.path}#${slug}`;
@@ -36,3 +36,8 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss">
+#shields {
+}
+</style>

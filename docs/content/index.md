@@ -1,45 +1,37 @@
 ---
 title: villus
-home: true
-heroImage: /logo.png
-actionText: Get Started →
-actionLink: ./guide/
-features:
-  - title: Fast
-    details: A lightweight footprint.
-  - title: Caching
-    details: Reasonable caching behavior out of the box.
-  - title: TypeScript
-    details: Everything is written in TypeScript.
 description: A small and fast GraphQL client for Vue.js
+home: true
+features:
+  - title: ⚡️ Fast
+    details: Small API footprint with tiny bundle size < 4kb to make your apps load faster
+  - title: 📦 Cache-Ready
+    details: Reasonable caching behavior out of the box which can be adjusted per query
+  - title: 👕 TypeScript
+    details: Written in TypeScript with Typed query Responses
+  - title: 😋 Two Flavors
+    details: Available as composable functions (hooks) or higher-order components
+  - title: ☢️ Reactive
+    details: Write reactive queries/variables with the composition API
+  - title: 🚟 Suspense API
+    details: Supports the <Suspense /> component API out of the box
 ---
-
-<p align="center">
-
-[![codecov](https://codecov.io/gh/logaretm/villus/branch/next/graph/badge.svg)](https://codecov.io/gh/logaretm/villus)
-[![Build Status](https://travis-ci.org/logaretm/villus.svg?branch=next)](https://travis-ci.org/logaretm/villus)
-[![Bundle Size](https://badgen.net/bundlephobia/minzip/villus)](https://bundlephobia.com/result?p=villus@0.1.0)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8d6ba0a78903476dac459c15506ff312)](https://www.codacy.com/app/logaretm/villus?utm_source=github.com&utm_medium=referral&utm_content=logaretm/villus&utm_campaign=Badge_Grade)
-[![npm](https://img.shields.io/npm/dm/villus.svg)](https://npm-stat.com/charts.html?package=villus)
-[![npm](https://img.shields.io/npm/v/villus.svg)](https://www.npmjs.com/package/villus)
-
-</p>
 
 ## Quick Start
 
 First install `villus`:
 
 ```bash
-yarn add villus@next graphql
+yarn add villus graphql
 
 # or npm
 
-npm install villus@next graphql --save
+npm install villus graphql --save
 ```
 
-> If you are using Vue 2 with the @vue/composition-api don't use the `next` tag.
-
 You can now use it with either the new Vue composition API or higher order components:
+
+**villus supports both Vue 2 (with @vue/composition-api) and Vue 3**
 
 ### Usage
 
@@ -52,9 +44,9 @@ export default {
   name: 'App',
   setup() {
     useClient({
-      url: 'http://localhost:3002/graphql'
+      url: 'http://localhost:3002/graphql',
     });
-  }
+  },
 };
 ```
 
@@ -75,15 +67,13 @@ import { useQuery } from 'villus';
 export default {
   setup() {
     const { data } = useQuery({
-      query: '{ posts { title } }'
+      query: '{ posts { title } }',
     });
 
     return { data };
-  }
+  },
 };
 </script>
 ```
 
 There is also the higher-order component flavor if you prefer to use them instead. Check the docs for more examples and details.
-
-<nuxt-link to="/guide/overview">Guide</nuxt-link>
