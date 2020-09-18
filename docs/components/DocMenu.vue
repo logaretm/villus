@@ -18,10 +18,6 @@
 <script>
 const GROUPS = [
   {
-    name: 'intro',
-    contentPath: '/',
-  },
-  {
     name: 'guide',
     contentPath: '/guide',
   },
