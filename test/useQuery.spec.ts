@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { ref, computed } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import gql from 'graphql-tag';
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
@@ -243,7 +243,7 @@ test('cache policy can be overridden with cachePolicy option', async () => {
   expect(fetch).toHaveBeenCalledTimes(2);
 });
 
-test('variables are watched by default if reactive', async () => {
+test('variables are watched by default if refs', async () => {
   mount({
     setup() {
       useClient({
@@ -258,6 +258,41 @@ test('variables are watched by default if reactive', async () => {
         query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
         variables,
       });
+
+      return { data, variables };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <h1>{{ data.post.title }}</h1>
+      </div>
+      <button @click="variables.id = 13"></button>
+    </div>`,
+  });
+
+  await flushPromises();
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(document.querySelector('h1')?.textContent).toContain('12');
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+
+  await flushPromises();
+  // fetch was triggered a second time, due to variable change.
+  expect(fetch).toHaveBeenCalledTimes(2);
+  expect(document.querySelector('h1')?.textContent).toContain('13');
+});
+
+test('variables are watched by default if reactive', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+
+      const variables = reactive({
+        id: 12,
+      });
+
+      const { data } = useQuery('query fetchPost($id: ID!) { post (id: $id) { id title } }', variables);
 
       return { data, variables };
     },

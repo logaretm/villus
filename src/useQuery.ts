@@ -1,8 +1,8 @@
 import stringify from 'fast-json-stable-stringify';
-import { inject, isRef, onMounted, Ref, ref, watch } from 'vue-demi';
+import { inject, isReactive, isRef, onMounted, Ref, ref, toRefs, watch } from 'vue-demi';
 import { CachePolicy, MaybeReactive, Operation, QueryVariables } from './types';
 import { VqlClient } from './client';
-import { hash, CombinedError } from './utils';
+import { hash, CombinedError, toWatchableSource } from './utils';
 
 interface QueryCompositeOptions<TVars> {
   query: MaybeReactive<Operation['query']>;
@@ -48,13 +48,14 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
 
   function watchVars() {
     let oldCache: number;
-    if (!isRef(variables)) {
+    if ((!isRef(variables) && !isReactive(variables)) || !variables) {
       return;
     }
 
+    const watchableVars = toWatchableSource(variables);
     paused.value = false;
     unwatch = watch(
-      variables,
+      watchableVars,
       newValue => {
         const id = hash(stringify(newValue));
         // prevents duplicate queries.
@@ -90,9 +91,10 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
 type QueryComposable = ReturnType<typeof _useQuery>;
 
 function useQuery<TData = any, TVars = QueryVariables>(
-  opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query']
+  opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],
+  variables?: TVars
 ): QueryComposable {
-  const normalizedOpts = normalizeOptions(opts);
+  const normalizedOpts = normalizeOptions(opts, variables);
   const api = _useQuery<TData, TVars>(normalizedOpts);
   // Fetch on mounted if lazy is disabled.
   if (!normalizedOpts.lazy) {
@@ -114,9 +116,10 @@ function useQueryAsync<TData = any, TVars = QueryVariables>(
 ): Promise<QueryComposable>;
 
 async function useQueryAsync<TData = any, TVars = QueryVariables>(
-  opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query']
+  opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],
+  variables?: TVars
 ) {
-  const api = _useQuery<TData, TVars>(normalizeOptions(opts));
+  const api = _useQuery<TData, TVars>(normalizeOptions(opts, variables));
   await api.execute();
 
   return api;
