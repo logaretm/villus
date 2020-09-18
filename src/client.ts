@@ -24,7 +24,7 @@ type SubscriptionForwarder<TData = any, TVars = QueryVariables> = (
   operation: Operation<TVars>
 ) => ObservableLike<OperationResult<TData>>;
 
-export interface VqlClientOptions {
+export interface ClientOptions {
   url: string;
   fetch?: Fetcher;
   context?: ContextFactory;
@@ -32,11 +32,11 @@ export interface VqlClientOptions {
   subscriptionForwarder?: SubscriptionForwarder;
 }
 
-interface VqlClientOptionsWithFetcher extends VqlClientOptions {
+interface ClientOptionsWithFetcher extends ClientOptions {
   fetch: Fetcher;
 }
 
-export class VqlClient {
+export class Client {
   private url: string;
 
   private fetch: Fetcher;
@@ -49,7 +49,7 @@ export class VqlClient {
 
   private subscriptionForwarder?: SubscriptionForwarder;
 
-  public constructor(opts: VqlClientOptionsWithFetcher) {
+  public constructor(opts: ClientOptionsWithFetcher) {
     this.url = opts.url;
     this.fetch = opts.fetch;
     this.context = opts.context;
@@ -143,11 +143,11 @@ export class VqlClient {
   }
 }
 
-export function createClient(opts: VqlClientOptions) {
+export function createClient(opts: ClientOptions) {
   opts.fetch = opts.fetch || resolveGlobalFetch();
   if (!opts.fetch) {
     throw new Error('Could not resolve a fetch() method, you should provide one.');
   }
 
-  return new VqlClient(opts as VqlClientOptionsWithFetcher);
+  return new Client(opts as ClientOptionsWithFetcher);
 }

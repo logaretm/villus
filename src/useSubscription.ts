@@ -1,5 +1,5 @@
 import { inject, ref, Ref, onMounted } from 'vue-demi';
-import { VqlClient } from './client';
+import { Client } from './client';
 import { Unsub, Operation, OperationResult, QueryVariables } from './types';
 import { CombinedError } from './utils';
 
@@ -16,7 +16,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   opts: SubscriptionCompositeOptions<TVars> | Operation['query'],
   reduce: Reducer<TData, TResult> = defaultReducer
 ) {
-  const client = inject('$villus') as VqlClient;
+  const client = inject('$villus') as Client;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }

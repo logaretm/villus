@@ -1,7 +1,7 @@
 import stringify from 'fast-json-stable-stringify';
-import { inject, isReactive, isRef, onMounted, Ref, ref, toRefs, watch } from 'vue-demi';
+import { inject, isReactive, isRef, onMounted, Ref, ref, watch } from 'vue-demi';
 import { CachePolicy, MaybeReactive, Operation, QueryVariables } from './types';
-import { VqlClient } from './client';
+import { Client } from './client';
 import { hash, CombinedError, toWatchableSource } from './utils';
 
 interface QueryCompositeOptions<TVars> {
@@ -12,7 +12,7 @@ interface QueryCompositeOptions<TVars> {
 }
 
 function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryCompositeOptions<TVars>) {
-  const client = inject('$villus') as VqlClient;
+  const client = inject('$villus') as Client;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }

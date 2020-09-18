@@ -1,17 +1,17 @@
 import { defineComponent, h, SetupContext } from 'vue-demi';
-import { VqlClient } from './client';
+import { Client } from './client';
 import { normalizeChildren } from './utils';
 import { useClient } from './useClient';
 
 interface ProviderProps {
-  client: VqlClient;
+  client: Client;
 }
 
 export const Provider = {
-  name: 'VqlProvider',
+  name: 'VillusClientProvider',
   props: {
     client: {
-      type: VqlClient,
+      type: Client,
       required: true,
     },
   },
@@ -24,7 +24,7 @@ export const Provider = {
   },
 };
 
-export function withProvider(component: any, client: VqlClient) {
+export function withProvider(component: any, client: Client) {
   return defineComponent({
     setup(props, ctx: SetupContext) {
       useClient(client);

@@ -1,8 +1,8 @@
 import { provide } from 'vue-demi';
-import { createClient, VqlClientOptions, VqlClient } from './client';
+import { createClient, ClientOptions, Client } from './client';
 
-export function useClient(opts: VqlClientOptions | VqlClient) {
-  const client = opts instanceof VqlClient ? opts : createClient(opts);
+export function useClient(opts: ClientOptions | Client) {
+  const client = opts instanceof Client ? opts : createClient(opts);
   provide('$villus', client);
 
   return client;

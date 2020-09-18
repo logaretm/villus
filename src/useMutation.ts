@@ -1,6 +1,6 @@
 import { ref, Ref, inject } from 'vue-demi';
 import { Operation, QueryVariables } from './types';
-import { VqlClient } from './client';
+import { Client } from './client';
 import { CombinedError } from './utils';
 
 interface MutationCompositeOptions {
@@ -8,7 +8,7 @@ interface MutationCompositeOptions {
 }
 
 export function useMutation<TData = any, TVars = QueryVariables>(opts: MutationCompositeOptions | Operation['query']) {
-  const client = inject('$villus') as VqlClient;
+  const client = inject('$villus') as Client;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
