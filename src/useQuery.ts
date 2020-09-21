@@ -1,6 +1,6 @@
 import stringify from 'fast-json-stable-stringify';
 import { inject, isReactive, isRef, onMounted, Ref, ref, watch } from 'vue-demi';
-import { CachePolicy, MaybeReactive, Operation, QueryVariables } from './types';
+import { CachePolicy, MaybeReactive, Operation, OperationResult, QueryVariables } from './types';
 import { Client } from './client';
 import { hash, CombinedError, toWatchableSource } from './utils';
 
@@ -11,18 +11,37 @@ interface QueryCompositeOptions<TVars> {
   lazy?: boolean;
 }
 
-function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryCompositeOptions<TVars>) {
+interface QueryExecutionOpts {
+  cachePolicy?: CachePolicy;
+}
+
+interface QueryComposable<TData> {
+  data: Ref<TData | null>;
+  error: Ref<CombinedError | null>;
+  fetching: Ref<boolean>;
+  done: Ref<boolean>;
+  execute: (opts?: QueryExecutionOpts) => Promise<OperationResult<TData>>;
+  pause: () => void;
+  paused: Ref<boolean>;
+  resume: () => void;
+}
+
+function _useQuery<TData, TVars>({
+  query,
+  variables,
+  cachePolicy,
+}: QueryCompositeOptions<TVars>): QueryComposable<TData> {
   const client = inject('$villus') as Client;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  const data = ref<TData | null>(null);
+  const data: Ref<TData | null> = ref(null);
   const fetching = ref(false);
   const done = ref(false);
   const error: Ref<CombinedError | null> = ref(null);
 
-  async function execute(overrideOpts: { cachePolicy?: CachePolicy } = {}) {
+  async function execute(overrideOpts: QueryExecutionOpts = {}) {
     fetching.value = true;
     const vars = (isRef(variables) ? variables.value : variables) || {};
     const res = await client.executeQuery<TData, TVars>({
@@ -31,7 +50,7 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
       cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
     });
 
-    data.value = res.data;
+    data.value = res.data as TData;
     error.value = res.error;
     done.value = true;
     fetching.value = false;
@@ -88,12 +107,17 @@ function _useQuery<TData, TVars>({ query, variables, cachePolicy }: QueryComposi
   return { data, fetching, done, error, execute, pause, paused, resume };
 }
 
-type QueryComposable = ReturnType<typeof _useQuery>;
+function useQuery<TData = any, TVars = QueryVariables>(
+  query: QueryCompositeOptions<TVars>['query'],
+  variables?: QueryCompositeOptions<TVars>['variables']
+): QueryComposable<TData>;
+
+function useQuery<TData = any, TVars = QueryVariables>(query: QueryCompositeOptions<TVars>): QueryComposable<TData>;
 
 function useQuery<TData = any, TVars = QueryVariables>(
   opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],
   variables?: QueryCompositeOptions<TVars>['variables']
-): QueryComposable {
+): QueryComposable<TData> {
   const normalizedOpts = normalizeOptions(opts, variables);
   const api = _useQuery<TData, TVars>(normalizedOpts);
   // Fetch on mounted if lazy is disabled.
@@ -109,11 +133,11 @@ function useQuery<TData = any, TVars = QueryVariables>(
 function useQueryAsync<TData = any, TVars = QueryVariables>(
   query: QueryCompositeOptions<TVars>['query'],
   variables?: QueryCompositeOptions<TVars>['variables']
-): Promise<QueryComposable>;
+): Promise<QueryComposable<TData>>;
 
 function useQueryAsync<TData = any, TVars = QueryVariables>(
   query: QueryCompositeOptions<TVars>
-): Promise<QueryComposable>;
+): Promise<QueryComposable<TData>>;
 
 async function useQueryAsync<TData = any, TVars = QueryVariables>(
   opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],

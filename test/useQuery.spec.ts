@@ -13,7 +13,7 @@ test('executes hook queries on mounted', async () => {
         url: 'https://test.com/graphql',
       });
 
-      const { data, error } = useQuery<{ posts: Post[] }>({ query: '{ posts { id title } }' });
+      const { data, error } = useQuery<{ posts: Post[] }>('{ posts { id title } }');
 
       return { data, error };
     },
