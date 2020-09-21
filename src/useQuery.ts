@@ -92,7 +92,7 @@ type QueryComposable = ReturnType<typeof _useQuery>;
 
 function useQuery<TData = any, TVars = QueryVariables>(
   opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],
-  variables?: TVars
+  variables?: QueryCompositeOptions<TVars>['variables']
 ): QueryComposable {
   const normalizedOpts = normalizeOptions(opts, variables);
   const api = _useQuery<TData, TVars>(normalizedOpts);
