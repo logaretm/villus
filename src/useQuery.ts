@@ -15,7 +15,7 @@ interface QueryExecutionOpts {
   cachePolicy?: CachePolicy;
 }
 
-interface QueryComposable<TData> {
+export interface QueryComposable<TData> {
   data: Ref<TData | null>;
   error: Ref<CombinedError | null>;
   fetching: Ref<boolean>;
@@ -24,6 +24,10 @@ interface QueryComposable<TData> {
   pause: () => void;
   paused: Ref<boolean>;
   resume: () => void;
+}
+
+interface ThenableQueryComposable<TData> extends QueryComposable<TData> {
+  then: (onFulfilled: (value: QueryComposable<TData>) => any) => Promise<QueryComposable<TData>>;
 }
 
 function _useQuery<TData, TVars>({
@@ -110,14 +114,16 @@ function _useQuery<TData, TVars>({
 function useQuery<TData = any, TVars = QueryVariables>(
   query: QueryCompositeOptions<TVars>['query'],
   variables?: QueryCompositeOptions<TVars>['variables']
-): QueryComposable<TData>;
+): ThenableQueryComposable<TData>;
 
-function useQuery<TData = any, TVars = QueryVariables>(query: QueryCompositeOptions<TVars>): QueryComposable<TData>;
+function useQuery<TData = any, TVars = QueryVariables>(
+  query: QueryCompositeOptions<TVars>
+): ThenableQueryComposable<TData>;
 
 function useQuery<TData = any, TVars = QueryVariables>(
   opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],
   variables?: QueryCompositeOptions<TVars>['variables']
-): QueryComposable<TData> {
+): ThenableQueryComposable<TData> {
   const normalizedOpts = normalizeOptions(opts, variables);
   const api = _useQuery<TData, TVars>(normalizedOpts);
   // Fetch on mounted if lazy is disabled.
@@ -127,29 +133,15 @@ function useQuery<TData = any, TVars = QueryVariables>(
     });
   }
 
-  return api;
+  return {
+    ...api,
+    async then(onFulfilled: (value: any) => any) {
+      await api.execute();
+
+      return onFulfilled(api);
+    },
+  };
 }
-
-function useQueryAsync<TData = any, TVars = QueryVariables>(
-  query: QueryCompositeOptions<TVars>['query'],
-  variables?: QueryCompositeOptions<TVars>['variables']
-): Promise<QueryComposable<TData>>;
-
-function useQueryAsync<TData = any, TVars = QueryVariables>(
-  query: QueryCompositeOptions<TVars>
-): Promise<QueryComposable<TData>>;
-
-async function useQueryAsync<TData = any, TVars = QueryVariables>(
-  opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],
-  variables?: TVars
-) {
-  const api = _useQuery<TData, TVars>(normalizeOptions(opts, variables));
-  await api.execute();
-
-  return api;
-}
-
-useQuery.suspend = useQueryAsync;
 
 function normalizeOptions<TVars>(
   opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],

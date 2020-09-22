@@ -1,5 +1,5 @@
 import { SetupContext, toRefs, watchEffect } from 'vue-demi';
-import { useQuery } from './useQuery';
+import { QueryComposable, useQuery } from './useQuery';
 import { CachePolicy } from './types';
 import { normalizeChildren } from './utils';
 import { DocumentNode } from 'graphql';
@@ -43,7 +43,7 @@ export const Query = {
     },
   },
   setup(props: QueryProps, ctx: SetupContext) {
-    function createRenderFn(api: ReturnType<typeof useQuery>) {
+    function createRenderFn(api: QueryComposable<unknown>) {
       const { data, error, fetching, done, execute, pause, resume } = api;
       watchEffect(() => {
         if (props.pause === true) {
@@ -72,7 +72,7 @@ export const Query = {
     };
 
     if (props.suspend) {
-      return useQuery.suspend(queryProps).then(createRenderFn);
+      return useQuery(queryProps).then(createRenderFn);
     }
 
     return createRenderFn(useQuery(queryProps));

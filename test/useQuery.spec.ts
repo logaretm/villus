@@ -460,7 +460,7 @@ test('can be suspended', async () => {
     components: {
       Listing: {
         async setup() {
-          const { data } = await useQuery.suspend({ query: '{ posts { id title } }' });
+          const { data } = await useQuery({ query: '{ posts { id title } }' });
 
           return { data };
         },
