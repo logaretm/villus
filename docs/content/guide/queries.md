@@ -28,7 +28,15 @@ import { useQuery } from 'villus';
 
 export default {
   setup() {
-    const { data } = useQuery('{ todos { text } }');
+    const GetTodos = `
+      GetTodos {
+        todos {
+          id
+          title
+        }
+      }
+    `;
+    const { data } = useQuery(GetTodos);
 
     return { data };
   },
@@ -43,15 +51,19 @@ You can use `graphql-tag` to compile your queries or load them with the `graphql
 This a sample with the `useQuery` function:
 
 ```js
+import { gql } from 'graphql-tag';
+
 // In setup
-const { data } = useQuery(
-  gql`
+const GetTodos = gql`
+  GetTodos {
     todos {
       id
-      text
+      title
     }
-  `
-);
+  }
+`;
+
+const { data } = useQuery(GetTodos);
 
 return { data };
 ```
@@ -75,20 +87,21 @@ You can pass variables to your queries as the second argument of `useQuery`:
 
 ```js
 // in setup
-const { data } = useQuery(
-  `query FetchTodo ($id: ID!) {
-      todo (id: $id) {
-        text
-      }
+
+const FetchTodo = `
+  query FetchTodo ($id: ID!) {
+    todo (id: $id) {
+      text
     }
-  `,
-  {
-    id: 123,
   }
-);
+`;
+
+const { data } = useQuery(FetchTodo, {
+  id: 123,
+});
 ```
 
-However if you want to re-fetch the query whenever the variables change, then this is where the composable API shines. You can pass a [reactive object]() containing your variables and the query will automatically execute with the new variables value:
+However if you want to re-fetch the query whenever the variables change, then this is where the composable API shines. You can pass a [reactive object](https://v3.vuejs.org/api/basic-reactivity.html#reactive) containing your variables and the query will automatically execute with the new variables value:
 
 ```js
 import { reactive } from 'vue';
@@ -109,7 +122,7 @@ const { data } = useQuery(
 );
 ```
 
-This also works with [reactive Refs]()
+This also works with [reactive Refs](https://v3.vuejs.org/api/refs-api.html#ref)
 
 ```js
 import { ref } from 'vue';
@@ -119,15 +132,15 @@ const variables = ref({
   id: 123,
 });
 
-const { data } = useQuery(
-  `query FetchTodo ($id: ID!) {
-      todo (id: $id) {
-        text
-      }
+const FetchTodo = `
+  query FetchTodo ($id: ID!) {
+    todo (id: $id) {
+      text
     }
-  `,
-  variables
-);
+  }
+`;
+
+const { data } = useQuery(FetchTodo, variables);
 ```
 
 This is only one way to re-fetch queries, because `villus` is built with composable API first you will find many ways to re-fetch your queries no matter how complex your requirements are.
@@ -157,8 +170,17 @@ This can be very useful in situations where you have a complex logic that trigge
 import { watch } from 'vue';
 import { useQuery } from 'villus';
 
+const GetTodos = `
+  GetTodos {
+    todos {
+      id
+      title
+    }
+  }
+`;
+
 // in your setup
-const { data, execute } = useQuery(`{ todos: { id text } }`);
+const { data, execute } = useQuery(GetTodos);
 
 watch(someComputedProp, () => execute());
 ```
@@ -171,8 +193,10 @@ Vue is all about reactivity to achieve better DX, and villus follows this philos
 import { computed, ref } from 'vue';
 import { useQuery } from 'villus';
 
+// computed id that will be used to compute the query
 const id = ref(1);
 
+// Create a computed query
 const FetchTodo = computed(() => {
   return `query FetchTodo {
       todo (id: ${id.value}) {
@@ -197,12 +221,18 @@ You can disable the automatic refetch behavior by calling the `pause` function r
 ```js
 import { ref } from 'vue';
 
-const variables = ref({ id: 123 });
+const GetPostById = `
+  query getPost ($id: ID!) {
+    post (id: $id) {
+      id
+      title
+    }
+  }
+`;
 
-const { data, pause, resume } = useQuery({
-  variables,
-  query: `query getPost ($id: ID!) { post (id: $id) { id title } }`,
-});
+// Create a reactive variables object
+const variables = ref({ id: 123 });
+const { data, pause, resume } = useQuery(GetPostById, variables);
 
 // variables/query watching is stopped.
 pause();
@@ -261,8 +291,18 @@ Note the usage of a different signature here for the `useQuery` function, what y
 </doc-tip>
 
 ```js
+// in setup
+const GetPosts = `
+  query GetPosts {
+    posts {
+      id
+      title
+    }
+  }
+`;
+
 const { data } = useQuery({
-  query: '{ posts { id title } }',
+  query: GetPosts,
   cachePolicy: 'network-only',
 });
 ```
@@ -275,9 +315,16 @@ Here is a snippet for doing so with the `useQuery` function:
 
 ```js
 // in setup
-const { execute, data } = useQuery({
-  query: '{ posts { id title } }',
-});
+const GetPosts = `
+  query GetPosts {
+    posts {
+      id
+      title
+    }
+  }
+`;
+
+const { execute, data } = useQuery(GetPosts);
 
 // use this in template or whatever.
 function runWithPolicy() {
@@ -289,7 +336,7 @@ function runWithPolicy() {
 
 Both the `useQuery` and `Query` component can take advantage of the `Suspense` component shipped by Vue 3.x.
 
-For the `useQuery` function, instead of call it directly, you can call the `useQuery.suspend` instead, which has the exact same and behaves the same except it can be used to suspend components like this:
+To utilize the suspense feature, you need to `await` the `useQuery` function and it returns the exact same API after executing the query:
 
 ```vue
 <template>
@@ -305,9 +352,16 @@ import { useQuery } from 'villus';
 export default {
   name: 'Listing',
   async setup() {
-    const { data } = await useQuery.suspend({
-      query: '{ posts { id title } }',
-    });
+    const GetPosts = `
+      query GetPosts {
+        posts {
+          id
+          title
+        }
+      }
+    `;
+
+    const { data } = await useQuery(GetPosts);
 
     return { data };
   },
