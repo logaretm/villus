@@ -32,6 +32,7 @@ export default {
   head() {
     return {
       title: this.page.title,
+      titleTemplate: '%s - Villus',
     };
   },
 };

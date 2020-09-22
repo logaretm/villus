@@ -2,8 +2,7 @@
   <header class="py-4 sticky top-0 dark-mode:bg-dark bg-white z-20 border-b dark-mode:border-carbon border-gray-700">
     <div class="flex items-center header__content px-6 lg:px-10">
       <div class="mr-auto flex items-baseline">
-        <!-- <img class="h-6 w-auto" src="@/assets/img/logo_red.png" /> -->
-        <span class="ml-1 text-accent font-bold">Docs</span>
+        <nuxt-link to="/" class="ml-1 text-accent font-bold">Villus</nuxt-link>
       </div>
 
       <SideMenuButton v-model="isMenuOpen" class="ml-auto block lg:hidden relative z-30" />

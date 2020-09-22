@@ -51,8 +51,8 @@ export default {
   },
   head() {
     return {
-      title: 'VeeValidate',
-      titleTemplate: '%s',
+      title: 'Villus',
+      titleTemplate: 'Villus - %s',
     };
   },
 };
