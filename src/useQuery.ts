@@ -18,11 +18,11 @@ interface QueryExecutionOpts {
 export interface QueryComposable<TData> {
   data: Ref<TData | null>;
   error: Ref<CombinedError | null>;
-  fetching: Ref<boolean>;
-  done: Ref<boolean>;
+  isFetching: Ref<boolean>;
+  isDone: Ref<boolean>;
   execute: (opts?: QueryExecutionOpts) => Promise<OperationResult<TData>>;
   pause: () => void;
-  paused: Ref<boolean>;
+  isPaused: Ref<boolean>;
   resume: () => void;
 }
 
@@ -41,12 +41,12 @@ function _useQuery<TData, TVars>({
   }
 
   const data: Ref<TData | null> = ref(null);
-  const fetching = ref(false);
-  const done = ref(false);
+  const isFetching = ref(false);
+  const isDone = ref(false);
   const error: Ref<CombinedError | null> = ref(null);
 
   async function execute(overrideOpts: QueryExecutionOpts = {}) {
-    fetching.value = true;
+    isFetching.value = true;
     const vars = (isRef(variables) ? variables.value : variables) || {};
     const res = await client.executeQuery<TData, TVars>({
       query: isRef(query) ? query.value : query,
@@ -56,8 +56,8 @@ function _useQuery<TData, TVars>({
 
     data.value = res.data as TData;
     error.value = res.error;
-    done.value = true;
-    fetching.value = false;
+    isDone.value = true;
+    isFetching.value = false;
 
     return { data: data.value, error: error.value };
   }
@@ -67,7 +67,7 @@ function _useQuery<TData, TVars>({
   }
 
   let unwatch: ReturnType<typeof watch>;
-  const paused: Ref<boolean> = ref(false);
+  const isPaused: Ref<boolean> = ref(false);
 
   function watchVars() {
     let oldCache: number;
@@ -76,7 +76,7 @@ function _useQuery<TData, TVars>({
     }
 
     const watchableVars = toWatchableSource(variables);
-    paused.value = false;
+    isPaused.value = false;
     unwatch = watch(
       watchableVars,
       newValue => {
@@ -94,21 +94,21 @@ function _useQuery<TData, TVars>({
   }
 
   function pause() {
-    if (paused.value) return;
+    if (isPaused.value) return;
 
     unwatch();
-    paused.value = true;
+    isPaused.value = true;
   }
 
   function resume() {
-    if (!paused.value) return;
+    if (!isPaused.value) return;
 
     watchVars();
   }
 
   watchVars();
 
-  return { data, fetching, done, error, execute, pause, paused, resume };
+  return { data, isFetching, isDone, error, execute, pause, isPaused, resume };
 }
 
 function useQuery<TData = any, TVars = QueryVariables>(

@@ -14,12 +14,12 @@ export function useMutation<TData = any, TVars = QueryVariables>(opts: MutationC
   }
 
   const data: Ref<TData | null> = ref(null);
-  const fetching = ref(false);
-  const done = ref(false);
+  const isFetching = ref(false);
+  const isDone = ref(false);
   const error: Ref<CombinedError | null> = ref(null);
 
   async function execute(variables?: TVars) {
-    fetching.value = true;
+    isFetching.value = true;
     const vars = variables || {};
     const res = await client.executeMutation<TData, TVars>({
       query: typeof opts !== 'string' && 'query' in opts ? opts.query : opts,
@@ -28,11 +28,11 @@ export function useMutation<TData = any, TVars = QueryVariables>(opts: MutationC
 
     data.value = res.data;
     error.value = res.error;
-    done.value = true;
-    fetching.value = false;
+    isDone.value = true;
+    isFetching.value = false;
 
     return { data: data.value, error: error.value };
   }
 
-  return { data, fetching, done, error, execute };
+  return { data, isFetching, isDone, error, execute };
 }

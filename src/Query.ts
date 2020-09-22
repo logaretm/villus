@@ -44,7 +44,8 @@ export const Query = {
   },
   setup(props: QueryProps, ctx: SetupContext) {
     function createRenderFn(api: QueryComposable<unknown>) {
-      const { data, error, fetching, done, execute, pause, resume } = api;
+      const { data, error, isFetching, isDone, isPaused, execute, pause, resume } = api;
+
       watchEffect(() => {
         if (props.pause === true) {
           pause();
@@ -58,8 +59,9 @@ export const Query = {
         return normalizeChildren(ctx, {
           data: data.value,
           error: error.value,
-          fetching: fetching.value,
-          done: done.value,
+          isFetching: isFetching.value,
+          isDone: isDone.value,
+          isPaused: isPaused.value,
           execute,
         });
       };

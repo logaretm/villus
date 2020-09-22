@@ -16,15 +16,15 @@ export const Mutation = {
     },
   },
   setup(props: MutationProps, ctx: SetupContext) {
-    const { data, fetching, done, error, execute } = useMutation({
+    const { data, isFetching, isDone, error, execute } = useMutation({
       ...props,
     });
 
     return () => {
       return normalizeChildren(ctx, {
         data: data.value,
-        fetching: fetching.value,
-        done: done.value,
+        isFetching: isFetching.value,
+        isDone: isDone.value,
         error: error.value,
         execute,
       });

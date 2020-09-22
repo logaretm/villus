@@ -30,7 +30,7 @@ export const Subscription = {
     },
   },
   setup(props: SubscriptionProps, ctx: SetupContext) {
-    const { data, error, pause, paused, resume } = useSubscription(
+    const { data, error, pause, isPaused, resume } = useSubscription(
       {
         ...props,
       },
@@ -42,7 +42,7 @@ export const Subscription = {
         data: data.value,
         error: error.value,
         pause,
-        paused: paused.value,
+        isPaused: isPaused.value,
         resume,
       });
     };

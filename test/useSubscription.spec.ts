@@ -131,17 +131,17 @@ test('Pauses and resumes subscriptions', async () => {
         return [...oldMessages, response.data.message];
       }
 
-      const { data, pause, resume, paused } = useSubscription({ query: `subscription { newMessages }` }, reduce);
+      const { data, pause, resume, isPaused } = useSubscription({ query: `subscription { newMessages }` }, reduce);
 
-      return { messages: data, pause, resume, paused };
+      return { messages: data, pause, resume, isPaused };
     },
     template: `
       <div>
         <ul v-for="message in messages">
           <li>{{ message.id }}</li>
         </ul>
-        <button @click="paused ? resume() : pause()"></button>
-        <span id="status">{{ paused }}</span>
+        <button @click="isPaused ? resume() : pause()"></button>
+        <span id="status">{{ isPaused }}</span>
       </div>
     `,
   });

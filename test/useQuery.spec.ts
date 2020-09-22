@@ -375,12 +375,12 @@ test('variables watcher can be disabled', async () => {
         id: 12,
       });
 
-      const { data, pause, paused, resume } = useQuery({
+      const { data, pause, isPaused, resume } = useQuery({
         query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
         variables,
       });
 
-      return { data, variables, pause, resume, paused };
+      return { data, variables, pause, resume, isPaused };
     },
     template: `
     <div>
@@ -388,8 +388,8 @@ test('variables watcher can be disabled', async () => {
         <h1>{{ data.post.title }}</h1>
       </div>
       <button id="change" @click="variables.id = variables.id + 1"></button>
-      <button id="toggle" @click="paused ? resume() : pause()"></button>
-      <span id="status">{{ paused }}</span>
+      <button id="toggle" @click="isPaused ? resume() : pause()"></button>
+      <span id="status">{{ isPaused }}</span>
     </div>`,
   });
 
