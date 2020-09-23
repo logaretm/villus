@@ -19,19 +19,19 @@
 const GROUPS = [
   {
     name: 'guide',
-    contentPath: '/guide',
+    contentPath: 'guide',
   },
   {
     name: 'plugins',
-    contentPath: '/plugins',
+    contentPath: 'plugins',
   },
   {
     name: 'examples',
-    contentPath: '/examples',
+    contentPath: 'examples',
   },
   {
     name: 'api reference',
-    contentPath: '/api',
+    contentPath: 'api',
   },
 ];
 
