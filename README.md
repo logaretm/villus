@@ -70,9 +70,9 @@ export default {
   name: 'App',
   setup() {
     useClient({
-      url: 'http://localhost:3002/graphql'
+      url: 'http://localhost:3002/graphql',
     });
-  }
+  },
 };
 ```
 
@@ -92,12 +92,18 @@ import { useQuery } from 'villus';
 
 export default {
   setup() {
-    const { data } = useQuery({
-      query: '{ posts { title } }'
-    });
+    const AllPosts = `
+      query AllPosts {
+        posts {
+          title
+        }
+      }
+    `;
+
+    const { data } = useQuery(AllPosts);
 
     return { data };
-  }
+  },
 };
 </script>
 ```
@@ -106,7 +112,7 @@ There is also the higher-order component flavor if you prefer to use them instea
 
 ---
 
-You can do a lot more than that, `villus` makes frequent tasks such as re-fetching, caching, mutations, and subscriptions a breeze. Consult the documentation for more use-cases and examples.
+You can do a lot more than that, `villus` makes frequent tasks such as re-fetching, caching, mutations, and subscriptions a breeze. It has even built-in `Suspense` support with Vue 3! Consult the [documentation](https://logaretm.github.io/villus) for more use-cases and examples.
 
 ## Compatibility
 
@@ -114,7 +120,7 @@ This library relies on the `fetch` web API to run queries, you can use [`unfetch
 
 ## Examples
 
-SOON
+Live examples can be found [here](https://logaretm.github.io/villus/examples/basic-query)
 
 ## License
 
