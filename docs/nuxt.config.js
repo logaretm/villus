@@ -1,9 +1,15 @@
+const basePath = process.env.NODE_ENV === 'production' ? '/villus/' : '/';
+
 export default {
   /*
    ** Nuxt rendering mode
    ** See https://nuxtjs.org/api/configuration-mode
    */
   mode: 'universal',
+
+  router: {
+    base: basePath,
+  },
 
   /*
    ** Headers of the page
@@ -24,7 +30,7 @@ export default {
   },
 
   publicRuntimeConfig: {
-    appURL: process.env.APP_URL || 'http://localhost:3000',
+    appURL: 'https://logaretm.github.io/villus/' || 'http://localhost:3000',
   },
 
   /*
