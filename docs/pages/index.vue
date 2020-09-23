@@ -27,6 +27,7 @@
 import { slugify } from '@/utils/string';
 
 export default {
+  layout: 'home',
   async asyncData({ $content, params, store }) {
     const page = await $content('index').fetch();
     store.commit('SET_DOC', page);
