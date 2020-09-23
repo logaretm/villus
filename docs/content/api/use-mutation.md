@@ -18,7 +18,7 @@ The `useMutation` function returns the following properties and functions:
 | isDone     | `Ref<boolean>`                                             | Set to true when the mutation is executed at least once, never resets to `false`            |
 | isFetching | `Ref<boolean>`                                             | Set to true when the mutation is executing by calling `execute` explicitly                  |
 
-## Usage
+## Signature and Usage
 
 You can use `useMutation` like this:
 
@@ -33,6 +33,8 @@ const LikePost = `
 
 const { data, execute } = useMutation(LikePost);
 ```
+
+`useMutation` is very simple and doesn't accept any other arguments, just the mutation.
 
 ## Reactivity
 

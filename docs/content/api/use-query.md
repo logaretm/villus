@@ -23,7 +23,7 @@ The `useQuery` function returns the following properties and functions:
 
 There might be undocumented properties, such properties are no intended for public use and should be ignored.
 
-## Signatures
+## Signature and Usage
 
 There are two ways to call `useQuery` for your convenience
 
