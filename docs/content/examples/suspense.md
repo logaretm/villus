@@ -1,6 +1,7 @@
 ---
 title: Query with Suspense
 description: Using the new Suspense feature in Vue 3
+order: 2
 ---
 
 # Query with Suspense

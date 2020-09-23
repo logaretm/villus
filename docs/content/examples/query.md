@@ -1,6 +1,7 @@
 ---
 title: Basic Query
 description: Using `useQuery` in a Vue app to execute queries
+order: 1
 ---
 
 # Query Example
