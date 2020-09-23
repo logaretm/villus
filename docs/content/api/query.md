@@ -6,9 +6,7 @@ order: 4
 
 ## Query
 
-The `Query` component uses [scoped slots](https://vuejs.org/v2/guide/components-slots.html#Scoped-Slots) to provide the query state to the slot template.
-
-To run a query, the **Query** component takes a required `query` prop that can be either a `string` containing the query or a `DocumentNode` (AST) loaded by `graphql-tag/loader` from `.graphql` files.
+The `Query` component uses [scoped slots](https://v3.vuejs.org/guide/component-slots.html#scoped-slots) to provide the query state to the slot template.
 
 <doc-tip>
 
@@ -16,46 +14,31 @@ The **Query** component is **renderless** by default, meaning it will not render
 
 </doc-tip>
 
-```vue
-<template>
-  <div>
-    <Query query="{ todos { text } }" v-slot="{ data }">
-      <div v-if="data">
-        <p v-for="todo in data.todos">{{ todo.text }}</p>
-      </div>
-    </Query>
-  </div>
-</template>
+## Props
 
-<script>
-import { Query } from 'villus';
+The `Query` component accepts the following props:
 
-export default {
-  components: {
-    Query,
-  },
-};
-</script>
-```
+| Prop        | Type                                                                                         | Required | Description                                                                                           |
+| ----------- | -------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| query       | `string` or `DocumentNode`                                                                   | **Yes**  | The query to be executed                                                                              |
+| variables   | `object`                                                                                     | **No**   | The query variables                                                                                   |
+| cachePolicy | A `string` with those possible values `cache-and-network` or `network-only` or `cache-first` | **No**   | The cache policy to execute the query with, defaults to the value configured with the provided client |
+| lazy        | `boolean`                                                                                    | **No**   | If the query **should not** be executed on `mounted`                                                  |
+| suspend     | `boolean`                                                                                    | **No**   | If the component is suspended with `Suspend` or not, defaults to `false`                              |
+| pause       | `boolean`                                                                                    | **No**   | If the query variable watching is disabled or not, defaults to `false`                                |
 
-By default the query will run on the server-side if applicable (via `serverPrefetch`) or on mounted (client-side) if it didn't already.
+## Slot Props
 
-<doc-tip>
+The `Query` component exposes a single `default` slot with the following properties:
 
-The examples from now on will omit much of the boilerplate and will only use the `useQuery` and `Query` component to demonstrate its uses clearly.
+| Property   | Type                                                              | Description                                                                                                                            |
+| ---------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| data       | `any/null`                                                        | The GraphQL query result's `data`                                                                                                      |
+| error      | `CombinedError`                                                   | Any errors encountered during query execution                                                                                          |
+| execute    | `({cachePolicy: CachePolicy}) => Promise<OperationResult<TData>>` | Executes the query and returns the operation result containing `data` and `error` values                                               |
+| isDone     | `boolean`                                                         | Set to true when the query is executed at least once, never resets to `false`                                                          |
+| isFetching | `boolean`                                                         | Set to true when the query is executing either by calling `execute` explicitly or by watch effect due to reactive variables or queries |
 
-</doc-tip>
+## Events
 
-## Other properties
-
-The `useQuery` function and `Query` component slot props contain more useful information that you can use to build better experience for your users.
-
-```js
-const { data, fetching, done, error } = useQuery(...);
-```
-
-| Prop/Slot-Prop | type            | Description                                                                                                         |
-| -------------- | --------------- | ------------------------------------------------------------------------------------------------------------------- |
-| done           | `boolean`       | Indicates that the query was executed at least once                                                                 |
-| error          | `CombinedError` | Contains an aggregate error object with information about any kind of errors encountered during executing the query |
-| fetching       | `boolean`       | Indicates if the query is currently executing                                                                       |
+The `Query` component does not emit any events at the moment

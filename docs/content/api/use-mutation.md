@@ -10,13 +10,13 @@ The `useMutation` function allows you to execute GraphQL mutations, it requires 
 
 The `useMutation` function returns the following properties and functions:
 
-| Property   | Type                                                       | Description                                                                                 |
-| ---------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| data       | `Ref<any/null>`                                            | The GraphQL mutation result's `data`                                                        |
-| error      | `Ref<CombinedError>`                                       | Any errors encountered during mutation execution                                            |
-| execute    | `({variables: object}) => Promise<OperationResult<TData>>` | Executes the mutation and returns the operation result containing `data` and `error` values |
-| isDone     | `Ref<boolean>`                                             | Set to true when the mutation is executed at least once, never resets to `false`            |
-| isFetching | `Ref<boolean>`                                             | Set to true when the mutation is executing by calling `execute` explicitly                  |
+| Property   | Type                                                     | Description                                                                                 |
+| ---------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| data       | `Ref<any/null>`                                          | The GraphQL mutation result's `data`                                                        |
+| error      | `Ref<CombinedError>`                                     | Any errors encountered during mutation execution                                            |
+| execute    | `(variables: object) => Promise<OperationResult<TData>>` | Executes the mutation and returns the operation result containing `data` and `error` values |
+| isDone     | `Ref<boolean>`                                           | Set to true when the mutation is executed at least once, never resets to `false`            |
+| isFetching | `Ref<boolean>`                                           | Set to true when the mutation is executing by calling `execute` explicitly                  |
 
 ## Signature and Usage
 
