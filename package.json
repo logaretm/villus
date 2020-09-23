@@ -8,6 +8,7 @@
   "types": "dist/villus.d.ts",
   "scripts": {
     "docs:dev": "cd ./docs && npm run dev && cd -",
+    "docs:build": "cd ./docs && npm run build && cd -",
     "docs:deploy": "./scripts/deploy-docs.sh",
     "test": "jest",
     "test:cover": "jest --coverage",

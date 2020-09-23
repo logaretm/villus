@@ -1,12 +1,6 @@
 const basePath = process.env.NODE_ENV === 'production' ? '/villus/' : '/';
 
 export default {
-  /*
-   ** Nuxt rendering mode
-   ** See https://nuxtjs.org/api/configuration-mode
-   */
-  mode: 'universal',
-
   router: {
     base: basePath,
   },
