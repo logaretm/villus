@@ -26,6 +26,10 @@ const GROUPS = [
     contentPath: '/plugins',
   },
   {
+    name: 'examples',
+    contentPath: '/examples',
+  },
+  {
     name: 'api reference',
     contentPath: '/api',
   },

@@ -334,6 +334,12 @@ function runWithPolicy() {
 
 ## Suspense
 
+<doc-tip type="danger" title="Vue 3">
+
+This feature is only available with Vue 3 at the moment
+
+</doc-tip>
+
 Both the `useQuery` and `Query` component can take advantage of the `Suspense` component shipped by Vue 3.x.
 
 To utilize the suspense feature, you need to `await` the `useQuery` function and it returns the exact same API after executing the query:
