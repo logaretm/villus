@@ -1,5 +1,5 @@
 import { DocumentNode, print } from 'graphql';
-import stringify from 'fast-json-stable-stringify';
+import stableStringify from 'fast-json-stable-stringify';
 import { Operation } from '../types';
 
 /**
@@ -27,7 +27,7 @@ export function hash(x: string) {
 }
 
 export function getQueryKey(operation: Operation) {
-  const variables = operation.variables ? safeStringify(operation.variables) : '';
+  const variables = operation.variables ? stringify(operation.variables) : '';
   const query = normalizeQuery(operation.query);
 
   return hash(`${query}${variables}`);
@@ -36,6 +36,6 @@ export function getQueryKey(operation: Operation) {
 /**
  * Uses `stringify` if available, otherwise uses `JSON.stringify`
  */
-function safeStringify(val: any) {
-  return stringify ? stringify(val) : JSON.stringify(val);
+export function stringify(val: any) {
+  return stableStringify ? stableStringify(val) : JSON.stringify(val);
 }

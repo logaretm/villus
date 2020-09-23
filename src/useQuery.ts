@@ -1,8 +1,7 @@
-import stringify from 'fast-json-stable-stringify';
 import { inject, isReactive, isRef, onMounted, Ref, ref, watch } from 'vue-demi';
 import { CachePolicy, MaybeReactive, Operation, OperationResult, QueryVariables } from './types';
 import { Client } from './client';
-import { hash, CombinedError, toWatchableSource } from './utils';
+import { hash, CombinedError, toWatchableSource, stringify } from './utils';
 
 interface QueryCompositeOptions<TVars> {
   query: MaybeReactive<Operation['query']>;
