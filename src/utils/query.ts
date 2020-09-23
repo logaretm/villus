@@ -27,8 +27,15 @@ export function hash(x: string) {
 }
 
 export function getQueryKey(operation: Operation) {
-  const variables = operation.variables ? stringify(operation.variables) : '';
+  const variables = operation.variables ? safeStringify(operation.variables) : '';
   const query = normalizeQuery(operation.query);
 
   return hash(`${query}${variables}`);
+}
+
+/**
+ * Uses `stringify` if available, otherwise uses `JSON.stringify`
+ */
+function safeStringify(val: any) {
+  return stringify ? stringify(val) : JSON.stringify(val);
 }
