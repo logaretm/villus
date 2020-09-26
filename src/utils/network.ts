@@ -1,5 +1,4 @@
-import { GraphQLResponse, Operation, FetchOptions, Fetcher } from '../types';
-import { normalizeQuery } from './query';
+import { GraphQLResponse, FetchOptions, Fetcher } from '../types';
 
 interface ParsedResponse<TData> {
   ok: boolean;
@@ -53,19 +52,13 @@ export const DEFAULT_FETCH_OPTS = {
   },
 } as const;
 
-export function makeFetchOptions({ query, variables }: Operation, opts: FetchOptions) {
-  const normalizedQuery = normalizeQuery(query);
-  if (!normalizedQuery) {
-    throw new Error('A query must be provided.');
-  }
-
+export function mergeFetchOpts(lhs: FetchOptions, rhs: FetchOptions) {
   return {
-    method: DEFAULT_FETCH_OPTS.method,
-    body: JSON.stringify({ query: normalizedQuery, variables }),
-    ...opts,
+    ...lhs,
+    ...rhs,
+    method: rhs.method || lhs.method || DEFAULT_FETCH_OPTS.method,
     headers: {
-      ...DEFAULT_FETCH_OPTS.headers,
-      ...opts.headers,
+      ...(rhs.headers || lhs.headers || DEFAULT_FETCH_OPTS.headers),
     },
   };
 }

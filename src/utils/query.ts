@@ -26,7 +26,7 @@ export function hash(x: string) {
   return h >>> 0;
 }
 
-export function getQueryKey(operation: Operation) {
+export function getQueryKey(operation: Operation<unknown>) {
   const variables = operation.variables ? stringify(operation.variables) : '';
   const query = normalizeQuery(operation.query);
 
