@@ -1,4 +1,4 @@
-export { createClient } from './client';
+export { createClient, defaultPlugins } from './client';
 export { Provider, withProvider } from './Provider';
 export { Query } from './Query';
 export { Mutation } from './Mutation';

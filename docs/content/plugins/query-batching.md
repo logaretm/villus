@@ -1,7 +1,7 @@
 ---
 title: Batching Queries
 description: Learn how to run batch multiple GraphQL queries
-order: 1
+order: 2
 ---
 
 # Query Batching
@@ -10,16 +10,16 @@ Villus has support for query batching but it is not configured out of the box, t
 
 ## Basic Batching
 
-You need to import the `batcher` module from `villus` and pass it as the `fetcher` option in client configuration:
+You need to import the `batch` plugin from `villus` and pass it at the very end of the `plugins` array in client configuration:
 
 ```js
-import { useClient, batcher } from 'villus';
+import { useClient, batch } from 'villus';
 
 export default {
   setup() {
     useClient({
       url: 'https://test.com/graphql',
-      fetch: batcher(),
+      plugins: [batch()],
     });
   },
 };
@@ -58,18 +58,16 @@ export default {
 
 Batching is done by waiting for a specific time which is `10ms` by default since the last executed query, and all queries executed within this time window will be batched together.
 
-You can configure that time window by passing a `timeout` option to the `batcher` function configuration:
+You can configure that time window by passing a `timeout` option to the `batch` function configuration:
 
 ```js{8}
-import { useClient, batcher } from 'villus';
+import { useClient, batch } from 'villus';
 
 export default {
   setup() {
     useClient({
       url: 'https://test.com/graphql',
-      fetch: batcher({
-        timeout: 50,
-      }),
+      plugins: [batch({ timeout: 50 })],
     });
   },
 };
