@@ -11,15 +11,14 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
     throw new Error('Could not resolve a fetch() method, you should provide one.');
   }
 
-  return async function fetchPlugin({ useResult, opContext, operation }) {
-    let fetchOpts = opContext;
+  return async function fetchPlugin({ useResult, opContext, operation, setOperationContext }) {
     if (!opContext.body) {
-      fetchOpts = makeFetchOptions(operation, opContext);
+      setOperationContext(makeFetchOptions(operation, opContext));
     }
 
     let response;
     try {
-      response = await fetch(opContext.url, fetchOpts).then(parseResponse);
+      response = await fetch(opContext.url as string, opContext).then(parseResponse);
     } catch (err) {
       return useResult(
         {

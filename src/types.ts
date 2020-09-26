@@ -42,7 +42,7 @@ export interface GraphQLResponse<TData> {
 export type Fetcher = typeof fetch;
 
 export interface FetchOptions extends RequestInit {
-  url: string;
+  url?: string;
 }
 
 export type OperationType = 'query' | 'mutation' | 'subscription';
@@ -55,7 +55,7 @@ export type ClientNextCallback = () => void;
 
 export interface ClientPluginContext {
   useResult: (result: OperationResult<unknown>, terminate?: boolean) => void;
-  setOperationContext: (opts?: FetchOptions) => void;
+  setOperationContext: (opts: FetchOptions) => void;
   afterQuery: (cb: ClientDoneCallback) => void;
   operation: CachedOperation<unknown> & { type: OperationType };
   opContext: FetchOptions;

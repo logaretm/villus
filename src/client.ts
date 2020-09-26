@@ -7,7 +7,6 @@ import {
   ObservableLike,
   QueryVariables,
   FetchOptions,
-  Fetcher,
   ClientPlugin,
   ClientPluginContext,
   ClientDoneCallback,
@@ -21,7 +20,6 @@ type SubscriptionForwarder<TData = any, TVars = QueryVariables> = (
 
 export interface ClientOptions {
   url: string;
-  fetch?: Fetcher;
   cachePolicy?: CachePolicy;
   subscriptionForwarder?: SubscriptionForwarder;
   plugins?: ClientPlugin[];
@@ -53,7 +51,11 @@ export class Client {
     type: OperationType
   ): Promise<OperationResult<TData>> {
     let result: OperationResult<TData> | undefined;
-    let opContext: FetchOptions = { url: this.url, ...DEFAULT_FETCH_OPTS, headers: { ...DEFAULT_FETCH_OPTS.headers } };
+    const opContext: FetchOptions = {
+      url: this.url,
+      ...DEFAULT_FETCH_OPTS,
+      headers: { ...DEFAULT_FETCH_OPTS.headers },
+    };
     let terminateSignal = false;
     const afterQuery: ClientDoneCallback[] = [];
 
@@ -66,11 +68,9 @@ export class Client {
         result = pluginResult as OperationResult<TData>;
       },
       setOperationContext(ctx) {
-        if (!ctx) {
-          return opContext;
-        }
-
-        opContext = mergeFetchOpts(opContext, ctx);
+        Object.keys(ctx).forEach(key => {
+          (opContext as any)[key] = (ctx as any)[key];
+        });
       },
       afterQuery(cb) {
         afterQuery.push(cb);
@@ -141,5 +141,5 @@ export class Client {
 }
 
 export function createClient(opts: ClientOptions) {
-  return new Client(opts as ClientOptions);
+  return new Client(opts);
 }

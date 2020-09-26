@@ -40,8 +40,17 @@ beforeEach(() => {
       throw new Error('Network Error');
     }
 
-    const body = JSON.parse(opts.body as string);
-    const res = await server.query(body.query, body.variables);
+    let body: any[] = JSON.parse(opts.body as string);
+    const isBatched = Array.isArray(body);
+    if (!Array.isArray(body)) {
+      body = [body];
+    }
+
+    const res = await Promise.all(
+      body.map(op => {
+        return server.query(op.query, op.variables);
+      })
+    );
 
     return Promise.resolve({
       ok: true,
@@ -52,7 +61,7 @@ beforeEach(() => {
           throw new Error('Error parsing, unexpected token <');
         }
 
-        return res;
+        return isBatched ? res : res[0];
       },
     });
   });
