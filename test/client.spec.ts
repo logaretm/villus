@@ -25,7 +25,7 @@ test('fails if executes an non-provided query', async () => {
 });
 
 test('supports async plugins', async () => {
-  const auth: ClientPlugin = ({ setOperationContext }) => {
+  const auth: ClientPlugin = async ({ setOperationContext }) => {
     setOperationContext({
       headers: {
         Authorization: 'bearer TOKEN',
@@ -41,4 +41,15 @@ test('supports async plugins', async () => {
   const { data } = await client.executeQuery({ query: '{ posts { id title } }' });
 
   expect(data).toBeDefined();
+});
+
+test('throws if no plugins set the result for the operation', async () => {
+  const client = createClient({
+    url: 'https://test.com/graphql',
+    plugins: [],
+  });
+
+  await expect(client.executeQuery({ query: '{ posts { id title } }' })).rejects.toThrowError(
+    'Operation result was not set by any plugin, make sure you have default plugins configured or review documentation'
+  );
 });
