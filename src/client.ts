@@ -1,5 +1,5 @@
 import { cache, CachedOperation } from './cache';
-import { DEFAULT_FETCH_OPTS, mergeFetchOpts } from './utils';
+import { DEFAULT_FETCH_OPTS } from './utils';
 import {
   OperationResult,
   CachePolicy,
