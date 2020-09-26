@@ -1,5 +1,6 @@
 import { DocumentNode, print } from 'graphql';
 import { Operation } from '../types';
+import { stringify } from './stringify';
 
 /**
  * Normalizes a query string or object to a string.
@@ -30,8 +31,4 @@ export function getQueryKey(operation: Operation) {
   const query = normalizeQuery(operation.query);
 
   return hash(`${query}${variables}`);
-}
-
-export function stringify(val: any) {
-  return JSON.stringify(val, Object.keys(val).sort());
 }
