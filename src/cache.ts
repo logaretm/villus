@@ -39,7 +39,7 @@ export function cache(): ClientPlugin {
 
     // if exists in cache, terminate with result
     if (cachedResult) {
-      return useResult(cachedResult, true, operation.cachePolicy === 'cache-first');
+      return useResult(cachedResult, operation.cachePolicy === 'cache-first');
     }
   };
 }

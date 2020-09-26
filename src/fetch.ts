@@ -26,7 +26,6 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
           data: null,
           error: new CombinedError({ response, networkError: err }),
         },
-        true,
         true
       );
     }
@@ -37,7 +36,6 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
           data: null,
           error: new CombinedError({ response: response, networkError: new Error(response.statusText) }),
         },
-        true,
         true
       );
     }
@@ -49,7 +47,6 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
           ? new CombinedError({ response: response, graphqlErrors: response.body.errors })
           : null,
       },
-      true,
       true
     );
   };

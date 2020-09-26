@@ -54,7 +54,7 @@ export type ClientDoneCallback = (result: OperationResult) => void | Promise<voi
 export type ClientNextCallback = () => void;
 
 export interface ClientPluginContext {
-  useResult: (result: OperationResult<unknown>, terminate?: boolean, stop?: boolean) => void;
+  useResult: (result: OperationResult<unknown>, terminate?: boolean) => void;
   setOperationContext: (opts?: FetchOptions) => void;
   afterQuery: (cb: ClientDoneCallback) => void;
   operation: CachedOperation<unknown> & { type: OperationType };

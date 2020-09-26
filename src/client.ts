@@ -55,17 +55,12 @@ export class Client {
     let result: OperationResult<TData> | undefined;
     let opContext: FetchOptions = { url: this.url, ...DEFAULT_FETCH_OPTS, headers: { ...DEFAULT_FETCH_OPTS.headers } };
     let terminateSignal = false;
-    let stopSignal = false;
     const afterQuery: ClientDoneCallback[] = [];
 
     const context: ClientPluginContext = {
-      useResult(pluginResult, terminate, stop) {
+      useResult(pluginResult, terminate) {
         if (terminate) {
           terminateSignal = true;
-        }
-
-        if (stop) {
-          stopSignal = true;
         }
 
         result = pluginResult as OperationResult<TData>;
@@ -93,7 +88,7 @@ export class Client {
     for (let i = 0; i < this.plugins.length; i++) {
       const plugin = this.plugins[i];
       await plugin(context);
-      if (terminateSignal) {
+      if (result) {
         lastI = i;
         break;
       }
@@ -109,7 +104,7 @@ export class Client {
       resolve(result);
 
       (async () => {
-        if (!stopSignal) {
+        if (!terminateSignal) {
           for (let i = lastI + 1; i < this.plugins.length; i++) {
             const plugin = this.plugins[i];
             await plugin(context);
