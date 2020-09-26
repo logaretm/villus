@@ -1,5 +1,4 @@
 import { DocumentNode, print } from 'graphql';
-import stableStringify from 'fast-json-stable-stringify';
 import { Operation } from '../types';
 
 /**
@@ -33,9 +32,6 @@ export function getQueryKey(operation: Operation) {
   return hash(`${query}${variables}`);
 }
 
-/**
- * Uses `stringify` if available, otherwise uses `JSON.stringify`
- */
 export function stringify(val: any) {
-  return stableStringify ? stableStringify(val) : JSON.stringify(val);
+  return JSON.stringify(val, Object.keys(val).sort());
 }
