@@ -11,7 +11,7 @@ async function minify({ code, pkg, bundleName }) {
   const pkgout = path.join(__dirname, `../dist`);
   const output = await Terser.minify(code, {
     compress: true,
-    mangle: true
+    mangle: true,
   });
 
   const fileName = bundleName.replace(/\.js$/, '.min.js');
@@ -27,7 +27,7 @@ async function build(pkg) {
     const { input, output, bundleName } = createConfig(pkg, format);
     const bundle = await rollup(input);
     const {
-      output: [{ code }]
+      output: [{ code }],
     } = await bundle.generate(output);
 
     const outputPath = path.join(pkgout, bundleName);

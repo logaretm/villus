@@ -10,5 +10,5 @@ function reportSize({ path, code }) {
 }
 
 module.exports = {
-  reportSize
+  reportSize,
 };

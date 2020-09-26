@@ -16,7 +16,7 @@ exports.generateDts = async function generateDts(pkg) {
     declaration: true,
     declarationMap: false,
     emitDeclarationOnly: true,
-    declarationDir
+    declarationDir,
   };
 
   const host = ts.createCompilerHost(options);
@@ -51,7 +51,7 @@ async function bundleDts(declarationDir, pkg) {
   const config = {
     input: entry,
     output: { file: `dist/${pkgNameMap[pkg]}.d.ts`, format: 'es' },
-    plugins: [dts()]
+    plugins: [dts()],
   };
 
   const bundle = await rollup(config);
