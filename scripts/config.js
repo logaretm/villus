@@ -3,16 +3,16 @@ const typescript = require('rollup-plugin-typescript2');
 const replace = require('rollup-plugin-replace');
 
 const formatNameMap = {
-  villus: 'Villus'
+  villus: 'Villus',
 };
 
 const pkgNameMap = {
-  villus: 'villus'
+  villus: 'villus',
 };
 
 const formatMap = {
   es: 'esm',
-  umd: ''
+  umd: '',
 };
 
 function createConfig(pkg, format) {
@@ -20,8 +20,8 @@ function createConfig(pkg, format) {
     tsconfig: path.resolve(__dirname, '../tsconfig.json'),
     cacheRoot: path.resolve(__dirname, '../node_modules/.rts2_cache'),
     tsconfigOverride: {
-      exclude: ['**/test']
-    }
+      exclude: ['**/test'],
+    },
   });
 
   const version = require(path.resolve(__dirname, `../package.json`)).version;
@@ -30,7 +30,7 @@ function createConfig(pkg, format) {
     input: {
       input: path.resolve(__dirname, `../src/index.ts`),
       external: ['vue', 'fast-json-stable-stringify', 'graphql', 'vue-demi'],
-      plugins: [tsPlugin, replace({ __VERSION__: version })]
+      plugins: [tsPlugin, replace({ __VERSION__: version })],
     },
     output: {
       banner: `/**
@@ -42,9 +42,9 @@ function createConfig(pkg, format) {
       name: format === 'umd' ? formatNameMap[pkg] : undefined,
       globals: {
         vue: 'Vue',
-        'vue-demi': 'VueDemi'
-      }
-    }
+        'vue-demi': 'VueDemi',
+      },
+    },
   };
 
   config.bundleName = `${pkgNameMap[pkg]}${formatMap[format] ? '.' + formatMap[format] : ''}.js`;
@@ -64,5 +64,5 @@ module.exports = {
   formatNameMap,
   pkgNameMap,
   formatMap,
-  createConfig
+  createConfig,
 };
