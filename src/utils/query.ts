@@ -1,6 +1,6 @@
 import { DocumentNode, print } from 'graphql';
-import stableStringify from 'fast-json-stable-stringify';
 import { Operation } from '../types';
+import { stringify } from './stringify';
 
 /**
  * Normalizes a query string or object to a string.
@@ -31,11 +31,4 @@ export function getQueryKey(operation: Operation) {
   const query = normalizeQuery(operation.query);
 
   return hash(`${query}${variables}`);
-}
-
-/**
- * Uses `stringify` if available, otherwise uses `JSON.stringify`
- */
-export function stringify(val: any) {
-  return stableStringify ? stableStringify(val) : JSON.stringify(val);
 }

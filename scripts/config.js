@@ -29,7 +29,7 @@ function createConfig(pkg, format) {
   const config = {
     input: {
       input: path.resolve(__dirname, `../src/index.ts`),
-      external: ['vue', 'fast-json-stable-stringify', 'graphql', 'vue-demi'],
+      external: ['vue', 'graphql', 'vue-demi'],
       plugins: [tsPlugin, replace({ __VERSION__: version })],
     },
     output: {

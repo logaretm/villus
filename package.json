@@ -21,7 +21,6 @@
   "license": "MIT",
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
-    "@types/fast-json-stable-stringify": "^2.0.0",
     "@types/graphql": "^14.5.0",
     "@types/jest": "^26.0.14",
     "@typescript-eslint/eslint-plugin": "^4.2.0",
@@ -97,7 +96,6 @@
     ]
   },
   "dependencies": {
-    "fast-json-stable-stringify": "^2.1.0",
     "vue-demi": "^0.3.3"
   },
   "peerDependencies": {
