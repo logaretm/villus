@@ -47,21 +47,16 @@ export interface FetchOptions extends RequestInit {
 
 export type OperationType = 'query' | 'mutation' | 'subscription';
 
-type ClientAfterCallback = (result: OperationResult) => void | Promise<void>;
+export type AfterQueryCallback = (result: OperationResult) => void | Promise<void>;
 
-export type ClientDoneCallback = (result: OperationResult) => void | Promise<void>;
-
-export type ClientNextCallback = () => void;
+export type ClientPluginOperation = CachedOperation<unknown> & { type: OperationType; key: number };
 
 export interface ClientPluginContext {
   useResult: (result: OperationResult<unknown>, terminate?: boolean) => void;
   setOperationContext: (opts: FetchOptions) => void;
-  afterQuery: (cb: ClientDoneCallback) => void;
-  operation: CachedOperation<unknown> & { type: OperationType };
+  afterQuery: (cb: AfterQueryCallback) => void;
+  operation: ClientPluginOperation;
   opContext: FetchOptions;
 }
 
-export type ClientPlugin = ({
-  useResult,
-  operation,
-}: ClientPluginContext) => void | Promise<void> | ClientAfterCallback;
+export type ClientPlugin = ({ useResult, operation }: ClientPluginContext) => void | Promise<void>;

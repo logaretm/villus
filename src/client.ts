@@ -1,5 +1,5 @@
 import { cache, CachedOperation } from './cache';
-import { DEFAULT_FETCH_OPTS } from './utils';
+import { DEFAULT_FETCH_OPTS, getQueryKey } from './utils';
 import {
   OperationResult,
   CachePolicy,
@@ -9,8 +9,8 @@ import {
   FetchOptions,
   ClientPlugin,
   ClientPluginContext,
-  ClientDoneCallback,
   OperationType,
+  AfterQueryCallback,
 } from './types';
 import { fetch } from './fetch';
 
@@ -57,7 +57,7 @@ export class Client {
       headers: { ...DEFAULT_FETCH_OPTS.headers },
     };
     let terminateSignal = false;
-    const afterQuery: ClientDoneCallback[] = [];
+    const afterQuery: AfterQueryCallback[] = [];
 
     const context: ClientPluginContext = {
       useResult(pluginResult, terminate) {
@@ -77,6 +77,7 @@ export class Client {
       },
       operation: {
         ...operation,
+        key: getQueryKey(operation),
         type,
         cachePolicy:
           ('cachePolicy' in operation ? operation.cachePolicy : this.defaultCachePolicy) || this.defaultCachePolicy,

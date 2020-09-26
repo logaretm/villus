@@ -1,4 +1,4 @@
-import { OperationResult, Operation, ClientPlugin, QueryVariables, CachePolicy } from './types';
+import { OperationResult, Operation, ClientPlugin, QueryVariables, CachePolicy, ClientPluginOperation } from './types';
 import { getQueryKey } from './utils';
 
 interface ResultCache {
@@ -12,15 +12,11 @@ export interface CachedOperation<TVars = QueryVariables> extends Operation<TVars
 export function cache(): ClientPlugin {
   const resultCache: ResultCache = {};
 
-  function setCacheResult(operation: Operation<unknown>, result: OperationResult) {
-    const key = getQueryKey(operation);
-
+  function setCacheResult({ key }: ClientPluginOperation, result: OperationResult) {
     resultCache[key] = result;
   }
 
-  function getCachedResult(operation: Operation<unknown>): OperationResult | undefined {
-    const key = getQueryKey(operation);
-
+  function getCachedResult({ key }: ClientPluginOperation): OperationResult | undefined {
     return resultCache[key];
   }
 
