@@ -1,7 +1,7 @@
 ---
 title: Plugins
 description: Learn how villus plugins work
-order: 1
+order: 6
 ---
 
 # Plugins
@@ -10,12 +10,12 @@ villus is very flexible and versatile, and as such you will need to write quite 
 
 Something you might not be aware of is that villus is pre-configured with a couple of plugins that are necessary to execute queries, the default plugins are:
 
-- `cache`: used to manage the in-memory simple cache that comes with villus by default
-- `fetch`: used to execute queries on the network (actual fetching)
+- [`fetch`](../plugins/fetch): used to execute queries on the network (actual fetching)
+- [`cache`](../plugins/cache): an in-memory simple cache that comes with villus by default, supports all cache policies
 
 Because of this villus is very minimal and lightweight. That's not all, in addition to those plugins, villus also offers the following plugins but they are not enabled by default:
 
-- [`batch`](./query-batching): used instead of `fetch` to execute queries in batches on the network
+- [`batch`](../plugins/batch): used instead of `fetch` to execute queries in batches on the network
 
 Furthermore, villus exposes the default plugins as `defaultPlugins` function. To add plugins to villus client you need to pass a `use` array containing the plugins you would like to have
 
@@ -123,7 +123,7 @@ return function localStorageCache({ afterQuery, useResult, operation }) {
   if (cachedResult) {
     // The first argument of `useResult` is the final value of the operation
     // The second argument is optional, it allows the plugin to terminate the operation
-    // and stop all other plugins from executing, all last plugins in the `plugins` array must terminate with `true`
+    // and stop all other plugins from executing, the last plugin must terminate with `true`
     return useResult(cachedResult, true);
   }
 };

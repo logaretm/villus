@@ -1,7 +1,7 @@
 ---
-title: Batching Queries
+title: Query Batching Plugin
 description: Learn how to run batch multiple GraphQL queries
-order: 2
+order: 3
 ---
 
 # Query Batching
@@ -74,3 +74,14 @@ export default {
 ```
 
 This will add a `50ms` time window between queries to be batched together.
+
+## Options
+
+You can customize a few aspects of the `batch` plugin:
+
+The available options are:
+
+| Option  | Type                  | Description                                                                                                                                                                                                             |
+| ------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| fetch   | `typeof window.fetch` | Pass this option if you plan to be specific about the `fetch` polyfill that will be used, by default it tries to find `window.fetch` on the browser or `global.fetch` on Node.js depending on the execution environment |
+| timeout | `number`              | The number of milliseconds to wait for before executing the batched queries                                                                                                                                             |
