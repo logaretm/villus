@@ -43,6 +43,7 @@
     "gzip-size": "^5.1.1",
     "husky": "^4.3.0",
     "jest": "^26.4.2",
+    "lerna": "^3.22.1",
     "lint-staged": "^10.4.0",
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.1",
