@@ -648,3 +648,56 @@ test('Errors can be separated by type', async () => {
   await flushPromises();
   expect(document.querySelector('#error')?.textContent).toBe('Network');
 });
+
+test('cache-only policy returns null results if not found', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        cachePolicy: 'cache-only',
+      });
+
+      const { data, execute } = useQuery({ query: '{ posts { id title } }' });
+
+      return { data, execute };
+    },
+    template: `
+    <div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </div>`,
+  });
+  await flushPromises();
+  expect(fetch).toHaveBeenCalledTimes(0);
+  expect(document.querySelector('ul')).toBeNull();
+});
+
+test('cache-only policy returns results if found in cache', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+
+      const { data, execute } = useQuery({ query: '{ posts { id title } }' });
+
+      return { data, execute };
+    },
+    template: `
+    <div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+      <button @click="execute({ cachePolicy: 'cache-only' })"></button>
+    </div>`,
+  });
+  await flushPromises();
+  expect(fetch).toHaveBeenCalledTimes(1);
+
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+  await flushPromises();
+  // cache was used.
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(document.querySelector('ul')?.children).toHaveLength(5);
+});

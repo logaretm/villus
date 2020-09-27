@@ -8,7 +8,7 @@ export interface OperationResult<TData = any> {
   error: CombinedError | null;
 }
 
-export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first';
+export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first' | 'cache-only';
 
 export type QueryVariables = Record<string, any>;
 

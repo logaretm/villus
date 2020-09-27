@@ -1,5 +1,4 @@
 import { OperationResult, Operation, ClientPlugin, QueryVariables, CachePolicy, ClientPluginOperation } from './types';
-import { getQueryKey } from './utils';
 
 interface ResultCache {
   [k: string]: OperationResult;
@@ -32,6 +31,9 @@ export function cache(): ClientPlugin {
 
     // Get cached item
     const cachedResult = getCachedResult(operation);
+    if (operation.cachePolicy === 'cache-only') {
+      return useResult(cachedResult || { data: null, error: null }, true);
+    }
 
     // if exists in cache, terminate with result
     if (cachedResult) {
