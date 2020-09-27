@@ -3,7 +3,7 @@ import { ref, computed, reactive } from 'vue';
 import gql from 'graphql-tag';
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
-import { useClient, useQuery, batch, cache } from '../src/index';
+import { useClient, useQuery, batch } from '../src/index';
 import { Post } from './server/typedSchema';
 
 test('executes hook queries on mounted', async () => {
@@ -122,7 +122,7 @@ test('batches queries with batcher', async () => {
     setup() {
       useClient({
         url: 'https://test.com/graphql',
-        plugins: [batch()],
+        use: [batch()],
       });
 
       const firstQuery = useQuery({ query: '{ posts { title } }' });

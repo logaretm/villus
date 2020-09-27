@@ -22,7 +22,7 @@ export interface ClientOptions {
   url: string;
   cachePolicy?: CachePolicy;
   subscriptionForwarder?: SubscriptionForwarder;
-  plugins?: ClientPlugin[];
+  use?: ClientPlugin[];
 }
 
 export const defaultPlugins = () => [cache(), fetch()];
@@ -40,7 +40,7 @@ export class Client {
     this.url = opts.url;
     this.defaultCachePolicy = opts.cachePolicy || 'cache-first';
     this.subscriptionForwarder = opts.subscriptionForwarder;
-    this.plugins = opts.plugins || [...defaultPlugins()];
+    this.plugins = opts.use || [...defaultPlugins()];
   }
 
   /**

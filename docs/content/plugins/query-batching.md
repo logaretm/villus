@@ -19,7 +19,7 @@ export default {
   setup() {
     useClient({
       url: 'https://test.com/graphql',
-      plugins: [batch()],
+      use: [batch()],
     });
   },
 };
@@ -67,7 +67,7 @@ export default {
   setup() {
     useClient({
       url: 'https://test.com/graphql',
-      plugins: [batch({ timeout: 50 })],
+      use: [batch({ timeout: 50 })],
     });
   },
 };

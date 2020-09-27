@@ -35,7 +35,7 @@ test('supports async plugins', async () => {
 
   const client = createClient({
     url: 'https://test.com/graphql',
-    plugins: [auth, ...defaultPlugins()],
+    use: [auth, ...defaultPlugins()],
   });
 
   const { data } = await client.executeQuery({ query: '{ posts { id title } }' });
@@ -46,7 +46,7 @@ test('supports async plugins', async () => {
 test('throws if no plugins set the result for the operation', async () => {
   const client = createClient({
     url: 'https://test.com/graphql',
-    plugins: [],
+    use: [],
   });
 
   await expect(client.executeQuery({ query: '{ posts { id title } }' })).rejects.toThrowError(

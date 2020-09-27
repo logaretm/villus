@@ -17,7 +17,7 @@ Because of this villus is very minimal and lightweight. That's not all, in addit
 
 - [`batch`](./query-batching): used instead of `fetch` to execute queries in batches on the network
 
-Furthermore, villus exposes the default plugins as `defaultPlugins` function:
+Furthermore, villus exposes the default plugins as `defaultPlugins` function. To add plugins to villus client you need to pass a `use` array containing the plugins you would like to have
 
 ```js
 // later in your setup
@@ -25,7 +25,7 @@ import { useClient, defaultPlugins } from 'villus';
 
 useClient({
   url: '/graphql',
-  plugins: [...defaultPlugins()],
+  use: [...defaultPlugins()], // if not provided `defaultPlugins` will be used
 });
 ```
 
@@ -88,7 +88,7 @@ import { useClient, defaultPlugins } from 'villus';
 
 useClient({
   url: '/graphql',
-  plugins: [authPlugin, ...defaultPlugins()], // add the auth plugin alongside the default plugins
+  use: [authPlugin, ...defaultPlugins()], // add the auth plugin alongside the default plugins
 });
 ```
 
@@ -133,7 +133,7 @@ import { useClient, fetch } from 'villus';
 
 useClient({
   url: '/graphql',
-  plugins: [localStorageCache, fetch()], // add the local storage plugin along with the fetch plugin
+  use: [localStorageCache, fetch()], // add the local storage plugin along with the fetch plugin
 });
 ```
 
