@@ -1,6 +1,7 @@
 import { Ref } from 'vue-demi';
 import { DocumentNode } from 'graphql';
 import { CombinedError } from './utils';
+import { CachedOperation } from './cache';
 
 export interface OperationResult<TData = any> {
   data: TData | null;
@@ -40,4 +41,22 @@ export interface GraphQLResponse<TData> {
 
 export type Fetcher = typeof fetch;
 
-export type FetchOptions = Omit<RequestInit, 'body'>;
+export interface FetchOptions extends RequestInit {
+  url?: string;
+}
+
+export type OperationType = 'query' | 'mutation' | 'subscription';
+
+export type AfterQueryCallback = (result: OperationResult) => void | Promise<void>;
+
+export type ClientPluginOperation = CachedOperation<unknown> & { type: OperationType; key: number };
+
+export interface ClientPluginContext {
+  useResult: (result: OperationResult<unknown>, terminate?: boolean) => void;
+  setOperationContext: (opts: FetchOptions) => void;
+  afterQuery: (cb: AfterQueryCallback) => void;
+  operation: ClientPluginOperation;
+  opContext: FetchOptions;
+}
+
+export type ClientPlugin = ({ useResult, operation }: ClientPluginContext) => void | Promise<void>;

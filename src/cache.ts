@@ -1,27 +1,41 @@
-import { OperationResult, Operation } from './types';
+import { OperationResult, Operation, ClientPlugin, QueryVariables, CachePolicy, ClientPluginOperation } from './types';
 import { getQueryKey } from './utils';
 
 interface ResultCache {
   [k: string]: OperationResult;
 }
 
-export function makeCache() {
+export interface CachedOperation<TVars = QueryVariables> extends Operation<TVars> {
+  cachePolicy?: CachePolicy;
+}
+
+export function cache(): ClientPlugin {
   const resultCache: ResultCache = {};
 
-  function afterQuery(operation: Operation, result: OperationResult) {
-    const key = getQueryKey(operation);
-
+  function setCacheResult({ key }: ClientPluginOperation, result: OperationResult) {
     resultCache[key] = result;
   }
 
-  function getCachedResult(operation: Operation): OperationResult | undefined {
-    const key = getQueryKey(operation);
-
+  function getCachedResult({ key }: ClientPluginOperation): OperationResult | undefined {
     return resultCache[key];
   }
 
-  return {
-    afterQuery,
-    getCachedResult,
+  return function cachePlugin({ afterQuery, useResult, operation }) {
+    if (operation.type !== 'query' || operation.cachePolicy === 'network-only') {
+      return;
+    }
+
+    // Set the cache result after query is resolved
+    afterQuery(result => {
+      setCacheResult(operation, result);
+    });
+
+    // Get cached item
+    const cachedResult = getCachedResult(operation);
+
+    // if exists in cache, terminate with result
+    if (cachedResult) {
+      return useResult(cachedResult, operation.cachePolicy === 'cache-first');
+    }
   };
 }
