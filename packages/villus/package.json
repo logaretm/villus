@@ -1,0 +1,24 @@
+{
+  "name": "villus-monorepo",
+  "private": true,
+  "version": "1.0.0-beta.0",
+  "description": "A small and fast GraphQL client for Vue.js",
+  "module": "dist/villus.esm.js",
+  "unpkg": "dist/villus.js",
+  "main": "dist/villus.js",
+  "types": "dist/villus.d.ts",
+  "author": "Abdelrahman Awad <logaretm1@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "dist/*.js",
+    "dist/villus.d.ts"
+  ],
+  "dependencies": {
+    "vue-demi": "^0.3.3"
+  },
+  "peerDependencies": {
+    "@vue/composition-api": "^1.0.0-beta.1",
+    "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0",
+    "vue": "^2.0.0 || >=3.0.0-rc.0"
+  }
+}

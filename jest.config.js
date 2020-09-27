@@ -1,16 +1,16 @@
 module.exports = {
-  setupFilesAfterEnv: ['<rootDir>/test/server/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/packages/villus/test/server/setup.ts'],
   testMatch: ['**/test/**/*.ts'],
   testPathIgnorePatterns: ['/server/', '/dist/', '/helpers/'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.jsx?$': 'babel-jest',
-    '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest'
+    '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest',
   },
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'vue'],
-  collectCoverageFrom: ['<rootDir>/src/**/*.{ts,js}'],
-  coveragePathIgnorePatterns: ['<rootDir>/src.*/index.ts'],
+  collectCoverageFrom: ['packages/*/src/**/*.ts'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1'
-  }
+    '^@/(.+)$': '<rootDir>/packages/$1/src',
+    '^~/(.+)$': '<rootDir>/packages/$1/test',
+  },
 };

@@ -9,7 +9,7 @@ const { pkgNameMap } = require('./config');
 
 exports.generateDts = async function generateDts(pkg) {
   console.log(chalk.cyan(`Generating Declaration Files for ${pkg} ...`));
-  const declarationDir = `../dist/types`;
+  const declarationDir = `../packages/${pkg}/dist/types`;
 
   const options = {
     ...tsconfig,
@@ -26,7 +26,7 @@ exports.generateDts = async function generateDts(pkg) {
   };
 
   // Prepare and emit the d.ts files
-  const program = ts.createProgram([path.resolve(__dirname, `../src/index.ts`)], options, host);
+  const program = ts.createProgram([path.resolve(__dirname, `../packages/${pkg}/src/index.ts`)], options, host);
   program.emit();
   for (const [file, contents] of Object.entries(createdFiles)) {
     fs.outputFileSync(path.resolve(__dirname, file), contents);
@@ -50,12 +50,12 @@ async function bundleDts(declarationDir, pkg) {
   // Generate .d.ts rollup
   const config = {
     input: entry,
-    output: { file: `dist/${pkgNameMap[pkg]}.d.ts`, format: 'es' },
+    output: { file: `packages/${pkg}/dist/${pkgNameMap[pkg]}.d.ts`, format: 'es' },
     plugins: [dts()],
   };
 
   const bundle = await rollup(config);
   await bundle.write(config.output);
-  await fs.remove(`dist/types`);
+  await fs.remove(`packages/${pkg}/dist/types`);
   console.log(`${chalk.cyan('Bundled ' + pkg + ' Declaration Files...')}`);
 }

@@ -4,10 +4,17 @@ const replace = require('rollup-plugin-replace');
 
 const formatNameMap = {
   villus: 'Villus',
+  batch: 'VillusBatch',
 };
 
 const pkgNameMap = {
   villus: 'villus',
+  batch: 'batch',
+};
+
+const pkgBannerMap = {
+  villus: 'villus',
+  batch: '@villus/batch',
 };
 
 const formatMap = {
@@ -20,21 +27,21 @@ function createConfig(pkg, format) {
     tsconfig: path.resolve(__dirname, '../tsconfig.json'),
     cacheRoot: path.resolve(__dirname, '../node_modules/.rts2_cache'),
     tsconfigOverride: {
-      exclude: ['**/test'],
+      exclude: ['**/tests'],
     },
   });
 
-  const version = require(path.resolve(__dirname, `../package.json`)).version;
+  const version = require(path.resolve(__dirname, `../packages/${pkg}/package.json`)).version;
 
   const config = {
     input: {
-      input: path.resolve(__dirname, `../src/index.ts`),
+      input: path.resolve(__dirname, `../packages/${pkg}/src/index.ts`),
       external: ['vue', 'graphql', 'vue-demi'],
       plugins: [tsPlugin, replace({ __VERSION__: version })],
     },
     output: {
       banner: `/**
-  * villus v${version}
+  * ${pkgBannerMap[pkg]} v${version}
   * (c) ${new Date().getFullYear()} Abdelrahman Awad
   * @license MIT
   */`,

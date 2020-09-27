@@ -1,0 +1,25 @@
+{
+  "name": "@villus/batch",
+  "version": "1.0.0-beta.0",
+  "description": "Batch queries plugin for villus graphql client",
+  "author": "Abdelrahman Awad <logaretm1@gmail.com>",
+  "license": "MIT",
+  "module": "dist/batch.esm.js",
+  "unpkg": "dist/batch.js",
+  "main": "dist/batch.js",
+  "types": "dist/batch.d.ts",
+  "files": [
+    "dist/*.js",
+    "dist/batch.d.ts"
+  ],
+  "homepage": "https://logaretm.github.io/villus/",
+  "repository": "https://github.com/logaretm/villus",
+  "sideEffects": false,
+  "keywords": [
+    "VueJS",
+    "Vue",
+    "batch",
+    "graphql",
+    "api"
+  ]
+}

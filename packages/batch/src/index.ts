@@ -1,6 +1,6 @@
-import { makeFetchOptions } from './fetch';
-import { ClientPlugin, Fetcher, GraphQLResponse } from './types';
-import { resolveGlobalFetch, parseResponse, CombinedError } from './utils';
+import { makeFetchOptions } from '../../villus/src/fetch';
+import { ClientPlugin, Fetcher, GraphQLResponse } from '../../villus/src/types';
+import { resolveGlobalFetch, parseResponse, CombinedError } from '../../villus/src/utils';
 
 interface BatchOptions {
   fetch?: Fetcher;
@@ -21,7 +21,7 @@ export function batch(opts?: BatchOptions): ClientPlugin {
   }
 
   let operations: { resolveOp: (r: any) => void; body: string }[] = [];
-  let scheduledConsume: number;
+  let scheduledConsume: any;
 
   return function batchPlugin({ useResult, opContext, setOperationContext, operation }) {
     return new Promise(resolve => {

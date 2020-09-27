@@ -8,7 +8,7 @@ const { reportSize } = require('./info');
 const { generateDts } = require('./generate-dts');
 
 async function minify({ code, pkg, bundleName }) {
-  const pkgout = path.join(__dirname, `../dist`);
+  const pkgout = path.join(__dirname, `../packages/${pkg}/dist`);
   const output = await Terser.minify(code, {
     compress: true,
     mangle: true,
@@ -22,7 +22,7 @@ async function minify({ code, pkg, bundleName }) {
 }
 
 async function build(pkg) {
-  const pkgout = path.join(__dirname, `../dist`);
+  const pkgout = path.join(__dirname, `../packages/${pkg}/dist`);
   for (const format of ['es', 'umd']) {
     const { input, output, bundleName } = createConfig(pkg, format);
     const bundle = await rollup(input);
@@ -47,5 +47,5 @@ async function build(pkg) {
 }
 
 (async function Bundle() {
-  await build('villus');
+  await Promise.all(['villus', 'batch'].map(build));
 })();

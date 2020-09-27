@@ -7,6 +7,5 @@ export { useClient } from './useClient';
 export { useQuery } from './useQuery';
 export { useMutation } from './useMutation';
 export { useSubscription } from './useSubscription';
-export { batch } from './batch';
 export { fetch } from './fetch';
 export { cache } from './cache';

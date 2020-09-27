@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
     "moduleResolution": "node",
     "target": "es2017",
     "lib": ["esnext", "es2017", "dom"],
@@ -18,7 +20,12 @@
     "emitDecoratorMetadata": true,
     "typeRoots": ["node_modules/@types"],
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@/*": ["packages/*/src"],
+      "~/*": ["packages/*/test"]
+    }
   },
-  "include": ["src", "test"]
+  "include": ["packages/*/src", "packages/*/tests"],
+  "exclude": ["jest.config.js"]
 }
