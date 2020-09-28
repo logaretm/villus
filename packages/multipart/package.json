@@ -1,0 +1,31 @@
+{
+  "name": "@villus/multipart",
+  "version": "1.0.0-beta.0",
+  "description": "File Upload support for villus",
+  "author": "Abdelrahman Awad <logaretm1@gmail.com>",
+  "license": "MIT",
+  "module": "dist/multipart.esm.js",
+  "unpkg": "dist/multipart.js",
+  "main": "dist/multipart.js",
+  "types": "dist/multipart.d.ts",
+  "files": [
+    "dist/*.js",
+    "dist/multipart.d.ts"
+  ],
+  "homepage": "https://logaretm.github.io/villus/",
+  "repository": "https://github.com/logaretm/villus",
+  "sideEffects": false,
+  "keywords": [
+    "VueJS",
+    "Vue",
+    "upload",
+    "graphql",
+    "api"
+  ],
+  "dependencies": {
+    "extract-files": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/extract-files": "^8.1.0"
+  }
+}

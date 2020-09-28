@@ -5,16 +5,19 @@ const replace = require('rollup-plugin-replace');
 const formatNameMap = {
   villus: 'Villus',
   batch: 'VillusBatch',
+  multipart: 'VillusMultipart',
 };
 
 const pkgNameMap = {
   villus: 'villus',
   batch: 'batch',
+  multipart: 'multipart',
 };
 
 const pkgBannerMap = {
   villus: 'villus',
   batch: '@villus/batch',
+  multipart: '@villus/multipart',
 };
 
 const formatMap = {
