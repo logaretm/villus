@@ -1,33 +1,48 @@
 import { defineComponent, h, SetupContext } from 'vue-demi';
-import { Client } from './client';
 import { normalizeChildren } from './utils';
 import { useClient } from './useClient';
+import { CachePolicy, ClientPlugin } from './types';
+import { ClientOptions, SubscriptionForwarder } from './client';
 
-interface ProviderProps {
-  client: Client;
-}
-
-export const Provider = {
+export const Provider = defineComponent({
   name: 'VillusClientProvider',
   props: {
-    client: {
-      type: Client,
+    url: {
+      type: String,
       required: true,
     },
+    cachePolicy: {
+      type: String,
+      default: '' as CachePolicy,
+    },
+    use: {
+      type: Array,
+      default: undefined,
+    },
+    subscriptionForwarder: {
+      type: Function,
+      default: undefined,
+    },
   },
-  setup(props: ProviderProps, ctx: SetupContext) {
-    useClient(props.client);
+  setup(props, ctx: SetupContext) {
+    useClient({
+      url: props.url,
+      cachePolicy: props.cachePolicy as CachePolicy,
+      use: props.use as ClientPlugin[],
+      subscriptionForwarder: props.subscriptionForwarder as SubscriptionForwarder,
+    });
 
     return () => {
       return normalizeChildren(ctx, {});
     };
   },
-};
+});
 
-export function withProvider(component: any, client: Client) {
+export function withProvider(component: any, clientOpts: ClientOptions) {
   return defineComponent({
+    name: 'VillusWithClientHoc',
     setup(props, ctx: SetupContext) {
-      useClient(client);
+      useClient(clientOpts);
 
       return () => {
         return h(component, { ...props, ...ctx.attrs }, ctx.slots);

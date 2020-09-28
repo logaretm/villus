@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-expressions */
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
-import { Query, createClient, Provider } from '../src/index';
+import { Query, Provider } from '../src/index';
 
 test('executes queries on mounted', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   mount({
     data: () => ({
@@ -18,7 +18,7 @@ test('executes queries on mounted', async () => {
     },
     template: `
       <div>
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div>
             <Query query="{ posts { id title } }" v-slot="{ data }">
               <div v-if="data">
@@ -43,9 +43,9 @@ test('executes queries on mounted', async () => {
 });
 
 test('caches queries by default', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   mount({
     data: () => ({
@@ -57,7 +57,7 @@ test('caches queries by default', async () => {
     },
     template: `
       <div>
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div>
             <Query query="{ posts { id title } }" v-slot="{ data, execute }">
               <div v-if="data">
@@ -83,9 +83,9 @@ test('caches queries by default', async () => {
 });
 
 test('cache policy can be overridden with execute function', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   mount({
     data: () => ({
@@ -97,7 +97,7 @@ test('cache policy can be overridden with execute function', async () => {
     },
     template: `
       <div>
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div>
             <Query query="{ posts { id title } }" v-slot="{ data, execute }">
               <div v-if="data">
@@ -123,9 +123,9 @@ test('cache policy can be overridden with execute function', async () => {
 });
 
 test('cache policy can be overridden with cachePolicy prop', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   mount({
     data: () => ({
@@ -137,7 +137,7 @@ test('cache policy can be overridden with cachePolicy prop', async () => {
     },
     template: `
       <div>
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div>
             <Query query="{ posts { id title } }" v-slot="{ data, execute }" cache-policy="cache-and-network">
               <div v-if="data">
@@ -163,9 +163,9 @@ test('cache policy can be overridden with cachePolicy prop', async () => {
 });
 
 test('variables are watched by default', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   const vm = mount({
     data: () => ({
@@ -178,7 +178,7 @@ test('variables are watched by default', async () => {
     },
     template: `
       <div>
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div>
             <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="{ id }" v-slot="{ data }">
               <div v-if="data">
@@ -202,9 +202,9 @@ test('variables are watched by default', async () => {
 });
 
 test('variables watcher can be disabled', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   const vm = mount({
     data: () => ({
@@ -217,7 +217,7 @@ test('variables watcher can be disabled', async () => {
     },
     template: `
       <div>
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div>
             <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="{ id }" :pause="true" v-slot="{ data }">
               <div v-if="data">
@@ -240,9 +240,9 @@ test('variables watcher can be disabled', async () => {
 });
 
 test('variables prop arrangement does not trigger queries', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   const vm = mount({
     data: () => ({
@@ -258,7 +258,7 @@ test('variables prop arrangement does not trigger queries', async () => {
     },
     template: `
       <div>
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div>
             <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="vars" v-slot="{ data }">
               <div v-if="data">
@@ -291,9 +291,9 @@ test('variables prop arrangement does not trigger queries', async () => {
 // have no clue how to test this yet
 // eslint-disable-next-line jest/no-disabled-tests
 test.skip('can be suspended', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   (global as any).fetchController.delay = 100;
   mount({
@@ -306,7 +306,7 @@ test.skip('can be suspended', async () => {
     },
     template: `
       <div>
-        <Provider :client="client">
+        <Provider v-bind="client">
           <Suspense>
             <template #default>
               <Query query="{ posts { id title } }" v-slot="{ data }" suspend>
@@ -330,9 +330,9 @@ test.skip('can be suspended', async () => {
 });
 
 test('Handles query errors', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   mount({
     data: () => ({
@@ -343,7 +343,7 @@ test('Handles query errors', async () => {
       Provider,
     },
     template: `
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div>
             <Query query="{ posts { id title propNotFound } }" v-slot="{ data, error }">
               <ul v-if="data">
@@ -361,9 +361,9 @@ test('Handles query errors', async () => {
 });
 
 test('Handles external errors', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   (global as any).fetchController.simulateNetworkError = true;
 
@@ -376,7 +376,7 @@ test('Handles external errors', async () => {
       Provider,
     },
     template: `
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div>
             <Query query="{ posts { id title propNotFound } }" v-slot="{ data, error }">
               <ul v-if="data">
@@ -394,9 +394,9 @@ test('Handles external errors', async () => {
 });
 
 test('Handles empty slots', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   (global as any).fetchController.simulateNetworkError = true;
 
@@ -409,7 +409,7 @@ test('Handles empty slots', async () => {
       Provider,
     },
     template: `
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div id="body">
             <Query query="{ posts { id title propNotFound } }" v-slot="{ data, error }"></Query>
           </div>

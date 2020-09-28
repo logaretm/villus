@@ -14,7 +14,7 @@ import {
 } from './types';
 import { fetch } from './fetch';
 
-type SubscriptionForwarder<TData = any, TVars = QueryVariables> = (
+export type SubscriptionForwarder<TData = any, TVars = QueryVariables> = (
   operation: Operation<TVars>
 ) => ObservableLike<OperationResult<TData>>;
 

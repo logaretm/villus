@@ -12,12 +12,12 @@ afterAll(() => {
 });
 
 test('Handles subscriptions', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
     subscriptionForwarder: () => {
       return makeObservable();
     },
-  });
+  };
 
   mount({
     data: () => ({
@@ -28,7 +28,7 @@ test('Handles subscriptions', async () => {
       Provider,
     },
     template: `
-      <Provider :client="client">
+      <Provider v-bind="client">
         <Subscription query="subscription { newMessages }" v-slot="{ data }">
           <div>
             <span>{{ data && data.id }}</span>
@@ -44,12 +44,12 @@ test('Handles subscriptions', async () => {
 });
 
 test('Can provide a custom reducer', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
     subscriptionForwarder: () => {
       return makeObservable();
     },
-  });
+  };
 
   function reduce(oldMessages: string[], response: any) {
     if (!response.data) {
@@ -69,7 +69,7 @@ test('Can provide a custom reducer', async () => {
       Provider,
     },
     template: `
-      <Provider :client="client">
+      <Provider v-bind="client">
         <Subscription query="subscription { newMessages }" :reduce="reduce" v-slot="{ data }">
           <ul>
             <li v-for="msg in data">{{ msg.id }}</li>
@@ -85,12 +85,12 @@ test('Can provide a custom reducer', async () => {
 });
 
 test('Handles observer errors', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
     subscriptionForwarder: () => {
       return makeObservable(true);
     },
-  });
+  };
 
   mount({
     data: () => ({
@@ -102,7 +102,7 @@ test('Handles observer errors', async () => {
     },
     template: `
       <div>
-        <Provider :client="client">
+        <Provider v-bind="client">
           <Subscription query="subscription { newMessages }" v-slot="{ error }">
             <p v-if="error">{{ error.message }}</p>
           </Subscription>

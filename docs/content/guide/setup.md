@@ -26,42 +26,30 @@ export default {
 };
 ```
 
-Internally it uses `provide/inject` API to inject the client into your components or composable functions.
+Internally it uses `provide/inject` API to inject the client into your components or composable functions. You can find the full options the `useClient` accepts in the [API reference](../api/client)
 
 ## Provider Component
 
-If you prefer to use higher-order components you can use the `<Provider />` component, but you will need to create a GraphQL client first. The `createClient` function allows you to create a raw villus client that you can pass around as a prop.
-
-```js
-import { createClient } from 'villus';
-
-const client = createClient({
-  url: '/graphql', // your endpoint.
-});
-```
-
-After you've created a client, you need to pass client instance to your `<Provider />` component's `client` prop. Here is a full example:
+If you prefer to use higher-order components you can use the `<Provider />` component, similar to `useClient` it accepts the same client options as props. It might be handy to use `v-bind` here to group the various client config options in a single object:
 
 ```vue
 <template>
-  <Provider :client="client">
+  <Provider v-bind="clientOptions">
     <App />
   </Provider>
 </template>
 
 <script>
-import { Provider, createClient } from 'villus';
-
-const client = createClient({
-  url: '/graphql',
-});
+import { Provider } from 'villus';
 
 export default {
   components: {
     Provider,
   },
   data: () => ({
-    client,
+    clientOptions: {
+      url: '/graphql',
+    },
   }),
 };
 </script>
@@ -75,19 +63,19 @@ The **Provider** component is **renderless** by default. It will not render any 
 
 ### withProvider function
 
-**villus** exposes a `withProvider` function that takes a Vue component and returns the same component wrapped by the `Provider` component, it is very handy to use in JS components and render functions.
+**villus** exposes a `withProvider` function that takes a Vue component and returns the same component wrapped by the `Provider` component, it is very handy to use in JSX and render functions.
 
 ```js
 import Vue from 'vue';
-import { createClient, withProvider } from 'villus';
+import { withProvider } from 'villus';
 import App from './App.vue';
 
-const client = createClient({
+const clientOptions = {
   url: '/graphql', // Your endpoint
-});
+};
 
 // use this instead of your App
-const AppWithClient = withProvider(App, client);
+const AppWithClient = withProvider(App, clientOptions);
 
 new Vue({
   // Render the wrapped version instead.
@@ -100,11 +88,11 @@ new Vue({
 While uncommon, there is no limitations on how many endpoints you can use within your app, you can use as many clients as you like and that allows you to query different GraphQL APIs within the same app without hassle.
 
 ```vue
-<Provider :client="githubClient">
+<Provider v-bind="githubClient">
   <PartOfApp />
 </Provider>
 
-<Provider :client="appApi">
+<Provider v-bind="appApi">
   <OtherPart />
 </Provider>
 ```
@@ -141,4 +129,4 @@ You can mix between higher-order components and composable API as higher-order c
 
 ## Next Steps
 
-Now that you have successfully setup the GraphQL client, you can start to [query](./queries.md) and [execute mutations](./mutations.md) on your GraphQL APIs.
+Now that you have successfully setup the GraphQL client, you can start to [query](./queries) and [execute mutations](./mutations) on your GraphQL APIs.

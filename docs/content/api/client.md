@@ -30,21 +30,10 @@ const client = createClient({
 
 The `useClient` function exported by `villus` package allows you to create a villus client that can be injected into your components using `useQuery` or `useMutation` or `useSubscription` and their higher-order components variants. It accepts the same options as [createClient()](#createclient).
 
-Alternatively it also accepts a villus client instance created by `createClient`.
-
 ```js
 useClient({
   // createClient() opts...
 });
-
-// OR
-
-const client = createClient({
-  // client opts ...
-});
-
-// inject created client to all components
-useClient(client);
 ```
 
 ## Using The Client Manually

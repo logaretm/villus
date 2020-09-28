@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-expressions */
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
-import { createClient, useQuery, withProvider } from '../src/index';
+import { useQuery, withProvider } from '../src/index';
 import { Post } from './server/typedSchema';
 
 test('creates HOC withProvider', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   mount(
     withProvider(

@@ -4,9 +4,9 @@ import flushPromises from 'flush-promises';
 import { Mutation, createClient, Provider } from '../src/index';
 
 test('runs mutations', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   mount({
     data: () => ({
@@ -18,7 +18,7 @@ test('runs mutations', async () => {
     },
     template: `
       <div>
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div>
             <Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ data, execute }">
               <div v-if="data">
@@ -42,9 +42,9 @@ test('runs mutations', async () => {
 });
 
 test('handles errors', async () => {
-  const client = createClient({
+  const client = {
     url: 'https://test.com/graphql',
-  });
+  };
 
   (global as any).fetchController.simulateNetworkError = true;
 
@@ -58,7 +58,7 @@ test('handles errors', async () => {
     },
     template: `
       <div>
-        <Provider :client="client">
+        <Provider v-bind="client">
           <div>
             <Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ error, execute }">
               <div v-if="error">
