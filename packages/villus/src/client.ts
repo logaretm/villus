@@ -67,11 +67,6 @@ export class Client {
 
         result = pluginResult as OperationResult<TData>;
       },
-      setOperationContext(ctx) {
-        Object.keys(ctx).forEach(key => {
-          (opContext as any)[key] = (ctx as any)[key];
-        });
-      },
       afterQuery(cb) {
         afterQuery.push(cb);
       },

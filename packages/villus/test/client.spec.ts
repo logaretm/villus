@@ -25,12 +25,8 @@ test('fails if executes an non-provided query', async () => {
 });
 
 test('supports async plugins', async () => {
-  const auth: ClientPlugin = async ({ setOperationContext }) => {
-    setOperationContext({
-      headers: {
-        Authorization: 'bearer TOKEN',
-      },
-    });
+  const auth: ClientPlugin = async ({ opContext }) => {
+    (opContext.headers as any).Authorization = 'Bearer {TOKEN}';
   };
 
   const client = createClient({

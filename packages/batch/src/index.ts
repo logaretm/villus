@@ -23,16 +23,14 @@ export function batch(opts?: BatchOptions): ClientPlugin {
   let operations: { resolveOp: (r: any) => void; body: string }[] = [];
   let scheduledConsume: any;
 
-  return function batchPlugin({ useResult, opContext, setOperationContext, operation }) {
+  return function batchPlugin({ useResult, opContext, operation }) {
     return new Promise(resolve => {
       if (scheduledConsume) {
         clearTimeout(scheduledConsume);
       }
 
       if (!opContext.body) {
-        setOperationContext({
-          body: makeFetchOptions(operation, opContext).body,
-        });
+        opContext.body = makeFetchOptions(operation, opContext).body;
       }
 
       operations.push({

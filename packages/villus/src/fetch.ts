@@ -11,14 +11,12 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
     throw new Error('Could not resolve a fetch() method, you should provide one.');
   }
 
-  return async function fetchPlugin({ useResult, opContext, operation, setOperationContext }) {
-    if (!opContext.body) {
-      setOperationContext(makeFetchOptions(operation, opContext));
-    }
+  return async function fetchPlugin({ useResult, opContext, operation }) {
+    const fetchOpts = makeFetchOptions(operation, opContext);
 
     let response;
     try {
-      response = await fetch(opContext.url as string, opContext).then(parseResponse);
+      response = await fetch(opContext.url as string, fetchOpts).then(parseResponse);
     } catch (err) {
       return useResult(
         {
@@ -57,8 +55,5 @@ export function makeFetchOptions({ query, variables }: Operation<unknown>, opts:
     throw new Error('A query must be provided.');
   }
 
-  return {
-    ...mergeFetchOpts({} as any, opts),
-    body: JSON.stringify({ query: normalizedQuery, variables }),
-  };
+  return mergeFetchOpts({ body: JSON.stringify({ query: normalizedQuery, variables }) } as any, opts);
 }

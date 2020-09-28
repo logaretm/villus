@@ -43,6 +43,7 @@ export type Fetcher = typeof fetch;
 
 export interface FetchOptions extends RequestInit {
   url?: string;
+  headers: NonNullable<RequestInit['headers']>;
 }
 
 export type OperationType = 'query' | 'mutation' | 'subscription';
@@ -53,7 +54,6 @@ export type ClientPluginOperation = CachedOperation<unknown> & { type: Operation
 
 export interface ClientPluginContext {
   useResult: (result: OperationResult<unknown>, terminate?: boolean) => void;
-  setOperationContext: (opts: FetchOptions) => void;
   afterQuery: (cb: AfterQueryCallback) => void;
   operation: ClientPluginOperation;
   opContext: FetchOptions;

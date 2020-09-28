@@ -53,7 +53,6 @@ interface FetchOptions extends RequestInit {
 
 interface ClientPluginContext {
   useResult: (result: OperationResult<unknown>, terminate?: boolean) => void; // used to signal that the plugin found a result for the operation
-  setOperationContext: (opts: FetchOptions) => void; // Updates the operation context (opContext), useful to set any headers
   afterQuery: (cb: AfterQueryCallback) => void; // Registers a callback to do something after the query is finished and the pipeline is done
   operation: {
     query: DocumentNode | string; // The query/mutation to be executed
@@ -75,12 +74,8 @@ This will be clearer in the following examples
 It's very likely you have a authentication header you would like to add to your queries to be able to execute protected queries/mutations. A very common header is `Authorization` header which contains an auth token. Here is a snippet that shows how to add such headers to your queries:
 
 ```js
-function authPlugin({ setOperationContext }) {
-  setOperationContext({
-    headers: {
-      Authorization: 'Bearer {TOKEN}',
-    },
-  });
+function authPlugin({ opContext }) {
+  opContext.headers.Authorization = 'Bearer {TOKEN}';
 }
 
 // later in your setup

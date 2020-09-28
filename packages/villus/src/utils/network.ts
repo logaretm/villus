@@ -58,7 +58,8 @@ export function mergeFetchOpts(lhs: FetchOptions, rhs: FetchOptions) {
     ...rhs,
     method: rhs.method || lhs.method || DEFAULT_FETCH_OPTS.method,
     headers: {
-      ...(rhs.headers || lhs.headers || DEFAULT_FETCH_OPTS.headers),
+      ...(lhs.headers || {}),
+      ...(rhs.headers || {}),
     },
   };
 }
