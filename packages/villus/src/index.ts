@@ -9,3 +9,4 @@ export { useMutation } from './useMutation';
 export { useSubscription } from './useSubscription';
 export { fetch } from './fetch';
 export { cache } from './cache';
+export { ClientPlugin, ClientPluginContext, FetchOptions } from './types';
