@@ -1,5 +1,44 @@
-import { mockServer, MockList } from 'graphql-tools';
-import schema from './schema';
+import { mockServer, MockList, makeExecutableSchema } from 'graphql-tools';
+import { GraphQLUpload } from 'graphql-upload';
+
+const schema = makeExecutableSchema({
+  typeDefs: `
+    scalar Upload
+    
+    type Post {
+      id: ID!
+      title: String!
+      slug: String!
+      isLiked: Boolean!
+    }
+
+    type File {
+      path: String!
+    }
+
+    type Query {
+      posts: [Post]!
+
+      post (id: ID!): Post!
+    }
+
+    type LikePostMutationResponse {
+      success: Boolean!
+      code: String!
+      message: String!
+      post: Post
+    }
+
+    type Mutation {
+      likePost (id: ID!): LikePostMutationResponse!
+
+      singleUpload(file: Upload!): File!
+    }
+  `,
+  resolvers: {
+    Upload: GraphQLUpload,
+  },
+});
 
 const server = mockServer(schema, {
   Post: () => ({
@@ -23,6 +62,11 @@ const server = mockServer(schema, {
       code: '200',
       message: 'Operation successful',
     }),
+    singleUpload: (_: any, args: any) => {
+      return {
+        path: 'hello-world.ts',
+      };
+    },
   }),
 });
 
@@ -56,7 +100,10 @@ beforeEach(() => {
       });
     }
 
-    let body: any[] = JSON.parse(opts.body as string);
+    let body: any[] =
+      opts.body instanceof FormData
+        ? JSON.parse((opts.body as any).get('operations'))
+        : JSON.parse(opts.body as string);
     const isBatched = Array.isArray(body);
     if (!Array.isArray(body)) {
       body = [body];
