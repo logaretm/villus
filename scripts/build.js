@@ -47,5 +47,5 @@ async function build(pkg) {
 }
 
 (async function Bundle() {
-  await Promise.all(['villus', 'batch'].map(build));
+  await Promise.all(['villus', 'batch', 'multipart'].map(build));
 })();

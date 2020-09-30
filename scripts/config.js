@@ -5,16 +5,34 @@ const replace = require('rollup-plugin-replace');
 const formatNameMap = {
   villus: 'Villus',
   batch: 'VillusBatch',
+  multipart: 'VillusMultipart',
 };
 
 const pkgNameMap = {
   villus: 'villus',
   batch: 'batch',
+  multipart: 'multipart',
 };
 
 const pkgBannerMap = {
   villus: 'villus',
   batch: '@villus/batch',
+  multipart: '@villus/multipart',
+};
+
+const pkgExternals = {
+  villus: ['vue', 'graphql', 'vue-demi'],
+  multipart: ['extract-files'],
+};
+
+const pkgGlobals = {
+  villus: {
+    vue: 'Vue',
+    'vue-demi': 'VueDemi',
+  },
+  multipart: {
+    'extract-files': 'ExtractFiles',
+  },
 };
 
 const formatMap = {
@@ -33,10 +51,12 @@ function createConfig(pkg, format) {
 
   const version = require(path.resolve(__dirname, `../packages/${pkg}/package.json`)).version;
 
+  console.log(pkgExternals[pkg]);
+
   const config = {
     input: {
       input: path.resolve(__dirname, `../packages/${pkg}/src/index.ts`),
-      external: ['vue', 'graphql', 'vue-demi'],
+      external: pkgExternals[pkg],
       plugins: [tsPlugin, replace({ __VERSION__: version })],
     },
     output: {
@@ -47,10 +67,7 @@ function createConfig(pkg, format) {
   */`,
       format,
       name: format === 'umd' ? formatNameMap[pkg] : undefined,
-      globals: {
-        vue: 'Vue',
-        'vue-demi': 'VueDemi',
-      },
+      globals: pkgGlobals[pkg],
     },
   };
 

@@ -140,4 +140,4 @@ In the previous sample, our cache plugin does not handle `cache-and-network` pol
 return useResult(cachedResult, operation.cachePolicy === 'cache-first');
 ```
 
-For reference you may look at the implementation of the [`cache` plugin](https://github.com/logaretm/villus/blob/master/src/cache.ts)
+For reference you may look at the implementation of the [`cache` plugin](https://github.com/logaretm/villus/blob/master/packages/villus/src/cache.ts)
