@@ -1,3 +1,4 @@
+import { GraphQLError } from 'graphql';
 import { ClientPlugin, Fetcher, FetchOptions, Operation } from './types';
 import { CombinedError, mergeFetchOpts, normalizeQuery, parseResponse, resolveGlobalFetch } from './utils';
 
@@ -28,10 +29,21 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
     }
 
     if (!response.ok || !response.body) {
+      // It is possible than a non-200 response is returned with errors, it should be treated as GraphQL error
+      const ctorOptions: { response: typeof response; graphqlErrors?: GraphQLError[]; networkError?: Error } = {
+        response,
+      };
+
+      if (response.body?.errors) {
+        ctorOptions.graphqlErrors = response.body.errors;
+      } else {
+        ctorOptions.networkError = new Error(response.statusText);
+      }
+
       return useResult(
         {
           data: null,
-          error: new CombinedError({ response: response, networkError: new Error(response.statusText) }),
+          error: new CombinedError(ctorOptions),
         },
         true
       );
