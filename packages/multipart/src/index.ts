@@ -1,16 +1,13 @@
 import { extractFiles } from 'extract-files';
-import { fetch } from '../../villus/src/fetch';
 import { ClientPlugin } from '../../villus/src/types';
 
 export function multipart(): ClientPlugin {
-  const fetchP = fetch();
-
   return function multipartPlugin(context) {
     const { operation, opContext } = context;
     const { files, clone: variables } = extractFiles({ ...((operation?.variables as Record<string, any>) || {}) });
 
     if (!files.size) {
-      return fetchP(context);
+      return;
     }
 
     // cleanup content-type
@@ -35,7 +32,5 @@ export function multipart(): ClientPlugin {
     });
 
     opContext.body = body;
-
-    return fetchP(context);
   };
 }
