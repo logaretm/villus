@@ -30,6 +30,8 @@ beforeEach(() => {
   const fetchController = {
     simulateNetworkError: false,
     simulateParseError: false,
+    // #49
+    simulateNetworkErrorWithGraphQLResponse: false,
   };
 
   (global as any).fetchController = fetchController;
@@ -38,6 +40,20 @@ beforeEach(() => {
   (global as any).fetch = jest.fn(async function mockedAPI(url: string, opts: RequestInit) {
     if (fetchController.simulateNetworkError) {
       throw new Error('Network Error');
+    }
+
+    if (fetchController.simulateNetworkErrorWithGraphQLResponse) {
+      return Promise.resolve({
+        ok: false,
+        status: 400,
+        statusText: 'Bad Request',
+        json() {
+          return {
+            data: null,
+            errors: [{ message: 'Unauthorized' }],
+          };
+        },
+      });
     }
 
     let body: any[] = JSON.parse(opts.body as string);

@@ -618,6 +618,35 @@ test('Errors can be separated by type', async () => {
   expect(document.querySelector('#error')?.textContent).toBe('Network');
 });
 
+// # 49
+test('Errors can have non 200 response code', async () => {
+  (global as any).fetchController.simulateNetworkErrorWithGraphQLResponse = true;
+
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+
+      const { data, error } = useQuery({
+        query: '{ posts { id title } }',
+      });
+
+      return { data, error };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <h1>It shouldn't work!</h1>
+      </div>
+      <p id="error" v-if="error">{{ error.isGraphQLError ? 'GraphQL' : 'Network' }}</p>
+    </div>`,
+  });
+
+  await flushPromises();
+  expect(document.querySelector('#error')?.textContent).toBe('GraphQL');
+});
+
 test('cache-only policy returns null results if not found', async () => {
   mount({
     setup() {
