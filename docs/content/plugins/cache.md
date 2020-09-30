@@ -31,4 +31,4 @@ At this moment the cache plugin doesn't have any options to customize
 
 ## Code
 
-You can check the [source code for the `fetch` plugin](https://github.com/logaretm/villus/blob/master/src/fetch.ts) and use it as a reference to build your own
+You can check the [source code for the `cache` plugin](https://github.com/logaretm/villus/blob/master/packages/villus/src/cache.ts) and use it as a reference to build your own

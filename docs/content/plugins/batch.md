@@ -8,12 +8,23 @@ order: 3
 
 Villus has support for query batching but it is not configured out of the box, this is because not all GraphQL implementations support query-batching. So you would need to manually import it and configure it with `villus` client.
 
+The batch plugin is available as its own package under the name `@villus/batch`
+
 ## Basic Batching
 
-You need to import the `batch` plugin from `villus` and pass it at the very end of the `plugins` array in client configuration:
+First add the plugin to your dependencies using `yarn` or `npm`:
+
+```bash
+yarn add @villus/batch
+# Or
+npm install @villus/batch
+```
+
+Then import the `batch` plugin from `villus` and pass it at the very end of the `plugins` array in client configuration:
 
 ```js
-import { useClient, batch } from 'villus';
+import { useClient } from 'villus';
+import { batch } from '@villus/batch';
 
 export default {
   setup() {
@@ -24,6 +35,10 @@ export default {
   },
 };
 ```
+
+<doc-tip type="danger">
+  Careful not to use `batch` with the default `fetch` plugin, both of them act as a fetcher and there can only be 1 fetcher plugin for `villus` at any given time.
+</doc-tip>
 
 And that's it, all your nested components that use `useQuery` or `useMutation` will automatically be batched together in a single request:
 
