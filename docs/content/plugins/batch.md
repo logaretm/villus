@@ -100,3 +100,7 @@ The available options are:
 | ------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | fetch   | `typeof window.fetch` | Pass this option if you plan to be specific about the `fetch` polyfill that will be used, by default it tries to find `window.fetch` on the browser or `global.fetch` on Node.js depending on the execution environment |
 | timeout | `number`              | The number of milliseconds to wait for before executing the batched queries                                                                                                                                             |
+
+## Code
+
+You can check the [source code for the `batch` plugin](https://github.com/logaretm/villus/blob/master/packages/batch/src/index.ts) and use it as a reference to build your own

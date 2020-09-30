@@ -4,7 +4,7 @@ description: Using the multipart plugin for file uploads
 order: 4
 ---
 
-# Query Batching
+# File Uploads
 
 Villus has support for file uploads but it is not configured out of the box, So you would need to manually import it and configure it with `villus` client.
 
@@ -95,4 +95,4 @@ At this moment the multipart plugin doesn't have any options to customize
 
 ## Code
 
-You can check the [source code for the `fetch` plugin](https://github.com/logaretm/villus/blob/master/packages/villus/src/fetch.ts) and use it as a reference to build your own
+You can check the [source code for the `multipart` plugin](https://github.com/logaretm/villus/blob/master/packages/multipart/src/index.ts) and use it as a reference to build your own
