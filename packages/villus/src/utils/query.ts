@@ -10,7 +10,7 @@ export function normalizeQuery(query: string | DocumentNode): string | null {
     return query;
   }
 
-  if (query && query.loc) {
+  if (query && query.kind) {
     return print(query);
   }
 
