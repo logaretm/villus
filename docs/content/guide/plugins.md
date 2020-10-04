@@ -67,7 +67,89 @@ interface ClientPluginContext {
 type ClientPlugin = ({ useResult, operation }: ClientPluginContext) => void | Promise<void>;
 ```
 
-This will be clearer in the following examples
+The following sections will explain the purpose of each item in the context
+
+### useResult()
+
+The `useResult` function allows your plugin to resolve a value for the GraphQL operation. Plugins like `fetch`, `batch` and `cache` make use of this as each of them is responsible for setting a response value for the GraphQL operation.
+
+#### Non-terminating Results
+
+There is two types of `useResult` calls, the first being a **non-terminating** resolution, meaning that while your plugin found a value, it still wants other plugins to continue executing:
+
+```js
+useResult(response); // Other plugins will still execute
+```
+
+This is useful for the `cache` plugin with the `cache-and-network` policy as it may decide to resolve an operation earlier (if found in cache) and leave the pipeline of plugins unaffected because it still needs to make a network request to fetch the fresh result.
+
+#### Terminating Results
+
+The other type is a **terminating** resolution, meaning your plugin has decided to take over the pipeline and stop executing all others. This is useful with the `cache` plugin, because with the `cache-first` policy, it doesn't want any requests to go through.
+
+```js
+useResult(response, true); // Stops all plugins after it
+```
+
+<doc-tip>
+
+Calling `useResult` mutliple times in the pipeline (by multiple plugins) won't have an effect on the end result, the very first `useResult` call will set the operation response, any subsequent calls are ignored.
+
+</doc-tip>
+
+### afterQuery()
+
+The `afterQuery` function allows you to run a callback after the query is finished, the callback receives the GraphQL response as the first and only argument at the moment.
+
+For example the `cache` plugin makes use of this to cache the operation response, here is an snippet of what happens in the `cache` plugin:
+
+```js
+function cachePlugin({ afterQuery, useResult, operation }) {
+  // ...
+  afterQuery(result => {
+    // Set the cache result after query is resolved
+    setCacheResult(operation, result);
+  });
+  // ...
+}
+```
+
+### operation
+
+The `operation` field contains useful information about the GraphQL operation being executed.
+
+| Field       | Type                                                                     | Description                                                                           |
+| ----------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| query       | `string \| DocumentNode`                                                 | The query/mutation being executed                                                     |
+| variables   | `Record<string, any>`                                                    | The query variables passed with the operation                                         |
+| cachePolicy | `'cache-first' \| 'network-only' \| 'cache-and-network' \| 'cache-only'` | The cache policy for this operation, useful if you are building a custom cache plugin |
+| key         | `number`                                                                 | A unique identifier to use for this operation, useful for cache and dedup plugins     |
+| type        | `'query' \| 'mutation' \| 'subscription'`                                | The operation type                                                                    |
+
+### opContext
+
+The `opContext` field is the `fetch` options that will be passed to the `fetch` or `batch` plugins or your custom plugin that makes the actual request, it has the same shape as [`RequestInit` interface](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#Parameters). This is particularly useful if you are building a `fetch` plugin or some kind of authentication plugin with headers or cookies.
+
+Here is a few useful snippets:
+
+```js
+function myPlugin({ opContext, operation }) {
+  // Add auth headers
+  opContext.headers.Authorization = 'Bearer {TOKEN}';
+
+  // Encode additional information in the body
+  opContext.body = JSON.stringify({ query: operation.query, variables: operation.variables, mutationKey: 39933 });
+
+  // Change the URL dynamically
+  opContext.url = '/other/graphql';
+}
+```
+
+<doc-tip>
+
+All plugins are processed in the same order they were added in, and as you can imagine the order of these plugins is critical as some plugins may override options for others and some may resolve the value too early. So keep the order in mind when defining the plugins
+
+</doc-tip>
 
 ## Example: Adding Authorization Headers
 
