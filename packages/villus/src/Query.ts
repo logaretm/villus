@@ -33,7 +33,7 @@ export const Query = {
         return isValid;
       },
     },
-    pause: {
+    watchVariables: {
       type: Boolean,
       default: false,
     },
@@ -41,18 +41,22 @@ export const Query = {
       type: Boolean,
       default: false,
     },
+    fetchOnMount: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props: QueryProps, ctx: SetupContext) {
     function createRenderFn(api: QueryComposable<unknown>) {
-      const { data, error, isFetching, isDone, execute, pause, resume } = api;
+      const { data, error, isFetching, isDone, execute, watchVariables, unwatchVariables } = api;
 
       watchEffect(() => {
-        if (props.pause === true) {
-          pause();
+        if (props.watchVariables === true) {
+          unwatchVariables();
           return;
         }
 
-        resume();
+        watchVariables();
       });
 
       return () => {
@@ -67,9 +71,10 @@ export const Query = {
     }
 
     const queryProps = {
-      ...toRefs(props),
-      lazy: props.lazy,
-      cachePolicy: props.cachePolicy,
+      query: toRef(props, 'query') as Ref<string>,
+      variables: toRef(props, 'variables') as Ref<Record<string, any> | undefined>,
+      fetchOnMounted: props.fetchOnMount,
+      cachePolicy: props.cachePolicy as CachePolicy,
     };
 
     if (props.suspend) {

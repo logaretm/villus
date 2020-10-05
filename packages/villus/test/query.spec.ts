@@ -219,7 +219,7 @@ test('variables watcher can be disabled', async () => {
       <div>
         <Provider v-bind="client">
           <div>
-            <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="{ id }" :pause="true" v-slot="{ data }">
+            <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="{ id }" :watch-variables="true" v-slot="{ data }">
               <div v-if="data">
                 <h1>{{ data.post.title }}</h1>
               </div>
