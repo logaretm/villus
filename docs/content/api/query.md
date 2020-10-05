@@ -18,14 +18,14 @@ The **Query** component is **renderless** by default, meaning it will not render
 
 The `Query` component accepts the following props:
 
-| Prop        | Type                                                                                         | Required | Description                                                                                           |
-| ----------- | -------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
-| query       | `string` or `DocumentNode`                                                                   | **Yes**  | The query to be executed                                                                              |
-| variables   | `object`                                                                                     | **No**   | The query variables                                                                                   |
-| cachePolicy | A `string` with those possible values `cache-and-network` or `network-only` or `cache-first` | **No**   | The cache policy to execute the query with, defaults to the value configured with the provided client |
-| lazy        | `boolean`                                                                                    | **No**   | If the query **should not** be executed on `mounted`                                                  |
-| suspend     | `boolean`                                                                                    | **No**   | If the component is suspended with `Suspend` or not, defaults to `false`                              |
-| pause       | `boolean`                                                                                    | **No**   | If the query variable watching is disabled or not, defaults to `false`                                |
+| Prop           | Type                                                                                         | Required | Description                                                                                           |
+| -------------- | -------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| query          | `string` or `DocumentNode`                                                                   | **Yes**  | The query to be executed                                                                              |
+| variables      | `object`                                                                                     | **No**   | The query variables                                                                                   |
+| cachePolicy    | A `string` with those possible values `cache-and-network` or `network-only` or `cache-first` | **No**   | The cache policy to execute the query with, defaults to the value configured with the provided client |
+| fetchOnMount   | `boolean`                                                                                    | **No**   | If the query **should be** be executed on `onMounted` lifecycle hook, default is `true`               |
+| suspended      | `boolean`                                                                                    | **No**   | If the component is suspended with `Suspend` or not, defaults to `false`                              |
+| watchVariables | `boolean`                                                                                    | **No**   | If the query variable watching is disabled or not, defaults to `true`                                 |
 
 ## Slot Props
 

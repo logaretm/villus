@@ -16,7 +16,7 @@ The `useSubscription` function returns the following properties and functions:
 | error    | `Ref<CombinedError>`                                       | Any errors encountered during mutation execution                                            |
 | execute  | `({variables: object}) => Promise<OperationResult<TData>>` | Executes the mutation and returns the operation result containing `data` and `error` values |
 | isPaused | `Ref<boolean>`                                             | True if the subscription is paused or inactive                                              |
-| pause    | `() => void`                                               | Deactivates the subscription temporarily until `resume` is called                           |
+| paused   | `() => void`                                               | Deactivates the subscription temporarily until `resume` is called                           |
 | resume   | `() => void`                                               | Activates the subscription                                                                  |
 
 ## Signature and Usage

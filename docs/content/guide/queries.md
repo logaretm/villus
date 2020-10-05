@@ -232,13 +232,16 @@ const GetPostById = `
 
 // Create a reactive variables object
 const variables = ref({ id: 123 });
-const { data, pause, resume } = useQuery(GetPostById, variables);
+const { data, watchVariables, unwatchVariables, isWatchingVariables } = useQuery(GetPostById, variables);
 
 // variables/query watching is stopped.
-pause();
+unwatchVariables();
 
 // variables/query watching is resumed.
-resume();
+watchVariables();
+
+// Reports the current watching status true/false
+isWatchingVariables.value;
 ```
 
 ## Caching
@@ -334,6 +337,26 @@ function runWithPolicy() {
 ```
 
 You can build your own cache layer and plugins for villus, check the [Plugins Guide](./plugins)
+
+## Fetching on Mounted
+
+By default the `useQuery` and `Query` component automatically execute their queries when the component is mounted. You can configure this behavior by setting the `fetchOnMounted` option:
+
+```js
+const GetPosts = `
+  query GetPosts {
+    posts {
+      id
+      title
+    }
+  }
+`;
+
+const { data } = useQuery({
+  query: GetPosts,
+  fetchOnMounted: false, // disables query fetching on mounted
+});
+```
 
 ## Suspense
 
