@@ -288,9 +288,7 @@ test('variables prop arrangement does not trigger queries', async () => {
   expect(document.querySelector('h1')?.textContent).toContain('13');
 });
 
-// have no clue how to test this yet
-// eslint-disable-next-line jest/no-disabled-tests
-test.skip('can be suspended', async () => {
+test('can be suspended', async () => {
   const client = {
     url: 'https://test.com/graphql',
   };
