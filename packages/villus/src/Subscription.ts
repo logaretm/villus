@@ -1,15 +1,9 @@
-import { SetupContext } from 'vue-demi';
+import { defineComponent, SetupContext } from 'vue-demi';
 import { normalizeChildren } from './utils';
 import { useSubscription, defaultReducer, Reducer } from './useSubscription';
 import { DocumentNode } from 'graphql';
 
-interface SubscriptionProps {
-  query: string | DocumentNode;
-  variables?: Record<string, any>;
-  reduce?: Reducer;
-}
-
-export const Subscription = {
+export const Subscription = defineComponent({
   name: 'Subscription',
   props: {
     query: {
@@ -47,4 +41,4 @@ export const Subscription = {
       });
     };
   },
-};
+});
