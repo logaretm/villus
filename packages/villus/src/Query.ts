@@ -1,19 +1,9 @@
-import { SetupContext, toRefs, watchEffect } from 'vue-demi';
-import { QueryComposable, useQuery } from './useQuery';
+import { defineComponent, Ref, toRef, watchEffect } from 'vue-demi';
 import { CachePolicy } from './types';
+import { QueryComposable, useQuery } from './useQuery';
 import { normalizeChildren } from './utils';
-import { DocumentNode } from 'graphql';
 
-interface QueryProps {
-  query: string | DocumentNode;
-  variables?: Record<string, any>;
-  cachePolicy?: CachePolicy;
-  lazy?: boolean;
-  pause?: boolean;
-  suspend?: boolean;
-}
-
-export const Query = {
+export const Query = defineComponent({
   name: 'Query',
   props: {
     query: {
@@ -27,11 +17,6 @@ export const Query = {
     cachePolicy: {
       type: String,
       default: undefined,
-      validator(value: string) {
-        const isValid = [undefined, 'cache-and-network', 'network-only', 'cache-first'].indexOf(value) !== -1;
-
-        return isValid;
-      },
     },
     watchVariables: {
       type: Boolean,
@@ -46,7 +31,7 @@ export const Query = {
       default: true,
     },
   },
-  setup(props: QueryProps, ctx: SetupContext) {
+  setup(props, ctx) {
     function createRenderFn(api: QueryComposable<unknown>) {
       const { data, error, isFetching, isDone, execute, watchVariables, unwatchVariables } = api;
 
@@ -83,4 +68,4 @@ export const Query = {
 
     return createRenderFn(useQuery(queryProps));
   },
-};
+});
