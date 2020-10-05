@@ -1,4 +1,4 @@
-import { defineComponent, SetupContext } from 'vue-demi';
+import { defineComponent } from 'vue-demi';
 import { useMutation } from './useMutation';
 import { normalizeChildren } from './utils';
 
@@ -10,7 +10,7 @@ export const Mutation = defineComponent({
       required: true,
     },
   },
-  setup(props, ctx: SetupContext) {
+  setup(props, ctx) {
     const { data, isFetching, isDone, error, execute } = useMutation({
       query: props.query as string,
     });

@@ -1,4 +1,4 @@
-import { defineComponent, Ref, toRef, watch, watchEffect } from 'vue-demi';
+import { defineComponent, Ref, toRef, watch } from 'vue-demi';
 import { CachePolicy } from './types';
 import { QueryComposable, useQuery } from './useQuery';
 import { normalizeChildren } from './utils';
