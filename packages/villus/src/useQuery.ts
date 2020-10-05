@@ -20,9 +20,9 @@ export interface QueryComposable<TData> {
   isFetching: Ref<boolean>;
   isDone: Ref<boolean>;
   execute: (opts?: QueryExecutionOpts) => Promise<OperationResult<TData>>;
-  pause: () => void;
-  isPaused: Ref<boolean>;
-  resume: () => void;
+  isWatchingVariables: Ref<boolean>;
+  unwatchVariables: () => void;
+  watchVariables: () => void;
 }
 
 interface ThenableQueryComposable<TData> extends QueryComposable<TData> {
@@ -65,18 +65,18 @@ function _useQuery<TData, TVars>({
     watch(query, () => execute());
   }
 
-  let unwatch: ReturnType<typeof watch>;
-  const isPaused: Ref<boolean> = ref(false);
+  let stopVarsWatcher: ReturnType<typeof watch>;
+  const isWatchingVariables: Ref<boolean> = ref(false);
 
-  function watchVars() {
+  function beginWatchingVars() {
     let oldCache: number;
     if ((!isRef(variables) && !isReactive(variables)) || !variables) {
       return;
     }
 
     const watchableVars = toWatchableSource(variables);
-    isPaused.value = false;
-    unwatch = watch(
+    isWatchingVariables.value = false;
+    stopVarsWatcher = watch(
       watchableVars,
       newValue => {
         const id = hash(stringify(newValue));
@@ -92,22 +92,22 @@ function _useQuery<TData, TVars>({
     );
   }
 
-  function pause() {
-    if (isPaused.value) return;
+  function unwatchVariables() {
+    if (isWatchingVariables.value) return;
 
-    unwatch();
-    isPaused.value = true;
+    stopVarsWatcher();
+    isWatchingVariables.value = true;
   }
 
-  function resume() {
-    if (!isPaused.value) return;
+  function watchVariables() {
+    if (!isWatchingVariables.value) return;
 
-    watchVars();
+    beginWatchingVars();
   }
 
-  watchVars();
+  beginWatchingVars();
 
-  return { data, isFetching, isDone, error, execute, pause, isPaused, resume };
+  return { data, isFetching, isDone, error, execute, unwatchVariables, watchVariables, isWatchingVariables };
 }
 
 function useQuery<TData = any, TVars = QueryVariables>(
