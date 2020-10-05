@@ -66,7 +66,7 @@ function _useQuery<TData, TVars>({
   }
 
   let stopVarsWatcher: ReturnType<typeof watch>;
-  const isWatchingVariables: Ref<boolean> = ref(false);
+  const isWatchingVariables: Ref<boolean> = ref(true);
 
   function beginWatchingVars() {
     let oldCache: number;
@@ -75,7 +75,7 @@ function _useQuery<TData, TVars>({
     }
 
     const watchableVars = toWatchableSource(variables);
-    isWatchingVariables.value = false;
+    isWatchingVariables.value = true;
     stopVarsWatcher = watch(
       watchableVars,
       newValue => {
@@ -93,14 +93,14 @@ function _useQuery<TData, TVars>({
   }
 
   function unwatchVariables() {
-    if (isWatchingVariables.value) return;
+    if (!isWatchingVariables.value) return;
 
     stopVarsWatcher();
-    isWatchingVariables.value = true;
+    isWatchingVariables.value = false;
   }
 
   function watchVariables() {
-    if (!isWatchingVariables.value) return;
+    if (isWatchingVariables.value) return;
 
     beginWatchingVars();
   }

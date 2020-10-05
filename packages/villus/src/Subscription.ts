@@ -1,4 +1,4 @@
-import { defineComponent, watchEffect } from 'vue-demi';
+import { defineComponent, toRef, watch } from 'vue-demi';
 import { normalizeChildren } from './utils';
 import { useSubscription, defaultReducer, Reducer } from './useSubscription';
 
@@ -31,15 +31,17 @@ export const Subscription = defineComponent({
       (props.reduce as Reducer) || defaultReducer
     );
 
-    watchEffect(() => {
-      if (props.paused && !isPaused.value) {
+    watch(toRef(props, 'paused'), value => {
+      if (value === isPaused.value) {
+        return;
+      }
+
+      if (value) {
         pause();
         return;
       }
 
-      if (isPaused.value) {
-        resume();
-      }
+      resume();
     });
 
     return () => {

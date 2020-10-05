@@ -1,4 +1,4 @@
-import { defineComponent, Ref, toRef, watchEffect } from 'vue-demi';
+import { defineComponent, Ref, toRef, watch, watchEffect } from 'vue-demi';
 import { CachePolicy } from './types';
 import { QueryComposable, useQuery } from './useQuery';
 import { normalizeChildren } from './utils';
@@ -20,7 +20,7 @@ export const Query = defineComponent({
     },
     watchVariables: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     suspend: {
       type: Boolean,
@@ -33,16 +33,26 @@ export const Query = defineComponent({
   },
   setup(props, ctx) {
     function createRenderFn(api: QueryComposable<unknown>) {
-      const { data, error, isFetching, isDone, execute, watchVariables, unwatchVariables } = api;
+      const { data, error, isFetching, isDone, execute, watchVariables, isWatchingVariables, unwatchVariables } = api;
 
-      watchEffect(() => {
-        if (props.watchVariables === true) {
+      watch(
+        toRef(props, 'watchVariables'),
+        value => {
+          if (value === isWatchingVariables.value) {
+            return;
+          }
+
+          if (value) {
+            watchVariables();
+            return;
+          }
+
           unwatchVariables();
-          return;
+        },
+        {
+          immediate: true,
         }
-
-        watchVariables();
-      });
+      );
 
       return () => {
         return normalizeChildren(ctx, {
