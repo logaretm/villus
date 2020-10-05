@@ -7,7 +7,7 @@ interface QueryCompositeOptions<TVars> {
   query: MaybeReactive<Operation['query']>;
   variables?: MaybeReactive<TVars>;
   cachePolicy?: CachePolicy;
-  lazy?: boolean;
+  fetchOnMount?: boolean;
 }
 
 interface QueryExecutionOpts {
@@ -125,8 +125,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
 ): ThenableQueryComposable<TData> {
   const normalizedOpts = normalizeOptions(opts, variables);
   const api = _useQuery<TData, TVars>(normalizedOpts);
-  // Fetch on mounted if lazy is disabled.
-  if (!normalizedOpts.lazy) {
+  if (normalizedOpts.fetchOnMount) {
     onMounted(() => {
       api.execute();
     });
@@ -146,11 +145,19 @@ function normalizeOptions<TVars>(
   opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],
   variables?: QueryCompositeOptions<TVars>['variables']
 ): QueryCompositeOptions<TVars> {
+  const defaultOpts = {
+    fetchOnMount: true,
+  };
+
   if (typeof opts !== 'string' && 'query' in opts) {
-    return opts;
+    return {
+      ...defaultOpts,
+      ...opts,
+    };
   }
 
   return {
+    ...defaultOpts,
     query: opts,
     variables,
   };
