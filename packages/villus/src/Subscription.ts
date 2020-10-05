@@ -1,7 +1,6 @@
-import { defineComponent, SetupContext } from 'vue-demi';
+import { defineComponent, watchEffect } from 'vue-demi';
 import { normalizeChildren } from './utils';
 import { useSubscription, defaultReducer, Reducer } from './useSubscription';
-import { DocumentNode } from 'graphql';
 
 export const Subscription = defineComponent({
   name: 'Subscription',
@@ -14,7 +13,7 @@ export const Subscription = defineComponent({
       type: Object,
       default: null,
     },
-    pause: {
+    paused: {
       type: Boolean,
       default: false,
     },
@@ -23,13 +22,25 @@ export const Subscription = defineComponent({
       default: undefined,
     },
   },
-  setup(props: SubscriptionProps, ctx: SetupContext) {
+  setup(props, ctx) {
     const { data, error, pause, isPaused, resume } = useSubscription(
       {
-        ...props,
+        query: props.query as string,
+        variables: props.variables as Record<string, any> | undefined,
       },
-      props.reduce || defaultReducer
+      (props.reduce as Reducer) || defaultReducer
     );
+
+    watchEffect(() => {
+      if (props.paused && !isPaused.value) {
+        pause();
+        return;
+      }
+
+      if (isPaused.value) {
+        resume();
+      }
+    });
 
     return () => {
       return normalizeChildren(ctx, {

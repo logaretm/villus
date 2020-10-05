@@ -1,6 +1,6 @@
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
-import { Subscription, createClient, Provider } from '../src/index';
+import { Subscription, Provider } from '../src/index';
 import { makeObservable, tick } from './helpers/observer';
 
 beforeAll(() => {
