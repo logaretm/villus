@@ -309,7 +309,7 @@ test.skip('can be suspended', async () => {
         <Provider v-bind="client">
           <Suspense>
             <template #default>
-              <Query query="{ posts { id title } }" v-slot="{ data }" suspend>
+              <Query query="{ posts { id title } }" v-slot="{ data }" suspended>
                 <ul>
                   <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
                 </ul>

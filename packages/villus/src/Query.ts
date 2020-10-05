@@ -22,7 +22,7 @@ export const Query = defineComponent({
       type: Boolean,
       default: true,
     },
-    suspend: {
+    suspended: {
       type: Boolean,
       default: false,
     },
@@ -72,7 +72,7 @@ export const Query = defineComponent({
       cachePolicy: props.cachePolicy as CachePolicy,
     };
 
-    if (props.suspend) {
+    if (props.suspended) {
       return useQuery(queryProps).then(createRenderFn);
     }
 
