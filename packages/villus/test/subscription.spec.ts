@@ -1,6 +1,6 @@
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
-import { Subscription, Provider } from '../src/index';
+import { Subscription, Provider, defaultPlugins, handleSubscriptions } from '../src/index';
 import { makeObservable, tick } from './helpers/observer';
 
 beforeAll(() => {
@@ -14,9 +14,7 @@ afterAll(() => {
 test('Handles subscriptions', async () => {
   const client = {
     url: 'https://test.com/graphql',
-    subscriptionForwarder: () => {
-      return makeObservable();
-    },
+    use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
   };
 
   mount({
@@ -38,6 +36,7 @@ test('Handles subscriptions', async () => {
     `,
   });
 
+  await flushPromises();
   tick(5);
   await flushPromises();
   expect(document.querySelector('span')?.textContent).toBe('4');
@@ -46,9 +45,7 @@ test('Handles subscriptions', async () => {
 test('Can provide a custom reducer', async () => {
   const client = {
     url: 'https://test.com/graphql',
-    subscriptionForwarder: () => {
-      return makeObservable();
-    },
+    use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
   };
 
   function reduce(oldMessages: string[], response: any) {
@@ -79,6 +76,8 @@ test('Can provide a custom reducer', async () => {
     `,
   });
 
+  await flushPromises();
+
   tick(5);
   await flushPromises();
   expect(document.querySelectorAll('li')).toHaveLength(5);
@@ -87,9 +86,7 @@ test('Can provide a custom reducer', async () => {
 test('Handles observer errors', async () => {
   const client = {
     url: 'https://test.com/graphql',
-    subscriptionForwarder: () => {
-      return makeObservable(true);
-    },
+    use: [handleSubscriptions(() => makeObservable(true)), ...defaultPlugins()],
   };
 
   mount({
@@ -110,6 +107,8 @@ test('Handles observer errors', async () => {
       </div>
     `,
   });
+
+  await flushPromises();
 
   tick(2);
   await flushPromises();

@@ -2,7 +2,7 @@ import { defineComponent, h, SetupContext } from 'vue-demi';
 import { normalizeChildren } from './utils';
 import { useClient } from './useClient';
 import { CachePolicy, ClientPlugin } from './types';
-import { ClientOptions, SubscriptionForwarder } from './client';
+import { ClientOptions } from './client';
 
 export const Provider = defineComponent({
   name: 'VillusClientProvider',
@@ -19,17 +19,12 @@ export const Provider = defineComponent({
       type: Array,
       default: undefined,
     },
-    subscriptionForwarder: {
-      type: Function,
-      default: undefined,
-    },
   },
   setup(props, ctx: SetupContext) {
     useClient({
       url: props.url,
       cachePolicy: props.cachePolicy as CachePolicy,
       use: props.use as ClientPlugin[],
-      subscriptionForwarder: props.subscriptionForwarder as SubscriptionForwarder,
     });
 
     return () => {
