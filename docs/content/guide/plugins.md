@@ -13,10 +13,6 @@ Something you might not be aware of is that villus is pre-configured with a coup
 - [`fetch`](../plugins/fetch): used to execute queries on the network (actual fetching)
 - [`cache`](../plugins/cache): an in-memory simple cache that comes with villus by default, supports all cache policies
 
-Because of this villus is very minimal and lightweight. That's not all, in addition to those plugins, villus also offers the following plugins but they are not enabled by default:
-
-- [`batch`](../plugins/batch): used instead of `fetch` to execute queries in batches on the network
-
 Furthermore, villus exposes the default plugins as `defaultPlugins` function. To add plugins to villus client you need to pass a `use` array containing the plugins you would like to have
 
 ```js
@@ -28,6 +24,12 @@ useClient({
   use: [...defaultPlugins()], // if not provided `defaultPlugins` will be used
 });
 ```
+
+In addition to the default plugins, villus also offers the following plugins but they are not enabled by default:
+
+- [`batch`](../plugins/batch): used instead of `fetch` to execute queries in batches on the network
+- [`multipart`](../plugins/multipart): Adds File upload support
+- [`handleSubscriptions`](../plugins/handle-subscriptions): Adds GraphQL subscriptions support
 
 ## Plugins under the hood
 
