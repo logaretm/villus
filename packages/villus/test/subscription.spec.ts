@@ -37,9 +37,52 @@ test('Handles subscriptions', async () => {
   });
 
   await flushPromises();
-  tick(5);
+  tick(4);
   await flushPromises();
-  expect(document.querySelector('span')?.textContent).toBe('4');
+  expect(document.querySelector('span')?.textContent).toBe('3');
+});
+
+test('can pause and resume subscriptions', async () => {
+  const client = {
+    url: 'https://test.com/graphql',
+    use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
+  };
+
+  const vm = mount({
+    data: () => ({
+      client,
+      paused: false,
+    }),
+    components: {
+      Subscription,
+      Provider,
+    },
+    template: `
+      <Provider v-bind="client">
+        <Subscription query="subscription { newMessages }" v-slot="{ data }" :paused="paused">
+          <div>
+            <span>{{ data && data.id }}</span>
+          </div>
+
+          <button @click="paused = !paused">Pause</button>
+        </Subscription>
+      </Provider>
+    `,
+  });
+
+  await flushPromises();
+  tick(3);
+  await flushPromises();
+  expect(document.querySelector('span')?.textContent).toBe('2');
+  document.querySelector('button')?.click();
+  await flushPromises();
+  tick(10);
+  expect(document.querySelector('span')?.textContent).toBe('2');
+  document.querySelector('button')?.click();
+  await flushPromises();
+  tick(7);
+  await flushPromises();
+  expect(document.querySelector('span')?.textContent).toBe('6');
 });
 
 test('Can provide a custom reducer', async () => {

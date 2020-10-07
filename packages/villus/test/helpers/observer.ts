@@ -28,5 +28,5 @@ export function makeObservable(throws = false) {
 }
 
 export function tick(ticks = 1) {
-  jest.advanceTimersByTime(ticks * 100);
+  jest.advanceTimersByTime(ticks * 100 + 1);
 }
