@@ -17,3 +17,5 @@ coverage
 # logs
 
 *.log
+
+.DS_Store

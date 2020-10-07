@@ -7,6 +7,7 @@ export { useClient } from './useClient';
 export { useQuery } from './useQuery';
 export { useMutation } from './useMutation';
 export { useSubscription } from './useSubscription';
+export { handleSubscriptions, SubscriptionForwarder } from './handleSubscriptions';
 export { fetch } from './fetch';
 export { cache } from './cache';
 export { ClientPlugin, ClientPluginContext, FetchOptions } from './types';

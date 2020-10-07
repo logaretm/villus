@@ -12,13 +12,12 @@ This is a detailed documented of the villus client
 
 The `createClient` function exported by `villus` package allows you to create raw villus client instances to be used freely without being attached to components/composable functions. Here are the options that `createClient` accepts:
 
-| Option                | Description                                                                                                                           |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| url                   | The URL of the GraphQL API service                                                                                                    |
-| fetch                 | The `fetch` function to be used, must be compatible with `window.fetch`                                                               |
-| cachePolicy           | The global cache policy to be used for queries, possible values are: `cache-and-network`, `network-only`, or `cache-first`            |
-| context               | A function used to add headers, fetch options to all HTTP requests                                                                    |
-| subscriptionForwarder | A function that initiates subscriptions using observable API. Read more about it in the [subscriptions guide](../guide/subscriptions) |
+| Option      | Description                                                                                                                |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| url         | The URL of the GraphQL API service                                                                                         |
+| fetch       | The `fetch` function to be used, must be compatible with `window.fetch`                                                    |
+| cachePolicy | The global cache policy to be used for queries, possible values are: `cache-and-network`, `network-only`, or `cache-first` |
+| context     | A function used to add headers, fetch options to all HTTP requests                                                         |
 
 ```js
 const client = createClient({
@@ -133,14 +132,15 @@ Subscriptions are trickier, because they are more **event-driven**, so you canno
 The `useSubscription` function and `Subscription` component offer a great abstraction for dealing with subscriptions but you can still execute your own arbitrary subscriptions without resorting to either:
 
 ```js
-import { createClient } from 'villus';
+import { createClient, handleSubscriptions, defaultPlugins } from 'villus';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 const subscriptionClient = new SubscriptionClient('ws://localhost:4001/graphql', {});
+const subscriptionForwarder = operation => subscriptionClient.request(op),
 
 const client = createClient({
   url: 'http://localhost:4000/graphql',
-  subscriptionForwarder: op => subscriptionClient.request(op),
+  use: [handleSubscriptions(subscriptionForwarder), ...defaultPlugins()],
 });
 
 const observable = client.executeSubscription({
@@ -161,8 +161,8 @@ observable.subscribe({
 });
 ```
 
-<doc-tip>
+<doc-tip type="danger">
 
-Don't forget to set the `subscriptionForwarder` option on the client, which is a function that returns an observable.
+Don't forget to configure the `handleSubscriptions` plugin with a subscription forwarder, which is a function that returns an observable.
 
 </doc-tip>

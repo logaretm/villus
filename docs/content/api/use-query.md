@@ -10,16 +10,16 @@ The `useQuery` function allows you to execute GraphQL queries, it requires a `Pr
 
 The `useQuery` function returns the following properties and functions:
 
-| Property   | Type                                                              | Description                                                                                                                            |
-| ---------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| data       | `Ref<any/null>`                                                   | The GraphQL query result's `data`                                                                                                      |
-| error      | `Ref<CombinedError>`                                              | Any errors encountered during query execution                                                                                          |
-| execute    | `({cachePolicy: CachePolicy}) => Promise<OperationResult<TData>>` | Executes the query and returns the operation result containing `data` and `error` values                                               |
-| isDone     | `Ref<boolean>`                                                    | Set to true when the query is executed at least once, never resets to `false`                                                          |
-| isFetching | `Ref<boolean>`                                                    | Set to true when the query is executing either by calling `execute` explicitly or by watch effect due to reactive variables or queries |
-| isPaused   | `Ref<boolean>`                                                    | If the variables watchers are enabled or not                                                                                           |
-| pause      | `() => void`                                                      | Pauses variable watching                                                                                                               |
-| resume     | `() => void`                                                      | Resumes variable watching                                                                                                              |
+| Property            | Type                                                              | Description                                                                                                                            |
+| ------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| data                | `Ref<any/null>`                                                   | The GraphQL query result's `data`                                                                                                      |
+| error               | `Ref<CombinedError>`                                              | Any errors encountered during query execution                                                                                          |
+| execute             | `({cachePolicy: CachePolicy}) => Promise<OperationResult<TData>>` | Executes the query and returns the operation result containing `data` and `error` values                                               |
+| isDone              | `Ref<boolean>`                                                    | Set to true when the query is executed at least once, never resets to `false`                                                          |
+| isFetching          | `Ref<boolean>`                                                    | Set to true when the query is executing either by calling `execute` explicitly or by watch effect due to reactive variables or queries |
+| isWatchingVariables | `Ref<boolean>`                                                    | If the variables watchers are enabled or not                                                                                           |
+| unwatchVariables    | `() => void`                                                      | Pauses variable watching                                                                                                               |
+| watchVariables      | `() => void`                                                      | Resumes variable watching                                                                                                              |
 
 There might be undocumented properties, such properties are no intended for public use and should be ignored.
 
@@ -68,14 +68,14 @@ function useQuery<TData = any, TVars = QueryVariables>(
 
 The Second signature is the more complex one, it accepts an object containing the following properties:
 
-| Property    | Type                                                                                         | Required | Description                                                                                           |
-| ----------- | -------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
-| query       | `string` or `DocumentNode` or `Ref<string>`                                                  | **Yes**  | The query to be executed                                                                              |
-| variables   | `object` or `Ref<object>`                                                                    | **No**   | The query variables                                                                                   |
-| cachePolicy | A `string` with those possible values `cache-and-network` or `network-only` or `cache-first` | **No**   | The cache policy to execute the query with, defaults to the value configured with the provided client |
-| lazy        | `boolean`                                                                                    | **No**   | If the query **should not** be executed on `mounted`, default is `false`                              |
+| Property     | Type                                                                                         | Required | Description                                                                                           |
+| ------------ | -------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| query        | `string` or `DocumentNode` or `Ref<string>`                                                  | **Yes**  | The query to be executed                                                                              |
+| variables    | `object` or `Ref<object>`                                                                    | **No**   | The query variables                                                                                   |
+| cachePolicy  | A `string` with those possible values `cache-and-network` or `network-only` or `cache-first` | **No**   | The cache policy to execute the query with, defaults to the value configured with the provided client |
+| fetchOnMount | `boolean`                                                                                    | **No**   | If the query **should be** executed on `mounted`, default is `true`                                   |
 
-This signature allows you to tweak the `lazy` and `cachePolicy` behaviors for the query, which is why we needed an extended object. Here is an example:
+This signature allows you to tweak the `fetchOnMount` and `cachePolicy` behaviors for the query, which is why we needed an extended object. Here is an example:
 
 ```js
 const FindTodo = `
@@ -89,7 +89,7 @@ const FindTodo = `
 const { data, error } = useQuery({
   query: FindTodo,
   variables: { id: 1 },
-  lazy: false,
+  fetchOnMount: false,
   cachePolicy: 'network-only',
 });
 ```

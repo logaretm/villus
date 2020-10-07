@@ -2,7 +2,7 @@
 import flushPromises from 'flush-promises';
 import { mount } from './helpers/mount';
 import { makeObservable } from './helpers/observer';
-import { useClient, useSubscription } from '../src/index';
+import { defaultPlugins, handleSubscriptions, useClient, useSubscription } from '../src/index';
 
 jest.useFakeTimers();
 
@@ -16,9 +16,7 @@ test('Default reducer', async () => {
     setup() {
       useClient({
         url: 'https://test.com/graphql',
-        subscriptionForwarder: () => {
-          return makeObservable();
-        },
+        use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
       });
 
       const { data } = useSubscription<Message>({ query: `subscription { newMessages }` });
@@ -34,6 +32,7 @@ test('Default reducer', async () => {
     `,
   });
 
+  await flushPromises();
   jest.advanceTimersByTime(501);
   await flushPromises();
   expect(document.querySelector('span')?.textContent).toBe('4');
@@ -44,9 +43,7 @@ test('Handles subscriptions with a custom reducer', async () => {
     setup() {
       useClient({
         url: 'https://test.com/graphql',
-        subscriptionForwarder: () => {
-          return makeObservable();
-        },
+        use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
       });
 
       const { data } = useSubscription<Message, string[]>(
@@ -71,6 +68,7 @@ test('Handles subscriptions with a custom reducer', async () => {
     `,
   });
 
+  await flushPromises();
   jest.advanceTimersByTime(501);
   await flushPromises();
   expect(document.querySelectorAll('li')).toHaveLength(5);
@@ -81,9 +79,7 @@ test('Handles observer errors', async () => {
     setup() {
       useClient({
         url: 'https://test.com/graphql',
-        subscriptionForwarder: () => {
-          return makeObservable(true);
-        },
+        use: [handleSubscriptions(() => makeObservable(true)), ...defaultPlugins()],
       });
 
       function reduce(oldMessages: string[] | null, response: any): string[] {
@@ -108,6 +104,7 @@ test('Handles observer errors', async () => {
     `,
   });
 
+  await flushPromises();
   jest.advanceTimersByTime(150);
   await flushPromises();
   expect(document.querySelector('#error')?.textContent).toContain('oops!');
@@ -118,9 +115,7 @@ test('Pauses and resumes subscriptions', async () => {
     setup() {
       useClient({
         url: 'https://test.com/graphql',
-        subscriptionForwarder: () => {
-          return makeObservable();
-        },
+        use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
       });
 
       function reduce(oldMessages: string[] | null, response: any) {
@@ -155,6 +150,7 @@ test('Pauses and resumes subscriptions', async () => {
   expect(document.querySelectorAll('li')).toHaveLength(2);
   expect(document.querySelector('#status')?.textContent).toBe('true');
   document.querySelector('button')?.dispatchEvent(new Event('click'));
+  await flushPromises();
   jest.advanceTimersByTime(201);
   await flushPromises();
 
@@ -191,6 +187,7 @@ test('Fails if subscription forwarder was not set', () => {
       setup() {
         useClient({
           url: 'https://test.com/graphql',
+          use: [handleSubscriptions(null as any)],
         });
         const { data, error } = useSubscription({ query: `subscription { newMessages }` });
 

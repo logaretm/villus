@@ -12,6 +12,7 @@ interface Options {
 }
 
 // https://github.com/epoberezkin/fast-json-stable-stringify/blob/master/index.js
+/* istanbul ignore next */
 export function stringify(data: any, opts?: Options | Comparator): string {
   if (!opts) opts = {};
   if (typeof opts === 'function') opts = { cmp: opts };

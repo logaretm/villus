@@ -1,13 +1,8 @@
-import { SetupContext } from 'vue-demi';
+import { defineComponent } from 'vue-demi';
 import { useMutation } from './useMutation';
 import { normalizeChildren } from './utils';
-import { DocumentNode } from 'graphql';
 
-interface MutationProps {
-  query: string | DocumentNode;
-}
-
-export const Mutation = {
+export const Mutation = defineComponent({
   name: 'Mutation',
   props: {
     query: {
@@ -15,9 +10,9 @@ export const Mutation = {
       required: true,
     },
   },
-  setup(props: MutationProps, ctx: SetupContext) {
+  setup(props, ctx) {
     const { data, isFetching, isDone, error, execute } = useMutation({
-      ...props,
+      query: props.query as string,
     });
 
     return () => {
@@ -30,4 +25,4 @@ export const Mutation = {
       });
     };
   },
-};
+});

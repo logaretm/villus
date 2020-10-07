@@ -22,7 +22,7 @@ The `Subscription` component accepts the following props:
 | --------- | ------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | query     | `string` or `DocumentNode`                        | **Yes**  | The subscription to be executed/started                                                                                                          |
 | variables | `object`                                          | **No**   | The subscription variables                                                                                                                       |
-| pause     | `boolean`                                         | **No**   | Activates/Deactivates the subscription, defaults to `false`                                                                                      |
+| paused    | `boolean`                                         | **No**   | Activates/Deactivates the subscription, defaults to `false`                                                                                      |
 | reduce    | `(prev: any, current: ) => any` or `DocumentNode` | **No**   | A reducer used to aggregate the values returned by the subscription, check the [subscription guide for more information](../guide/subscriptions) |
 
 ## Slot Props

@@ -4,24 +4,19 @@ import {
   OperationResult,
   CachePolicy,
   Operation,
-  ObservableLike,
   QueryVariables,
   FetchOptions,
   ClientPlugin,
   ClientPluginContext,
   OperationType,
   AfterQueryCallback,
+  ObservableLike,
 } from './types';
 import { fetch } from './fetch';
-
-export type SubscriptionForwarder<TData = any, TVars = QueryVariables> = (
-  operation: Operation<TVars>
-) => ObservableLike<OperationResult<TData>>;
 
 export interface ClientOptions {
   url: string;
   cachePolicy?: CachePolicy;
-  subscriptionForwarder?: SubscriptionForwarder;
   use?: ClientPlugin[];
 }
 
@@ -32,14 +27,11 @@ export class Client {
 
   private defaultCachePolicy: CachePolicy;
 
-  private subscriptionForwarder?: SubscriptionForwarder;
-
   private plugins: ClientPlugin[];
 
   public constructor(opts: ClientOptions) {
     this.url = opts.url;
     this.defaultCachePolicy = opts.cachePolicy || 'cache-first';
-    this.subscriptionForwarder = opts.subscriptionForwarder;
     this.plugins = opts.use || [...defaultPlugins()];
   }
 
@@ -127,12 +119,10 @@ export class Client {
     return this.execute<TData, TVars>(operation, 'mutation');
   }
 
-  public executeSubscription<TData = any, TVars = QueryVariables>(operation: Operation<TVars>) {
-    if (!this.subscriptionForwarder) {
-      throw new Error('No subscription forwarder was set.');
-    }
+  public async executeSubscription<TData = any, TVars = QueryVariables>(operation: Operation<TVars>) {
+    const result = await this.execute<TData, TVars>(operation, 'subscription');
 
-    return (this.subscriptionForwarder as SubscriptionForwarder<TData, TVars>)(operation);
+    return (result as unknown) as ObservableLike<OperationResult<TData>>;
   }
 }
 

@@ -1,19 +1,9 @@
-import { SetupContext, toRefs, watchEffect } from 'vue-demi';
-import { QueryComposable, useQuery } from './useQuery';
+import { defineComponent, Ref, toRef, watch } from 'vue-demi';
 import { CachePolicy } from './types';
+import { QueryComposable, useQuery } from './useQuery';
 import { normalizeChildren } from './utils';
-import { DocumentNode } from 'graphql';
 
-interface QueryProps {
-  query: string | DocumentNode;
-  variables?: Record<string, any>;
-  cachePolicy?: CachePolicy;
-  lazy?: boolean;
-  pause?: boolean;
-  suspend?: boolean;
-}
-
-export const Query = {
+export const Query = defineComponent({
   name: 'Query',
   props: {
     query: {
@@ -27,33 +17,42 @@ export const Query = {
     cachePolicy: {
       type: String,
       default: undefined,
-      validator(value: string) {
-        const isValid = [undefined, 'cache-and-network', 'network-only', 'cache-first'].indexOf(value) !== -1;
-
-        return isValid;
-      },
     },
-    pause: {
+    watchVariables: {
+      type: Boolean,
+      default: true,
+    },
+    suspended: {
       type: Boolean,
       default: false,
     },
-    suspend: {
+    fetchOnMount: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
-  setup(props: QueryProps, ctx: SetupContext) {
+  setup(props, ctx) {
     function createRenderFn(api: QueryComposable<unknown>) {
-      const { data, error, isFetching, isDone, execute, pause, resume } = api;
+      const { data, error, isFetching, isDone, execute, watchVariables, isWatchingVariables, unwatchVariables } = api;
 
-      watchEffect(() => {
-        if (props.pause === true) {
-          pause();
-          return;
+      watch(
+        toRef(props, 'watchVariables'),
+        value => {
+          if (value === isWatchingVariables.value) {
+            return;
+          }
+
+          if (value) {
+            watchVariables();
+            return;
+          }
+
+          unwatchVariables();
+        },
+        {
+          immediate: true,
         }
-
-        resume();
-      });
+      );
 
       return () => {
         return normalizeChildren(ctx, {
@@ -67,15 +66,16 @@ export const Query = {
     }
 
     const queryProps = {
-      ...toRefs(props),
-      lazy: props.lazy,
-      cachePolicy: props.cachePolicy,
+      query: toRef(props, 'query') as Ref<string>,
+      variables: toRef(props, 'variables') as Ref<Record<string, any> | undefined>,
+      fetchOnMounted: props.fetchOnMount,
+      cachePolicy: props.cachePolicy as CachePolicy,
     };
 
-    if (props.suspend) {
+    if (props.suspended) {
       return useQuery(queryProps).then(createRenderFn);
     }
 
     return createRenderFn(useQuery(queryProps));
   },
-};
+});

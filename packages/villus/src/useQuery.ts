@@ -7,7 +7,7 @@ interface QueryCompositeOptions<TVars> {
   query: MaybeReactive<Operation['query']>;
   variables?: MaybeReactive<TVars>;
   cachePolicy?: CachePolicy;
-  lazy?: boolean;
+  fetchOnMount?: boolean;
 }
 
 interface QueryExecutionOpts {
@@ -20,9 +20,9 @@ export interface QueryComposable<TData> {
   isFetching: Ref<boolean>;
   isDone: Ref<boolean>;
   execute: (opts?: QueryExecutionOpts) => Promise<OperationResult<TData>>;
-  pause: () => void;
-  isPaused: Ref<boolean>;
-  resume: () => void;
+  isWatchingVariables: Ref<boolean>;
+  unwatchVariables: () => void;
+  watchVariables: () => void;
 }
 
 interface ThenableQueryComposable<TData> extends QueryComposable<TData> {
@@ -65,18 +65,18 @@ function _useQuery<TData, TVars>({
     watch(query, () => execute());
   }
 
-  let unwatch: ReturnType<typeof watch>;
-  const isPaused: Ref<boolean> = ref(false);
+  let stopVarsWatcher: ReturnType<typeof watch>;
+  const isWatchingVariables: Ref<boolean> = ref(true);
 
-  function watchVars() {
+  function beginWatchingVars() {
     let oldCache: number;
     if ((!isRef(variables) && !isReactive(variables)) || !variables) {
       return;
     }
 
     const watchableVars = toWatchableSource(variables);
-    isPaused.value = false;
-    unwatch = watch(
+    isWatchingVariables.value = true;
+    stopVarsWatcher = watch(
       watchableVars,
       newValue => {
         const id = hash(stringify(newValue));
@@ -92,22 +92,22 @@ function _useQuery<TData, TVars>({
     );
   }
 
-  function pause() {
-    if (isPaused.value) return;
+  function unwatchVariables() {
+    if (!isWatchingVariables.value) return;
 
-    unwatch();
-    isPaused.value = true;
+    stopVarsWatcher();
+    isWatchingVariables.value = false;
   }
 
-  function resume() {
-    if (!isPaused.value) return;
+  function watchVariables() {
+    if (isWatchingVariables.value) return;
 
-    watchVars();
+    beginWatchingVars();
   }
 
-  watchVars();
+  beginWatchingVars();
 
-  return { data, isFetching, isDone, error, execute, pause, isPaused, resume };
+  return { data, isFetching, isDone, error, execute, unwatchVariables, watchVariables, isWatchingVariables };
 }
 
 function useQuery<TData = any, TVars = QueryVariables>(
@@ -125,8 +125,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
 ): ThenableQueryComposable<TData> {
   const normalizedOpts = normalizeOptions(opts, variables);
   const api = _useQuery<TData, TVars>(normalizedOpts);
-  // Fetch on mounted if lazy is disabled.
-  if (!normalizedOpts.lazy) {
+  if (normalizedOpts.fetchOnMount) {
     onMounted(() => {
       api.execute();
     });
@@ -146,11 +145,19 @@ function normalizeOptions<TVars>(
   opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],
   variables?: QueryCompositeOptions<TVars>['variables']
 ): QueryCompositeOptions<TVars> {
+  const defaultOpts = {
+    fetchOnMount: true,
+  };
+
   if (typeof opts !== 'string' && 'query' in opts) {
-    return opts;
+    return {
+      ...defaultOpts,
+      ...opts,
+    };
   }
 
   return {
+    ...defaultOpts,
     query: opts,
     variables,
   };

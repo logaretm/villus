@@ -21,40 +21,40 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  const { query, variables } = typeof opts !== 'string' && 'query' in opts ? opts : { query: opts, variables: {} };
+  const { query, variables } =
+    typeof opts !== 'string' && 'query' in opts ? opts : { query: opts, variables: {} as TVars };
   const data = ref<TResult | null>(reduce(null, { data: null, error: null }));
   const error: Ref<CombinedError | null> = ref(null);
   const isPaused = ref(false);
 
-  function initObserver() {
+  async function initObserver() {
     function handler(result: OperationResult<TData>) {
-      // FIXME: very confused here.
       data.value = reduce(data.value as TResult, result) as any;
       error.value = result.error;
     }
 
     isPaused.value = false;
 
-    return client
-      .executeSubscription({
-        query,
-        variables: variables || {},
-      })
-      .subscribe({
-        next: handler,
-        // eslint-disable-next-line
-        complete() {},
-        error(err) {
-          const result = { data: null, error: new CombinedError({ networkError: err, response: null }) };
+    const result = await client.executeSubscription<TData, TVars>({
+      query,
+      variables,
+    });
 
-          return handler(result);
-        },
-      });
+    return result.subscribe({
+      next: handler,
+      // eslint-disable-next-line
+      complete() {},
+      error(err) {
+        const result = { data: null, error: new CombinedError({ networkError: err, response: null }) };
+
+        return handler(result);
+      },
+    });
   }
 
   let observer: Unsub;
-  onMounted(() => {
-    observer = initObserver();
+  onMounted(async () => {
+    observer = await initObserver();
   });
 
   function pause() {
@@ -64,8 +64,8 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     isPaused.value = true;
   }
 
-  function resume() {
-    observer = initObserver();
+  async function resume() {
+    observer = await initObserver();
   }
 
   return { data, error, isPaused, pause, resume };

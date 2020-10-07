@@ -8,23 +8,25 @@ order: 5
 
 `villus` handles subscriptions with the `useSubscription` or the `Subscription` component in the same way as the `useQuery` or the `Query` component.
 
-To add support for subscriptions you need to pass a `subscriptionForwarder` function to the `createClient` function, which in turn will call your subscription client. The `subscriptionForwarder` expects an object that follows the [observable spec](https://github.com/tc39/proposal-observable) to be returned.
+To add support for subscriptions you need to add the `handleSubscriptions` plugin to the `useClient` plugin list, which in turn will call your subscription client. The plugin expects an a function that returns an object that follows the [observable spec](https://github.com/tc39/proposal-observable) to be returned, this function is called a **subscription forwarder**
 
 The following example uses `apollo-server` with the `subscriptions-transport-ws` package:
 
 ```js
-import { createClient } from 'villus';
+import { useClient, handleSubscriptions, defaultPlugins } from 'villus';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 const subscriptionClient = new SubscriptionClient('ws://localhost:4001/graphql', {});
+const subscriptionForwarder = operation => subscriptionClient.request(op),
 
-const client = createClient({
+// in your setup
+const client = useClient({
   url: 'http://localhost:4000/graphql',
-  subscriptionForwarder: op => subscriptionClient.request(op),
+  use: [handleSubscriptions(subscriptionForwarder), ...defaultPlugins()]
 });
 ```
 
-Once you've setup the `subscriptionForwarder` function, you can now use the `useSubscription` function or the `Subscription`.
+Once you've setup the `handleSubscriptions` plugin, you can now use the `useSubscription` function or the `Subscription`.
 
 ## Executing Subscriptions
 
