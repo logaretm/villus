@@ -7,9 +7,7 @@ order: 1
 
 villus is a minimal [GraphQL](https://graphql.org/) client for Vue.js, exposing components to build highly customizable GraphQL projects. You can use this in small projects or large complex applications.
 
-I use GraphQL In most of the apps I build, but more often than not I end up only using the bare-bones **ApolloLink** without the extra whistles provided by the **ApolloClient**. I often even just use a bare `fetch` to run my GraphQL queries as I prefer to handle caching and persisting on my own when building complex PWA apps.
-
-Also I like to use [Vuex](https://vuex.vuejs.org/) in some of the queries, but due to **ApolloClient** having its own immutable store, one makes the other redundant.
+I use GraphQL In most of the apps I build, but more often than not I end up only using the bare-bones **ApolloLink** without the extra whistles provided by the **ApolloClient**. I often even just use a bare `fetch` to run my GraphQL queries as I prefer to handle caching and persisting on my own when building complex PWA apps. Also the fact that Apollo Client sometimes throws obscure non-standard GraphQL errors doesn't help.
 
 To solve this, I needed a bare-bones GraphQL client for Vue.js, but with small quality of life defaults out of the box, like caching. Keeping it simple means it gets to be flexible and lightweight, and can be scaled to handle more complex challenges.
 
@@ -17,11 +15,13 @@ This library is inspired by [URQL](https://github.com/FormidableLabs/urql), and 
 
 ## Features
 
-- Very small bundle size.
-- API is exposed as minimal Vue components that do most of the work for you.
-- Query caching by default with sensible configurable policies: `cache-first`, `network-only`, `cache-and-network`.
-- SSR support.
-- TypeScript friendly as its written in pure TypeScript.
+- 📦 **Minimal:** Its all you need to query GQL APIs
+- 🦐 **Tiny:** Very small footprint
+- 🗄 **Caching:** Simple and convenient query caching by default
+- 💪 **TypeScript**: Written in Typescript
+- 💚 Minimal Vue.js Components
+- 🖇 Composition API support
+- Supports both Vue 2.x (with @vue/composition-api) and 3.0
 
 ## Compatibility
 
