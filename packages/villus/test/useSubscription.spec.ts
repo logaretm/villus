@@ -187,6 +187,7 @@ test('Fails if subscription forwarder was not set', () => {
       setup() {
         useClient({
           url: 'https://test.com/graphql',
+          use: [handleSubscriptions(null as any)],
         });
         const { data, error } = useSubscription({ query: `subscription { newMessages }` });
 
