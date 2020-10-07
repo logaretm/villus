@@ -201,7 +201,7 @@ test('variables are watched by default', async () => {
   expect(document.querySelector('h1')?.textContent).toContain('13');
 });
 
-test('variables watcher can be disabled', async () => {
+test('variables watcher can be disabled and enabled', async () => {
   const client = {
     url: 'https://test.com/graphql',
   };
@@ -210,6 +210,7 @@ test('variables watcher can be disabled', async () => {
     data: () => ({
       client,
       id: 12,
+      enabled: false,
     }),
     components: {
       Query,
@@ -219,12 +220,14 @@ test('variables watcher can be disabled', async () => {
       <div>
         <Provider v-bind="client">
           <div>
-            <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="{ id }" :watch-variables="false" v-slot="{ data }">
+            <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="{ id }" :watch-variables="enabled" v-slot="{ data }">
               <div v-if="data">
                 <h1>{{ data.post.title }}</h1>
               </div>
             </Query>
           </div>
+
+          <button @click="enabled = !enabled"></button>
         </Provider>
       </div>
     `,
@@ -237,6 +240,13 @@ test('variables watcher can be disabled', async () => {
   await flushPromises();
   expect(fetch).toHaveBeenCalledTimes(1);
   expect(document.querySelector('h1')?.textContent).toContain('12');
+  document.querySelector('button')?.click();
+  await flushPromises();
+  (vm as any).id = 14;
+  await flushPromises();
+
+  expect(fetch).toHaveBeenCalledTimes(2);
+  expect(document.querySelector('h1')?.textContent).toContain('14');
 });
 
 test('variables prop arrangement does not trigger queries', async () => {
