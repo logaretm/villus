@@ -6,7 +6,7 @@ order: 3
 
 # Queries
 
-You can query GraphQL APIs with the `useQuery` function or `Query` component after you've setup the [GraphQL Client](./setup.md). This guide will focus on using the composable API because it is more flexible and concise, everything covered in this guide can be done with the `Query` component.
+You can query GraphQL APIs with the `useQuery` function or `Query` component after you've setup the [GraphQL Client](/setup.md). This guide will focus on using the composable API because it is more flexible and concise, everything covered in this guide can be done with the `Query` component.
 
 ## Queries Basics
 
@@ -259,7 +259,7 @@ You can specify a different strategy on different levels:
 
 ### On the client level
 
-You can set the default policy on the client level when you are [building the GraphQL client](./client.md) by passing `cachePolicy` option to either:
+You can set the default policy on the client level when you are [building the GraphQL client](/client.md) by passing `cachePolicy` option to either:
 
 The `createClient` function:
 
@@ -290,7 +290,7 @@ You can pass the `cachePolicy` property to the `useQuery` function to set the de
 
 <doc-tip>
 
-Note the usage of a different signature here for the `useQuery` function, what you have seen so far is the "short-hand" but when you need to modify the query behavior you will need to use the full or extended options. The main difference is that this signature only accepts exactly 1 argument containing the query options, you can find more information about the available options in the [API reference page](../api/use-query).
+Note the usage of a different signature here for the `useQuery` function, what you have seen so far is the "short-hand" but when you need to modify the query behavior you will need to use the full or extended options. The main difference is that this signature only accepts exactly 1 argument containing the query options, you can find more information about the available options in the [API reference page](/api/use-query).
 
 </doc-tip>
 
@@ -336,7 +336,7 @@ function runWithPolicy() {
 }
 ```
 
-You can build your own cache layer and plugins for villus, check the [Plugins Guide](./plugins)
+You can build your own cache layer and plugins for villus, check the [Plugins Guide](/plugins)
 
 ## Fetching on Mounted
 

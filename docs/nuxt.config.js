@@ -1,8 +1,6 @@
-const basePath = process.env.NODE_ENV === 'production' ? '/villus/' : '/';
-
 export default {
   router: {
-    base: basePath,
+    base: '/villus/',
   },
 
   /*

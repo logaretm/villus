@@ -26,7 +26,7 @@ export default {
 };
 ```
 
-Internally it uses `provide/inject` API to inject the client into your components or composable functions. You can find the full options the `useClient` accepts in the [API reference](../api/client)
+Internally it uses `provide/inject` API to inject the client into your components or composable functions. You can find the full options the `useClient` accepts in the [API reference](/api/client)
 
 ## Provider Component
 
@@ -129,4 +129,4 @@ You can mix between higher-order components and composable API as higher-order c
 
 ## Next Steps
 
-Now that you have successfully setup the GraphQL client, you can start to [query](./queries) and [execute mutations](./mutations) on your GraphQL APIs.
+Now that you have successfully setup the GraphQL client, you can start to [query](/queries) and [execute mutations](/mutations) on your GraphQL APIs.

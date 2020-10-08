@@ -6,7 +6,7 @@ order: 1
 
 # useQuery()
 
-The `useQuery` function allows you to execute GraphQL queries, it requires a `Provider` or `useClient` to be called in the component tree, so make sure to [set that up](../guide/setup) before using `useQuery`
+The `useQuery` function allows you to execute GraphQL queries, it requires a `Provider` or `useClient` to be called in the component tree, so make sure to [set that up](/guide/setup) before using `useQuery`
 
 The `useQuery` function returns the following properties and functions:
 
@@ -179,6 +179,6 @@ const FetchTodo = `
 const { data } = useQuery(FetchTodo, variables);
 ```
 
-You can pause variable watching by [checking the guide](../guide/queries#disabling-re-fetching).
+You can pause variable watching by [checking the guide](/guide/queries#disabling-re-fetching).
 
-For more information on `useQuery`, [check the queries guide](../guide/queries)
+For more information on `useQuery`, [check the queries guide](/guide/queries)

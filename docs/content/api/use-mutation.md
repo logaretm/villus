@@ -6,7 +6,7 @@ order: 2
 
 ## useMutation()
 
-The `useMutation` function allows you to execute GraphQL mutations, it requires a `Provider` or `useClient` to be called in the component tree, so make sure to [set that up](../guide/setup) before using `useMutation`
+The `useMutation` function allows you to execute GraphQL mutations, it requires a `Provider` or `useClient` to be called in the component tree, so make sure to [set that up](/guide/setup) before using `useMutation`
 
 The `useMutation` function returns the following properties and functions:
 
@@ -40,4 +40,4 @@ const { data, execute } = useMutation(LikePost);
 
 useMutation does not accept reactive queries or variables, so it is your responsibility to unwrap any reactive values passed to it
 
-For more information on `useMutation`, [check the mutations guide](../guide/mutations)/
+For more information on `useMutation`, [check the mutations guide](/guide/mutations)/
