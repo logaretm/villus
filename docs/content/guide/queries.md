@@ -340,7 +340,7 @@ You can build your own cache layer and plugins for villus, check the [Plugins Gu
 
 ## Fetching on Mounted
 
-By default the `useQuery` and `Query` component automatically execute their queries when the component is mounted. You can configure this behavior by setting the `fetchOnMounted` option:
+By default the `useQuery` and `Query` component automatically execute their queries when the component is mounted. You can configure this behavior by setting the `fetchOnMount` option:
 
 ```js
 const GetPosts = `
@@ -354,7 +354,7 @@ const GetPosts = `
 
 const { data } = useQuery({
   query: GetPosts,
-  fetchOnMounted: false, // disables query fetching on mounted
+  fetchOnMount: false, // disables query fetching on mounted
 });
 ```
 

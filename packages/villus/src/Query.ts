@@ -68,7 +68,7 @@ export const Query = defineComponent({
     const queryProps = {
       query: toRef(props, 'query') as Ref<string>,
       variables: toRef(props, 'variables') as Ref<Record<string, any> | undefined>,
-      fetchOnMounted: props.fetchOnMount,
+      fetchOnMount: props.fetchOnMount,
       cachePolicy: props.cachePolicy as CachePolicy,
     };
 
