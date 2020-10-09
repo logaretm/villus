@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.5](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.4...villus@1.0.0-beta.5) (2020-10-09)
+
+
+### Bug Fixes
+
+* fetchonMounted typo ([09c3de4](https://github.com/logaretm/villus/commit/09c3de457e4a4b30742e5f315b1241b0961681fb))
+
+
+
+
+
 # [1.0.0-beta.4](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.3...villus@1.0.0-beta.4) (2020-10-07)
 
 
