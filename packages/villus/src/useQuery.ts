@@ -125,15 +125,16 @@ function useQuery<TData = any, TVars = QueryVariables>(
 ): ThenableQueryComposable<TData> {
   const normalizedOpts = normalizeOptions(opts, variables);
   const api = _useQuery<TData, TVars>(normalizedOpts);
-  if (normalizedOpts.fetchOnMount) {
-    onMounted(() => {
+  onMounted(() => {
+    if (normalizedOpts.fetchOnMount) {
       api.execute();
-    });
-  }
+    }
+  });
 
   return {
     ...api,
     async then(onFulfilled: (value: any) => any) {
+      normalizedOpts.fetchOnMount = false;
       await api.execute();
 
       return onFulfilled(api);
