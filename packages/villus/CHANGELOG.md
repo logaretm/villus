@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.6](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.5...villus@1.0.0-beta.6) (2020-10-09)
+
+
+### Bug Fixes
+
+* prevent running the query onMounted when suspended closes [#56](https://github.com/logaretm/villus/issues/56) ([27385b6](https://github.com/logaretm/villus/commit/27385b66e196a43e6ab64800183a693939f5320a))
+
+
+
+
+
 # [1.0.0-beta.5](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.4...villus@1.0.0-beta.5) (2020-10-09)
 
 
