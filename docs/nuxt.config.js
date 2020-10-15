@@ -1,8 +1,4 @@
 export default {
-  router: {
-    base: '/villus/',
-  },
-
   /*
    ** Headers of the page
    ** See https://nuxtjs.org/api/configuration-head
@@ -22,7 +18,7 @@ export default {
   },
 
   publicRuntimeConfig: {
-    appURL: 'https://logaretm.github.io/villus/' || 'http://localhost:3000',
+    appURL: 'https://villus.logaretm.com',
   },
 
   /*
