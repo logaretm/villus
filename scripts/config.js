@@ -51,8 +51,6 @@ function createConfig(pkg, format) {
 
   const version = require(path.resolve(__dirname, `../packages/${pkg}/package.json`)).version;
 
-  console.log(pkgExternals[pkg]);
-
   const config = {
     input: {
       input: path.resolve(__dirname, `../packages/${pkg}/src/index.ts`),
