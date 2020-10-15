@@ -43,7 +43,7 @@ You can read more about it in the [announcement post](https://logaretm.com/blog/
 
 ## Documentation
 
-You can find the full [documentation here](https://logaretm.github.io/villus)
+You can find the full [documentation here](https://villus.logaretm.com/)
 
 ## Quick Start
 
@@ -108,11 +108,11 @@ export default {
 </script>
 ```
 
-There is also the higher-order component flavor if you prefer to use them instead. Check the docs for more examples and details.
+There is also the higher-order component flavor if you prefer to use them instead. Check the [docs for more examples and details](https://villus.logaretm.com/).
 
 ---
 
-You can do a lot more than that, `villus` makes frequent tasks such as re-fetching, caching, mutations, and subscriptions a breeze. It has even built-in `Suspense` support with Vue 3! Consult the [documentation](https://logaretm.github.io/villus) for more use-cases and examples.
+You can do a lot more than that, `villus` makes frequent tasks such as re-fetching, caching, mutations, and subscriptions a breeze. It has even built-in `Suspense` support with Vue 3! Consult the [documentation](https://villus.logaretm.com) for more use-cases and examples.
 
 ## Compatibility
 
@@ -120,7 +120,7 @@ This library relies on the `fetch` web API to run queries, you can use [`unfetch
 
 ## Examples
 
-Live examples can be found [here](https://logaretm.github.io/villus/examples/basic-query)
+Live examples can be found [here](https://villus.logaretm.com/examples/basic-query)
 
 ## License
 
