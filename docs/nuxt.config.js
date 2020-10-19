@@ -19,6 +19,11 @@ export default {
 
   publicRuntimeConfig: {
     appURL: 'https://villus.logaretm.com',
+
+    algolia: {
+      apiKey: 'e41cc2209bb0e139d471edd1c86b8bdd',
+      indexName: 'villus',
+    },
   },
 
   /*

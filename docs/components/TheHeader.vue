@@ -5,6 +5,8 @@
         <nuxt-link to="/" class="ml-1 text-accent font-bold">Villus</nuxt-link>
       </div>
 
+      <AlgoliaSearchBox />
+
       <SideMenuButton v-model="isMenuOpen" class="ml-auto block lg:hidden relative z-30" />
       <SideMenu v-model="isMenuOpen" />
 
