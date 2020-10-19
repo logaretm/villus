@@ -1,7 +1,8 @@
 import { Ref } from 'vue-demi';
 import { DocumentNode } from 'graphql';
 import { CombinedError } from './utils';
-import { CachedOperation } from './cache';
+import { OperationWithCachePolicy } from './cache';
+import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 
 export interface OperationResult<TData = any> {
   data: TData | null;
@@ -12,8 +13,8 @@ export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first' |
 
 export type QueryVariables = Record<string, any>;
 
-export interface Operation<TVars = QueryVariables> {
-  query: string | DocumentNode;
+export interface Operation<TData, TVars> {
+  query: string | DocumentNode | TypedDocumentNode<TData, TVars>;
   variables?: TVars;
 }
 
@@ -50,7 +51,7 @@ export type OperationType = 'query' | 'mutation' | 'subscription';
 
 export type AfterQueryCallback = (result: OperationResult) => void | Promise<void>;
 
-export type ClientPluginOperation = CachedOperation<unknown> & { type: OperationType; key: number };
+export type ClientPluginOperation = OperationWithCachePolicy<unknown, unknown> & { type: OperationType; key: number };
 
 export interface ClientPluginContext {
   useResult: (result: OperationResult<unknown>, terminate?: boolean) => void;

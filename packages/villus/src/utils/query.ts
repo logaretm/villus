@@ -1,3 +1,4 @@
+import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { DocumentNode, print } from 'graphql';
 import { Operation } from '../types';
 import { stringify } from './stringify';
@@ -5,7 +6,7 @@ import { stringify } from './stringify';
 /**
  * Normalizes a query string or object to a string.
  */
-export function normalizeQuery(query: string | DocumentNode): string | null {
+export function normalizeQuery(query: string | DocumentNode | TypedDocumentNode): string | null {
   if (typeof query === 'string') {
     return query;
   }
@@ -26,7 +27,7 @@ export function hash(x: string) {
   return h >>> 0;
 }
 
-export function getQueryKey(operation: Operation<unknown>) {
+export function getQueryKey(operation: Operation<unknown, unknown>) {
   const variables = operation.variables ? stringify(operation.variables) : '';
   const query = normalizeQuery(operation.query);
 

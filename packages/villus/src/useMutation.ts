@@ -3,11 +3,13 @@ import { Operation, QueryVariables } from './types';
 import { Client } from './client';
 import { CombinedError } from './utils';
 
-interface MutationCompositeOptions {
-  query: Operation['query'];
+interface MutationCompositeOptions<TData, TVars> {
+  query: Operation<TData, TVars>['query'];
 }
 
-export function useMutation<TData = any, TVars = QueryVariables>(opts: MutationCompositeOptions | Operation['query']) {
+export function useMutation<TData = any, TVars = QueryVariables>(
+  opts: MutationCompositeOptions<TData, TVars> | Operation<TData, TVars>['query']
+) {
   const client = inject('$villus') as Client;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');

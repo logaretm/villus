@@ -61,7 +61,7 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
   };
 }
 
-export function makeFetchOptions({ query, variables }: Operation<unknown>, opts: FetchOptions) {
+export function makeFetchOptions({ query, variables }: Operation<unknown, unknown>, opts: FetchOptions) {
   const normalizedQuery = normalizeQuery(query);
   if (!normalizedQuery) {
     throw new Error('A query must be provided.');

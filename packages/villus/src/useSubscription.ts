@@ -3,8 +3,8 @@ import { Client } from './client';
 import { Unsub, Operation, OperationResult, QueryVariables } from './types';
 import { CombinedError } from './utils';
 
-interface SubscriptionCompositeOptions<TVars> {
-  query: Operation['query'];
+interface SubscriptionCompositeOptions<TData, TVars> {
+  query: Operation<TData, TVars>['query'];
   variables?: TVars;
 }
 
@@ -13,7 +13,7 @@ export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value
 export const defaultReducer: Reducer = (_, val) => val.data;
 
 export function useSubscription<TData = any, TResult = TData, TVars = QueryVariables>(
-  opts: SubscriptionCompositeOptions<TVars> | Operation['query'],
+  opts: SubscriptionCompositeOptions<TData, TVars> | Operation<TData, TVars>['query'],
   reduce: Reducer<TData, TResult> = defaultReducer
 ) {
   const client = inject('$villus') as Client;

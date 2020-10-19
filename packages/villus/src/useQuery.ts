@@ -3,8 +3,8 @@ import { CachePolicy, MaybeReactive, Operation, OperationResult, QueryVariables 
 import { Client } from './client';
 import { hash, CombinedError, toWatchableSource, stringify } from './utils';
 
-interface QueryCompositeOptions<TVars> {
-  query: MaybeReactive<Operation['query']>;
+interface QueryCompositeOptions<TData, TVars> {
+  query: MaybeReactive<Operation<TData, TVars>['query']>;
   variables?: MaybeReactive<TVars>;
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
@@ -33,7 +33,7 @@ function _useQuery<TData, TVars>({
   query,
   variables,
   cachePolicy,
-}: QueryCompositeOptions<TVars>): QueryComposable<TData> {
+}: QueryCompositeOptions<TData, TVars>): QueryComposable<TData> {
   const client = inject('$villus') as Client;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
@@ -111,17 +111,16 @@ function _useQuery<TData, TVars>({
 }
 
 function useQuery<TData = any, TVars = QueryVariables>(
-  query: QueryCompositeOptions<TVars>['query'],
-  variables?: QueryCompositeOptions<TVars>['variables']
+  query: QueryCompositeOptions<TData, TVars>['query'],
+  variables?: QueryCompositeOptions<TData, TVars>['variables']
 ): ThenableQueryComposable<TData>;
 
 function useQuery<TData = any, TVars = QueryVariables>(
-  query: QueryCompositeOptions<TVars>
+  query: QueryCompositeOptions<TData, TVars>
 ): ThenableQueryComposable<TData>;
-
 function useQuery<TData = any, TVars = QueryVariables>(
-  opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],
-  variables?: QueryCompositeOptions<TVars>['variables']
+  opts: QueryCompositeOptions<TData, TVars> | QueryCompositeOptions<TData, TVars>['query'],
+  variables?: QueryCompositeOptions<TData, TVars>['variables']
 ): ThenableQueryComposable<TData> {
   const normalizedOpts = normalizeOptions(opts, variables);
   const api = _useQuery<TData, TVars>(normalizedOpts);
@@ -142,10 +141,10 @@ function useQuery<TData = any, TVars = QueryVariables>(
   };
 }
 
-function normalizeOptions<TVars>(
-  opts: QueryCompositeOptions<TVars> | QueryCompositeOptions<TVars>['query'],
-  variables?: QueryCompositeOptions<TVars>['variables']
-): QueryCompositeOptions<TVars> {
+function normalizeOptions<TData, TVars>(
+  opts: QueryCompositeOptions<TData, TVars> | QueryCompositeOptions<TData, TVars>['query'],
+  variables?: QueryCompositeOptions<TData, TVars>['variables']
+): QueryCompositeOptions<TData, TVars> {
   const defaultOpts = {
     fetchOnMount: true,
   };
