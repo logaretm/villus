@@ -1,6 +1,6 @@
 {
   "name": "@villus/batch",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Batch queries plugin for villus graphql client",
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.7](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.6...villus@1.0.0-beta.7) (2020-10-19)
+
+
+### Bug Fixes
+
+* typing of operation in fetch plugin ([2dc8173](https://github.com/logaretm/villus/commit/2dc81738c784f00373a95d70bd75a38a3e35d62d))
+
+
+### Features
+
+* support typed document node ([9c166f6](https://github.com/logaretm/villus/commit/9c166f6bffa589ec580d8e8d6f2729ab17a662c0))
+
+
+
+
+
 # [1.0.0-beta.6](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.5...villus@1.0.0-beta.6) (2020-10-09)
 
 ### Bug Fixes
