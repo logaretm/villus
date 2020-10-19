@@ -4,6 +4,7 @@
     <div class="App">
       <main class="main">
         <Nuxt />
+        <EditPage class="mt-20" />
       </main>
 
       <div class="lside hidden lg:block">
