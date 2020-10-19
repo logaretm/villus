@@ -1,4 +1,4 @@
-import { cache, CachedOperation } from './cache';
+import { cache, OperationWithCachePolicy } from './cache';
 import { DEFAULT_FETCH_OPTS, getQueryKey } from './utils';
 import {
   OperationResult,
@@ -39,7 +39,7 @@ export class Client {
    * Executes an operation and returns a normalized response.
    */
   private async execute<TData, TVars>(
-    operation: Operation<TVars> | CachedOperation<TVars>,
+    operation: Operation<TData, TVars> | OperationWithCachePolicy<TData, TVars>,
     type: OperationType
   ): Promise<OperationResult<TData>> {
     let result: OperationResult<TData> | undefined;
@@ -108,18 +108,18 @@ export class Client {
   }
 
   public async executeQuery<TData = any, TVars = QueryVariables>(
-    operation: CachedOperation<TVars>
+    operation: OperationWithCachePolicy<TData, TVars>
   ): Promise<OperationResult> {
     return this.execute<TData, TVars>(operation, 'query');
   }
 
   public async executeMutation<TData = any, TVars = QueryVariables>(
-    operation: Operation<TVars>
+    operation: Operation<TData, TVars>
   ): Promise<OperationResult> {
     return this.execute<TData, TVars>(operation, 'mutation');
   }
 
-  public async executeSubscription<TData = any, TVars = QueryVariables>(operation: Operation<TVars>) {
+  public async executeSubscription<TData = any, TVars = QueryVariables>(operation: Operation<TData, TVars>) {
     const result = await this.execute<TData, TVars>(operation, 'subscription');
 
     return (result as unknown) as ObservableLike<OperationResult<TData>>;

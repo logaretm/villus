@@ -1,10 +1,10 @@
-import { OperationResult, Operation, ClientPlugin, QueryVariables, CachePolicy, ClientPluginOperation } from './types';
+import { OperationResult, Operation, ClientPlugin, CachePolicy, ClientPluginOperation } from './types';
 
 interface ResultCache {
   [k: string]: OperationResult;
 }
 
-export interface CachedOperation<TVars = QueryVariables> extends Operation<TVars> {
+export interface OperationWithCachePolicy<TData, TVars> extends Operation<TData, TVars> {
   cachePolicy?: CachePolicy;
 }
 
