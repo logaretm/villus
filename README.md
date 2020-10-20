@@ -9,8 +9,8 @@
 <p align="center">
 
 [![codecov](https://codecov.io/gh/logaretm/villus/branch/main/graph/badge.svg)](https://codecov.io/gh/logaretm/villus)
-[![Build Status](https://travis-ci.org/logaretm/villus.svg?branch=next)](https://travis-ci.org/logaretm/villus)
-[![Bundle Size](https://badgen.net/bundlephobia/minzip/villus)](https://bundlephobia.com/result?p=villus@0.1.0)
+[![Build Status](https://travis-ci.org/logaretm/villus.svg?branch=main)](https://travis-ci.org/logaretm/villus)
+[![Bundle Size](https://badgen.net/bundlephobia/minzip/villus)](https://bundlephobia.com/result?p=villus)
 [![npm](https://img.shields.io/npm/dm/villus.svg)](https://npm-stat.com/charts.html?package=villus)
 [![npm](https://img.shields.io/npm/v/villus.svg)](https://www.npmjs.com/package/villus)
 
