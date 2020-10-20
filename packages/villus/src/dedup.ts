@@ -6,6 +6,11 @@ export function dedup(): ClientPlugin {
   const pendingLookup: Record<number, Promise<OperationResult>> = {};
 
   return function dedupPlugin(ctx) {
+    // Don't dedup mutations or subscriptions
+    if (ctx.operation.type !== 'query') {
+      return;
+    }
+
     // extract the original useResult function
     const { useResult } = ctx;
 
