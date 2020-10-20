@@ -6,11 +6,9 @@ order: 2
 
 # Cache Plugin
 
-The cache plugin is one of the default plugins that are pre-configured with any villus client unless specified otherwise, the cache plugin is a simple in-memory cache that clears whenever the page reloads or when the client is destroyed.
+The cache plugin is a simple in-memory cache that clears whenever the page reloads or when the client is destroyed. The cache plugin only applies it's caching logic to queries, as mutations require a fresh response from the server.
 
-The cache plugin only applies it's caching logic to queries, as mutations require a fresh response from the server.
-
-The cache plugin all the cache policies in villus:
+The cache plugin handles all the cache policies in villus:
 
 - `cache-first`: If found in cache return it, otherwise fetch it from the network
 - `network-only`: Always fetch from the network and do not cache it
@@ -24,6 +22,12 @@ useClient({
   use: [cache(), fetch()],
 });
 ```
+
+<doc-tip>
+
+The cache plugin is one of the default plugins that are pre-configured with any villus client unless specified otherwise
+
+</doc-tip>
 
 ## Options
 
