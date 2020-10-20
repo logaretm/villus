@@ -1,5 +1,4 @@
-import { ClientPlugin } from 'villus';
-import { OperationResult } from './types';
+import { ClientPlugin, OperationResult } from './types';
 
 export function dedup(): ClientPlugin {
   // Holds references to pending operations
