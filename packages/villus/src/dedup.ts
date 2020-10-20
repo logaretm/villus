@@ -35,7 +35,7 @@ export function dedup(): ClientPlugin {
     });
 
     // resolve the promise once the result are set via another plugin
-    ctx.useResult = function (...args) {
+    ctx.useResult = function (...args: [any, any]) {
       useResult(...args);
       resolveOp(args[0]);
     };
