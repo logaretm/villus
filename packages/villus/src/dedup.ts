@@ -1,0 +1,38 @@
+import { ClientPlugin } from 'villus';
+import { OperationResult } from './types';
+
+export function dedup(): ClientPlugin {
+  // Holds references to pending operations
+  const pendingLookup: Record<number, Promise<OperationResult>> = {};
+
+  return function dedupPlugin(ctx) {
+    // extract the original useResult function
+    const { useResult } = ctx;
+
+    // Clean up pending queries after they are resolved
+    ctx.afterQuery(() => {
+      delete pendingLookup[ctx.operation.key];
+    });
+
+    // If pending, re-route the result to it
+    if (pendingLookup[ctx.operation.key]) {
+      return pendingLookup[ctx.operation.key].then(result => {
+        useResult(result, true);
+      });
+    }
+
+    // Hold a resolve fn reference
+    let resolveOp: (value: OperationResult) => void;
+
+    // Create a pending operation promise and add it to lookup
+    pendingLookup[ctx.operation.key] = new Promise<any>(resolve => {
+      resolveOp = resolve;
+    });
+
+    // resolve the promise once the result are set via another plugin
+    ctx.useResult = function (...args) {
+      useResult(...args);
+      resolveOp(args[0]);
+    };
+  };
+}

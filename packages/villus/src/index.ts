@@ -10,4 +10,5 @@ export { useSubscription } from './useSubscription';
 export { handleSubscriptions, SubscriptionForwarder } from './handleSubscriptions';
 export { fetch } from './fetch';
 export { cache } from './cache';
+export { dedup } from './dedup';
 export { ClientPlugin, ClientPluginContext, FetchOptions } from './types';
