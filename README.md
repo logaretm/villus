@@ -2,13 +2,13 @@
 
 <p align="center">
 
-![alt text](https://raw.githubusercontent.com/logaretm/villus/master/logo.png)
+![alt text](https://raw.githubusercontent.com/logaretm/villus/main/logo.png)
 
 </p>
 
 <p align="center">
 
-[![codecov](https://codecov.io/gh/logaretm/villus/branch/next/graph/badge.svg)](https://codecov.io/gh/logaretm/villus)
+[![codecov](https://codecov.io/gh/logaretm/villus/branch/main/graph/badge.svg)](https://codecov.io/gh/logaretm/villus)
 [![Build Status](https://travis-ci.org/logaretm/villus.svg?branch=next)](https://travis-ci.org/logaretm/villus)
 [![Bundle Size](https://badgen.net/bundlephobia/minzip/villus)](https://bundlephobia.com/result?p=villus@0.1.0)
 [![npm](https://img.shields.io/npm/dm/villus.svg)](https://npm-stat.com/charts.html?package=villus)

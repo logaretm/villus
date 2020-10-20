@@ -28,4 +28,4 @@ useClient({
 
 ## Code
 
-You can check the [source code for the `handleSubscriptions` plugin](https://github.com/logaretm/villus/blob/master/packages/villus/src/handleSubscriptions.ts) and use it as a reference to build your own
+You can check the [source code for the `handleSubscriptions` plugin](https://github.com/logaretm/villus/blob/main/packages/villus/src/handleSubscriptions.ts) and use it as a reference to build your own

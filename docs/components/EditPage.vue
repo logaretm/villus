@@ -26,7 +26,7 @@ export default {
     pageLink() {
       const path = this.$route.path.replace(/\/$/g, '');
 
-      return `https://github.com/logaretm/villus/edit/master/docs/content${path}.md`;
+      return `https://github.com/logaretm/villus/edit/main/docs/content${path}.md`;
     },
   },
 };

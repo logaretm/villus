@@ -95,4 +95,4 @@ At this moment the multipart plugin doesn't have any options to customize
 
 ## Code
 
-You can check the [source code for the `multipart` plugin](https://github.com/logaretm/villus/blob/master/packages/multipart/src/index.ts) and use it as a reference to build your own
+You can check the [source code for the `multipart` plugin](https://github.com/logaretm/villus/blob/main/packages/multipart/src/index.ts) and use it as a reference to build your own

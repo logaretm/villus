@@ -103,4 +103,4 @@ The available options are:
 
 ## Code
 
-You can check the [source code for the `batch` plugin](https://github.com/logaretm/villus/blob/master/packages/batch/src/index.ts) and use it as a reference to build your own
+You can check the [source code for the `batch` plugin](https://github.com/logaretm/villus/blob/main/packages/batch/src/index.ts) and use it as a reference to build your own
