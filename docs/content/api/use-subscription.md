@@ -19,7 +19,7 @@ The `useSubscription` function returns the following properties and functions:
 | paused   | `() => void`                                               | Deactivates the subscription temporarily until `resume` is called                           |
 | resume   | `() => void`                                               | Activates the subscription                                                                  |
 
-## Signature and Usage
+## Usage
 
 The `useSubscription` function is slightly more complex and accepts two arguments, the first being the operation object which contains the following properties:
 
@@ -33,7 +33,7 @@ The second argument is what is called a `Reducer` which allows you aggregate sub
 Here is a full example of the usage:
 
 ```js
-function handleSubscription(oldValue, response) {
+function messagesReducer(oldValue, response) {
   oldValue = oldValue || [];
   if (!response.data || response.errors) {
     return oldValue;
@@ -52,7 +52,12 @@ const NewMessages = `
   }
 `;
 
-const { data } = useSubscription(NewMessages, handleSubscription);
+const { data } = useSubscription(
+  {
+    query: NewMessages,
+  },
+  messagesReducer
+);
 ```
 
 ## Reactivity

@@ -19,7 +19,7 @@ test('Default reducer', async () => {
         use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
       });
 
-      const { data } = useSubscription<Message>(`subscription { newMessages }`);
+      const { data } = useSubscription<Message>({ query: `subscription { newMessages }` });
 
       return { messages: data };
     },
@@ -47,16 +47,13 @@ test('Handles subscriptions with a custom reducer', async () => {
       });
 
       const { data } = useSubscription<Message, string[]>(
-        `subscription { newMessages }`,
-        {},
-        {
-          reducer: (oldMessages, response) => {
-            if (!response.data || !oldMessages) {
-              return oldMessages || [];
-            }
+        { query: `subscription { newMessages }` },
+        (oldMessages, response) => {
+          if (!response.data || !oldMessages) {
+            return oldMessages || [];
+          }
 
-            return [...oldMessages, response.data.message];
-          },
+          return [...oldMessages, response.data.message];
         }
       );
 
@@ -85,7 +82,7 @@ test('Handles observer errors', async () => {
         use: [handleSubscriptions(() => makeObservable(true)), ...defaultPlugins()],
       });
 
-      function reducer(oldMessages: string[] | null, response: any): string[] {
+      function reduce(oldMessages: string[] | null, response: any): string[] {
         if (!response.data || !oldMessages) {
           return oldMessages || [];
         }
@@ -93,7 +90,7 @@ test('Handles observer errors', async () => {
         return [...oldMessages, response.data.message];
       }
 
-      const { data, error } = useSubscription(`subscription { newMessages }`, {}, { reducer });
+      const { data, error } = useSubscription({ query: `subscription { newMessages }` }, reduce);
 
       return { messages: data, error };
     },
@@ -121,7 +118,7 @@ test('Pauses and resumes subscriptions', async () => {
         use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
       });
 
-      function reducer(oldMessages: string[] | null, response: any) {
+      function reduce(oldMessages: string[] | null, response: any) {
         if (!response.data || !oldMessages) {
           return oldMessages || [];
         }
@@ -129,7 +126,7 @@ test('Pauses and resumes subscriptions', async () => {
         return [...oldMessages, response.data.message];
       }
 
-      const { data, pause, resume, isPaused } = useSubscription(`subscription { newMessages }`, {}, { reducer });
+      const { data, pause, resume, isPaused } = useSubscription({ query: `subscription { newMessages }` }, reduce);
 
       return { messages: data, pause, resume, isPaused };
     },
@@ -165,7 +162,7 @@ test('Fails if provider was not resolved', () => {
   try {
     mount({
       setup() {
-        const { data, error } = useSubscription(`subscription { newMessages }`);
+        const { data, error } = useSubscription({ query: `subscription { newMessages }` });
 
         return { messages: data, error };
       },
@@ -192,7 +189,7 @@ test('Fails if subscription forwarder was not set', () => {
           url: 'https://test.com/graphql',
           use: [handleSubscriptions(null as any)],
         });
-        const { data, error } = useSubscription(`subscription { newMessages }`);
+        const { data, error } = useSubscription({ query: `subscription { newMessages }` });
 
         return { messages: data, error };
       },

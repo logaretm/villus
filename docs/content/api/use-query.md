@@ -23,13 +23,7 @@ The `useQuery` function returns the following properties and functions:
 
 There might be undocumented properties, such properties are no intended for public use and should be ignored.
 
-## Signature and Usage
-
-There are two ways to call `useQuery` for your convenience
-
-### Simple
-
-The first being the simpler `query` and optional `variables` arguments, it can be used like this:
+## Usage
 
 ```js
 const Todos = `
@@ -41,7 +35,9 @@ const Todos = `
 `;
 
 // without variables
-const { data, error } = useQuery(Todos);
+const { data, error } = useQuery({
+  query: Todos,
+});
 
 const FindTodo = `
   query FindTodo($id: ID!) {
@@ -52,21 +48,15 @@ const FindTodo = `
 `;
 
 // with variables
-const { data, error } = useQuery(FindTodo, { id: 1 });
+const { data, error } = useQuery({
+  query: FindTodo,
+  variables: { id: 1 },
+});
 ```
 
-If you are interested in it's TS type, you can check the source code or check the following snippet:
+### Query Options
 
-```ts
-function useQuery<TData = any, TVars = QueryVariables>(
-  query: QueryCompositeOptions<TVars>['query'],
-  variables?: QueryCompositeOptions<TVars>['variables']
-): ThenableQueryComposable<TData>;
-```
-
-### Operation Object
-
-The Second signature is the more complex one, it accepts an object containing the following properties:
+This is the full object fields that the `useQuery` function accepts:
 
 | Property     | Type                                                                                         | Required | Description                                                                                           |
 | ------------ | -------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
@@ -75,7 +65,7 @@ The Second signature is the more complex one, it accepts an object containing th
 | cachePolicy  | A `string` with those possible values `cache-and-network` or `network-only` or `cache-first` | **No**   | The cache policy to execute the query with, defaults to the value configured with the provided client |
 | fetchOnMount | `boolean`                                                                                    | **No**   | If the query **should be** executed on `mounted`, default is `true`                                   |
 
-This signature allows you to tweak the `fetchOnMount` and `cachePolicy` behaviors for the query, which is why we needed an extended object. Here is an example:
+This signature allows you to tweak the `fetchOnMount` and `cachePolicy` behaviors for the query, Here is an example:
 
 ```js
 const FindTodo = `
@@ -87,8 +77,8 @@ const FindTodo = `
 `;
 
 const { data, error } = useQuery({
-  query: FindTodo,
-  variables: { id: 1 },
+  query: FindTodo, // query
+  variables: { id: 1 }, // variables
   fetchOnMount: false,
   cachePolicy: 'network-only',
 });
@@ -119,7 +109,9 @@ const FetchTodo = computed(() => {
   `;
 });
 
-const { data } = useQuery(FetchTodo);
+const { data } = useQuery({
+  query: FetchTodo,
+});
 
 // later on, changing the `id` ref will automatically refetch the query because it is computed
 id.value = 2;
@@ -147,15 +139,15 @@ const variables = reactive({
   id: 123,
 });
 
-const { data } = useQuery(
-  `query FetchTodo ($id: ID!) {
+const { data } = useQuery({
+  query: `query FetchTodo ($id: ID!) {
       todo (id: $id) {
         text
       }
     }
   `,
-  variables
-);
+  variables,
+});
 ```
 
 This also works with [ref()](https://v3.vuejs.org/api/refs-api.html#ref)
@@ -176,7 +168,10 @@ const FetchTodo = `
   }
 `;
 
-const { data } = useQuery(FetchTodo, variables);
+const { data } = useQuery({
+  query: FetchTodo,
+  variables,
+});
 ```
 
 You can pause variable watching by [checking the guide](/guide/queries#disabling-re-fetching).

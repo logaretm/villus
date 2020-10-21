@@ -3,7 +3,9 @@ import { CachePolicy, MaybeReactive, Operation, QueryVariables } from './types';
 import { Client } from './client';
 import { hash, CombinedError, toWatchableSource, stringify } from './utils';
 
-interface QueryCompositeOptions {
+interface QueryCompositeOptions<TData, TVars> {
+  query: MaybeReactive<Operation<TData, TVars>['query']>;
+  variables?: MaybeReactive<TVars>;
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
 }
@@ -12,17 +14,13 @@ interface QueryExecutionOpts {
   cachePolicy?: CachePolicy;
 }
 
-function useQuery<TData = any, TVars = QueryVariables>(
-  query: MaybeReactive<Operation<TData, TVars>['query']>,
-  variables?: MaybeReactive<TVars>,
-  opts?: QueryCompositeOptions
-) {
+function useQuery<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptions<TData, TVars>) {
   const client = inject('$villus') as Client;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  let { cachePolicy, fetchOnMount } = normalizeOptions(opts);
+  let { query, variables, cachePolicy, fetchOnMount } = normalizeOptions(opts);
   const data: Ref<TData | null> = ref(null);
   const isFetching = ref(false);
   const isDone = ref(false);
@@ -110,14 +108,18 @@ function useQuery<TData = any, TVars = QueryVariables>(
   };
 }
 
-function normalizeOptions(opts?: Partial<QueryCompositeOptions>): QueryCompositeOptions {
+function normalizeOptions<TData, TVars>(
+  opts: Partial<QueryCompositeOptions<TData, TVars>>
+): QueryCompositeOptions<TData, TVars> {
   const defaultOpts = {
+    variables: {} as TVars,
     fetchOnMount: true,
   };
 
   return {
     ...defaultOpts,
-    ...(opts || {}),
+    ...opts,
+    query: opts.query as NonNullable<typeof opts['query']>,
   };
 }
 

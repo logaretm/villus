@@ -1,6 +1,6 @@
 import { defineComponent, toRef, watch } from 'vue-demi';
 import { normalizeChildren } from './utils';
-import { useSubscription, Reducer } from './useSubscription';
+import { useSubscription, defaultReducer, Reducer } from './useSubscription';
 
 export const Subscription = defineComponent({
   name: 'Subscription',
@@ -24,9 +24,11 @@ export const Subscription = defineComponent({
   },
   setup(props, ctx) {
     const { data, error, pause, isPaused, resume } = useSubscription(
-      props.query as string,
-      props.variables as Record<string, any> | undefined,
-      { reducer: props.reduce as Reducer }
+      {
+        query: props.query as string,
+        variables: props.variables as Record<string, any> | undefined,
+      },
+      (props.reduce as Reducer) || defaultReducer
     );
 
     watch(toRef(props, 'paused'), value => {

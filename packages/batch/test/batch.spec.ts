@@ -13,8 +13,8 @@ test('batches queries with batcher', async () => {
         use: [batch()],
       });
 
-      const firstQuery = useQuery('{ posts { title } }');
-      const secondQuery = useQuery('{ posts { id } }');
+      const firstQuery = useQuery({ query: '{ posts { title } }' });
+      const secondQuery = useQuery({ query: '{ posts { id } }' });
 
       return { postsWithTitle: firstQuery.data, postsWithId: secondQuery.data };
     },

@@ -65,17 +65,17 @@ export const Query = defineComponent({
       };
     }
 
-    const query = toRef(props, 'query') as Ref<string>;
-    const variables = toRef(props, 'variables') as Ref<Record<string, any> | undefined>;
     const opts = {
+      query: toRef(props, 'query') as Ref<string>,
+      variables: toRef(props, 'variables') as Ref<Record<string, any> | undefined>,
       fetchOnMount: props.fetchOnMount,
       cachePolicy: props.cachePolicy as CachePolicy,
     };
 
     if (props.suspended) {
-      return useQuery(query, variables, opts).then(createRenderFn);
+      return useQuery(opts).then(createRenderFn);
     }
 
-    return createRenderFn(useQuery(query, variables, opts));
+    return createRenderFn(useQuery(opts));
   },
 });

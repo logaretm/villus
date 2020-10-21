@@ -3,25 +3,26 @@ import { Client } from './client';
 import { Unsub, Operation, OperationResult, QueryVariables } from './types';
 import { CombinedError } from './utils';
 
-export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value: OperationResult<TData>) => TResult;
-
-interface SubscriptionCompositeOptions<TData, TResult> {
-  reducer: Reducer<TData, TResult>;
+interface SubscriptionCompositeOptions<TData, TVars> {
+  query: Operation<TData, TVars>['query'];
+  variables?: TVars;
 }
+
+export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value: OperationResult<TData>) => TResult;
 
 export const defaultReducer: Reducer = (_, val) => val.data;
 
 export function useSubscription<TData = any, TResult = TData, TVars = QueryVariables>(
-  query: Operation<TData, TVars>['query'],
-  variables?: TVars,
-  opts?: SubscriptionCompositeOptions<TData, TResult>
+  opts: SubscriptionCompositeOptions<TData, TVars> | Operation<TData, TVars>['query'],
+  reduce: Reducer<TData, TResult> = defaultReducer
 ) {
   const client = inject('$villus') as Client;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
-  const reduce = opts?.reducer || defaultReducer;
+  const { query, variables } =
+    typeof opts !== 'string' && 'query' in opts ? opts : { query: opts, variables: {} as TVars };
   const data = ref<TResult | null>(reduce(null, { data: null, error: null }));
   const error: Ref<CombinedError | null> = ref(null);
   const isPaused = ref(false);
