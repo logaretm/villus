@@ -78,6 +78,10 @@ beforeEach(() => {
     simulateNetworkErrorWithGraphQLResponse: false,
   };
 
+  const headers = new Headers({
+    'content-type': 'application/json',
+  });
+
   (global as any).fetchController = fetchController;
 
   // setup a fetch mock
@@ -91,6 +95,7 @@ beforeEach(() => {
         ok: false,
         status: 400,
         statusText: 'Bad Request',
+        headers,
         json() {
           return {
             data: null,
@@ -119,6 +124,7 @@ beforeEach(() => {
       ok: true,
       status: 200,
       statusText: 'OK',
+      headers,
       json() {
         if (fetchController.simulateParseError) {
           throw new Error('Error parsing, unexpected token <');
