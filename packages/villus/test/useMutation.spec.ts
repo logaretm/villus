@@ -11,9 +11,7 @@ test('runs mutations', async () => {
         url: 'https://test.com/graphql',
       });
 
-      const { data, execute } = useMutation<LikePostMutationResponse>({
-        query: 'mutation { likePost (id: 123) { message } }',
-      });
+      const { data, execute } = useMutation<LikePostMutationResponse>('mutation { likePost (id: 123) { message } }');
 
       return { data, execute };
     },
@@ -73,9 +71,7 @@ test('passes variables via execute method', async () => {
         url: 'https://test.com/graphql',
       });
 
-      const { data, execute } = useMutation({
-        query: 'mutation LikePost ($id: ID!) { likePost (id: $id) { message } }',
-      });
+      const { data, execute } = useMutation('mutation LikePost ($id: ID!) { likePost (id: $id) { message } }');
 
       return { data, execute };
     },
@@ -107,7 +103,7 @@ test('handles external errors', async () => {
         url: 'https://test.com/graphql',
       });
 
-      const { data, execute, error } = useMutation({ query: 'mutation { likePost (id: 123) { message } }' });
+      const { data, execute, error } = useMutation('mutation { likePost (id: 123) { message } }');
 
       return { data, execute, error };
     },
@@ -130,7 +126,7 @@ test('Fails if provider was not resolved', () => {
   try {
     mount({
       setup() {
-        const { data, execute } = useMutation({ query: 'mutation { likePost (id: 123) { message } }' });
+        const { data, execute } = useMutation('mutation { likePost (id: 123) { message } }');
 
         return { data, execute };
       },

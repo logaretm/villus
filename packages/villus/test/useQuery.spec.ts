@@ -64,16 +64,14 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data } = useQuery({
-          query: gql`
-            {
-              posts {
-                id
-                title
-              }
+        const { data } = useQuery(gql`
+          {
+            posts {
+              id
+              title
             }
-          `,
-        });
+          }
+        `);
 
         return { data };
       },
@@ -96,7 +94,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, execute } = useQuery({ query: '{ posts { id title } }' });
+        const { data, execute } = useQuery('{ posts { id title } }');
 
         return { data, execute };
       },
@@ -129,9 +127,7 @@ describe('useQuery()', () => {
           return `{ post (id: ${id.value}) { id title } }`;
         });
 
-        const { data } = useQuery({
-          query,
-        });
+        const { data } = useQuery(query);
 
         return { data, id };
       },
@@ -162,7 +158,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, execute } = useQuery({ query: '{ posts { id title } }' });
+        const { data, execute } = useQuery('{ posts { id title } }');
 
         return { data, execute };
       },
@@ -191,7 +187,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, execute } = useQuery({ query: '{ posts { id title } }', cachePolicy: 'cache-and-network' });
+        const { data, execute } = useQuery('{ posts { id title } }', {}, { cachePolicy: 'cache-and-network' });
 
         return { data, execute };
       },
@@ -224,10 +220,7 @@ describe('useQuery()', () => {
           id: 12,
         });
 
-        const { data } = useQuery({
-          query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
-          variables,
-        });
+        const { data } = useQuery('query fetchPost($id: ID!) { post (id: $id) { id title } }', variables);
 
         return { data, variables };
       },
@@ -297,10 +290,7 @@ describe('useQuery()', () => {
           id: 12,
         });
 
-        const { data } = useQuery({
-          query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
-          variables,
-        });
+        const { data } = useQuery('query fetchPost($id: ID!) { post (id: $id) { id title } }', variables);
 
         function updateRef() {
           variables.value = { id: 12 };
@@ -345,10 +335,10 @@ describe('useQuery()', () => {
           id: 12,
         });
 
-        const { data, unwatchVariables, isWatchingVariables, watchVariables } = useQuery({
-          query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
-          variables,
-        });
+        const { data, unwatchVariables, isWatchingVariables, watchVariables } = useQuery(
+          'query fetchPost($id: ID!) { post (id: $id) { id title } }',
+          variables
+        );
 
         return { data, variables, unwatchVariables, watchVariables, isWatchingVariables };
       },
@@ -395,10 +385,7 @@ describe('useQuery()', () => {
           type: 'test',
         });
 
-        const { data } = useQuery({
-          query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
-          variables,
-        });
+        const { data } = useQuery('query fetchPost($id: ID!) { post (id: $id) { id title } }', variables);
 
         return { data, variables };
       },
@@ -430,7 +417,7 @@ describe('useQuery()', () => {
       components: {
         Listing: {
           async setup() {
-            const { data } = await useQuery({ query: '{ posts { id title } }' });
+            const { data } = await useQuery('{ posts { id title } }');
 
             return { data };
           },
@@ -466,9 +453,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, error } = useQuery({
-          query: '{ posts { id title propNotFound } }',
-        });
+        const { data, error } = useQuery('{ posts { id title propNotFound } }');
 
         return { data, error };
       },
@@ -494,9 +479,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, error } = useQuery({
-          query: '{ posts { id title } }',
-        });
+        const { data, error } = useQuery('{ posts { id title } }');
 
         return { data, error };
       },
@@ -522,9 +505,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, error } = useQuery({
-          query: '{ posts { id title } }',
-        });
+        const { data, error } = useQuery('{ posts { id title } }');
 
         return { data, error };
       },
@@ -545,7 +526,7 @@ describe('useQuery()', () => {
     try {
       mount({
         setup() {
-          const { data, error } = useQuery({ query: `{ posts { id title } }` });
+          const { data, error } = useQuery(`{ posts { id title } }`);
 
           return { messages: data, error };
         },
@@ -572,9 +553,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, error } = useQuery({
-          query: '{ posts { id title } }',
-        });
+        const { data, error } = useQuery('{ posts { id title } }');
 
         return { data, error };
       },
@@ -600,9 +579,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, error } = useQuery({
-          query: '{ posts { id title } }',
-        });
+        const { data, error } = useQuery('{ posts { id title } }');
 
         return { data, error };
       },
@@ -629,9 +606,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, error } = useQuery({
-          query: '{ posts { id title } }',
-        });
+        const { data, error } = useQuery('{ posts { id title } }');
 
         return { data, error };
       },
@@ -656,7 +631,7 @@ describe('useQuery()', () => {
           cachePolicy: 'cache-only',
         });
 
-        const { data, execute } = useQuery({ query: '{ posts { id title } }' });
+        const { data, execute } = useQuery('{ posts { id title } }');
 
         return { data, execute };
       },
@@ -679,7 +654,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, execute } = useQuery({ query: '{ posts { id title } }' });
+        const { data, execute } = useQuery('{ posts { id title } }');
 
         return { data, execute };
       },
@@ -708,11 +683,11 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        useQuery({ query: '{ posts { id title } }' });
-        useQuery({ query: '{ posts { id title } }' });
-        useQuery({ query: '{ posts { id title } }' });
-        useQuery({ query: '{ posts { id title slug } }' });
-        useQuery({ query: '{ posts { id title slug } }' });
+        useQuery('{ posts { id title } }');
+        useQuery('{ posts { id title } }');
+        useQuery('{ posts { id title } }');
+        useQuery('{ posts { id title slug } }');
+        useQuery('{ posts { id title slug } }');
 
         return {};
       },

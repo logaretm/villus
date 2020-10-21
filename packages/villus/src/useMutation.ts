@@ -3,13 +3,7 @@ import { Operation, QueryVariables } from './types';
 import { Client } from './client';
 import { CombinedError } from './utils';
 
-interface MutationCompositeOptions<TData, TVars> {
-  query: Operation<TData, TVars>['query'];
-}
-
-export function useMutation<TData = any, TVars = QueryVariables>(
-  opts: MutationCompositeOptions<TData, TVars> | Operation<TData, TVars>['query']
-) {
+export function useMutation<TData = any, TVars = QueryVariables>(query: Operation<TData, TVars>['query']) {
   const client = inject('$villus') as Client;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
@@ -24,7 +18,7 @@ export function useMutation<TData = any, TVars = QueryVariables>(
     isFetching.value = true;
     const vars = variables || {};
     const res = await client.executeMutation<TData, TVars>({
-      query: typeof opts !== 'string' && 'query' in opts ? opts.query : opts,
+      query,
       variables: vars as TVars, // FIXME: fix this casting
     });
 

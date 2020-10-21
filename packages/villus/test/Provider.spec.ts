@@ -13,7 +13,7 @@ test('creates HOC withProvider', async () => {
     withProvider(
       {
         setup() {
-          const { data, error } = useQuery<{ posts: Post[] }>({ query: '{ posts { id title } }' });
+          const { data, error } = useQuery<{ posts: Post[] }>('{ posts { id title } }');
 
           return { data, error };
         },

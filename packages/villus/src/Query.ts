@@ -1,6 +1,6 @@
 import { defineComponent, Ref, toRef, watch } from 'vue-demi';
 import { CachePolicy } from './types';
-import { QueryComposable, useQuery } from './useQuery';
+import { useQuery } from './useQuery';
 import { normalizeChildren } from './utils';
 
 export const Query = defineComponent({
@@ -32,7 +32,7 @@ export const Query = defineComponent({
     },
   },
   setup(props, ctx) {
-    function createRenderFn(api: QueryComposable<unknown>) {
+    function createRenderFn(api: ReturnType<typeof useQuery>) {
       const { data, error, isFetching, isDone, execute, watchVariables, isWatchingVariables, unwatchVariables } = api;
 
       watch(
@@ -65,17 +65,17 @@ export const Query = defineComponent({
       };
     }
 
-    const queryProps = {
-      query: toRef(props, 'query') as Ref<string>,
-      variables: toRef(props, 'variables') as Ref<Record<string, any> | undefined>,
+    const query = toRef(props, 'query') as Ref<string>;
+    const variables = toRef(props, 'variables') as Ref<Record<string, any> | undefined>;
+    const opts = {
       fetchOnMount: props.fetchOnMount,
       cachePolicy: props.cachePolicy as CachePolicy,
     };
 
     if (props.suspended) {
-      return useQuery(queryProps).then(createRenderFn);
+      return useQuery(query, variables, opts).then(createRenderFn);
     }
 
-    return createRenderFn(useQuery(queryProps));
+    return createRenderFn(useQuery(query, variables, opts));
   },
 });
