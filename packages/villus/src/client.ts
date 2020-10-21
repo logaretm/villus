@@ -100,9 +100,10 @@ export class Client {
           }
         }
 
+        const afterQueryCtx = { response: context.response };
         for (let i = 0; i < afterQuery.length; i++) {
           const afterCb = afterQuery[i];
-          await afterCb(result as OperationResult<TData>);
+          await afterCb(result as OperationResult<TData>, afterQueryCtx);
         }
       })();
     });

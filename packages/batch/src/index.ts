@@ -23,7 +23,9 @@ export function batch(opts?: BatchOptions): ClientPlugin {
   let operations: { resolveOp: (r: any) => void; body: string }[] = [];
   let scheduledConsume: any;
 
-  return function batchPlugin({ useResult, opContext, operation }) {
+  return function batchPlugin(ctx) {
+    const { useResult, opContext, operation } = ctx;
+
     return new Promise(resolve => {
       if (scheduledConsume) {
         clearTimeout(scheduledConsume);
@@ -67,15 +69,15 @@ export function batch(opts?: BatchOptions): ClientPlugin {
         const body = `[${operations.map(o => o.body).join(',')}]`;
         operations = [];
 
-        const res = await fetch(opContext.url as string, {
+        const response = await fetch(opContext.url as string, {
           method: opContext.method,
           headers: {
             ...opContext.headers,
           },
           body,
-        });
+        }).then(parseResponse);
 
-        const response = await parseResponse<any>(res);
+        ctx.response = response;
         const resInit: Partial<Response> = {
           ok: response.ok,
           status: response.status,

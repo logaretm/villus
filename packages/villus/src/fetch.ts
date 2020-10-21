@@ -12,7 +12,8 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
     throw new Error('Could not resolve a fetch() method, you should provide one.');
   }
 
-  return async function fetchPlugin({ useResult, opContext, operation }) {
+  return async function fetchPlugin(ctx) {
+    const { useResult, opContext, operation } = ctx;
     const fetchOpts = makeFetchOptions(operation, opContext);
 
     let response;
@@ -28,6 +29,8 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
       );
     }
 
+    // Set the response on the context
+    ctx.response = response;
     if (!response.ok || !response.body) {
       // It is possible than a non-200 response is returned with errors, it should be treated as GraphQL error
       const ctorOptions: { response: typeof response; graphqlErrors?: GraphQLError[]; networkError?: Error } = {

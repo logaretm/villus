@@ -47,9 +47,20 @@ export interface FetchOptions extends RequestInit {
   headers: NonNullable<RequestInit['headers']>;
 }
 
+export interface ParsedResponse<TData> {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  headers: Headers;
+  body: GraphQLResponse<TData> | null;
+}
+
 export type OperationType = 'query' | 'mutation' | 'subscription';
 
-export type AfterQueryCallback = (result: OperationResult) => void | Promise<void>;
+export type AfterQueryCallback = (
+  result: OperationResult,
+  ctx: { response?: ParsedResponse<unknown> }
+) => void | Promise<void>;
 
 export type ClientPluginOperation = OperationWithCachePolicy<unknown, unknown> & { type: OperationType; key: number };
 
@@ -58,6 +69,7 @@ export interface ClientPluginContext {
   afterQuery: (cb: AfterQueryCallback) => void;
   operation: ClientPluginOperation;
   opContext: FetchOptions;
+  response?: ParsedResponse<unknown>;
 }
 
 export type ClientPlugin = ({ useResult, operation }: ClientPluginContext) => void | Promise<void>;

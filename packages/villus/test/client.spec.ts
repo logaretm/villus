@@ -49,3 +49,20 @@ test('throws if no plugins set the result for the operation', async () => {
     'Operation result was not set by any plugin, make sure you have default plugins configured or review documentation'
   );
 });
+
+test('plugins can use the response', async () => {
+  const spy = jest.fn();
+  const plugin: ClientPlugin = async ({ afterQuery }) => {
+    afterQuery((_, { response }) => {
+      spy(response?.headers.get('content-type'));
+    });
+  };
+
+  const client = createClient({
+    url: 'https://test.com/graphql',
+    use: [plugin, ...defaultPlugins()],
+  });
+
+  await client.executeQuery({ query: '{ posts { id title } }' });
+  expect(spy).toHaveBeenCalledWith('application/json');
+});
