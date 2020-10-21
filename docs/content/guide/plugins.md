@@ -12,6 +12,7 @@ Something you might not be aware of is that villus is pre-configured with a coup
 
 - [`fetch`](/plugins/fetch): used to execute queries on the network (actual fetching)
 - [`cache`](/plugins/cache): an in-memory simple cache that comes with villus by default, supports all cache policies
+- [`dedup`](/plugins/dedup): removes any duplicate pending queries
 
 Furthermore, villus exposes the default plugins as `defaultPlugins` function. To add plugins to villus client you need to pass a `use` array containing the plugins you would like to have
 

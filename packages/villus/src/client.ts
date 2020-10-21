@@ -1,5 +1,7 @@
-import { cache, OperationWithCachePolicy } from './cache';
 import { DEFAULT_FETCH_OPTS, getQueryKey } from './utils';
+import { cache, OperationWithCachePolicy } from './cache';
+import { fetch } from './fetch';
+import { dedup } from './dedup';
 import {
   OperationResult,
   CachePolicy,
@@ -12,7 +14,6 @@ import {
   AfterQueryCallback,
   ObservableLike,
 } from './types';
-import { fetch } from './fetch';
 
 export interface ClientOptions {
   url: string;
@@ -20,7 +21,7 @@ export interface ClientOptions {
   use?: ClientPlugin[];
 }
 
-export const defaultPlugins = () => [cache(), fetch()];
+export const defaultPlugins = () => [cache(), dedup(), fetch()];
 
 export class Client {
   private url: string;

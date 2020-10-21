@@ -1,7 +1,7 @@
 ---
 title: Query Batching Plugin
 description: Learn how to run batch multiple GraphQL queries
-order: 3
+order: 4
 ---
 
 # Query Batching

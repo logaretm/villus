@@ -1,7 +1,7 @@
 ---
 title: Handle Subscriptions Plugin
 description: The plugin that executes your subscriptions
-order: 5
+order: 6
 ---
 
 # Handle Subscriptions Plugin

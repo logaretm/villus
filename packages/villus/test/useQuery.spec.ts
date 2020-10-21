@@ -700,4 +700,26 @@ describe('useQuery()', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(document.querySelector('ul')?.children).toHaveLength(5);
   });
+
+  test('dedups duplicate queries', async () => {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        useQuery({ query: '{ posts { id title } }' });
+        useQuery({ query: '{ posts { id title } }' });
+        useQuery({ query: '{ posts { id title } }' });
+        useQuery({ query: '{ posts { id title slug } }' });
+        useQuery({ query: '{ posts { id title slug } }' });
+
+        return {};
+      },
+      template: `<div></div>`,
+    });
+
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(2); // only 2 unique queries were executed
+  });
 });
