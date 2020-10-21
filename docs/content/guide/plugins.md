@@ -53,9 +53,13 @@ interface FetchOptions extends RequestInit {
   url?: string;
 }
 
+interface AfterQueryContext {
+  response?: ParsedResponse<unknown>; // The fetch operation response except it contains a parsed `body` property
+}
+
 interface ClientPluginContext {
   useResult: (result: OperationResult<unknown>, terminate?: boolean) => void; // used to signal that the plugin found a result for the operation
-  afterQuery: (cb: AfterQueryCallback) => void; // Registers a callback to do something after the query is finished and the pipeline is done
+  afterQuery: (cb: AfterQueryCallback, ctx: AfterQueryContext) => void; // Registers a callback to do something after the query is finished and the pipeline is done
   operation: {
     query: DocumentNode | string; // The query/mutation to be executed
     variables: Record<string, any>; // The query variables
@@ -63,7 +67,8 @@ interface ClientPluginContext {
     key: number; // a unique key to identify this operation (useful for cache)
     type: OperationType; // the operation type: `query` or `mutation` or `subscription`
   };
-  opContext: FetchOptions; // Read-only of the current operation context, contains stuff like `headers`, `body` and `url` and other fetch options
+  opContext: FetchOptions; // The current operation context, contains stuff like `headers`, `body` and `url` and other fetch options
+  response?: ParsedResponse<unknown>; // The fetch operation response except it contains a parsed `body` property
 }
 
 type ClientPlugin = ({ useResult, operation }: ClientPluginContext) => void | Promise<void>;
@@ -182,7 +187,7 @@ In our example we will use `localStorage` as our storage to cache queries, you a
 Here is an example of such cache:
 
 ```js
-return function localStorageCache({ afterQuery, useResult, operation }) {
+function localStorageCache({ afterQuery, useResult, operation }) {
   // avoid caching mutations or subscriptions, also avoid caching queries with `network-only` policy
   if (operation.type !== 'query' || operation.cachePolicy === 'network-only') {
     return;
@@ -205,7 +210,7 @@ return function localStorageCache({ afterQuery, useResult, operation }) {
     // and stop all other plugins from executing, the last plugin must terminate with `true`
     return useResult(cachedResult, true);
   }
-};
+}
 
 // later in your setup
 import { useClient, fetch } from 'villus';
@@ -225,3 +230,41 @@ return useResult(cachedResult, operation.cachePolicy === 'cache-first');
 ```
 
 For reference you may look at the implementation of the [`cache` plugin](https://github.com/logaretm/villus/blob/main/packages/villus/src/cache.ts)
+
+## Example: Response Headers
+
+You might want to do something after response headers, for example refreshing a user's token after each response to keep them signed in. You can do so by using the plugin context's `response` property which is set after either `fetch` or `batch` plugins are done executing.
+
+To make sure you access the response, you need to do so in the `afterQuery` callback:
+
+```js
+let token = `TOKEN`;
+
+function authPluginWithRefresh({ opContext, afterQuery }) {
+  opContext.headers.Authorization = `Bearer ${token}`;
+
+  afterQuery((result, { response }) => {
+    // if no response, then the fetch plugin failed with a fatal error
+    if (!response) {
+      return;
+    }
+
+    // Update the access token
+    token = response.headers['access-token'];
+  });
+}
+
+// later in your setup
+import { useClient, defaultPlugins } from 'villus';
+
+useClient({
+  url: '/graphql',
+  use: [authPluginWithRefresh, ...defaultPlugins()], // add the auth plugin alongside the default plugins
+});
+```
+
+<doc-tip type="danger">
+
+It is important that you don't use ES6 destructing if you plan to use the `response` property as it will be set after the query is executed, destructing it at the function level will always yield `undefined`.
+
+</doc-tip>
