@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.8](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.7...villus@1.0.0-beta.8) (2020-10-21)
+
+
+### Bug Fixes
+
+* type import path ([9c7c12c](https://github.com/logaretm/villus/commit/9c7c12ce0bbf8f1cf2d88b6b1b2d56a1b21299ba))
+* type the patched useResult ([31fe56b](https://github.com/logaretm/villus/commit/31fe56b89f9f8d02c48c02beec4227618cc6f2d8))
+
+
+### Features
+
+* added dedup test ([8b12141](https://github.com/logaretm/villus/commit/8b1214155b0bd8c4ff1c89734af8ba1d6e2838f1))
+* avoid deduping mutations and subscriptions ([3bb9642](https://github.com/logaretm/villus/commit/3bb9642990b8fac1352964c965b6483ad0626655))
+* implement dedup plugin ([eb0f0a3](https://github.com/logaretm/villus/commit/eb0f0a36947aec6a5cf02a0b395acfe32f63f1d8))
+* implement response context closes [#62](https://github.com/logaretm/villus/issues/62) ([04cae29](https://github.com/logaretm/villus/commit/04cae29a8ba6163127a6da4985e37585084763ce))
+* updated graphql dep closes [#65](https://github.com/logaretm/villus/issues/65) ([ef4be0a](https://github.com/logaretm/villus/commit/ef4be0afb8cba12a57c5cc128b999f570898fa69))
+
+
+
+
+
 # [1.0.0-beta.7](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.6...villus@1.0.0-beta.7) (2020-10-19)
 
 
