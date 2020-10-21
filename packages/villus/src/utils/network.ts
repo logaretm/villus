@@ -1,12 +1,4 @@
-import { GraphQLResponse, FetchOptions, Fetcher } from '../types';
-
-interface ParsedResponse<TData> {
-  ok: boolean;
-  status: number;
-  statusText: string;
-  headers: Headers;
-  body: GraphQLResponse<TData> | null;
-}
+import { GraphQLResponse, FetchOptions, Fetcher, ParsedResponse } from '../types';
 
 export async function parseResponse<TData>(response: Response): Promise<ParsedResponse<TData>> {
   let json: GraphQLResponse<TData>;
