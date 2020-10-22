@@ -36,7 +36,9 @@ export default {
         }
       }
     `;
-    const { data } = useQuery(GetTodos);
+    const { data } = useQuery({
+      query: GetTodos,
+    });
 
     return { data };
   },
@@ -63,7 +65,9 @@ const GetTodos = gql`
   }
 `;
 
-const { data } = useQuery(GetTodos);
+const { data } = useQuery({
+  query: GetTodos,
+});
 
 return { data };
 ```
@@ -96,12 +100,13 @@ const FetchTodo = `
   }
 `;
 
-const { data } = useQuery(FetchTodo, {
-  id: 123,
+const { data } = useQuery({
+  query: GetTodos,
+  variables: { id: 123 },
 });
 ```
 
-However if you want to re-fetch the query whenever the variables change, then this is where the composable API shines. You can pass a [reactive object](https://v3.vuejs.org/api/basic-reactivity.html#reactive) containing your variables and the query will automatically execute with the new variables value:
+However if you want to re-fetch the query whenever the variables change, then this is where the composition API shines. You can pass a [reactive object](https://v3.vuejs.org/api/basic-reactivity.html#reactive) containing your variables and the query will automatically execute with the new variables value:
 
 ```js
 import { reactive } from 'vue';
@@ -111,15 +116,15 @@ const variables = reactive({
   id: 123,
 });
 
-const { data } = useQuery(
-  `query FetchTodo ($id: ID!) {
+const { data } = useQuery({
+  query: `query FetchTodo ($id: ID!) {
       todo (id: $id) {
         text
       }
     }
   `,
-  variables
-);
+  variables,
+});
 ```
 
 This also works with [reactive Refs](https://v3.vuejs.org/api/refs-api.html#ref)
@@ -140,7 +145,10 @@ const FetchTodo = `
   }
 `;
 
-const { data } = useQuery(FetchTodo, variables);
+const { data } = useQuery({
+  query: FetchTodo,
+  variables,
+});
 ```
 
 This is only one way to re-fetch queries, because `villus` is built with composable API first you will find many ways to re-fetch your queries no matter how complex your requirements are.
@@ -180,7 +188,9 @@ const GetTodos = `
 `;
 
 // in your setup
-const { data, execute } = useQuery(GetTodos);
+const { data, execute } = useQuery({
+  query: GetTodos,
+});
 
 watch(someComputedProp, () => execute());
 ```
@@ -206,7 +216,9 @@ const FetchTodo = computed(() => {
   `;
 });
 
-const { data } = useQuery(FetchTodo);
+const { data } = useQuery({
+  query: FetchTodo,
+});
 
 // later on, changing the `id` ref will automatically refetch the query because it is computed
 id.value = 2;
@@ -232,7 +244,10 @@ const GetPostById = `
 
 // Create a reactive variables object
 const variables = ref({ id: 123 });
-const { data, watchVariables, unwatchVariables, isWatchingVariables } = useQuery(GetPostById, variables);
+const { data, watchVariables, unwatchVariables, isWatchingVariables } = useQuery({
+  query: GetPostById,
+  variables,
+});
 
 // variables/query watching is stopped.
 unwatchVariables();
@@ -328,7 +343,9 @@ const GetPosts = `
   }
 `;
 
-const { execute, data } = useQuery(GetPosts);
+const { execute, data } = useQuery({
+  query: GetPosts,
+});
 
 // use this in template or whatever.
 function runWithPolicy() {
@@ -393,7 +410,9 @@ export default {
       }
     `;
 
-    const { data } = await useQuery(GetPosts);
+    const { data } = await useQuery({
+      query: GetPosts,
+    });
 
     return { data };
   },

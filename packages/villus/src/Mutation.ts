@@ -11,9 +11,7 @@ export const Mutation = defineComponent({
     },
   },
   setup(props, ctx) {
-    const { data, isFetching, isDone, error, execute } = useMutation({
-      query: props.query as string,
-    });
+    const { data, isFetching, isDone, error, execute } = useMutation(props.query as string);
 
     return () => {
       return normalizeChildren(ctx, {

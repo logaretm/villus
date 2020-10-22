@@ -60,8 +60,8 @@ import { useQuery } from 'villus';
 export default {
   setup() {
     // Both will be sent in a single request
-    const firstQuery = useQuery({ query: '{ posts { title } }' });
-    const secondQuery = useQuery({ query: '{ posts { id } }' });
+    const firstQuery = useQuery('{ posts { title } }');
+    const secondQuery = useQuery('{ posts { id } }');
 
     return { postsWithTitle: firstQuery.data, postsWithId: secondQuery.data };
   },

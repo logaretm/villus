@@ -1,5 +1,5 @@
 import { inject, isReactive, isRef, onMounted, Ref, ref, watch } from 'vue-demi';
-import { CachePolicy, MaybeReactive, Operation, OperationResult, QueryVariables } from './types';
+import { CachePolicy, MaybeReactive, Operation, QueryVariables } from './types';
 import { Client } from './client';
 import { hash, CombinedError, toWatchableSource, stringify } from './utils';
 
@@ -14,31 +14,13 @@ interface QueryExecutionOpts {
   cachePolicy?: CachePolicy;
 }
 
-export interface QueryComposable<TData> {
-  data: Ref<TData | null>;
-  error: Ref<CombinedError | null>;
-  isFetching: Ref<boolean>;
-  isDone: Ref<boolean>;
-  execute: (opts?: QueryExecutionOpts) => Promise<OperationResult<TData>>;
-  isWatchingVariables: Ref<boolean>;
-  unwatchVariables: () => void;
-  watchVariables: () => void;
-}
-
-interface ThenableQueryComposable<TData> extends QueryComposable<TData> {
-  then: (onFulfilled: (value: QueryComposable<TData>) => any) => Promise<QueryComposable<TData>>;
-}
-
-function _useQuery<TData, TVars>({
-  query,
-  variables,
-  cachePolicy,
-}: QueryCompositeOptions<TData, TVars>): QueryComposable<TData> {
+function useQuery<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptions<TData, TVars>) {
   const client = inject('$villus') as Client;
   if (!client) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
+  let { query, variables, cachePolicy, fetchOnMount } = normalizeOptions(opts);
   const data: Ref<TData | null> = ref(null);
   const isFetching = ref(false);
   const isDone = ref(false);
@@ -107,33 +89,18 @@ function _useQuery<TData, TVars>({
 
   beginWatchingVars();
 
-  return { data, isFetching, isDone, error, execute, unwatchVariables, watchVariables, isWatchingVariables };
-}
+  const api = { data, isFetching, isDone, error, execute, unwatchVariables, watchVariables, isWatchingVariables };
 
-function useQuery<TData = any, TVars = QueryVariables>(
-  query: QueryCompositeOptions<TData, TVars>['query'],
-  variables?: QueryCompositeOptions<TData, TVars>['variables']
-): ThenableQueryComposable<TData>;
-
-function useQuery<TData = any, TVars = QueryVariables>(
-  query: QueryCompositeOptions<TData, TVars>
-): ThenableQueryComposable<TData>;
-function useQuery<TData = any, TVars = QueryVariables>(
-  opts: QueryCompositeOptions<TData, TVars> | QueryCompositeOptions<TData, TVars>['query'],
-  variables?: QueryCompositeOptions<TData, TVars>['variables']
-): ThenableQueryComposable<TData> {
-  const normalizedOpts = normalizeOptions(opts, variables);
-  const api = _useQuery<TData, TVars>(normalizedOpts);
   onMounted(() => {
-    if (normalizedOpts.fetchOnMount) {
-      api.execute();
+    if (fetchOnMount) {
+      execute();
     }
   });
 
   return {
     ...api,
     async then(onFulfilled: (value: any) => any) {
-      normalizedOpts.fetchOnMount = false;
+      fetchOnMount = false;
       await api.execute();
 
       return onFulfilled(api);
@@ -142,24 +109,17 @@ function useQuery<TData = any, TVars = QueryVariables>(
 }
 
 function normalizeOptions<TData, TVars>(
-  opts: QueryCompositeOptions<TData, TVars> | QueryCompositeOptions<TData, TVars>['query'],
-  variables?: QueryCompositeOptions<TData, TVars>['variables']
+  opts: Partial<QueryCompositeOptions<TData, TVars>>
 ): QueryCompositeOptions<TData, TVars> {
   const defaultOpts = {
+    variables: {} as TVars,
     fetchOnMount: true,
   };
 
-  if (typeof opts !== 'string' && 'query' in opts) {
-    return {
-      ...defaultOpts,
-      ...opts,
-    };
-  }
-
   return {
     ...defaultOpts,
-    query: opts,
-    variables,
+    ...opts,
+    query: opts.query as NonNullable<typeof opts['query']>,
   };
 }
 

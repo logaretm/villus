@@ -55,7 +55,7 @@ export default {
       }
     `;
 
-    const { data } = useSubscription(NewMessages);
+    const { data } = useSubscription({ query: NewMessages });
     const messages = ref([]);
     watch(data, incoming => {
       // do stuff with incoming data
@@ -68,12 +68,35 @@ export default {
 </script>
 ```
 
-This isn't very useful as usually you would like to be able to use the `data` as a continuos value rather than a reference to the last received value, that is why you can pass a custom reducer as the second argument to the `useSubscription` function, think of it as a subscription handler that aggregates the results into a single value. The aggregated value will become the `data` returned from `useSubscription`.
+## Passing Variables
+
+You can pass variables to subscriptions by passing an object containing both `query` and `variables` as the first argument:
+
+```js
+const NewMessages = `
+  subscription ConversationMessages ($id: ID!) {
+    conversation(id: $id) {
+      id
+      from
+      message
+    }
+  }
+`;
+
+const { data } = useSubscription({
+  query: NewMessages,
+  variables: { id: 1 },
+});
+```
+
+## Handling Subscription Data
+
+The previous examples are not very useful as usually you would like to be able to use the `data` as a continuos value rather than a reference to the last received value, that is why you can pass a custom reducer as the second argument to the `useSubscription` function, think of it as a subscription handler that aggregates the results into a single value. The aggregated value will become the `data` returned from `useSubscription`.
 
 Here is the last example with a custom reducer, we will be covering the `setup` function only since the rest of the component is mostly the same:
 
 ```js
-function handleSubscription(oldValue, response) {
+function reduceMessages(oldValue, response) {
   oldValue = oldValue || [];
   if (!response.data || response.errors) {
     return oldValue;
@@ -92,41 +115,13 @@ const NewMessages = `
   }
 `;
 
-const { data } = useSubscription(NewMessages, handleSubscription);
+const { data } = useSubscription({ query: NewMessages }, reduceMessages);
 ```
 
-The `handleSubscription` function acts as a reducer for the incoming data, whenever a new response is received it will be passed to `handleSubscription` function as the second argument, the first argument will be the previous value.
+The `reduceMessages` function acts as a reducer for the incoming data, whenever a new response is received it will be passed to `reduceMessages` function as the second argument, the first argument will be the previous value.
 
 <doc-tip>
 
 Keep in mind that initially we have `null` for the initial value so we needed to provide a fallback for that.
 
 </doc-tip>
-
-## Passing Variables
-
-You can pass variables to subscriptions by passing an object containing both `query` and `variables` as the first argument:
-
-```js
-function handleSubscription(oldValue, response) {
-  // ...
-}
-
-const NewMessages = `
-  subscription ConversationMessages ($id: ID!) {
-    conversation(id: $id) {
-      id
-      from
-      message
-    }
-  }
-`;
-
-const { data } = useSubscription(
-  {
-    query: NewMessages,
-    variables: { id: 1 },
-  },
-  handleSubscription
-);
-```

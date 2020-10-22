@@ -14,7 +14,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, error } = useQuery<{ posts: Post[] }>('{ posts { id title } }');
+        const { data, error } = useQuery<{ posts: Post[] }>({ query: '{ posts { id title } }' });
 
         return { data, error };
       },
@@ -39,7 +39,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, error } = useQuery<{ posts: Post[] }>('{ posts { id title } }');
+        const { data, error } = useQuery<{ posts: Post[] }>({ query: '{ posts { id title } }' });
 
         return { data, error };
       },
@@ -262,7 +262,7 @@ describe('useQuery()', () => {
           id: 12,
         });
 
-        const { data } = useQuery('query fetchPost($id: ID!) { post (id: $id) { id title } }', variables);
+        const { data } = useQuery({ query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }', variables });
 
         return { data, variables };
       },
