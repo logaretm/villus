@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.0](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.8...villus@1.0.0-rc.0) (2020-10-22)
+
+
+### Features
+
+* **breaking:** signature updates ([#70](https://github.com/logaretm/villus/issues/70)) ([47937e8](https://github.com/logaretm/villus/commit/47937e8437cae6e78769dc7b0abfa2f4c41f5996))
+
+
+
+
+
 # [1.0.0-beta.8](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.7...villus@1.0.0-beta.8) (2020-10-21)
 
 
