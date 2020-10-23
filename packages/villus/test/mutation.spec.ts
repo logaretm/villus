@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
-import { Mutation, createClient, Provider } from '../src/index';
+import { Mutation, Provider } from '../src/index';
 
 test('runs mutations', async () => {
   const client = {

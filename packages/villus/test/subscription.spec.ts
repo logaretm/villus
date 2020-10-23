@@ -48,7 +48,7 @@ test('can pause and resume subscriptions', async () => {
     use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
   };
 
-  const vm = mount({
+  mount({
     data: () => ({
       client,
       paused: false,

@@ -62,7 +62,7 @@ const server = mockServer(schema, {
       code: '200',
       message: 'Operation successful',
     }),
-    singleUpload: (_: any, args: any) => {
+    singleUpload: () => {
       return {
         path: 'hello-world.ts',
       };

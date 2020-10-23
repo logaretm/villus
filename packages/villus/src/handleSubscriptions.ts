@@ -1,6 +1,6 @@
-import { ClientPlugin, ClientPluginOperation, ObservableLike, OperationResult, QueryVariables } from './types';
+import { ClientPlugin, ClientPluginOperation, ObservableLike, OperationResult } from './types';
 
-export type SubscriptionForwarder<TData = any, TVars = QueryVariables> = (
+export type SubscriptionForwarder<TData = any> = (
   operation: ClientPluginOperation
 ) => ObservableLike<OperationResult<TData>>;
 
