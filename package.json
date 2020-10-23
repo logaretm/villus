@@ -76,12 +76,6 @@
       "maxSize": "10 kB"
     }
   ],
-  "eslintIgnore": [
-    "locale",
-    "dist",
-    "scripts",
-    "examples"
-  ],
   "lint-staged": {
     "*.ts": [
       "eslint --fix",
