@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.1](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.0...villus@1.0.0-rc.1) (2020-10-26)
+
+
+### Features
+
+* upgrade Vue and provide a workaround for [#72](https://github.com/logaretm/villus/issues/72) ([6127f37](https://github.com/logaretm/villus/commit/6127f379adf743b691f48f9bc6d044553f9771b5))
+
+
+
+
+
 # [1.0.0-rc.0](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.8...villus@1.0.0-rc.0) (2020-10-22)
 
 
