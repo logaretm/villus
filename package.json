@@ -12,7 +12,6 @@
     "test:cover": "jest --coverage",
     "lint": "eslint . '**/*.{js,jsx,ts,tsx}' --fix",
     "build": "node scripts/build.js",
-    "prepublishOnly": "npm run build",
     "postversion": "npm run build",
     "format": "prettier ./src/** --write"
   },
