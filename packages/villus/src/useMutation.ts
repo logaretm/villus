@@ -1,13 +1,12 @@
-import { ref, Ref, inject } from 'vue-demi';
+import { ref, Ref } from 'vue-demi';
 import { Operation, QueryVariables } from './types';
-import { Client } from './client';
-import { CombinedError } from './utils';
+import { CombinedError, injectWithSelf } from './utils';
+import { VILLUS_CLIENT } from './symbols';
 
 export function useMutation<TData = any, TVars = QueryVariables>(query: Operation<TData, TVars>['query']) {
-  const client = inject('$villus') as Client;
-  if (!client) {
-    throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
-  }
+  const client = injectWithSelf(VILLUS_CLIENT, () => {
+    return new Error('Cannot detect villus Client, did you forget to call `useClient`?');
+  });
 
   const data: Ref<TData | null> = ref(null);
   const isFetching = ref(false);

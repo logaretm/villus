@@ -1,7 +1,7 @@
-import { inject, isReactive, isRef, onMounted, Ref, ref, watch } from 'vue-demi';
+import { isReactive, isRef, onMounted, Ref, ref, watch } from 'vue-demi';
 import { CachePolicy, MaybeReactive, Operation, QueryVariables } from './types';
-import { Client } from './client';
-import { hash, CombinedError, toWatchableSource, stringify } from './utils';
+import { hash, CombinedError, toWatchableSource, stringify, injectWithSelf } from './utils';
+import { VILLUS_CLIENT } from './symbols';
 
 interface QueryCompositeOptions<TData, TVars> {
   query: MaybeReactive<Operation<TData, TVars>['query']>;
@@ -15,10 +15,9 @@ interface QueryExecutionOpts {
 }
 
 function useQuery<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptions<TData, TVars>) {
-  const client = inject('$villus') as Client;
-  if (!client) {
-    throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
-  }
+  const client = injectWithSelf(VILLUS_CLIENT, () => {
+    return new Error('Cannot detect villus Client, did you forget to call `useClient`?');
+  });
 
   let { query, variables, cachePolicy, fetchOnMount } = normalizeOptions(opts);
   const data: Ref<TData | null> = ref(null);

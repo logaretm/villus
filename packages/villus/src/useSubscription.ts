@@ -1,7 +1,8 @@
 import { inject, ref, Ref, onMounted } from 'vue-demi';
 import { Client } from './client';
+import { VILLUS_CLIENT } from './symbols';
 import { Unsub, Operation, OperationResult, QueryVariables } from './types';
-import { CombinedError } from './utils';
+import { CombinedError, injectWithSelf } from './utils';
 
 interface SubscriptionCompositeOptions<TData, TVars> {
   query: Operation<TData, TVars>['query'];
@@ -16,10 +17,9 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   opts: SubscriptionCompositeOptions<TData, TVars> | Operation<TData, TVars>['query'],
   reduce: Reducer<TData, TResult> = defaultReducer
 ) {
-  const client = inject('$villus') as Client;
-  if (!client) {
-    throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
-  }
+  const client = injectWithSelf(VILLUS_CLIENT, () => {
+    return new Error('Cannot detect villus Client, did you forget to call `useClient`?');
+  });
 
   const { query, variables } =
     typeof opts !== 'string' && 'query' in opts ? opts : { query: opts, variables: {} as TVars };
