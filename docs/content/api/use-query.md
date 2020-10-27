@@ -58,12 +58,13 @@ const { data, error } = useQuery({
 
 This is the full object fields that the `useQuery` function accepts:
 
-| Property     | Type                                                                                         | Required | Description                                                                                           |
-| ------------ | -------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
-| query        | `string` or `DocumentNode` or `Ref<string>`                                                  | **Yes**  | The query to be executed                                                                              |
-| variables    | `object` or `Ref<object>`                                                                    | **No**   | The query variables                                                                                   |
-| cachePolicy  | A `string` with those possible values `cache-and-network` or `network-only` or `cache-first` | **No**   | The cache policy to execute the query with, defaults to the value configured with the provided client |
-| fetchOnMount | `boolean`                                                                                    | **No**   | If the query **should be** executed on `mounted`, default is `true`                                   |
+| Property          | Type                                                                                         | Required | Description                                                                                           |
+| ----------------- | -------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| query             | `string` or `DocumentNode` or `Ref<string>`                                                  | **Yes**  | The query to be executed                                                                              |
+| variables         | `object` or `Ref<object>`                                                                    | **No**   | The query variables                                                                                   |
+| cachePolicy       | A `string` with those possible values `cache-and-network` or `network-only` or `cache-first` | **No**   | The cache policy to execute the query with, defaults to the value configured with the provided client |
+| fetchOnMount      | `boolean`                                                                                    | **No**   | If the query **should be** executed on `mounted`, default is `true`                                   |
+| initialIsFetching | `boolean`                                                                                    | **No**   | Setting an initial `isFetching` value, default is `false`                                             |
 
 This signature allows you to tweak the `fetchOnMount` and `cachePolicy` behaviors for the query, Here is an example:
 
