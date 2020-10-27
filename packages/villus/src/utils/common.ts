@@ -19,7 +19,7 @@ export function toWatchableSource<T = any>(value: Ref<T> | Record<string, any>):
 export function injectWithSelf<T>(symbol: InjectionKey<T>, onMissing: () => Error): T {
   const vm = getCurrentInstance() as any;
 
-  const injection = inject(symbol, vm?.provides[symbol as any]);
+  const injection = inject(symbol, vm?.provides?.[symbol as any]);
   if (injection === null || injection === undefined) {
     throw onMissing();
   }
