@@ -24,17 +24,18 @@ This is forked from my previous work at [vue-gql](https://github.com/baianat/vue
 
 ## Features
 
-- 📦 **Minimal:** Its all you need to query GQL APIs.
-- 🦐 **Tiny:** Very small footprint.
-- 🗄 **Caching:** Simple and convenient query caching by default.
-- 💪 **TypeScript**: Written in Typescript.
-- 💚 Minimal Vue.js Components.
-- 🖇 Composition API support.
+- 📦 **Minimal:** Its all you need to query GQL APIs
+- 🦐 **Tiny:** Very small footprint
+- 🗄 **Caching:** Simple and convenient query caching by default
+- 👕 **TypeScript:** Written in Typescript and Supports GraphQL TS tooling
+- 🖇 **Composable:** Built for the Composition API
+- ⚡️ **Suspense:** Supports the `<Suspense>` API in Vue 3
+- Higher-order components available
 - Supports both Vue 2.x (with @vue/composition-api) and 3.0
 
 ## Why use this
 
-GraphQL is just a simple HTTP request. This library is meant to serve a tiny client without all the bells and whistles attached to Apollo and its ecosystem, it offers simple strategies to cache and batch your GraphQL requests.
+GraphQL is just a simple HTTP request. This library is meant to be a tiny client without all the bells and whistles attached to Apollo and its ecosystem, it offers simple strategies to cache and batch your GraphQL requests.
 
 If you are looking for a more full-featured client use [vue-apollo](https://github.com/vue/vue-apollo), it has everything you need.
 
@@ -56,9 +57,20 @@ yarn add villus graphql
 npm install villus graphql --save
 ```
 
+Or because villus is so simple, you can use it via CDN:
+
+```html
+<!-- Import Vue 2 or 3 -->
+<script src="https://unpkg.com/vue@3.0.2/dist/vue.global.js"></script>
+<!-- Vue Demi is needed for Vue 2 and 3 support -->
+<script src="https://unpkg.com/vue-demi@0.4.1/lib/index.iife.js"></script>
+<!-- Villus -->
+<script src="https://unpkg.com/villus@1.0.0-rc.1/dist/villus.min.js"></script>
+```
+
 You can now use it with either the new Vue composition API or higher order components.
 
-### Composition API
+### Usage
 
 Configure the GraphQL client for your root component:
 
@@ -99,7 +111,9 @@ export default {
       }
     `;
 
-    const { data } = useQuery(AllPosts);
+    const { data } = useQuery({
+      query: AllPosts,
+    });
 
     return { data };
   },
@@ -111,7 +125,7 @@ There is also the higher-order component flavor if you prefer to use them instea
 
 ---
 
-You can do a lot more than that, `villus` makes frequent tasks such as re-fetching, caching, mutations, and subscriptions a breeze. It has even built-in `Suspense` support with Vue 3! Consult the [documentation](https://villus.logaretm.com) for more use-cases and examples.
+You can do a lot more than that, `villus` makes frequent tasks such as re-fetching, caching, deduplication, mutations, and subscriptions a breeze. It has even built-in `Suspense` support with Vue 3! Consult the [documentation](https://villus.logaretm.com) for more use-cases and examples.
 
 ## Compatibility
 

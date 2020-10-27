@@ -8,7 +8,7 @@ features:
   - title: 📦 Cache-Ready
     details: Reasonable caching behavior out of the box which can be adjusted per query
   - title: 👕 TypeScript
-    details: Written in TypeScript with Typed query Responses
+    details: Written in TypeScript and supports Typed query Responses and variables
   - title: 😋 Two Flavors
     details: Available as composable functions (hooks) or higher-order components
   - title: ☢️ Reactive
