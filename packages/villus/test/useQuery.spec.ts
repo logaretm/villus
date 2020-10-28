@@ -722,4 +722,28 @@ describe('useQuery()', () => {
     await flushPromises();
     expect(fetch).toHaveBeenCalledTimes(2); // only 2 unique queries were executed
   });
+
+  test('can set initial isFetching value with initialIsFetching', async () => {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { isFetching } = useQuery({
+          query: '{ posts { id title } }',
+          fetchOnMount: false,
+          initialIsFetching: true,
+        });
+
+        return {
+          isFetching,
+        };
+      },
+      template: `<div id="el">{{ isFetching }}</div>`,
+    });
+
+    await flushPromises();
+    expect(document.querySelector('#el')?.textContent).toBe('true');
+  });
 });

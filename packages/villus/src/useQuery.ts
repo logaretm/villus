@@ -8,6 +8,7 @@ interface QueryCompositeOptions<TData, TVars> {
   variables?: MaybeReactive<TVars>;
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
+  initialIsFetching?: boolean;
 }
 
 interface QueryExecutionOpts {
@@ -19,9 +20,9 @@ function useQuery<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptio
     return new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   });
 
-  let { query, variables, cachePolicy, fetchOnMount } = normalizeOptions(opts);
+  let { query, variables, cachePolicy, fetchOnMount, initialIsFetching } = normalizeOptions(opts);
   const data: Ref<TData | null> = ref(null);
-  const isFetching = ref(false);
+  const isFetching = ref(initialIsFetching);
   const isDone = ref(false);
   const error: Ref<CombinedError | null> = ref(null);
 
@@ -113,6 +114,7 @@ function normalizeOptions<TData, TVars>(
   const defaultOpts = {
     variables: {} as TVars,
     fetchOnMount: true,
+    initialIsFetching: false,
   };
 
   return {

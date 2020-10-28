@@ -446,3 +446,69 @@ export default {
 };
 <script>
 ```
+
+## Fetching Indication
+
+It is very common to display an indication for pending queries in your UI so your users know that something is being done, the `useQuery` composition function exposes a `isFetching` boolean ref that you can use to display such indicators.
+
+```vue
+<template>
+  <div>
+    <ul v-if="data">
+      <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+    </ul>
+
+    <p v-if="isFetching">Loading...</p>
+  </div>
+</template>
+
+<script>
+import { useQuery } from 'villus';
+
+export default {
+  setup() {
+    const GetPosts = `
+      query GetPosts {
+        posts {
+          id
+          title
+        }
+      }
+    `;
+
+    const { data, isFetching } = useQuery({
+      query: GetPosts,
+    });
+
+    return { data, isFetching };
+  },
+};
+</script>
+```
+
+Whenever a re-fetch is triggered, or the query was executed again the `isFetching` will be updated accordingly so you don't have to keep it in sync with anything nor you have to create your own boolean refs for indications.
+
+<doc-tip title="Initial isFetching">
+
+Because `isFetching` is initially set to `false`, you might see a flash of your content due to the default fetching behavior when the component mounts, so there is a short time before it is set to `true`.
+
+To avoid this you could set the `isFetching` value either by setting it directly:
+
+```js
+const { data, isFetching } = useQuery({
+  query: GetPosts,
+});
+
+isFetching.value = true;
+```
+
+Or you could set it in the query options:
+
+```js
+const { data, isFetching } = useQuery({
+  query: GetPosts,
+  initialIsFetching: true,
+});
+```
+
+</doc-tip>
