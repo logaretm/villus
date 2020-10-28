@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.3](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.2...villus@1.0.0-rc.3) (2020-10-28)
+
+
+### Features
+
+* initial isFetching ([#74](https://github.com/logaretm/villus/issues/74)) ([ea043da](https://github.com/logaretm/villus/commit/ea043da2a4d25c81e772c2a8b9a8c9ddf33e6680))
+
+
+
+
+
 # [1.0.0-rc.2](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.1...villus@1.0.0-rc.2) (2020-10-27)
 
 
