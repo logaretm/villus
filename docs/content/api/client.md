@@ -17,7 +17,6 @@ The `createClient` function exported by `villus` package allows you to create ra
 | url         | The URL of the GraphQL API service                                                                                         |
 | fetch       | The `fetch` function to be used, must be compatible with `window.fetch`                                                    |
 | cachePolicy | The global cache policy to be used for queries, possible values are: `cache-and-network`, `network-only`, or `cache-first` |
-| context     | A function used to add headers, fetch options to all HTTP requests                                                         |
 
 ```js
 const client = createClient({
