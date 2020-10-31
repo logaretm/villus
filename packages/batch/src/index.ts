@@ -1,9 +1,8 @@
-import { makeFetchOptions } from '../../villus/src/fetch';
-import { ClientPlugin, Fetcher, GraphQLResponse } from '../../villus/src/types';
-import { resolveGlobalFetch, parseResponse, CombinedError } from '../../villus/src/utils';
+import { CombinedError, definePlugin } from 'villus';
+import { GraphQLResponse, resolveGlobalFetch, parseResponse, makeFetchOptions } from '../../shared/src';
 
 interface BatchOptions {
-  fetch?: Fetcher;
+  fetch?: typeof fetch;
   timeout?: number;
 }
 
@@ -14,7 +13,7 @@ const defaultOpts = (): BatchOptions => ({
   timeout: 10,
 });
 
-export function batch(opts?: BatchOptions): ClientPlugin {
+export function batch(opts?: BatchOptions) {
   const { fetch, timeout } = { ...defaultOpts(), ...(opts || {}) };
   if (!fetch) {
     throw new Error('Could not resolve fetch, please provide a fetch function');
@@ -23,7 +22,7 @@ export function batch(opts?: BatchOptions): ClientPlugin {
   let operations: { resolveOp: (r: any) => void; body: string }[] = [];
   let scheduledConsume: any;
 
-  return function batchPlugin(ctx) {
+  return definePlugin(function batchPlugin(ctx) {
     const { useResult, opContext, operation } = ctx;
 
     return new Promise(resolve => {
@@ -95,5 +94,5 @@ export function batch(opts?: BatchOptions): ClientPlugin {
         });
       }, timeout);
     });
-  };
+  });
 }
