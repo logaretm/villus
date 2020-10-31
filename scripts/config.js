@@ -22,7 +22,8 @@ const pkgBannerMap = {
 
 const pkgExternals = {
   villus: ['vue', 'graphql', 'vue-demi'],
-  multipart: ['extract-files'],
+  multipart: ['extract-files', 'villus'],
+  batch: ['villus'],
 };
 
 const pkgGlobals = {
@@ -32,6 +33,10 @@ const pkgGlobals = {
   },
   multipart: {
     'extract-files': 'ExtractFiles',
+    villus: 'Villus',
+  },
+  batch: {
+    villus: 'Villus',
   },
 };
 
@@ -44,6 +49,7 @@ function createConfig(pkg, format) {
   const tsPlugin = typescript({
     tsconfig: path.resolve(__dirname, '../tsconfig.json'),
     cacheRoot: path.resolve(__dirname, '../node_modules/.rts2_cache'),
+    useTsconfigDeclarationDir: true,
     tsconfigOverride: {
       exclude: ['**/tests'],
     },
