@@ -57,5 +57,4 @@ async function bundleDts(declarationDir, pkg) {
   const bundle = await rollup(config);
   await bundle.write(config.output);
   await fs.remove(`packages/${pkg}/dist/types`);
-  console.log(`${chalk.cyan('Bundled ' + pkg + ' Declaration Files...')}`);
 }
