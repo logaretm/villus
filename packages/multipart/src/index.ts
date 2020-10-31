@@ -1,8 +1,8 @@
+import { definePlugin } from 'villus';
 import { extractFiles } from 'extract-files';
-import { ClientPlugin } from '../../villus/src/types';
 
-export function multipart(): ClientPlugin {
-  return function multipartPlugin(context) {
+export function multipart() {
+  return definePlugin(function multipartPlugin(context) {
     const { operation, opContext } = context;
     const { files, clone: variables } = extractFiles({ ...((operation?.variables as Record<string, any>) || {}) });
 
@@ -32,5 +32,5 @@ export function multipart(): ClientPlugin {
     });
 
     opContext.body = body;
-  };
+  });
 }
