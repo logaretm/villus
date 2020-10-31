@@ -1,8 +1,8 @@
 import { isReactive, isRef, onMounted, Ref, ref, watch } from 'vue-demi';
 import { CachePolicy, MaybeReactive, QueryVariables } from './types';
-import { hash, CombinedError, toWatchableSource, stringify, injectWithSelf } from './utils';
+import { hash, CombinedError, toWatchableSource, injectWithSelf } from './utils';
 import { VILLUS_CLIENT } from './symbols';
-import { Operation } from '../../shared/src';
+import { Operation, stringify } from '../../shared/src';
 
 interface QueryCompositeOptions<TData, TVars> {
   query: MaybeReactive<Operation<TData, TVars>['query']>;

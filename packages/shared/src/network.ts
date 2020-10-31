@@ -1,5 +1,5 @@
-import { normalizeQuery } from '../../villus/src/utils/query';
 import { FetchOptions, GraphQLResponse, ParsedResponse, Operation } from './types';
+import { normalizeQuery } from './utils';
 
 export async function parseResponse<TData>(response: Response): Promise<ParsedResponse<TData>> {
   let json: GraphQLResponse<TData>;
