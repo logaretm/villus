@@ -143,7 +143,7 @@ Here is a few useful snippets:
 ```js
 function myPlugin({ opContext, operation }) {
   // Add auth headers
-  opContext.headers.Authorization = 'Bearer {TOKEN}';
+  opContext.headers.Authorization = 'Bearer <token>';
 
   // Encode additional information in the body
   opContext.body = JSON.stringify({ query: operation.query, variables: operation.variables, mutationKey: 39933 });
@@ -159,13 +159,47 @@ All plugins are processed in the same order they were added in, and as you can i
 
 </doc-tip>
 
+## Plugin Configuration
+
+You might want to create a configurable plugin to publish or re-use in various ways. `villus` doesn't really offer any API for that but good old higher-order functions can be used to achieve that:
+
+```js
+function myPluginWithConfig({ prefix }) {
+  return ({ opContext, operation }) => {
+    // Add auth headers with configurable prefix
+    opContext.headers.Authorization = `${prefix} <token>`;
+  };
+}
+```
+
+## TypeScript Support
+
+While `villus` exports the `ClientPlugin` type, you can use the `definePlugin` helper to get automatic types for your plugins:
+
+```typescript
+import { definePlugin } from 'villus';
+
+// opContext will be automatically typed
+const myPlugin = definePlugin(({ opContext }) => {
+  opContext.headers.Authorization = 'Bearer <token>';
+});
+
+const myPluginWithConfig = (config: { prefix: string }) => {
+  // opContext will be automatically typed
+  return definePlugin(({ opContext }) => {
+    // Add auth headers with configurable prefix
+    opContext.headers.Authorization = `${prefix} <token>`;
+  });
+};
+```
+
 ## Example: Adding Authorization Headers
 
 It's very likely you have a authentication header you would like to add to your queries to be able to execute protected queries/mutations. A very common header is `Authorization` header which contains an auth token. Here is a snippet that shows how to add such headers to your queries:
 
 ```js
 function authPlugin({ opContext }) {
-  opContext.headers.Authorization = 'Bearer {TOKEN}';
+  opContext.headers.Authorization = 'Bearer <token>';
 }
 
 // later in your setup
@@ -242,7 +276,7 @@ To make sure you access the response, you need to do so in the `afterQuery` call
 let token = `TOKEN`;
 
 function authPluginWithRefresh({ opContext, afterQuery }) {
-  opContext.headers.Authorization = `Bearer ${token}`;
+  opContext.headers.Authorization = `Bearer $<token>`;
 
   afterQuery((result, { response }) => {
     // if no response, then the fetch plugin failed with a fatal error
