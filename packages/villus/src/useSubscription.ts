@@ -1,5 +1,4 @@
-import { inject, ref, Ref, onMounted } from 'vue-demi';
-import { Client } from './client';
+import { ref, Ref, onMounted } from 'vue-demi';
 import { VILLUS_CLIENT } from './symbols';
 import { Unsub, Operation, OperationResult, QueryVariables } from './types';
 import { CombinedError, injectWithSelf } from './utils';
