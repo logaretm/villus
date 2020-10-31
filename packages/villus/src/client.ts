@@ -1,5 +1,5 @@
 import { DEFAULT_FETCH_OPTS, getQueryKey } from './utils';
-import { cache, OperationWithCachePolicy } from './cache';
+import { cache } from './cache';
 import { fetch } from './fetch';
 import { dedup } from './dedup';
 import {
@@ -13,6 +13,7 @@ import {
   OperationType,
   AfterQueryCallback,
   ObservableLike,
+  OperationWithCachePolicy,
 } from './types';
 
 export interface ClientOptions {

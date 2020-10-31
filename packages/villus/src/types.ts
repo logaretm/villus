@@ -1,7 +1,6 @@
 import { Ref } from 'vue-demi';
 import { DocumentNode } from 'graphql';
-import { CombinedError } from './utils';
-import { OperationWithCachePolicy } from './cache';
+import { CombinedError } from './utils/error';
 import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 
 export interface OperationResult<TData = any> {
@@ -40,8 +39,6 @@ export interface GraphQLResponse<TData> {
   errors: any;
 }
 
-export type Fetcher = typeof fetch;
-
 export interface FetchOptions extends RequestInit {
   url?: string;
   headers: NonNullable<RequestInit['headers']>;
@@ -61,6 +58,10 @@ export type AfterQueryCallback = (
   result: OperationResult,
   ctx: { response?: ParsedResponse<unknown> }
 ) => void | Promise<void>;
+
+export interface OperationWithCachePolicy<TData, TVars> extends Operation<TData, TVars> {
+  cachePolicy?: CachePolicy;
+}
 
 export type ClientPluginOperation = OperationWithCachePolicy<unknown, unknown> & { type: OperationType; key: number };
 

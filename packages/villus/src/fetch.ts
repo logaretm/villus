@@ -1,9 +1,9 @@
 import { GraphQLError } from 'graphql';
-import { ClientPlugin, Fetcher, FetchOptions, Operation } from './types';
+import { ClientPlugin, FetchOptions, Operation } from './types';
 import { CombinedError, mergeFetchOpts, normalizeQuery, parseResponse, resolveGlobalFetch } from './utils';
 
 interface FetchPluginOpts {
-  fetch?: Fetcher;
+  fetch?: typeof window['fetch'];
 }
 
 export function fetch(opts?: FetchPluginOpts): ClientPlugin {

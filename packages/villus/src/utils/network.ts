@@ -1,4 +1,4 @@
-import { GraphQLResponse, FetchOptions, Fetcher, ParsedResponse } from '../types';
+import { GraphQLResponse, FetchOptions, ParsedResponse } from '../types';
 
 export async function parseResponse<TData>(response: Response): Promise<ParsedResponse<TData>> {
   let json: GraphQLResponse<TData>;
@@ -25,7 +25,7 @@ export async function parseResponse<TData>(response: Response): Promise<ParsedRe
   };
 }
 
-export function resolveGlobalFetch(): Fetcher | undefined {
+export function resolveGlobalFetch(): typeof fetch | undefined {
   if (typeof window !== 'undefined' && 'fetch' in window && window.fetch) {
     return window.fetch.bind(window);
   }
