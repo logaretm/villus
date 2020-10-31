@@ -1,7 +1,6 @@
 import { Ref } from 'vue-demi';
-import { DocumentNode } from 'graphql';
 import { CombinedError } from './utils/error';
-import { TypedDocumentNode } from '@graphql-typed-document-node/core';
+import { ParsedResponse, FetchOptions, Operation } from '../../shared/src';
 
 export interface OperationResult<TData = any> {
   data: TData | null;
@@ -11,11 +10,6 @@ export interface OperationResult<TData = any> {
 export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first' | 'cache-only';
 
 export type QueryVariables = Record<string, any>;
-
-export interface Operation<TData, TVars> {
-  query: string | DocumentNode | TypedDocumentNode<TData, TVars>;
-  variables?: TVars;
-}
 
 export interface ObserverLike<T> {
   next: (value: T) => void;
@@ -33,24 +27,6 @@ export interface ObservableLike<T> {
 }
 
 export type MaybeReactive<T> = T | Ref<T>;
-
-export interface GraphQLResponse<TData> {
-  data: TData;
-  errors: any;
-}
-
-export interface FetchOptions extends RequestInit {
-  url?: string;
-  headers: NonNullable<RequestInit['headers']>;
-}
-
-export interface ParsedResponse<TData> {
-  ok: boolean;
-  status: number;
-  statusText: string;
-  headers: Headers;
-  body: GraphQLResponse<TData> | null;
-}
 
 export type OperationType = 'query' | 'mutation' | 'subscription';
 

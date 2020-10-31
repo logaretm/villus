@@ -1,7 +1,7 @@
 import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { DocumentNode, print } from 'graphql';
-import { Operation } from '../types';
 import { stringify } from './stringify';
+import { Operation } from '../../../shared/src';
 
 /**
  * Normalizes a query string or object to a string.

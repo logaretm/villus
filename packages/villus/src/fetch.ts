@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql';
-import { ClientPlugin, FetchOptions, Operation } from './types';
-import { CombinedError, mergeFetchOpts, normalizeQuery, parseResponse, resolveGlobalFetch } from './utils';
+import { ClientPlugin } from './types';
+import { makeFetchOptions, resolveGlobalFetch, parseResponse } from '../../shared/src';
+import { CombinedError } from './utils';
 
 interface FetchPluginOpts {
   fetch?: typeof window['fetch'];
@@ -62,13 +63,4 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
       true
     );
   };
-}
-
-export function makeFetchOptions({ query, variables }: Operation<unknown, unknown>, opts: FetchOptions) {
-  const normalizedQuery = normalizeQuery(query);
-  if (!normalizedQuery) {
-    throw new Error('A query must be provided.');
-  }
-
-  return mergeFetchOpts({ body: JSON.stringify({ query: normalizedQuery, variables }) } as any, opts);
 }

@@ -1,7 +1,8 @@
 import { ref, Ref } from 'vue-demi';
-import { Operation, QueryVariables } from './types';
+import { QueryVariables } from './types';
 import { CombinedError, injectWithSelf } from './utils';
 import { VILLUS_CLIENT } from './symbols';
+import { Operation } from '../../shared/src';
 
 export function useMutation<TData = any, TVars = QueryVariables>(query: Operation<TData, TVars>['query']) {
   const client = injectWithSelf(VILLUS_CLIENT, () => {

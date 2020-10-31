@@ -1,13 +1,12 @@
-import { DEFAULT_FETCH_OPTS, getQueryKey } from './utils';
+import { getQueryKey } from './utils';
 import { cache } from './cache';
 import { fetch } from './fetch';
 import { dedup } from './dedup';
+import { DEFAULT_FETCH_OPTS, FetchOptions, Operation } from '../../shared/src';
 import {
   OperationResult,
   CachePolicy,
-  Operation,
   QueryVariables,
-  FetchOptions,
   ClientPlugin,
   ClientPluginContext,
   OperationType,

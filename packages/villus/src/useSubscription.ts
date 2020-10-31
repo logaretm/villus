@@ -1,7 +1,8 @@
 import { ref, Ref, onMounted } from 'vue-demi';
 import { VILLUS_CLIENT } from './symbols';
-import { Unsub, Operation, OperationResult, QueryVariables } from './types';
+import { Unsub, OperationResult, QueryVariables } from './types';
 import { CombinedError, injectWithSelf } from './utils';
+import { Operation } from '../../shared/src';
 
 interface SubscriptionCompositeOptions<TData, TVars> {
   query: Operation<TData, TVars>['query'];

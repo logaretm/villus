@@ -1,4 +1,5 @@
-import { GraphQLResponse, FetchOptions, ParsedResponse } from '../types';
+import { normalizeQuery } from '../../villus/src/utils/query';
+import { FetchOptions, GraphQLResponse, ParsedResponse, Operation } from './types';
 
 export async function parseResponse<TData>(response: Response): Promise<ParsedResponse<TData>> {
   let json: GraphQLResponse<TData>;
@@ -54,4 +55,13 @@ export function mergeFetchOpts(lhs: FetchOptions, rhs: FetchOptions) {
       ...(rhs.headers || {}),
     },
   };
+}
+
+export function makeFetchOptions({ query, variables }: Operation<unknown, unknown>, opts: FetchOptions) {
+  const normalizedQuery = normalizeQuery(query);
+  if (!normalizedQuery) {
+    throw new Error('A query must be provided.');
+  }
+
+  return mergeFetchOpts({ body: JSON.stringify({ query: normalizedQuery, variables }) } as any, opts);
 }
