@@ -1,9 +1,7 @@
 # villus
 
 <p align="center">
-
-![alt text](https://raw.githubusercontent.com/logaretm/villus/main/logo.png)
-
+  <img width="80%" src="https://raw.githubusercontent.com/logaretm/villus/main/logo.png">
 </p>
 
 <p align="center">
@@ -30,12 +28,15 @@ This is forked from my previous work at [vue-gql](https://github.com/baianat/vue
 - 👕 **TypeScript:** Written in Typescript and Supports GraphQL TS tooling
 - 🖇 **Composable:** Built for the Composition API
 - ⚡️ **Suspense:** Supports the `<Suspense>` API in Vue 3
+- 🔌 **Plugins:** Use existing plugins and create custom ones
 - Higher-order components available
 - Supports both Vue 2.x (with @vue/composition-api) and 3.0
 
 ## Why use this
 
-GraphQL is just a simple HTTP request. This library is meant to be a tiny client without all the bells and whistles attached to Apollo and its ecosystem, it offers simple strategies to cache and batch your GraphQL requests.
+GraphQL is just a simple HTTP request. This library is meant to be a tiny client without all the bells and whistles attached to Apollo and its ecosystem which subsequently means it is faster across the board due to it's smaller bundle size and reduced overhead. `villus` offers simple strategies to cache and batch, dedup your GraphQL requests.
+
+`villus` also supports file uploads and subscriptions without compromising bundle size through plugins.
 
 If you are looking for a more full-featured client use [vue-apollo](https://github.com/vue/vue-apollo), it has everything you need.
 
@@ -43,7 +44,7 @@ You can read more about it in the [announcement post](https://logaretm.com/blog/
 
 ## Documentation
 
-You can find the full [documentation here](https://villus.logaretm.com/)
+You can find the [documentation here](https://villus.logaretm.com/)
 
 ## Quick Start
 
@@ -65,7 +66,7 @@ Or because villus is so simple, you can use it via CDN:
 <!-- Vue Demi is needed for Vue 2 and 3 support -->
 <script src="https://unpkg.com/vue-demi@0.4.1/lib/index.iife.js"></script>
 <!-- Villus -->
-<script src="https://unpkg.com/villus@1.0.0-rc.1/dist/villus.min.js"></script>
+<script src="https://unpkg.com/villus@latest/dist/villus.min.js"></script>
 ```
 
 You can now use it with either the new Vue composition API or higher order components.
@@ -121,11 +122,9 @@ export default {
 </script>
 ```
 
-There is also the higher-order component flavor if you prefer to use them instead. Check the [docs for more examples and details](https://villus.logaretm.com/).
+There is also the higher-order component flavor if you prefer to use them instead. Read the [docs for more examples and details](https://villus.logaretm.com/).
 
----
-
-You can do a lot more than that, `villus` makes frequent tasks such as re-fetching, caching, deduplication, mutations, and subscriptions a breeze. It has even built-in `Suspense` support with Vue 3! Consult the [documentation](https://villus.logaretm.com) for more use-cases and examples.
+`villus` makes frequent tasks such as re-fetching, caching, deduplication, mutations, and subscriptions a breeze. It has even built-in `Suspense` support with Vue 3! Consult the [documentation](https://villus.logaretm.com) for more use-cases and examples.
 
 ## Compatibility
 
