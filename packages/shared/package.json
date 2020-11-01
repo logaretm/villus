@@ -1,9 +1,0 @@
-{
-  "name": "shared",
-  "version": "0.0.0",
-  "private": true,
-  "description": "Shared Types/Modules between packages",
-  "author": "Abdelrahman Awad <logaretm1@gmail.com>",
-  "homepage": "https://github.com/logaretm/villus#readme",
-  "license": "MIT"
-}
