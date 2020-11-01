@@ -16,7 +16,7 @@
 
 </p>
 
-> Villus is a finger-like structures in the small intestine. They help to absorb digested food.
+<h6 align="center">Villus is a finger-like structures in the small intestine. They help to absorb digested food.</h6>
 
 A small and fast GraphQL client for Vue.js.
 
