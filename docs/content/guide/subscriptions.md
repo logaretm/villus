@@ -28,6 +28,38 @@ const client = useClient({
 
 Once you've setup the `handleSubscriptions` plugin, you can now use the `useSubscription` function or the `Subscription`.
 
+<doc-tip>
+  
+You can also use [`graphql-ws`](https://github.com/enisdenjo/graphql-ws) package for your subscriptions, but you will need to modify your `subscriptionForwarder` to look like this:
+
+```js
+import { createClient } from 'graphql-ws';
+
+const wsClient = createClient({
+  url: 'ws://localhost:9005/graphql',
+});
+const subscriptionForwarder = operation => {
+  return {
+    subscribe: obs => {
+      wsClient.subscribe(
+        {
+          query: operation.query,
+        },
+        obs
+      );
+    },
+  };
+};
+
+// in your setup
+const client = useClient({
+  url: 'http://localhost:4000/graphql',
+  use: [handleSubscriptions(subscriptionForwarder), ...defaultPlugins()],
+});
+```
+
+</doc-tip>
+
 ## Executing Subscriptions
 
 The `useSubscription` function has a similar API as it exposes a `data` property that you can watch
