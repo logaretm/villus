@@ -13,4 +13,5 @@ export { cache } from './cache';
 export { dedup } from './dedup';
 export { definePlugin } from './helpers';
 export { CombinedError } from './utils/error';
+export { getQueryKey } from './utils/query';
 export { ClientPlugin, ClientPluginContext } from './types';
