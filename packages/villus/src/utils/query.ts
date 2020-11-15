@@ -9,9 +9,9 @@ export function hash(x: string) {
   return h >>> 0;
 }
 
-export function getQueryKey(operation: Operation<unknown, unknown>) {
+export function getQueryKey(operation: Operation<unknown, unknown>, ...components: string[]) {
   const variables = operation.variables ? stringify(operation.variables) : '';
   const query = normalizeQuery(operation.query);
 
-  return hash(`${query}${variables}`);
+  return hash(`${query}${variables}${components.join('')}`);
 }
