@@ -14,6 +14,7 @@ import {
   ObservableLike,
   OperationWithCachePolicy,
 } from './types';
+import { CombinedError } from '../dist/villus';
 
 export interface ClientOptions {
   url: string;
@@ -89,7 +90,17 @@ export class Client {
       );
     }
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
+      if (!result) {
+        reject(
+          new CombinedError({
+            response: undefined,
+            networkError: new Error('Failed to resolve operation value, check the plugins and their order'),
+          })
+        );
+        return;
+      }
+
       resolve(result);
 
       (async () => {

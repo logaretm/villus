@@ -13,7 +13,7 @@
     "dist/villus.d.ts"
   ],
   "dependencies": {
-    "vue-demi": "^0.4.3"
+    "vue-demi": "^0.4.5"
   },
   "peerDependencies": {
     "@vue/composition-api": "^1.0.0-beta.1",
