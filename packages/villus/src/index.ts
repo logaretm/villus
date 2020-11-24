@@ -1,3 +1,4 @@
+export { createVillus } from './createVillus';
 export { createClient, defaultPlugins, Client } from './client';
 export { Provider, withProvider } from './Provider';
 export { Query } from './Query';
