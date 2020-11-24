@@ -7,7 +7,7 @@ before_install:
 install:
   - npm install -g codecov
   - yarn
-after_success:
   - yarn lerna boostrap
+after_success:
   - yarn test:cover --maxWorkers=$(nproc)
   - bash <(curl -s https://codecov.io/bash)
