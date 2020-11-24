@@ -14,7 +14,6 @@ import {
   ObservableLike,
   OperationWithCachePolicy,
 } from './types';
-import { CombinedError } from '../dist/villus';
 
 export interface ClientOptions {
   url: string;
