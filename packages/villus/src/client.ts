@@ -84,19 +84,12 @@ export class Client {
       }
     }
 
-    if (!result) {
-      throw new Error(
-        'Operation result was not set by any plugin, make sure you have default plugins configured or review documentation'
-      );
-    }
-
     return new Promise((resolve, reject) => {
       if (!result) {
         reject(
-          new CombinedError({
-            response: undefined,
-            networkError: new Error('Failed to resolve operation value, check the plugins and their order'),
-          })
+          new Error(
+            'Operation result was not set by any plugin, make sure you have default plugins configured or review documentation'
+          )
         );
         return;
       }
