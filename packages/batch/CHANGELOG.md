@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.1](https://github.com/logaretm/villus/compare/@villus/batch@1.0.0-rc.0...@villus/batch@1.0.0-rc.1) (2020-11-25)
+
+
+### Bug Fixes
+
+* weird linting issue ([e0141d5](https://github.com/logaretm/villus/commit/e0141d512b65ab4b5ec2e714caa57c716fd53491))
+
+
+
+
+
 # [1.0.0-rc.0](https://github.com/logaretm/villus/compare/@villus/batch@1.0.0-beta.3...@villus/batch@1.0.0-rc.0) (2020-11-01)
 
 

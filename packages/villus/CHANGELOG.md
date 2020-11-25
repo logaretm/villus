@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.5](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.4...villus@1.0.0-rc.5) (2020-11-25)
+
+
+### Bug Fixes
+
+* remove invalid import ([3bfdaf7](https://github.com/logaretm/villus/commit/3bfdaf77028549c22705f0a702bb84a4dcd1d66f))
+
+
+### Features
+
+* allow adding other hash items to the query key helper ([5d18e8a](https://github.com/logaretm/villus/commit/5d18e8a7c3016cc9adef0bacfe43076878654a73))
+* expose getQueryKey helper ([26548d5](https://github.com/logaretm/villus/commit/26548d575d579bd1cff44c7cbacc93c07e06fee8))
+* re-execute subscriptions closes [#79](https://github.com/logaretm/villus/issues/79) ([0ec4680](https://github.com/logaretm/villus/commit/0ec46802c80788531a7b84c516eac9d879b076e8))
+
+
+
+
+
 # [1.0.0-rc.4](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.3...villus@1.0.0-rc.4) (2020-11-01)
 
 
