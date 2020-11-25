@@ -7,7 +7,7 @@ before_install:
 install:
   - npm install -g codecov
   - yarn
-  - yarn lerna bootstrap
+  - yarn lerna bootstrap --force-local && yarn lerna link --force-local
 after_success:
   - yarn test:cover --maxWorkers=$(nproc)
   - bash <(curl -s https://codecov.io/bash)
