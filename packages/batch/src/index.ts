@@ -36,7 +36,7 @@ export function batch(opts?: BatchOptions) {
 
       operations.push({
         resolveOp: (response: any) => {
-          resolve();
+          resolve(undefined);
           if (!response.ok || !response.body) {
             useResult(
               {
