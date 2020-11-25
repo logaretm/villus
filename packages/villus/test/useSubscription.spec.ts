@@ -3,6 +3,8 @@ import flushPromises from 'flush-promises';
 import { mount } from './helpers/mount';
 import { makeObservable } from './helpers/observer';
 import { defaultPlugins, handleSubscriptions, useClient, useSubscription } from '../src/index';
+import { computed, ref } from 'vue';
+import { subscribe } from 'graphql';
 
 jest.useFakeTimers();
 
@@ -36,6 +38,87 @@ test('Default reducer', async () => {
   jest.advanceTimersByTime(501);
   await flushPromises();
   expect(document.querySelector('span')?.textContent).toBe('4');
+});
+
+test('Re-executes subscriptions if query changes', async () => {
+  const unSubSpy = jest.fn();
+  const subSpy = jest.fn(() => ({
+    subscribe() {
+      return {
+        unsubscribe: unSubSpy,
+      };
+    },
+  }));
+
+  const id = ref(0);
+
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        use: [handleSubscriptions(subSpy), ...defaultPlugins()],
+      });
+
+      const query = computed(() => {
+        return `subscription (id: ${id.value}) { newMessages }`;
+      });
+
+      const { data } = useSubscription<Message>({ query });
+
+      return { messages: data };
+    },
+    template: `<div></div>`,
+  });
+
+  await flushPromises();
+  expect(subSpy).toHaveBeenCalledTimes(1);
+  expect(unSubSpy).not.toHaveBeenCalled();
+  id.value++;
+  await flushPromises();
+  await flushPromises();
+  expect(unSubSpy).toHaveBeenCalledTimes(1);
+  expect(subSpy).toHaveBeenCalledTimes(2);
+});
+
+test('Re-executes subscriptions if variables changes', async () => {
+  const unSubSpy = jest.fn();
+  const subSpy = jest.fn(() => ({
+    subscribe() {
+      return {
+        unsubscribe: unSubSpy,
+      };
+    },
+  }));
+
+  const id = ref(0);
+
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        use: [handleSubscriptions(subSpy), ...defaultPlugins()],
+      });
+
+      const variables = computed(() => {
+        return {
+          id: id.value,
+        };
+      });
+
+      const { data } = useSubscription<Message>({ query: `subscription { newMessages }`, variables });
+
+      return { messages: data };
+    },
+    template: `<div></div>`,
+  });
+
+  await flushPromises();
+  expect(subSpy).toHaveBeenCalledTimes(1);
+  expect(unSubSpy).not.toHaveBeenCalled();
+  id.value++;
+  await flushPromises();
+  expect(unSubSpy).toHaveBeenCalledTimes(1);
+  expect(subSpy).toHaveBeenCalledTimes(2);
 });
 
 test('Handles subscriptions with a custom reducer', async () => {
