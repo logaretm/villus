@@ -48,7 +48,7 @@ const server = mockServer(schema, {
   }),
   Query: () => ({
     posts: () => new MockList(5),
-    post: (_: any, { id }: any) => {
+    post({ id }: any) {
       return {
         id,
         title: `Hello World: ${id}`,
