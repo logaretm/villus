@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.6](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.5...villus@1.0.0-rc.6) (2020-11-26)
+
+
+### Features
+
+* add install method to client ([#83](https://github.com/logaretm/villus/issues/83)) ([397bbdb](https://github.com/logaretm/villus/commit/397bbdb612a4bacfd5f3b9242d48b2ec94ccde14))
+
+
+
+
+
 # [1.0.0-rc.5](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.4...villus@1.0.0-rc.5) (2020-11-25)
 
 

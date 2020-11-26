@@ -1,6 +1,6 @@
 {
   "name": "villus",
-  "version": "1.0.0-rc.5",
+  "version": "1.0.0-rc.6",
   "description": "A small and fast GraphQL client for Vue.js",
   "module": "dist/villus.esm.js",
   "unpkg": "dist/villus.js",
