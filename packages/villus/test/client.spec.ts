@@ -1,5 +1,7 @@
+import { createApp } from 'vue';
+import flushPromises from 'flush-promises';
 import { defaultPlugins } from '../src/client';
-import { createClient } from '../src/index';
+import { createClient, useQuery } from '../src/index';
 import { ClientPlugin } from '../src/types';
 
 test('fails if a fetcher was not provided', () => {
@@ -65,4 +67,31 @@ test('plugins can use the response', async () => {
 
   await client.executeQuery({ query: '{ posts { id title } }' });
   expect(spy).toHaveBeenCalledWith('application/json');
+});
+
+test('works as a Vue plugin', async () => {
+  const app = createApp({
+    setup() {
+      const { data, error } = useQuery({ query: '{ posts { id title } }' });
+
+      return { data, error };
+    },
+    template: `<div>'
+      <div>{{ error }}</div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </div>`,
+  });
+
+  app.use(
+    createClient({
+      url: 'https://test.com/graphql',
+    })
+  );
+
+  document.body.innerHTML = `<div id="app"></div>`;
+  app.mount('#app');
+  await flushPromises();
+  expect(document.querySelectorAll('li').length).toBe(5);
 });
