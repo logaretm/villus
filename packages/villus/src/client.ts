@@ -14,6 +14,8 @@ import {
   ObservableLike,
   OperationWithCachePolicy,
 } from './types';
+import { VILLUS_CLIENT } from './symbols';
+import { App } from 'vue-demi';
 
 export interface ClientOptions {
   url: string;
@@ -24,6 +26,8 @@ export interface ClientOptions {
 export const defaultPlugins = () => [cache(), dedup(), fetch()];
 
 export class Client {
+  public install: (app: App) => void = () => undefined;
+
   private url: string;
 
   private defaultCachePolicy: CachePolicy;
@@ -132,5 +136,7 @@ export class Client {
 }
 
 export function createClient(opts: ClientOptions) {
-  return new Client(opts);
+  const client = new Client(opts);
+  client.install = (app: App) => app.provide(VILLUS_CLIENT, client);
+  return client;
 }
