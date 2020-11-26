@@ -46,6 +46,24 @@ const client = createClient({
 });
 ```
 
+### Client as Vue Plugin
+
+The `villus` client also doubles as a Vue plugin that you can use to inject the client to your application, it is similar to calling `useClient` but injects the `villus` client at the app level rather than the component-tree level.
+
+```js
+import { createClient } from 'villus';
+import { createApp } from 'vue';
+
+const app = createApp({...});
+
+const client = createClient({
+  url: '/graphql', // your endpoint.
+});
+
+// Makes the villus client available to your app
+app.use(client);
+```
+
 ### Queries
 
 First you need to build the client instance, which can be done using `createClient` function exported by `villus`:
