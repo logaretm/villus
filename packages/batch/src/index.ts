@@ -1,5 +1,5 @@
 import { CombinedError, definePlugin } from 'villus';
-import { GraphQLResponse, resolveGlobalFetch, parseResponse, makeFetchOptions } from '../../shared/src';
+import { GraphQLResponse, resolveGlobalFetch, parseResponse, makeFetchOptions, ParsedResponse } from '../../shared/src';
 
 interface BatchOptions {
   fetch?: typeof fetch;
@@ -19,7 +19,7 @@ export function batch(opts?: BatchOptions) {
     throw new Error('Could not resolve fetch, please provide a fetch function');
   }
 
-  let operations: { resolveOp: (r: any) => void; body: string }[] = [];
+  let operations: { resolveOp: (r: any, err?: Error) => void; body: string }[] = [];
   let scheduledConsume: any;
 
   return definePlugin(function batchPlugin(ctx) {
@@ -35,8 +35,22 @@ export function batch(opts?: BatchOptions) {
       }
 
       operations.push({
-        resolveOp: (response: any) => {
+        resolveOp: (response: any, err) => {
           resolve(undefined);
+          if (err) {
+            useResult(
+              {
+                data: null,
+                error: new CombinedError({
+                  response: response,
+                  networkError: err,
+                }),
+              },
+              true
+            );
+            return;
+          }
+
           if (!response.ok || !response.body) {
             useResult(
               {
@@ -48,6 +62,7 @@ export function batch(opts?: BatchOptions) {
               },
               true
             );
+            return;
           }
 
           useResult(
@@ -68,30 +83,37 @@ export function batch(opts?: BatchOptions) {
         const body = `[${operations.map(o => o.body).join(',')}]`;
         operations = [];
 
-        const response = await fetch(opContext.url as string, {
-          method: opContext.method,
-          headers: {
-            ...opContext.headers,
-          },
-          body,
-        }).then(parseResponse);
+        let response: ParsedResponse<unknown>;
+        try {
+          response = await fetch(opContext.url as string, {
+            method: opContext.method,
+            headers: {
+              ...opContext.headers,
+            },
+            body,
+          }).then(parseResponse);
 
-        ctx.response = response;
-        const resInit: Partial<Response> = {
-          ok: response.ok,
-          status: response.status,
-          statusText: response.statusText,
-          headers: response.headers,
-        };
+          ctx.response = response;
+          const resInit: Partial<Response> = {
+            ok: response.ok,
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+          };
 
-        pending.forEach(function unBatchResult(o, oIdx) {
-          const opResult = ((response.body as unknown) as BatchedGraphQLResponse)[oIdx];
+          pending.forEach(function unBatchResult(o, oIdx) {
+            const opResult = ((response.body as unknown) as BatchedGraphQLResponse)[oIdx];
 
-          o.resolveOp({
-            body: opResult,
-            ...resInit,
+            o.resolveOp({
+              body: opResult,
+              ...resInit,
+            });
           });
-        });
+        } catch (err) {
+          pending.forEach(function unBatchErrorResult(o) {
+            o.resolveOp(undefined, err);
+          });
+        }
       }, timeout);
     });
   });
