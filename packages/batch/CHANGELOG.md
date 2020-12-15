@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.3](https://github.com/logaretm/villus/compare/@villus/batch@1.0.0-rc.2...@villus/batch@1.0.0-rc.3) (2020-12-15)
+
+
+### Bug Fixes
+
+* handle network errors for the batch plugin closes [#86](https://github.com/logaretm/villus/issues/86) ([39a92aa](https://github.com/logaretm/villus/commit/39a92aa35a0ae54c772b317d35cd73d84548ec62))
+
+
+
+
+
 # [1.0.0-rc.2](https://github.com/logaretm/villus/compare/@villus/batch@1.0.0-rc.1...@villus/batch@1.0.0-rc.2) (2020-11-26)
 
 **Note:** Version bump only for package @villus/batch
