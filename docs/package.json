@@ -25,11 +25,11 @@
     "@nuxt/content": "^1.10.0",
     "@nuxtjs/pwa": "^3.2.2",
     "lodash.groupby": "^4.6.0",
-    "nuxt": "^2.14.7"
+    "nuxt": "^2.14.12"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^4.0.0",
-    "@nuxtjs/tailwindcss": "^3.2.0",
+    "@nuxtjs/tailwindcss": "^3.4.1",
     "postcss-nested": "^4.2.3"
   }
 }
