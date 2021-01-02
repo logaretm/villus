@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.7](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.6...villus@1.0.0-rc.7) (2021-01-02)
+
+
+### Features
+
+* remove initialIsFetching and sync it with fetchOnMount ([a1e75c4](https://github.com/logaretm/villus/commit/a1e75c4aeb800a2e22e123bb1c75271258ff09dc))
+
+
+
+
+
 # [1.0.0-rc.6](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.5...villus@1.0.0-rc.6) (2020-11-26)
 
 
