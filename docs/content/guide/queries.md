@@ -488,27 +488,8 @@ export default {
 
 Whenever a re-fetch is triggered, or the query was executed again the `isFetching` will be updated accordingly so you don't have to keep it in sync with anything nor you have to create your own boolean refs for indications.
 
-<doc-tip title="Initial isFetching">
+<doc-tip title="Initial isFetching value">
 
-Because `isFetching` is initially set to `false`, you might see a flash of your content due to the default fetching behavior when the component mounts, so there is a short time before it is set to `true`.
-
-To avoid this you could set the `isFetching` value either by setting it directly:
-
-```js
-const { data, isFetching } = useQuery({
-  query: GetPosts,
-});
-
-isFetching.value = true;
-```
-
-Or you could set it in the query options:
-
-```js
-const { data, isFetching } = useQuery({
-  query: GetPosts,
-  initialIsFetching: true,
-});
-```
+Is fetching default value is `true` if `fetchOnMount` is enabled, otherwise it will start off with `false`.
 
 </doc-tip>

@@ -30,10 +30,6 @@ export const Query = defineComponent({
       type: Boolean,
       default: true,
     },
-    initialIsFetching: {
-      type: Boolean,
-      default: false,
-    },
   },
   setup(props, ctx) {
     function createRenderFn(api: ReturnType<typeof useQuery>) {
@@ -74,7 +70,6 @@ export const Query = defineComponent({
       variables: toRef(props, 'variables') as Ref<Record<string, any> | undefined>,
       fetchOnMount: props.fetchOnMount,
       cachePolicy: props.cachePolicy as CachePolicy,
-      initialIsFetching: props.initialIsFetching,
     };
 
     if (props.suspended) {

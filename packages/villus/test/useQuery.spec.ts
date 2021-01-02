@@ -723,7 +723,8 @@ describe('useQuery()', () => {
     expect(fetch).toHaveBeenCalledTimes(2); // only 2 unique queries were executed
   });
 
-  test('can set initial isFetching value with initialIsFetching', async () => {
+  test('isFetching should start with true if fetchOnMount is true', async () => {
+    const spy = jest.fn();
     mount({
       setup() {
         useClient({
@@ -732,9 +733,9 @@ describe('useQuery()', () => {
 
         const { isFetching } = useQuery({
           query: '{ posts { id title } }',
-          fetchOnMount: false,
-          initialIsFetching: true,
         });
+
+        spy(isFetching.value);
 
         return {
           isFetching,
@@ -744,6 +745,33 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(document.querySelector('#el')?.textContent).toBe('true');
+    expect(spy).toHaveBeenCalledWith(true);
+  });
+
+  test('isFetching should start with false if fetchOnMount is false', async () => {
+    const spy = jest.fn();
+
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { isFetching } = useQuery({
+          query: '{ posts { id title } }',
+          fetchOnMount: false,
+        });
+
+        spy(isFetching.value);
+
+        return {
+          isFetching,
+        };
+      },
+      template: `<div id="el">{{ isFetching }}</div>`,
+    });
+
+    await flushPromises();
+    expect(spy).toHaveBeenCalledWith(false);
   });
 });
