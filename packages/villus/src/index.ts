@@ -15,3 +15,4 @@ export { definePlugin } from './helpers';
 export { CombinedError } from './utils/error';
 export { getQueryKey } from './utils/query';
 export { ClientPlugin, ClientPluginContext } from './types';
+export { VILLUS_CLIENT } from './symbols';
