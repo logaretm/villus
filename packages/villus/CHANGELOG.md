@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.8](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.7...villus@1.0.0-rc.8) (2021-01-05)
+
+
+### Bug Fixes
+
+* expose villus client symbol for testing ([141bf97](https://github.com/logaretm/villus/commit/141bf9717250894d58a71ce3dd8a28160677b229))
+
+
+
+
+
 # [1.0.0-rc.7](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.6...villus@1.0.0-rc.7) (2021-01-02)
 
 

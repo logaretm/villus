@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.4](https://github.com/logaretm/villus/compare/@villus/multipart@1.0.0-rc.3...@villus/multipart@1.0.0-rc.4) (2021-01-05)
+
+**Note:** Version bump only for package @villus/multipart
+
+
+
+
+
 # [1.0.0-rc.3](https://github.com/logaretm/villus/compare/@villus/multipart@1.0.0-rc.2...@villus/multipart@1.0.0-rc.3) (2021-01-02)
 
 **Note:** Version bump only for package @villus/multipart
