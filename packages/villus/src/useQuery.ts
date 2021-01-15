@@ -11,27 +11,45 @@ interface QueryCompositeOptions<TData, TVars> {
   fetchOnMount?: boolean;
 }
 
-interface QueryExecutionOpts {
+interface QueryExecutionOpts<TVars> {
   cachePolicy?: CachePolicy;
+  variables?: TVars;
 }
 
-function useQuery<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptions<TData, TVars>) {
+export interface BaseQueryApi<TData = any, TVars = QueryVariables> {
+  data: Ref<TData | null>;
+  isFetching: Ref<boolean>;
+  isDone: Ref<boolean>;
+  error: Ref<CombinedError | null>;
+  execute(overrideOpts: QueryExecutionOpts<TVars>): Promise<{ data: TData | null; error: CombinedError | null }>;
+  unwatchVariables(): void;
+  watchVariables(): void;
+  isWatchingVariables: Ref<boolean>;
+}
+
+export interface QueryApi<TData, TVars> extends BaseQueryApi<TData, TVars> {
+  then(onFulfilled: (value: BaseQueryApi<TData, TVars>) => any): Promise<BaseQueryApi<TData, TVars>>;
+}
+
+function useQuery<TData = any, TVars = QueryVariables>(
+  opts: QueryCompositeOptions<TData, TVars>
+): QueryApi<TData, TVars> {
   const client = injectWithSelf(VILLUS_CLIENT, () => {
     return new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   });
 
   let { query, variables, cachePolicy, fetchOnMount } = normalizeOptions(opts);
   const data: Ref<TData | null> = ref(null);
-  const isFetching = ref(fetchOnMount);
+  const isFetching = ref<boolean>(fetchOnMount ?? false);
   const isDone = ref(false);
   const error: Ref<CombinedError | null> = ref(null);
 
-  async function execute(overrideOpts: QueryExecutionOpts = {}) {
+  async function execute(overrideOpts: QueryExecutionOpts<TVars> = {}) {
     isFetching.value = true;
     const vars = (isRef(variables) ? variables.value : variables) || {};
     const res = await client.executeQuery<TData, TVars>({
       query: isRef(query) ? query.value : query,
-      variables: vars as TVars, // FIXME: Try to avoid casting
+      variables: overrideOpts.variables || (vars as TVars), // FIXME: Try to avoid casting
       cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
     });
 
@@ -99,7 +117,7 @@ function useQuery<TData = any, TVars = QueryVariables>(opts: QueryCompositeOptio
 
   return {
     ...api,
-    async then(onFulfilled: (value: any) => any) {
+    async then(onFulfilled: (value: BaseQueryApi<TData, TVars>) => any): Promise<BaseQueryApi<TData, TVars>> {
       fetchOnMount = false;
       await api.execute();
 

@@ -1,6 +1,6 @@
 import { defineComponent, Ref, toRef, watch } from 'vue-demi';
 import { CachePolicy } from './types';
-import { useQuery } from './useQuery';
+import { useQuery, BaseQueryApi } from './useQuery';
 import { normalizeChildren } from './utils';
 
 export const Query = defineComponent({
@@ -32,7 +32,7 @@ export const Query = defineComponent({
     },
   },
   setup(props, ctx) {
-    function createRenderFn(api: ReturnType<typeof useQuery>) {
+    function createRenderFn(api: BaseQueryApi<any>) {
       const { data, error, isFetching, isDone, execute, watchVariables, isWatchingVariables, unwatchVariables } = api;
 
       watch(
