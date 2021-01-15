@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.9](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.8...villus@1.0.0-rc.9) (2021-01-15)
+
+
+### Features
+
+* enhance suspense query suspense API and allow override query vars ([c38e574](https://github.com/logaretm/villus/commit/c38e574a12801cf8e15b05c37637bc62b1cae9b4))
+
+
+
+
+
 # [1.0.0-rc.8](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.7...villus@1.0.0-rc.8) (2021-01-05)
 
 
