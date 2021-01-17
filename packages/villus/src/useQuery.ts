@@ -12,8 +12,8 @@ interface QueryCompositeOptions<TData, TVars> {
 }
 
 interface QueryExecutionOpts<TVars> {
-  cachePolicy?: CachePolicy;
-  variables?: TVars;
+  cachePolicy: CachePolicy;
+  variables: TVars;
 }
 
 export interface BaseQueryApi<TData = any, TVars = QueryVariables> {
@@ -21,7 +21,9 @@ export interface BaseQueryApi<TData = any, TVars = QueryVariables> {
   isFetching: Ref<boolean>;
   isDone: Ref<boolean>;
   error: Ref<CombinedError | null>;
-  execute(overrideOpts: QueryExecutionOpts<TVars>): Promise<{ data: TData | null; error: CombinedError | null }>;
+  execute(
+    overrideOpts?: Partial<QueryExecutionOpts<TVars>>
+  ): Promise<{ data: TData | null; error: CombinedError | null }>;
   unwatchVariables(): void;
   watchVariables(): void;
   isWatchingVariables: Ref<boolean>;
@@ -44,12 +46,12 @@ function useQuery<TData = any, TVars = QueryVariables>(
   const isDone = ref(false);
   const error: Ref<CombinedError | null> = ref(null);
 
-  async function execute(overrideOpts: QueryExecutionOpts<TVars> = {}) {
+  async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
     isFetching.value = true;
     const vars = (isRef(variables) ? variables.value : variables) || {};
     const res = await client.executeQuery<TData, TVars>({
       query: isRef(query) ? query.value : query,
-      variables: overrideOpts.variables || (vars as TVars), // FIXME: Try to avoid casting
+      variables: overrideOpts?.variables || (vars as TVars), // FIXME: Try to avoid casting
       cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
     });
 
