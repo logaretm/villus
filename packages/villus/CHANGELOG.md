@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.10](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.9...villus@1.0.0-rc.10) (2021-01-17)
+
+
+### Bug Fixes
+
+* ensure executeopts arg is optional ([f3f4bca](https://github.com/logaretm/villus/commit/f3f4bca64121938d22329ed70f5d6dceb1693121))
+
+
+
+
+
 # [1.0.0-rc.9](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.8...villus@1.0.0-rc.9) (2021-01-15)
 
 
