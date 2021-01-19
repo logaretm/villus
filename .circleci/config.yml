@@ -24,8 +24,8 @@ jobs:
           name: Bootstrap Monorepo
           command: yarn lerna bootstrap
       - run:
-          name: Run tests
-          command: npm run test:ci
+          name: Build
+          command: yarn build
       - run:
           name: Generate Coverage
           command: npm run cover:ci
