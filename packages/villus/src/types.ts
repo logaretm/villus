@@ -39,7 +39,10 @@ export interface OperationWithCachePolicy<TData, TVars> extends Operation<TData,
   cachePolicy?: CachePolicy;
 }
 
-export type ClientPluginOperation = OperationWithCachePolicy<unknown, unknown> & { type: OperationType; key: number };
+export type ClientPluginOperation = OperationWithCachePolicy<unknown, QueryVariables> & {
+  type: OperationType;
+  key: number;
+};
 
 export interface ClientPluginContext {
   useResult: (result: OperationResult<unknown>, terminate?: boolean) => void;
