@@ -21,6 +21,9 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - run:
+          name: Bootstrap Monorepo
+          command: yarn lerna bootstrap
+      - run:
           name: Run tests
           command: npm run test:ci
       - run:
