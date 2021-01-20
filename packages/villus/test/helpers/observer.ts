@@ -1,4 +1,4 @@
-export function makeObservable(throws = false) {
+export function makeObservable(throws = false, simulateError = false) {
   let interval: any;
   let counter = 0;
   const observable = {
@@ -9,7 +9,12 @@ export function makeObservable(throws = false) {
           return;
         }
 
-        next({ data: { message: 'New message', id: counter++ } });
+        if (!simulateError) {
+          next({ data: { message: 'New message', id: counter++ } });
+          return;
+        }
+
+        next({ errors: [new Error('sadge')], data: null });
       }, 100);
 
       afterAll(() => {

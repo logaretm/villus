@@ -13,6 +13,7 @@ import {
   AfterQueryCallback,
   ObservableLike,
   OperationWithCachePolicy,
+  StandardOperationResult,
 } from './types';
 import { VILLUS_CLIENT } from './symbols';
 import { App } from 'vue-demi';
@@ -131,7 +132,7 @@ export class Client {
   public async executeSubscription<TData = any, TVars = QueryVariables>(operation: Operation<TData, TVars>) {
     const result = await this.execute<TData, TVars>(operation, 'subscription');
 
-    return (result as unknown) as ObservableLike<OperationResult<TData>>;
+    return (result as unknown) as ObservableLike<StandardOperationResult<TData>>;
   }
 }
 

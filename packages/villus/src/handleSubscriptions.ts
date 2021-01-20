@@ -1,8 +1,8 @@
-import { ClientPlugin, ClientPluginOperation, ObservableLike, OperationResult } from './types';
+import { ClientPlugin, ClientPluginOperation, ObservableLike, StandardOperationResult } from './types';
 
 export type SubscriptionForwarder<TData = any> = (
   operation: ClientPluginOperation
-) => ObservableLike<OperationResult<TData>>;
+) => ObservableLike<StandardOperationResult<TData>>;
 
 export function handleSubscriptions(forwarder: SubscriptionForwarder): ClientPlugin {
   const forward = forwarder;

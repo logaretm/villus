@@ -1,6 +1,6 @@
 import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef } from 'vue-demi';
 import { VILLUS_CLIENT } from './symbols';
-import { Unsub, OperationResult, QueryVariables, MaybeReactive } from './types';
+import { Unsub, OperationResult, QueryVariables, MaybeReactive, StandardOperationResult } from './types';
 import { CombinedError, injectWithSelf } from './utils';
 import { Operation } from '../../shared/src';
 
@@ -26,7 +26,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   const isPaused = ref(false);
 
   async function initObserver() {
-    function handler(result: OperationResult<TData>) {
+    function handleResponse(result: OperationResult<TData>) {
       data.value = reduce(data.value as TResult, result) as any;
       error.value = result.error;
     }
@@ -39,13 +39,17 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     });
 
     return result.subscribe({
-      next: handler,
+      next(result) {
+        const response = transformResult(result);
+
+        handleResponse(response);
+      },
       // eslint-disable-next-line
       complete() {},
       error(err) {
-        const result = { data: null, error: new CombinedError({ networkError: err, response: null }) };
+        const response = { data: null, error: new CombinedError({ networkError: err, response: null }) };
 
-        return handler(result);
+        return handleResponse(response);
       },
     });
   }
@@ -84,4 +88,18 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   }
 
   return { data, error, isPaused, pause, resume };
+}
+
+/**
+ * Transforms the result from a standard operation result to villus result
+ */
+function transformResult<TData>(result: StandardOperationResult<TData>): OperationResult<TData> {
+  if (!result.errors) {
+    return { data: result.data || null, error: null };
+  }
+
+  return {
+    data: result.data || null,
+    error: new CombinedError({ graphqlErrors: [...result.errors], response: null }),
+  };
 }

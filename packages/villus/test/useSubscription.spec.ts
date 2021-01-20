@@ -1,10 +1,9 @@
 /* eslint-disable no-unused-expressions */
 import flushPromises from 'flush-promises';
 import { mount } from './helpers/mount';
-import { makeObservable } from './helpers/observer';
+import { makeObservable, tick } from './helpers/observer';
 import { defaultPlugins, handleSubscriptions, useClient, useSubscription } from '../src/index';
 import { computed, ref } from 'vue';
-import { subscribe } from 'graphql';
 
 jest.useFakeTimers();
 
@@ -289,4 +288,32 @@ test('Fails if subscription forwarder was not set', () => {
     // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
     expect(err.message).toContain('No subscription forwarder was set');
   }
+});
+
+test('handles subscription errors', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        use: [handleSubscriptions(() => makeObservable(false, true)), ...defaultPlugins()],
+      });
+
+      const { data, error } = useSubscription<Message>({ query: `subscription { newMessages }` });
+
+      return { messages: data.value, error };
+    },
+    template: `
+      <div>
+        <div v-if="messages && !error">
+          <span>{{ messages.id }}</span>
+        </div>
+        <span id="error" v-if="error">{{ error }}</span> 
+      </div>
+    `,
+  });
+
+  await flushPromises();
+  await tick(1);
+  await flushPromises();
+  expect(document.querySelector('#error')?.textContent).toBeTruthy();
 });
