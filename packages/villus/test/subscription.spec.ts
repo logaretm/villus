@@ -82,7 +82,7 @@ test('can pause and resume subscriptions', async () => {
   await flushPromises();
   tick(7);
   await flushPromises();
-  expect(document.querySelector('span')?.textContent).toBe('6');
+  expect(document.querySelector('span')?.textContent).not.toBe('2');
 });
 
 test('Can provide a custom reducer', async () => {

@@ -25,12 +25,12 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   const error: Ref<CombinedError | null> = ref(null);
   const isPaused = ref(false);
 
-  async function initObserver() {
-    function handleResponse(result: OperationResult<TData>) {
-      data.value = reduce(data.value as TResult, result) as any;
-      error.value = result.error;
-    }
+  function handleResponse(result: OperationResult<TData>) {
+    data.value = reduce(data.value as TResult, result) as any;
+    error.value = result.error;
+  }
 
+  async function initObserver() {
     isPaused.value = false;
 
     const result = await client.executeSubscription<TData, TVars>({
@@ -40,6 +40,10 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
 
     return result.subscribe({
       next(result) {
+        if (isPaused.value) {
+          return;
+        }
+
         const response = transformResult(result);
 
         handleResponse(response);
@@ -47,6 +51,10 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
       // eslint-disable-next-line
       complete() {},
       error(err) {
+        if (isPaused.value) {
+          return;
+        }
+
         const response = { data: null, error: new CombinedError({ networkError: err, response: null }) };
 
         return handleResponse(response);
@@ -60,23 +68,25 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   });
 
   onBeforeUnmount(() => {
-    observer.unsubscribe();
+    if (observer) {
+      observer.unsubscribe();
+    }
   });
 
   function pause() {
-    if (!observer) return;
-
-    observer.unsubscribe();
     isPaused.value = true;
   }
 
   async function resume() {
-    observer = await initObserver();
+    isPaused.value = false;
   }
 
-  function reInit() {
-    pause();
-    resume();
+  async function reInit() {
+    if (observer) {
+      observer.unsubscribe();
+    }
+
+    observer = await initObserver();
   }
 
   if (isRef(query)) {
