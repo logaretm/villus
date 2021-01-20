@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.11](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.10...villus@1.0.0-rc.11) (2021-01-20)
+
+
+### Bug Fixes
+
+* only resubscribe if the query/vars change closes [#94](https://github.com/logaretm/villus/issues/94) ([739b75e](https://github.com/logaretm/villus/commit/739b75e8e140fa418011672ba081bf10a4611237))
+* use QueryVariables as default type for subscription forwarder [#93](https://github.com/logaretm/villus/issues/93) ([3791251](https://github.com/logaretm/villus/commit/37912514ce7f5fe1123d0f2c46c95963c67203ef))
+* use standard execution result for subscription forwarder closes [#93](https://github.com/logaretm/villus/issues/93) ([9ced480](https://github.com/logaretm/villus/commit/9ced480d387edb8d1d8893cc88d3ae0e856a897c))
+
+
+
+
+
 # [1.0.0-rc.10](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.9...villus@1.0.0-rc.10) (2021-01-17)
 
 

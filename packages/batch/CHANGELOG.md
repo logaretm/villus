@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.8](https://github.com/logaretm/villus/compare/@villus/batch@1.0.0-rc.7...@villus/batch@1.0.0-rc.8) (2021-01-20)
+
+**Note:** Version bump only for package @villus/batch
+
+
+
+
+
 # [1.0.0-rc.7](https://github.com/logaretm/villus/compare/@villus/batch@1.0.0-rc.6...@villus/batch@1.0.0-rc.7) (2021-01-17)
 
 **Note:** Version bump only for package @villus/batch
