@@ -65,12 +65,6 @@
     "vue": "^3.0.0",
     "vue-jest": "^3.0.7"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint --edit -E HUSKY_GIT_PARAMS"
-    }
-  },
   "bundlesize": [
     {
       "path": "./dist/*.min.js",
