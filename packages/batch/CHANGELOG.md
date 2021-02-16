@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.12](https://github.com/logaretm/villus/compare/v1.0.0-beta.0...v1.0.0-rc.12) (2021-02-16)
+
+
+### Bug Fixes
+
+* handle network errors for the batch plugin closes [#86](https://github.com/logaretm/villus/issues/86) ([39a92aa](https://github.com/logaretm/villus/commit/39a92aa35a0ae54c772b317d35cd73d84548ec62))
+* weird linting issue ([e0141d5](https://github.com/logaretm/villus/commit/e0141d512b65ab4b5ec2e714caa57c716fd53491))
+
+
+### Features
+
+* implement response context closes [#62](https://github.com/logaretm/villus/issues/62) ([04cae29](https://github.com/logaretm/villus/commit/04cae29a8ba6163127a6da4985e37585084763ce))
+* use public API and add villus to deps ([4b98e79](https://github.com/logaretm/villus/commit/4b98e79d3e146da608a45d72ac81e00b6ba735ec))
+
+
+
+
+
 # [1.0.0-rc.8](https://github.com/logaretm/villus/compare/@villus/batch@1.0.0-rc.7...@villus/batch@1.0.0-rc.8) (2021-01-20)
 
 **Note:** Version bump only for package @villus/batch

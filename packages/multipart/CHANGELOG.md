@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.12](https://github.com/logaretm/villus/compare/v1.0.0-beta.0...v1.0.0-rc.12) (2021-02-16)
+
+
+### Features
+
+* added basic implementation of multipart fetcher ([bca5ee8](https://github.com/logaretm/villus/commit/bca5ee857a0c9583850d4f23e673c3467321044f))
+* use the public plugin API and add villus to multipart deps ([77fb90f](https://github.com/logaretm/villus/commit/77fb90f71e400b3000dd18ffbfa7f355365c5c01))
+
+
+
+
+
 # [1.0.0-rc.7](https://github.com/logaretm/villus/compare/@villus/multipart@1.0.0-rc.6...@villus/multipart@1.0.0-rc.7) (2021-01-20)
 
 **Note:** Version bump only for package @villus/multipart
