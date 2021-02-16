@@ -18,6 +18,14 @@ The `useMutation` function returns the following properties and functions:
 | isDone     | `Ref<boolean>`                                           | Set to true when the mutation is executed at least once, never resets to `false`            |
 | isFetching | `Ref<boolean>`                                           | Set to true when the mutation is executing by calling `execute` explicitly                  |
 
+## Mutation Options
+
+Aside from the mutation itself, the `useMutation` function accepts an optional second argument containing these options:
+
+| Property | Type                                  | Required | Description                                                                                                                         |
+| -------- | ------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| context  | `{ headers: Record<string, string> }` | **No**   | A object to be merged with the fetch options, currently accepts `headers`. The `context` can be a reactive `ref` or `computed ref`. |
+
 ## Signature and Usage
 
 You can use `useMutation` like this:
