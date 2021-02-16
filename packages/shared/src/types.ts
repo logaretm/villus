@@ -8,7 +8,7 @@ export interface GraphQLResponse<TData> {
 
 export interface FetchOptions extends RequestInit {
   url?: string;
-  headers: NonNullable<RequestInit['headers']>;
+  headers: NonNullable<Record<string, string>>;
 }
 
 export interface ParsedResponse<TData> {

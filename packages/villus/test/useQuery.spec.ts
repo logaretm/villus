@@ -774,4 +774,39 @@ describe('useQuery()', () => {
     await flushPromises();
     expect(spy).toHaveBeenCalledWith(false);
   });
+
+  test('additional context can be provided per query', async () => {
+    const ctx = {
+      'SOME-AUTH-HEADER': 'OH YEA',
+    };
+
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        useQuery({
+          query: '{ posts { id title } }',
+          context: {
+            headers: ctx,
+          },
+        });
+
+        return {};
+      },
+      template: `<div></div>`,
+    });
+
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledWith(
+      'https://test.com/graphql',
+      expect.objectContaining({
+        url: 'https://test.com/graphql',
+        body: expect.anything(),
+        method: 'POST',
+        headers: expect.objectContaining(ctx),
+      })
+    );
+  });
 });

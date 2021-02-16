@@ -14,6 +14,7 @@ import {
   ObservableLike,
   OperationWithCachePolicy,
   StandardOperationResult,
+  QueryExecutionContext,
 } from './types';
 import { VILLUS_CLIENT } from './symbols';
 import { App } from 'vue-demi';
@@ -46,14 +47,16 @@ export class Client {
    */
   private async execute<TData, TVars>(
     operation: Operation<TData, TVars> | OperationWithCachePolicy<TData, TVars>,
-    type: OperationType
+    type: OperationType,
+    queryContext?: QueryExecutionContext
   ): Promise<OperationResult<TData>> {
     let result: OperationResult<TData> | undefined;
     const opContext: FetchOptions = {
       url: this.url,
       ...DEFAULT_FETCH_OPTS,
-      headers: { ...DEFAULT_FETCH_OPTS.headers },
+      headers: { ...DEFAULT_FETCH_OPTS.headers, ...(queryContext?.headers || {}) },
     };
+
     let terminateSignal = false;
     const afterQuery: AfterQueryCallback[] = [];
 
@@ -118,15 +121,17 @@ export class Client {
   }
 
   public async executeQuery<TData = any, TVars = QueryVariables>(
-    operation: OperationWithCachePolicy<TData, TVars>
+    operation: OperationWithCachePolicy<TData, TVars>,
+    queryContext?: QueryExecutionContext
   ): Promise<OperationResult> {
-    return this.execute<TData, TVars>(operation, 'query');
+    return this.execute<TData, TVars>(operation, 'query', queryContext);
   }
 
   public async executeMutation<TData = any, TVars = QueryVariables>(
-    operation: Operation<TData, TVars>
+    operation: Operation<TData, TVars>,
+    queryContext?: QueryExecutionContext
   ): Promise<OperationResult> {
-    return this.execute<TData, TVars>(operation, 'mutation');
+    return this.execute<TData, TVars>(operation, 'mutation', queryContext);
   }
 
   public async executeSubscription<TData = any, TVars = QueryVariables>(operation: Operation<TData, TVars>) {

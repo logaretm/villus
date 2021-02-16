@@ -1,4 +1,4 @@
-import { Ref } from 'vue-demi';
+import { ComputedRef, Ref } from 'vue-demi';
 import { CombinedError } from './utils/error';
 import { ParsedResponse, FetchOptions, Operation } from '../../shared/src';
 import type { ExecutionResult } from 'graphql';
@@ -29,7 +29,7 @@ export interface ObservableLike<T> {
   subscribe(observer: ObserverLike<T>): Unsub;
 }
 
-export type MaybeReactive<T> = T | Ref<T>;
+export type MaybeReactive<T> = T | ComputedRef<T> | Ref<T>;
 
 export type OperationType = 'query' | 'mutation' | 'subscription';
 
@@ -46,6 +46,10 @@ export type ClientPluginOperation = OperationWithCachePolicy<unknown, QueryVaria
   type: OperationType;
   key: number;
 };
+
+export interface QueryExecutionContext {
+  headers: Record<string, string>;
+}
 
 export interface ClientPluginContext {
   useResult: (result: OperationResult<unknown>, terminate?: boolean) => void;

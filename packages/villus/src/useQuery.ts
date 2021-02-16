@@ -1,6 +1,6 @@
-import { isReactive, isRef, onMounted, Ref, ref, watch } from 'vue-demi';
+import { isReactive, isRef, onMounted, Ref, ref, unref, watch } from 'vue-demi';
 import stringify from 'fast-json-stable-stringify';
-import { CachePolicy, MaybeReactive, QueryVariables } from './types';
+import { CachePolicy, MaybeReactive, QueryExecutionContext, QueryVariables } from './types';
 import { hash, CombinedError, toWatchableSource, injectWithSelf } from './utils';
 import { VILLUS_CLIENT } from './symbols';
 import { Operation } from '../../shared/src';
@@ -8,6 +8,7 @@ import { Operation } from '../../shared/src';
 interface QueryCompositeOptions<TData, TVars> {
   query: MaybeReactive<Operation<TData, TVars>['query']>;
   variables?: MaybeReactive<TVars>;
+  context?: MaybeReactive<QueryExecutionContext>;
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
 }
@@ -50,11 +51,14 @@ function useQuery<TData = any, TVars = QueryVariables>(
   async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
     isFetching.value = true;
     const vars = (isRef(variables) ? variables.value : variables) || {};
-    const res = await client.executeQuery<TData, TVars>({
-      query: isRef(query) ? query.value : query,
-      variables: overrideOpts?.variables || (vars as TVars), // FIXME: Try to avoid casting
-      cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
-    });
+    const res = await client.executeQuery<TData, TVars>(
+      {
+        query: isRef(query) ? query.value : query,
+        variables: overrideOpts?.variables || (vars as TVars), // FIXME: Try to avoid casting
+        cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
+      },
+      unref(opts?.context)
+    );
 
     data.value = res.data as TData;
     error.value = res.error;
