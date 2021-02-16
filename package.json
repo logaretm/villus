@@ -39,6 +39,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-standard": "^5.0.0",
+    "fast-json-stable-stringify": "^2.1.0",
     "filesize": "^6.1.0",
     "flush-promises": "^1.0.2",
     "graphql": "^15.5.0",

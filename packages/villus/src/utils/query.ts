@@ -1,4 +1,5 @@
-import { Operation, normalizeQuery, stringify } from '../../../shared/src';
+import stringify from 'fast-json-stable-stringify';
+import { Operation, normalizeQuery } from '../../../shared/src';
 
 export function hash(x: string) {
   let h, i, l;

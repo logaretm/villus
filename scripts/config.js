@@ -1,6 +1,8 @@
 const path = require('path');
 const typescript = require('rollup-plugin-typescript2');
 const replace = require('rollup-plugin-replace');
+const commonjs = require('rollup-plugin-commonjs');
+const resolve = require('rollup-plugin-node-resolve');
 
 const formatNameMap = {
   villus: 'Villus',
@@ -63,7 +65,14 @@ function createConfig(pkg, format) {
     input: {
       input: path.resolve(__dirname, `../packages/${pkg}/src/index.ts`),
       external: pkgExternals[pkg],
-      plugins: [tsPlugin, replace({ __VERSION__: version })],
+      plugins: [
+        tsPlugin,
+        resolve({
+          dedupe: ['fast-json-stable-stringify'],
+        }),
+        commonjs(),
+        replace({ __VERSION__: version }),
+      ],
     },
     output: {
       banner: `/**
