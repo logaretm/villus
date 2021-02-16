@@ -22,14 +22,14 @@
   "dependencies": {
     "@docsearch/css": "^1.0.0-alpha.28",
     "@docsearch/js": "^1.0.0-alpha.28",
-    "@nuxt/content": "^1.10.0",
-    "@nuxtjs/pwa": "^3.2.2",
+    "@nuxt/content": "^1.13.1",
+    "@nuxtjs/pwa": "^3.3.5",
     "lodash.groupby": "^4.6.0",
-    "nuxt": "^2.14.12"
+    "nuxt": "^2.15.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^4.0.0",
-    "@nuxtjs/tailwindcss": "^3.4.1",
+    "@nuxtjs/tailwindcss": "^3.4.2",
     "postcss-nested": "^4.2.3"
   }
 }
