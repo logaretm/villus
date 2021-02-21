@@ -160,7 +160,7 @@ const client = createClient({
   use: [handleSubscriptions(subscriptionForwarder), ...defaultPlugins()],
 });
 
-const observable = client.executeSubscription({
+const observable = await client.executeSubscription({
   query: 'your subscription query',
   variables: {
     // any variables
