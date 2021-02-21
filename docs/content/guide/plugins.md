@@ -184,11 +184,11 @@ const myPlugin = definePlugin(({ opContext }) => {
   opContext.headers.Authorization = 'Bearer <token>';
 });
 
-const myPluginWithConfig = (prefix: string) => {
+const myPluginWithConfig = (config: { prefix: string }) => {
   // opContext will be automatically typed
   return definePlugin(({ opContext }) => {
     // Add auth headers with configurable prefix
-    opContext.headers.Authorization = `${prefix} <token>`;
+    opContext.headers.Authorization = `${config.prefix} <token>`;
   });
 };
 ```
