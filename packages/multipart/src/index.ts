@@ -4,7 +4,7 @@ import { extractFiles } from 'extract-files';
 export function multipart() {
   return definePlugin(function multipartPlugin(context) {
     const { operation, opContext } = context;
-    const { files, clone: variables } = extractFiles({ ...((operation?.variables as Record<string, any>) || {}) });
+    const { files, clone: variables } = extractFiles({ ...(operation?.variables || {}) });
 
     if (!files.size) {
       return;
