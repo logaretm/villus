@@ -107,7 +107,7 @@ Calling `useResult` mutliple times in the pipeline (by multiple plugins) won't h
 
 ### afterQuery()
 
-The `afterQuery` function allows you to run a callback after the query is finished, the callback receives the GraphQL response as the first and only argument at the moment.
+The `afterQuery` function allows you to run a callback after the query is finished, the callback receives the GraphQL response as the first argument.
 
 For example the `cache` plugin makes use of this to cache the operation response, here is an snippet of what happens in the `cache` plugin:
 
@@ -117,6 +117,19 @@ function cachePlugin({ afterQuery, useResult, operation }) {
   afterQuery(result => {
     // Set the cache result after query is resolved
     setCacheResult(operation, result);
+  });
+  // ...
+}
+```
+
+Additionally you can have access to the actual response returned by the `fetch` API, the second argument is an object that contains the `response` property:
+
+```js
+function somePlugin({ afterQuery, useResult, operation }) {
+  // ...
+  afterQuery((result, { response }) => {
+    // do something with the response
+    console.log(response);
   });
   // ...
 }
