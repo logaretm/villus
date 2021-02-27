@@ -1,6 +1,6 @@
 <template>
   <aside class="px-6 pt-24">
-    <nav class="space-y-8 text-sm">
+    <nav class="space-y-8 md:text-sm overflow-y-auto overscroll-y-contain">
       <div v-for="category in categories" :key="category.title">
         <p class="text-xs font-bold text-gray-800 uppercase">
           {{ category.title }}
@@ -61,6 +61,9 @@ export default {
 
 <style lang="postcss" scoped>
 nav {
+  padding-right: 7px;
+  max-height: calc(80vh - 96px);
+
   a {
     @screen motion {
       transition: color 0.2s ease-in-out;
@@ -72,6 +75,46 @@ nav {
 
     &.nuxt-link-active {
       @apply text-accent-800;
+    }
+  }
+
+  /* Global Scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 7px;
+    cursor: pointer;
+    /*background-color: rgba(229, 231, 235, var(--bg-opacity));*/
+  }
+  &::-webkit-scrollbar-track {
+    background-color: none;
+    cursor: pointer;
+    /*background: red;*/
+  }
+  &::-webkit-scrollbar-thumb {
+    cursor: pointer;
+    background-color: #e8e8e8; /* #E7E5E4; */
+    border-radius: 50px;
+    /*outline: 1px solid grey;*/
+  }
+}
+
+.is-dark {
+  nav {
+    /* Global Scrollbar styling */
+    &::-webkit-scrollbar {
+      width: 7px;
+      cursor: pointer;
+      /*background-color: rgba(229, 231, 235, var(--bg-opacity));*/
+    }
+    &::-webkit-scrollbar-track {
+      background-color: none;
+      cursor: pointer;
+      /*background: red;*/
+    }
+    &::-webkit-scrollbar-thumb {
+      cursor: pointer;
+      background-color: #333; /* #E7E5E4; */
+      border-radius: 50px;
+      /*outline: 1px solid grey;*/
     }
   }
 }
