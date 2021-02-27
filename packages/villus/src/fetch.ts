@@ -32,6 +32,7 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
 
     // Set the response on the context
     ctx.response = response;
+    const data = response.body?.data;
     if (!response.ok || !response.body) {
       // It is possible than a non-200 response is returned with errors, it should be treated as GraphQL error
       const ctorOptions: { response: typeof response; graphqlErrors?: GraphQLError[]; networkError?: Error } = {
@@ -46,7 +47,7 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
 
       return useResult(
         {
-          data: null,
+          data,
           error: new CombinedError(ctorOptions),
         },
         true
@@ -55,7 +56,7 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
 
     useResult(
       {
-        data: response.body.data,
+        data,
         error: response.body.errors
           ? new CombinedError({ response: response, graphqlErrors: response.body.errors })
           : null,
