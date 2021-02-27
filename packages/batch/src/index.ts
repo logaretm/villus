@@ -1,3 +1,4 @@
+import { GraphQLError } from 'graphql';
 import { CombinedError, definePlugin } from 'villus';
 import { GraphQLResponse, resolveGlobalFetch, parseResponse, makeFetchOptions, ParsedResponse } from '../../shared/src';
 
@@ -19,7 +20,7 @@ export function batch(opts?: BatchOptions) {
     throw new Error('Could not resolve fetch, please provide a fetch function');
   }
 
-  let operations: { resolveOp: (r: any, err?: Error) => void; body: string }[] = [];
+  let operations: { resolveOp: (r: any, opIdx: number, err?: Error) => void; body: string }[] = [];
   let scheduledConsume: any;
 
   return definePlugin(function batchPlugin(ctx) {
@@ -35,8 +36,9 @@ export function batch(opts?: BatchOptions) {
       }
 
       operations.push({
-        resolveOp: (response: any, err) => {
+        resolveOp: (response: ParsedResponse<unknown>, opIdx, err) => {
           resolve(undefined);
+          // Handle DNS errors
           if (err) {
             useResult(
               {
@@ -51,14 +53,14 @@ export function batch(opts?: BatchOptions) {
             return;
           }
 
+          const data = response.body?.data || null;
           if (!response.ok || !response.body) {
+            const error = buildErrorObject(response, opIdx);
+
             useResult(
               {
-                data: null,
-                error: new CombinedError({
-                  response: response,
-                  networkError: new Error(response.statusText),
-                }),
+                data,
+                error,
               },
               true
             );
@@ -67,7 +69,7 @@ export function batch(opts?: BatchOptions) {
 
           useResult(
             {
-              data: response.body.data,
+              data,
               error: response.body.errors
                 ? new CombinedError({ response: response, graphqlErrors: response.body.errors })
                 : null,
@@ -104,17 +106,40 @@ export function batch(opts?: BatchOptions) {
           pending.forEach(function unBatchResult(o, oIdx) {
             const opResult = ((response.body as unknown) as BatchedGraphQLResponse)[oIdx];
 
-            o.resolveOp({
-              body: opResult,
-              ...resInit,
-            });
+            o.resolveOp(
+              {
+                body: opResult,
+                ...resInit,
+              },
+              oIdx
+            );
           });
         } catch (err) {
-          pending.forEach(function unBatchErrorResult(o) {
-            o.resolveOp(undefined, err);
+          // This usually mean a network fetch error which is limited to DNS lookup errors
+          // or the user may not be connected to the internet, so it's safe to assume no data is in the response
+          pending.forEach(function unBatchErrorResult(o, oIdx) {
+            o.resolveOp(undefined, oIdx, err);
           });
         }
       }, timeout);
     });
   });
+}
+
+function buildErrorObject(response: ParsedResponse<unknown>, opIdx: number) {
+  // It is possible than a non-200 response is returned with errors, it should be treated as GraphQL error
+  const ctorOptions: { response: typeof response; graphqlErrors?: GraphQLError[]; networkError?: Error } = {
+    response,
+  };
+
+  if (Array.isArray(response.body)) {
+    const opResponse = response.body[opIdx];
+    ctorOptions.graphqlErrors = opResponse?.errors;
+  } else if (response.body?.errors) {
+    ctorOptions.graphqlErrors = response.body.errors;
+  } else {
+    ctorOptions.networkError = new Error(response.statusText);
+  }
+
+  return new CombinedError(ctorOptions);
 }
