@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.13](https://github.com/logaretm/villus/compare/v1.0.0-rc.12...v1.0.0-rc.13) (2021-02-27)
+
+
+### Bug Fixes
+
+* ensure fetch recongizes partial error responses ([6c0a6fa](https://github.com/logaretm/villus/commit/6c0a6fa81a57131c9c23758435a1143f3fafd33d))
+
+
+
+
+
 # [1.0.0-rc.12](https://github.com/logaretm/villus/compare/v1.0.0-beta.0...v1.0.0-rc.12) (2021-02-16)
 
 
