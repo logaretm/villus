@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.14](https://github.com/logaretm/villus/compare/v1.0.0-rc.13...v1.0.0-rc.14) (2021-03-04)
+
+
+### Bug Fixes
+
+* handle multiple executions state integrity ([43d936b](https://github.com/logaretm/villus/commit/43d936b91a407af0e3e83a1f1a1c81dbb00d0806))
+
+
+
+
+
 # [1.0.0-rc.13](https://github.com/logaretm/villus/compare/v1.0.0-rc.12...v1.0.0-rc.13) (2021-02-27)
 
 
