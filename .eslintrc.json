@@ -10,10 +10,9 @@
     "standard",
     "plugin:jest/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
-    "prettier/@typescript-eslint"
+    "plugin:prettier/recommended"
   ],
-  "plugins": ["jest", "prettier", "@typescript-eslint"],
+  "plugins": ["jest", "prettier"],
   "rules": {
     "@typescript-eslint/camelcase": "off",
     "@typescript-eslint/no-explicit-any": "off",

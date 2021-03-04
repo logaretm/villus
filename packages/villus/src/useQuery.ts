@@ -4,6 +4,7 @@ import { CachePolicy, MaybeReactive, QueryExecutionContext, QueryVariables } fro
 import { hash, CombinedError, toWatchableSource, injectWithSelf } from './utils';
 import { VILLUS_CLIENT } from './symbols';
 import { Operation } from '../../shared/src';
+import { OperationResult } from '../dist/villus';
 
 interface QueryCompositeOptions<TData, TVars> {
   query: MaybeReactive<Operation<TData, TVars>['query']>;
@@ -48,10 +49,12 @@ function useQuery<TData = any, TVars = QueryVariables>(
   const isDone = ref(false);
   const error: Ref<CombinedError | null> = ref(null);
 
+  // This is to prevent state mutation for racing requests, basically favoring the very last one
+  let lastPendingOperation: Promise<OperationResult<TData>> | undefined;
   async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
     isFetching.value = true;
     const vars = (isRef(variables) ? variables.value : variables) || {};
-    const res = await client.executeQuery<TData, TVars>(
+    const pendingExecution = client.executeQuery<TData, TVars>(
       {
         query: isRef(query) ? query.value : query,
         variables: overrideOpts?.variables || (vars as TVars), // FIXME: Try to avoid casting
@@ -60,10 +63,19 @@ function useQuery<TData = any, TVars = QueryVariables>(
       unref(opts?.context)
     );
 
+    lastPendingOperation = pendingExecution;
+    const res = await pendingExecution;
+    // Avoid state mutation if the pendingExecution isn't the last pending operation
+    if (pendingExecution !== lastPendingOperation) {
+      // we still return this result to preserve the integrity of "execute" calls
+      return { data: res.data as TData, error: res.error };
+    }
+
     data.value = res.data as TData;
     error.value = res.error;
     isDone.value = true;
     isFetching.value = false;
+    lastPendingOperation = undefined;
 
     return { data: data.value, error: error.value };
   }

@@ -1,5 +1,5 @@
 import { ref, Ref, unref } from 'vue-demi';
-import { MaybeReactive, QueryExecutionContext, QueryVariables } from './types';
+import { MaybeReactive, OperationResult, QueryExecutionContext, QueryVariables } from './types';
 import { CombinedError, injectWithSelf } from './utils';
 import { VILLUS_CLIENT } from './symbols';
 import { Operation } from '../../shared/src';
@@ -21,10 +21,12 @@ export function useMutation<TData = any, TVars = QueryVariables>(
   const isDone = ref(false);
   const error: Ref<CombinedError | null> = ref(null);
 
+  // This is to prevent state mutation for racing requests, basically favoring the very last one
+  let lastPendingOperation: Promise<OperationResult<TData>> | undefined;
   async function execute(variables?: TVars) {
     isFetching.value = true;
     const vars = variables || {};
-    const res = await client.executeMutation<TData, TVars>(
+    const pendingExecution = client.executeMutation<TData, TVars>(
       {
         query,
         variables: vars as TVars, // FIXME: fix this casting
@@ -32,10 +34,19 @@ export function useMutation<TData = any, TVars = QueryVariables>(
       unref(opts?.context)
     );
 
+    lastPendingOperation = pendingExecution;
+    const res = await pendingExecution;
+    // Avoid state mutation if the pendingExecution isn't the last pending operation
+    if (pendingExecution !== lastPendingOperation) {
+      // we still return this result to preserve the integrity of "execute" calls
+      return { data: res.data as TData, error: res.error };
+    }
+
     data.value = res.data;
     error.value = res.error;
     isDone.value = true;
     isFetching.value = false;
+    lastPendingOperation = undefined;
 
     return { data: data.value, error: error.value };
   }
