@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.15](https://github.com/logaretm/villus/compare/v1.0.0-rc.14...v1.0.0-rc.15) (2021-03-06)
+
+
+### Bug Fixes
+
+* explose villus public types closes [#105](https://github.com/logaretm/villus/issues/105) ([a9b62de](https://github.com/logaretm/villus/commit/a9b62de2e24fba25c26cbf3527606d6f258a8b4c))
+* used correct import of type ([608018a](https://github.com/logaretm/villus/commit/608018a6fad13cd2626cf3cc9609e28d5dc472b4))
+
+
+
+
+
 # [1.0.0-rc.14](https://github.com/logaretm/villus/compare/v1.0.0-rc.13...v1.0.0-rc.14) (2021-03-04)
 
 
