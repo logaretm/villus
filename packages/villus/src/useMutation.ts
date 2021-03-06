@@ -1,6 +1,6 @@
-import { ref, Ref, unref } from 'vue';
+import { ref, Ref, shallowRef, unref } from 'vue';
 import { MaybeRef, OperationResult, QueryExecutionContext, QueryVariables } from './types';
-import { CombinedError, injectWithSelf } from './utils';
+import { CombinedError, createAbortController, injectWithSelf } from './utils';
 import { VILLUS_CLIENT } from './symbols';
 import { Operation } from '../../shared/src';
 
@@ -20,18 +20,29 @@ export function useMutation<TData = any, TVars = QueryVariables>(
   const isFetching = ref(false);
   const isDone = ref(false);
   const error: Ref<CombinedError | null> = ref(null);
-
+  const abortController = shallowRef<AbortController | undefined>();
+  function abort() {
+    abortController.value?.abort();
+  }
   // This is to prevent state mutation for racing requests, basically favoring the very last one
   let lastPendingOperation: Promise<OperationResult<TData>> | undefined;
   async function execute(variables?: TVars) {
+    if (lastPendingOperation) {
+      abort();
+    }
+
     isFetching.value = true;
+    abortController.value = createAbortController();
     const vars = variables || {};
     const pendingExecution = client.executeMutation<TData, TVars>(
       {
         query,
         variables: vars as TVars, // FIXME: fix this casting
       },
-      unref(opts?.context)
+      {
+        signal: abortController.value?.signal,
+        ...unref(opts?.context || {}),
+      }
     );
 
     lastPendingOperation = pendingExecution;
@@ -42,14 +53,21 @@ export function useMutation<TData = any, TVars = QueryVariables>(
       return { data: res.data as TData, error: res.error };
     }
 
+    lastPendingOperation = undefined;
+    abortController.value = undefined;
+    if (res.aborted) {
+      isFetching.value = false;
+
+      return res;
+    }
+
     data.value = res.data;
     error.value = res.error;
     isDone.value = true;
     isFetching.value = false;
-    lastPendingOperation = undefined;
 
     return { data: data.value, error: error.value };
   }
 
-  return { data, isFetching, isDone, error, execute };
+  return { data, isFetching, isDone, error, execute, abort };
 }

@@ -62,13 +62,13 @@ function useQuery<TData = any, TVars = QueryVariables>(
   }
 
   async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
-    isFetching.value = true;
-    const vars = (isRef(variables) ? variables.value : variables) || {};
     if (lastPendingOperation) {
       abort();
     }
 
+    isFetching.value = true;
     abortController.value = createAbortController();
+    const vars = (isRef(variables) ? variables.value : variables) || {};
     const pendingExecution = client.executeQuery<TData, TVars>(
       {
         query: isRef(query) ? query.value : query,
@@ -90,8 +90,12 @@ function useQuery<TData = any, TVars = QueryVariables>(
       return { data: res.data as TData, error: res.error };
     }
 
+    lastPendingOperation = undefined;
+    abortController.value = undefined;
+
     if (res.aborted) {
       isFetching.value = false;
+
       return res;
     }
 
@@ -100,8 +104,6 @@ function useQuery<TData = any, TVars = QueryVariables>(
     error.value = res.error;
     isDone.value = true;
     isFetching.value = false;
-    lastPendingOperation = undefined;
-    abortController.value = undefined;
 
     return { data: data.value, error: error.value };
   }
