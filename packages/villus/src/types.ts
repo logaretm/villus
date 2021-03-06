@@ -20,13 +20,13 @@ export interface ObserverLike<T> {
   complete: () => void;
 }
 
-export interface Unsub {
+export interface Unsubscribable {
   unsubscribe: () => void;
 }
 
 /** An abstract observable interface conforming to: https://github.com/tc39/proposal-observable */
 export interface ObservableLike<T> {
-  subscribe(observer: ObserverLike<T>): Unsub;
+  subscribe(observer: ObserverLike<T>): Unsubscribable;
 }
 
 export type MaybeReactive<T> = T | ComputedRef<T> | Ref<T>;

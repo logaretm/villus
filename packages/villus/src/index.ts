@@ -14,5 +14,5 @@ export { dedup } from './dedup';
 export { definePlugin } from './helpers';
 export { CombinedError } from './utils/error';
 export { getQueryKey } from './utils/query';
-export { ClientPlugin, ClientPluginContext, OperationResult } from './types';
+export * from './types';
 export { VILLUS_CLIENT } from './symbols';

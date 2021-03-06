@@ -1,6 +1,6 @@
 import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef } from 'vue-demi';
 import { VILLUS_CLIENT } from './symbols';
-import { Unsub, OperationResult, QueryVariables, MaybeReactive, StandardOperationResult } from './types';
+import { Unsubscribable, OperationResult, QueryVariables, MaybeReactive, StandardOperationResult } from './types';
 import { CombinedError, injectWithSelf } from './utils';
 import { Operation } from '../../shared/src';
 
@@ -62,7 +62,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     });
   }
 
-  let observer: Unsub;
+  let observer: Unsubscribable;
   onMounted(async () => {
     observer = await initObserver();
   });
