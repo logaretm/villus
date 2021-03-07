@@ -354,13 +354,6 @@ describe('useQuery()', () => {
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(document.querySelector('h1')?.textContent).toContain('12');
     });
-
-    await flushPromises();
-    await waitForExpect(() => {
-      // fetch was triggered a second time, due to variable change.
-      expect(fetch).toHaveBeenCalledTimes(1);
-      expect(document.querySelector('h1')?.textContent).toContain('12');
-    });
   });
 
   test('variables watcher can be disabled', async () => {
