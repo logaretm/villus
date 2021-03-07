@@ -1,4 +1,4 @@
-import { graphql } from 'msw';
+import { graphql, rest } from 'msw';
 
 function makePost(id: number, title = 'Awesome Post') {
   return { id, title: `${id} ${title}` };
@@ -75,5 +75,33 @@ export const handlers = [
   }),
   graphql.mutation('MutationNetworkError', (req, res, ctx) => {
     return res.networkError('Failed to connect');
+  }),
+  // Handles Batched requests
+  rest.post('https://test.com/graphql', async (req, res) => {
+    if (!Array.isArray(req.body)) {
+      throw new Error('Unknown operation');
+    }
+    const data = await Promise.all(
+      req.body.map(async op => {
+        const partReq = { ...req, body: op };
+        const handler = handlers.find(h => h.test(partReq));
+        if (!handler) {
+          return Promise.reject(new Error(`Cannot handle operation ${op}`));
+        }
+
+        return handler.run(partReq);
+      })
+    );
+
+    return res(res => {
+      res.headers.set('content-type', 'application/json');
+      res.body = JSON.stringify(
+        data.map(d => {
+          return JSON.parse(d?.response?.body) || {};
+        })
+      );
+
+      return res;
+    });
   }),
 ];
