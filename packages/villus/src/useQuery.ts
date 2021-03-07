@@ -8,7 +8,7 @@ import { Operation } from '../../shared/src';
 interface QueryCompositeOptions<TData, TVars> {
   query: MaybeRef<Operation<TData, TVars>['query']>;
   variables?: MaybeRef<TVars>;
-  context?: MaybeRef<QueryExecutionContext>;
+  context?: MaybeRef<Partial<QueryExecutionContext>>;
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
 }
