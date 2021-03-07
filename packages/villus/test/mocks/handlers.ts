@@ -65,7 +65,7 @@ export const handlers = [
       ])
     );
   }),
-  graphql.query('MutationParseError', (req, res, ctx) => {
+  graphql.mutation('MutationParseError', (req, res, ctx) => {
     return res(res => {
       res.headers.set('content-type', 'text/html');
       res.body = '<div></div>';

@@ -2,7 +2,7 @@
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
 import { useQuery, withProvider } from '../src/index';
-import { Post } from './server/typedSchema';
+import waitForExpect from 'wait-for-expect';
 
 test('creates HOC withProvider', async () => {
   const client = {
@@ -13,7 +13,7 @@ test('creates HOC withProvider', async () => {
     withProvider(
       {
         setup() {
-          const { data, error } = useQuery<{ posts: Post[] }>({ query: '{ posts { id title } }' });
+          const { data, error } = useQuery({ query: 'query Posts { posts { id title } }' });
 
           return { data, error };
         },
@@ -30,6 +30,7 @@ test('creates HOC withProvider', async () => {
   );
 
   await flushPromises();
-
-  expect(document.querySelectorAll('li').length).toBe(5);
+  await waitForExpect(() => {
+    expect(document.querySelectorAll('li').length).toBe(5);
+  });
 });
