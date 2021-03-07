@@ -308,7 +308,7 @@ describe('useQuery()', () => {
   });
 
   test('cached variables are matched by equality not reference', async () => {
-    mount({
+    const vm = mount({
       setup() {
         useClient({
           url: 'https://test.com/graphql',
@@ -339,8 +339,6 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    document.querySelector('button')?.dispatchEvent(new Event('click'));
-
     await waitForExpect(() => {
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(document.querySelector('h1')?.textContent).toContain('12');
