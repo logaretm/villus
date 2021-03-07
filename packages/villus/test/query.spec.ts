@@ -2,7 +2,8 @@
 import { mount } from './helpers/mount';
 import { Query, Provider } from '../src/index';
 import { PostQuery, PostsQuery, QueryWithGqlError, QueryWithNetworkError } from './mocks/queries';
-import { flush } from './helpers/flusher';
+import flushPromises from 'flush-promises';
+import waitForExpect from 'wait-for-expect';
 
 test('executes queries on mounted', async () => {
   const client = {
@@ -34,13 +35,17 @@ test('executes queries on mounted', async () => {
     `,
   });
 
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 
-  await flush();
-  // cache was used.
-  expect(fetch).toHaveBeenCalledTimes(1);
-  expect(document.querySelectorAll('li').length).toBe(5);
+  await flushPromises();
+  await waitForExpect(() => {
+    // cache was used.
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelectorAll('li').length).toBe(5);
+  });
 });
 
 test('caches queries by default', async () => {
@@ -74,13 +79,17 @@ test('caches queries by default', async () => {
     `,
   });
 
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
-  await flush();
-  // cache was used.
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await flushPromises();
+  await waitForExpect(() => {
+    // cache was used.
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 });
 
 test('cache policy can be overridden with execute function', async () => {
@@ -114,13 +123,17 @@ test('cache policy can be overridden with execute function', async () => {
     `,
   });
 
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
-  await flush();
-  // fetch was triggered a second time.
-  expect(fetch).toHaveBeenCalledTimes(2);
+  await flushPromises();
+  await waitForExpect(() => {
+    // fetch was triggered a second time.
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
 });
 
 test('cache policy can be overridden with cachePolicy prop', async () => {
@@ -154,13 +167,17 @@ test('cache policy can be overridden with cachePolicy prop', async () => {
     `,
   });
 
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
-  await flush();
-  // fetch was triggered a second time.
-  expect(fetch).toHaveBeenCalledTimes(2);
+  await flushPromises();
+  await waitForExpect(() => {
+    // fetch was triggered a second time.
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
 });
 
 test('variables are watched by default', async () => {
@@ -192,14 +209,19 @@ test('variables are watched by default', async () => {
     `,
   });
 
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(1);
-  expect(document.querySelector('h1')?.textContent).toContain('12');
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+  });
+
   (vm as any).id = 13;
-  await flush();
+  await flushPromises();
   // fetch was triggered a second time, due to variable change.
-  expect(fetch).toHaveBeenCalledTimes(2);
-  expect(document.querySelector('h1')?.textContent).toContain('13');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(document.querySelector('h1')?.textContent).toContain('13');
+  });
 });
 
 test('variables watcher can be disabled and enabled', async () => {
@@ -234,20 +256,28 @@ test('variables watcher can be disabled and enabled', async () => {
     `,
   });
 
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(1);
-  expect(document.querySelector('h1')?.textContent).toContain('12');
-  (vm as any).id = 13;
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(1);
-  expect(document.querySelector('h1')?.textContent).toContain('12');
-  document.querySelector('button')?.click();
-  await flush();
-  (vm as any).id = 14;
-  await flush();
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+  });
 
-  expect(fetch).toHaveBeenCalledTimes(2);
-  expect(document.querySelector('h1')?.textContent).toContain('14');
+  (vm as any).id = 13;
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+  });
+
+  document.querySelector('button')?.click();
+  await flushPromises();
+  (vm as any).id = 14;
+  await flushPromises();
+
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(document.querySelector('h1')?.textContent).toContain('14');
+  });
 });
 
 test('variables prop arrangement does not trigger queries', async () => {
@@ -282,21 +312,28 @@ test('variables prop arrangement does not trigger queries', async () => {
     `,
   });
 
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(1);
-  expect(document.querySelector('h1')?.textContent).toContain('12');
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+  });
+
   (vm as any).vars = {
     type: 'test',
     id: 12,
   };
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 
   (vm as any).vars.id = 13;
-  await flush();
+  await flushPromises();
   // fetch was triggered a second time, due to variable change.
-  expect(fetch).toHaveBeenCalledTimes(2);
-  expect(document.querySelector('h1')?.textContent).toContain('13');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(document.querySelector('h1')?.textContent).toContain('13');
+  });
 });
 
 test('can be suspended', async () => {
@@ -332,9 +369,14 @@ test('can be suspended', async () => {
     `,
   });
 
-  expect(document.body.textContent).toBe('Loading...');
-  await flush();
-  expect(document.querySelectorAll('li').length).toBe(5);
+  await waitForExpect(() => {
+    expect(document.body.textContent).toBe('Loading...');
+  });
+
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(document.querySelectorAll('li').length).toBe(5);
+  });
 });
 
 test('Handles query errors', async () => {
@@ -364,8 +406,10 @@ test('Handles query errors', async () => {
       `,
   });
 
-  await flush();
-  expect(document.querySelector('#error')?.textContent).toMatch(/Not authenticated/);
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(document.querySelector('#error')?.textContent).toMatch(/Not authenticated/);
+  });
 });
 
 test('Handles external errors', async () => {
@@ -395,8 +439,10 @@ test('Handles external errors', async () => {
       `,
   });
 
-  await flush();
-  expect(document.querySelector('#error')?.textContent).toMatch(/Failed to connect/);
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(document.querySelector('#error')?.textContent).toMatch(/Failed to connect/);
+  });
 });
 
 test('Handles empty slots', async () => {
@@ -421,6 +467,8 @@ test('Handles empty slots', async () => {
       `,
   });
 
-  await flush();
-  expect(document.querySelector('#body')?.textContent).toBe('');
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(document.querySelector('#body')?.textContent).toBe('');
+  });
 });

@@ -8,7 +8,8 @@ import {
   MutationWithParseError,
   MutationWithGqlError,
 } from './mocks/queries';
-import { flush } from './helpers/flusher';
+import flushPromises from 'flush-promises';
+import waitForExpect from 'wait-for-expect';
 
 test('runs mutations', async () => {
   mount({
@@ -30,14 +31,17 @@ test('runs mutations', async () => {
     </div>`,
   });
 
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(0);
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(0);
+  });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(1);
-
-  expect(document.querySelector('p')?.textContent).toContain('Awesome Post');
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('p')?.textContent).toContain('Awesome Post');
+  });
 });
 
 test('passes variables via execute method', async () => {
@@ -47,7 +51,7 @@ test('passes variables via execute method', async () => {
         url: 'https://test.com/graphql',
       });
 
-      const { data, execute } = useMutation('mutation LikePost ($id: ID!) { likePost (id: $id) { message } }');
+      const { data, execute } = useMutation(LikePostMutation);
 
       return { data, execute };
     },
@@ -60,14 +64,17 @@ test('passes variables via execute method', async () => {
     </div>`,
   });
 
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(0);
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(0);
+  });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
-  await flush();
-  expect(fetch).toHaveBeenCalledTimes(1);
-
-  expect(document.querySelector('p')?.textContent).toBe('123');
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('p')?.textContent).toBe('123');
+  });
 });
 
 test('handles parse errors', async () => {
@@ -92,8 +99,10 @@ test('handles parse errors', async () => {
   });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
-  await flush();
-  expect(document.querySelector('#error')?.textContent).toMatch(/invalid json response body/);
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(document.querySelector('#error')?.textContent).toMatch(/invalid json response body/);
+  });
 });
 
 test('handles mutation errors', async () => {
@@ -118,8 +127,10 @@ test('handles mutation errors', async () => {
   });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
-  await flush();
-  expect(document.querySelector('#error')?.textContent).toContain('Not authenticated');
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(document.querySelector('#error')?.textContent).toContain('Not authenticated');
+  });
 });
 
 test('handles network errors', async () => {
@@ -144,11 +155,13 @@ test('handles network errors', async () => {
   });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
-  await flush();
-  expect(document.querySelector('#error')?.textContent).toContain('Failed to connect');
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(document.querySelector('#error')?.textContent).toContain('Failed to connect');
+  });
 });
 
-test('Fails if provider was not resolved', () => {
+test('Fails if provider was not resolved', async () => {
   try {
     mount({
       setup() {
@@ -165,8 +178,10 @@ test('Fails if provider was not resolved', () => {
         </div>`,
     });
   } catch (err) {
-    // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
-    expect(err.message).toContain('Cannot detect villus Client');
+    await waitForExpect(() => {
+      // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
+      expect(err.message).toContain('Cannot detect villus Client');
+    });
   }
 });
 
@@ -199,16 +214,19 @@ test('runs mutations with custom headers per mutation', async () => {
     </div>`,
   });
 
-  await flush();
+  await flushPromises();
   document.querySelector('button')?.dispatchEvent(new Event('click'));
-  await flush();
-  expect(fetch).toHaveBeenCalledWith(
-    'https://test.com/graphql',
-    expect.objectContaining({
-      url: 'https://test.com/graphql',
-      body: expect.anything(),
-      method: 'POST',
-      headers: expect.objectContaining(ctx),
-    })
-  );
+  await flushPromises();
+
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledWith(
+      'https://test.com/graphql',
+      expect.objectContaining({
+        url: 'https://test.com/graphql',
+        body: expect.anything(),
+        method: 'POST',
+        headers: expect.objectContaining(ctx),
+      })
+    );
+  });
 });

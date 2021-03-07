@@ -1,6 +1,6 @@
 module.exports = {
   setupFilesAfterEnv: ['<rootDir>/packages/villus/test/setup.ts'],
-  testMatch: ['**/test/**/*.ts'],
+  testMatch: ['**/test/**/*.spec.ts'],
   testPathIgnorePatterns: ['/mocks/', '/dist/', '/helpers/'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
