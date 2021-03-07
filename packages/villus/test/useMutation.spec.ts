@@ -1,9 +1,15 @@
 /* eslint-disable no-unused-expressions */
 import { mount } from './helpers/mount';
-import flushPromises from 'flush-promises';
 import { useClient, useMutation } from '../src/index';
-import { LikePostMutationResponse } from './server/typedSchema';
 import { computed } from 'vue';
+import {
+  LikePostMutation,
+  MutationWithNetworkError,
+  MutationWithParseError,
+  MutationWithGqlError,
+} from './mocks/queries';
+import flushPromises from 'flush-promises';
+import waitForExpect from 'wait-for-expect';
 
 test('runs mutations', async () => {
   mount({
@@ -12,57 +18,30 @@ test('runs mutations', async () => {
         url: 'https://test.com/graphql',
       });
 
-      const { data, execute } = useMutation<LikePostMutationResponse>('mutation { likePost (id: 123) { message } }');
+      const { data, execute } = useMutation<{ likePost: { id: number; title: string } }>(LikePostMutation);
 
       return { data, execute };
     },
     template: `
     <div>
       <div v-if="data">
-        <p>{{ data.likePost.message }}</p>
+        <p>{{ data.likePost.title }}</p>
       </div>
       <button @click="execute()"></button>
     </div>`,
   });
 
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(0);
-
-  document.querySelector('button')?.dispatchEvent(new Event('click'));
-  await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
-
-  expect(document.querySelector('p')?.textContent).toBe('Operation successful');
-});
-
-test('runs mutations - alternate signature', async () => {
-  mount({
-    setup() {
-      useClient({
-        url: 'https://test.com/graphql',
-      });
-
-      const { data, execute } = useMutation<LikePostMutationResponse>('mutation { likePost (id: 123) { message } }');
-
-      return { data, execute };
-    },
-    template: `
-    <div>
-      <div v-if="data">
-        <p>{{ data.likePost.message }}</p>
-      </div>
-      <button @click="execute()"></button>
-    </div>`,
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(0);
   });
 
-  await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(0);
-
   document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
-
-  expect(document.querySelector('p')?.textContent).toBe('Operation successful');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('p')?.textContent).toContain('Awesome Post');
+  });
 });
 
 test('passes variables via execute method', async () => {
@@ -72,46 +51,47 @@ test('passes variables via execute method', async () => {
         url: 'https://test.com/graphql',
       });
 
-      const { data, execute } = useMutation('mutation LikePost ($id: ID!) { likePost (id: $id) { message } }');
+      const { data, execute } = useMutation(LikePostMutation);
 
       return { data, execute };
     },
     template: `
     <div>
       <div v-if="data">
-        <p>{{ data.likePost.message }}</p>
+        <p>{{ data.likePost.id }}</p>
       </div>
       <button @click="execute({ id: 123 })"></button>
     </div>`,
   });
 
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(0);
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(0);
+  });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
-
-  expect(document.querySelector('p')?.textContent).toBe('Operation successful');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('p')?.textContent).toBe('123');
+  });
 });
 
-test('handles external errors', async () => {
-  (global as any).fetchController.simulateNetworkError = true;
-
+test('handles parse errors', async () => {
   mount({
     setup() {
       useClient({
         url: 'https://test.com/graphql',
       });
 
-      const { data, execute, error } = useMutation('mutation { likePost (id: 123) { message } }');
+      const { data, execute, error } = useMutation(MutationWithParseError);
 
       return { data, execute, error };
     },
     template: `
     <div>
       <div v-if="data">
-        <p>{{ data.likePost.message }}</p>
+        <p>{{ data.likePost.id }}</p>
       </div>
       <p id="error" v-if="error">{{ error.message }}</p>
       <button @click="execute()"></button>
@@ -120,14 +100,72 @@ test('handles external errors', async () => {
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  expect(document.querySelector('#error')?.textContent).toContain('Network Error');
+  await waitForExpect(() => {
+    expect(document.querySelector('#error')?.textContent).toMatch(/invalid json response body/);
+  });
 });
 
-test('Fails if provider was not resolved', () => {
+test('handles mutation errors', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+
+      const { data, execute, error } = useMutation(MutationWithGqlError);
+
+      return { data, execute, error };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <p>{{ data.likePost.id }}</p>
+      </div>
+      <p id="error" v-if="error">{{ error.message }}</p>
+      <button @click="execute()"></button>
+    </div>`,
+  });
+
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(document.querySelector('#error')?.textContent).toContain('Not authenticated');
+  });
+});
+
+test('handles network errors', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+
+      const { data, execute, error } = useMutation(MutationWithNetworkError);
+
+      return { data, execute, error };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <p>{{ data.likePost.id }}</p>
+      </div>
+      <p id="error" v-if="error">{{ error.message }}</p>
+      <button @click="execute()"></button>
+    </div>`,
+  });
+
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(document.querySelector('#error')?.textContent).toContain('Failed to connect');
+  });
+});
+
+test('Fails if provider was not resolved', async () => {
   try {
     mount({
       setup() {
-        const { data, execute } = useMutation('mutation { likePost (id: 123) { message } }');
+        const { data, execute } = useMutation(LikePostMutation);
 
         return { data, execute };
       },
@@ -140,8 +178,10 @@ test('Fails if provider was not resolved', () => {
         </div>`,
     });
   } catch (err) {
-    // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
-    expect(err.message).toContain('Cannot detect villus Client');
+    await waitForExpect(() => {
+      // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
+      expect(err.message).toContain('Cannot detect villus Client');
+    });
   }
 });
 
@@ -155,7 +195,7 @@ test('runs mutations with custom headers per mutation', async () => {
         url: 'https://test.com/graphql',
       });
 
-      const { data, execute } = useMutation<LikePostMutationResponse>('mutation { likePost (id: 123) { message } }', {
+      const { data, execute } = useMutation(LikePostMutation, {
         context: computed(() => {
           return {
             headers: ctx,
@@ -168,7 +208,7 @@ test('runs mutations with custom headers per mutation', async () => {
     template: `
     <div>
       <div v-if="data">
-        <p>{{ data.likePost.message }}</p>
+        <p>{{ data.likePost.id }}</p>
       </div>
       <button @click="execute()"></button>
     </div>`,
@@ -177,13 +217,16 @@ test('runs mutations with custom headers per mutation', async () => {
   await flushPromises();
   document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  expect(fetch).toHaveBeenCalledWith(
-    'https://test.com/graphql',
-    expect.objectContaining({
-      url: 'https://test.com/graphql',
-      body: expect.anything(),
-      method: 'POST',
-      headers: expect.objectContaining(ctx),
-    })
-  );
+
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledWith(
+      'https://test.com/graphql',
+      expect.objectContaining({
+        url: 'https://test.com/graphql',
+        body: expect.anything(),
+        method: 'POST',
+        headers: expect.objectContaining(ctx),
+      })
+    );
+  });
 });

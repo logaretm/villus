@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-expressions */
 import { mount } from './helpers/mount';
-import flushPromises from 'flush-promises';
 import { Query, Provider } from '../src/index';
+import { PostQuery, PostsQuery, QueryWithGqlError, QueryWithNetworkError } from './mocks/queries';
+import flushPromises from 'flush-promises';
+import waitForExpect from 'wait-for-expect';
 
 test('executes queries on mounted', async () => {
   const client = {
@@ -20,7 +22,7 @@ test('executes queries on mounted', async () => {
       <div>
         <Provider v-bind="client">
           <div>
-            <Query query="{ posts { id title } }" v-slot="{ data }">
+            <Query query="${PostsQuery}" v-slot="{ data }">
               <div v-if="data">
                 <ul>
                   <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
@@ -34,12 +36,16 @@ test('executes queries on mounted', async () => {
   });
 
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 
   await flushPromises();
-  // cache was used.
-  expect(fetch).toHaveBeenCalledTimes(1);
-  expect(document.querySelectorAll('li').length).toBe(5);
+  await waitForExpect(() => {
+    // cache was used.
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelectorAll('li').length).toBe(5);
+  });
 });
 
 test('caches queries by default', async () => {
@@ -59,7 +65,7 @@ test('caches queries by default', async () => {
       <div>
         <Provider v-bind="client">
           <div>
-            <Query query="{ posts { id title } }" v-slot="{ data, execute }">
+            <Query query="${PostsQuery}" v-slot="{ data, execute }">
               <div v-if="data">
                 <ul>
                   <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
@@ -74,12 +80,16 @@ test('caches queries by default', async () => {
   });
 
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  // cache was used.
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await waitForExpect(() => {
+    // cache was used.
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 });
 
 test('cache policy can be overridden with execute function', async () => {
@@ -99,7 +109,7 @@ test('cache policy can be overridden with execute function', async () => {
       <div>
         <Provider v-bind="client">
           <div>
-            <Query query="{ posts { id title } }" v-slot="{ data, execute }">
+            <Query query="${PostsQuery}" v-slot="{ data, execute }">
               <div v-if="data">
                 <ul>
                   <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
@@ -114,12 +124,16 @@ test('cache policy can be overridden with execute function', async () => {
   });
 
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  // fetch was triggered a second time.
-  expect(fetch).toHaveBeenCalledTimes(2);
+  await waitForExpect(() => {
+    // fetch was triggered a second time.
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
 });
 
 test('cache policy can be overridden with cachePolicy prop', async () => {
@@ -139,7 +153,7 @@ test('cache policy can be overridden with cachePolicy prop', async () => {
       <div>
         <Provider v-bind="client">
           <div>
-            <Query query="{ posts { id title } }" v-slot="{ data, execute }" cache-policy="cache-and-network">
+            <Query query="${PostsQuery}" v-slot="{ data, execute }" cache-policy="cache-and-network">
               <div v-if="data">
                 <ul>
                   <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
@@ -154,12 +168,16 @@ test('cache policy can be overridden with cachePolicy prop', async () => {
   });
 
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  // fetch was triggered a second time.
-  expect(fetch).toHaveBeenCalledTimes(2);
+  await waitForExpect(() => {
+    // fetch was triggered a second time.
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
 });
 
 test('variables are watched by default', async () => {
@@ -180,7 +198,7 @@ test('variables are watched by default', async () => {
       <div>
         <Provider v-bind="client">
           <div>
-            <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="{ id }" v-slot="{ data }">
+            <Query query="${PostQuery}" :variables="{ id }" v-slot="{ data }">
               <div v-if="data">
                 <h1>{{ data.post.title }}</h1>
               </div>
@@ -192,13 +210,18 @@ test('variables are watched by default', async () => {
   });
 
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
-  expect(document.querySelector('h1')?.textContent).toContain('12');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+  });
+
   (vm as any).id = 13;
   await flushPromises();
   // fetch was triggered a second time, due to variable change.
-  expect(fetch).toHaveBeenCalledTimes(2);
-  expect(document.querySelector('h1')?.textContent).toContain('13');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(document.querySelector('h1')?.textContent).toContain('13');
+  });
 });
 
 test('variables watcher can be disabled and enabled', async () => {
@@ -220,7 +243,7 @@ test('variables watcher can be disabled and enabled', async () => {
       <div>
         <Provider v-bind="client">
           <div>
-            <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="{ id }" :watch-variables="enabled" v-slot="{ data }">
+            <Query query="${PostQuery}" :variables="{ id }" :watch-variables="enabled" v-slot="{ data }">
               <div v-if="data">
                 <h1>{{ data.post.title }}</h1>
               </div>
@@ -234,19 +257,27 @@ test('variables watcher can be disabled and enabled', async () => {
   });
 
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
-  expect(document.querySelector('h1')?.textContent).toContain('12');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+  });
+
   (vm as any).id = 13;
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
-  expect(document.querySelector('h1')?.textContent).toContain('12');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+  });
+
   document.querySelector('button')?.click();
   await flushPromises();
   (vm as any).id = 14;
   await flushPromises();
 
-  expect(fetch).toHaveBeenCalledTimes(2);
-  expect(document.querySelector('h1')?.textContent).toContain('14');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(document.querySelector('h1')?.textContent).toContain('14');
+  });
 });
 
 test('variables prop arrangement does not trigger queries', async () => {
@@ -270,7 +301,7 @@ test('variables prop arrangement does not trigger queries', async () => {
       <div>
         <Provider v-bind="client">
           <div>
-            <Query query="query fetchPost($id: ID!) { post (id: $id) { id title } }" :variables="vars" v-slot="{ data }">
+            <Query query="${PostQuery}" :variables="vars" v-slot="{ data }">
               <div v-if="data">
                 <h1>{{ data.post.title }}</h1>
               </div>
@@ -282,20 +313,27 @@ test('variables prop arrangement does not trigger queries', async () => {
   });
 
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
-  expect(document.querySelector('h1')?.textContent).toContain('12');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+  });
+
   (vm as any).vars = {
     type: 'test',
     id: 12,
   };
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
 
   (vm as any).vars.id = 13;
   await flushPromises();
   // fetch was triggered a second time, due to variable change.
-  expect(fetch).toHaveBeenCalledTimes(2);
-  expect(document.querySelector('h1')?.textContent).toContain('13');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(document.querySelector('h1')?.textContent).toContain('13');
+  });
 });
 
 test('can be suspended', async () => {
@@ -303,7 +341,6 @@ test('can be suspended', async () => {
     url: 'https://test.com/graphql',
   };
 
-  (global as any).fetchController.delay = 100;
   mount({
     data: () => ({
       client,
@@ -317,7 +354,7 @@ test('can be suspended', async () => {
         <Provider v-bind="client">
           <Suspense>
             <template #default>
-              <Query query="{ posts { id title } }" v-slot="{ data }" suspended>
+              <Query query="${PostsQuery}" v-slot="{ data }" suspended>
                 <ul>
                   <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
                 </ul>
@@ -332,9 +369,14 @@ test('can be suspended', async () => {
     `,
   });
 
-  expect(document.body.textContent).toBe('Loading...');
+  await waitForExpect(() => {
+    expect(document.body.textContent).toBe('Loading...');
+  });
+
   await flushPromises();
-  expect(document.querySelectorAll('li').length).toBe(5);
+  await waitForExpect(() => {
+    expect(document.querySelectorAll('li').length).toBe(5);
+  });
 });
 
 test('Handles query errors', async () => {
@@ -353,7 +395,7 @@ test('Handles query errors', async () => {
     template: `
         <Provider v-bind="client">
           <div>
-            <Query query="{ posts { id title propNotFound } }" v-slot="{ data, error }">
+            <Query query="${QueryWithGqlError}" v-slot="{ data, error }">
               <ul v-if="data">
                 <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
               </ul>
@@ -365,15 +407,15 @@ test('Handles query errors', async () => {
   });
 
   await flushPromises();
-  expect(document.querySelector('#error')?.textContent).toMatch(/Cannot query field/);
+  await waitForExpect(() => {
+    expect(document.querySelector('#error')?.textContent).toMatch(/Not authenticated/);
+  });
 });
 
 test('Handles external errors', async () => {
   const client = {
     url: 'https://test.com/graphql',
   };
-
-  (global as any).fetchController.simulateNetworkError = true;
 
   mount({
     data: () => ({
@@ -386,7 +428,7 @@ test('Handles external errors', async () => {
     template: `
         <Provider v-bind="client">
           <div>
-            <Query query="{ posts { id title propNotFound } }" v-slot="{ data, error }">
+            <Query query="${QueryWithNetworkError}" v-slot="{ data, error }">
               <ul v-if="data">
                 <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
               </ul>
@@ -398,15 +440,15 @@ test('Handles external errors', async () => {
   });
 
   await flushPromises();
-  expect(document.querySelector('#error')?.textContent).toMatch(/Network Error/);
+  await waitForExpect(() => {
+    expect(document.querySelector('#error')?.textContent).toMatch(/Failed to connect/);
+  });
 });
 
 test('Handles empty slots', async () => {
   const client = {
     url: 'https://test.com/graphql',
   };
-
-  (global as any).fetchController.simulateNetworkError = true;
 
   mount({
     data: () => ({
@@ -419,12 +461,14 @@ test('Handles empty slots', async () => {
     template: `
         <Provider v-bind="client">
           <div id="body">
-            <Query query="{ posts { id title propNotFound } }" v-slot="{ data, error }"></Query>
+            <Query query="${QueryWithNetworkError}" v-slot="{ data, error }"></Query>
           </div>
         </Provider>
       `,
   });
 
   await flushPromises();
-  expect(document.querySelector('#body')?.textContent).toBe('');
+  await waitForExpect(() => {
+    expect(document.querySelector('#body')?.textContent).toBe('');
+  });
 });

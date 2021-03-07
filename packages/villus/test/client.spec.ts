@@ -3,6 +3,8 @@ import flushPromises from 'flush-promises';
 import { defaultPlugins } from '../src/client';
 import { createClient, useQuery } from '../src/index';
 import { ClientPlugin } from '../src/types';
+import { PostsQuery } from './mocks/queries';
+import waitForExpect from 'wait-for-expect';
 
 test('fails if a fetcher was not provided', () => {
   (global as any).fetch = undefined;
@@ -36,7 +38,7 @@ test('supports async plugins', async () => {
     use: [auth, ...defaultPlugins()],
   });
 
-  const { data } = await client.executeQuery({ query: '{ posts { id title } }' });
+  const { data } = await client.executeQuery({ query: PostsQuery });
 
   expect(data).toBeDefined();
 });
@@ -47,7 +49,7 @@ test('throws if no plugins set the result for the operation', async () => {
     use: [],
   });
 
-  await expect(client.executeQuery({ query: '{ posts { id title } }' })).rejects.toThrowError(
+  await expect(client.executeQuery({ query: PostsQuery })).rejects.toThrowError(
     'Operation result was not set by any plugin, make sure you have default plugins configured or review documentation'
   );
 });
@@ -65,14 +67,14 @@ test('plugins can use the response', async () => {
     use: [plugin, ...defaultPlugins()],
   });
 
-  await client.executeQuery({ query: '{ posts { id title } }' });
+  await client.executeQuery({ query: PostsQuery });
   expect(spy).toHaveBeenCalledWith('application/json');
 });
 
 test('works as a Vue plugin', async () => {
   const app = createApp({
     setup() {
-      const { data, error } = useQuery({ query: '{ posts { id title } }' });
+      const { data, error } = useQuery({ query: PostsQuery });
 
       return { data, error };
     },
@@ -93,5 +95,7 @@ test('works as a Vue plugin', async () => {
   document.body.innerHTML = `<div id="app"></div>`;
   app.mount('#app');
   await flushPromises();
-  expect(document.querySelectorAll('li').length).toBe(5);
+  await waitForExpect(() => {
+    expect(document.querySelectorAll('li').length).toBe(5);
+  });
 });

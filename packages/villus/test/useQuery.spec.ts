@@ -1,10 +1,24 @@
 /* eslint-disable no-unused-expressions */
 import { ref, computed, reactive } from 'vue';
 import gql from 'graphql-tag';
-import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
+import waitForExpect from 'wait-for-expect';
+import { mount } from './helpers/mount';
 import { useClient, useQuery } from '../src/index';
-import { Post } from './server/typedSchema';
+import {
+  PostsQuery,
+  QueryWithGqlError,
+  QueryWithParseError,
+  QueryWithNetworkError,
+  QueryErrorWith500,
+  PostQuery,
+  PostsQueryWithDescription,
+} from './mocks/queries';
+
+interface Post {
+  id: number;
+  title: string;
+}
 
 describe('useQuery()', () => {
   test('executes hook queries on mounted', async () => {
@@ -14,33 +28,10 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, error } = useQuery<{ posts: Post[] }>({ query: '{ posts { id title } }' });
-
-        return { data, error };
-      },
-      template: `
-    <div>'
-      <div>{{ error }}</div>
-      <ul v-if="data">
-        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
-      </ul>
-    </div>`,
-    });
-
-    await flushPromises();
-
-    expect(document.querySelectorAll('li').length).toBe(5);
-  });
-
-  test('alternate signature', async () => {
-    mount({
-      setup() {
-        useClient({
-          url: 'https://test.com/graphql',
+        const { data, error } = useQuery<{ posts: Post[] }>({
+          query: PostsQuery,
         });
 
-        const { data, error } = useQuery<{ posts: Post[] }>({ query: '{ posts { id title } }' });
-
         return { data, error };
       },
       template: `
@@ -53,11 +44,12 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-
-    expect(document.querySelectorAll('li').length).toBe(5);
+    await waitForExpect(() => {
+      expect(document.querySelectorAll('li').length).toBe(5);
+    });
   });
 
-  test('works with tagged queries', async () => {
+  test('accepts tagged queries', async () => {
     mount({
       setup() {
         useClient({
@@ -66,7 +58,7 @@ describe('useQuery()', () => {
 
         const { data } = useQuery({
           query: gql`
-            {
+            query Posts {
               posts {
                 id
                 title
@@ -86,7 +78,9 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(document.querySelectorAll('li').length).toBe(5);
+    await waitForExpect(() => {
+      expect(document.querySelectorAll('li').length).toBe(5);
+    });
   });
 
   test('caches queries by default', async () => {
@@ -96,7 +90,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, execute } = useQuery({ query: '{ posts { id title } }' });
+        const { data, execute } = useQuery({ query: PostsQuery });
 
         return { data, execute };
       },
@@ -109,12 +103,16 @@ describe('useQuery()', () => {
     </div>`,
     });
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
 
     document.querySelector('button')?.dispatchEvent(new Event('click'));
     await flushPromises();
     // cache was used.
-    expect(fetch).toHaveBeenCalledTimes(1);
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
   });
 
   test('re-runs reactive queries automatically', async () => {
@@ -126,7 +124,7 @@ describe('useQuery()', () => {
 
         const id = ref(12);
         const query = computed(() => {
-          return `{ post (id: ${id.value}) { id title } }`;
+          return `query Post { post (id: ${id.value}) { id title } }`;
         });
 
         const { data } = useQuery({
@@ -137,22 +135,22 @@ describe('useQuery()', () => {
       },
       template: `
     <div>
-      <div v-if="data">
-        <h1>{{ data.post.title }}</h1>
-      </div>
       <button @click="id = 13"></button>
     </div>`,
     });
 
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('h1')?.textContent).toContain('12');
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
+
     document.querySelector('button')?.dispatchEvent(new Event('click'));
 
     await flushPromises();
-    // fetch was triggered a second time, due to variable change.
-    expect(fetch).toHaveBeenCalledTimes(2);
-    expect(document.querySelector('h1')?.textContent).toContain('13');
+    await waitForExpect(() => {
+      // fetch was triggered a second time, due to variable change.
+      expect(fetch).toHaveBeenCalledTimes(2);
+    });
   });
 
   test('cache policy can be overridden with execute function', async () => {
@@ -162,7 +160,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, execute } = useQuery({ query: '{ posts { id title } }' });
+        const { data, execute } = useQuery({ query: PostsQuery });
 
         return { data, execute };
       },
@@ -176,12 +174,17 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
 
     document.querySelector('button')?.dispatchEvent(new Event('click'));
     await flushPromises();
-    // fetch was triggered a second time.
-    expect(fetch).toHaveBeenCalledTimes(2);
+
+    await waitForExpect(() => {
+      // fetch was triggered a second time.
+      expect(fetch).toHaveBeenCalledTimes(2);
+    });
   });
 
   test('cache policy can be overridden with cachePolicy option', async () => {
@@ -191,7 +194,10 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, execute } = useQuery({ query: '{ posts { id title } }', cachePolicy: 'cache-and-network' });
+        const { data, execute } = useQuery({
+          query: PostsQuery,
+          cachePolicy: 'cache-and-network',
+        });
 
         return { data, execute };
       },
@@ -205,12 +211,17 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
+
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
 
     document.querySelector('button')?.dispatchEvent(new Event('click'));
     await flushPromises();
-    // fetch was triggered a second time.
-    expect(fetch).toHaveBeenCalledTimes(2);
+    await waitForExpect(() => {
+      // fetch was triggered a second time.
+      expect(fetch).toHaveBeenCalledTimes(2);
+    });
   });
 
   test('variables are watched by default if refs', async () => {
@@ -225,7 +236,7 @@ describe('useQuery()', () => {
         });
 
         const { data } = useQuery({
-          query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
+          query: PostQuery,
           variables,
         });
 
@@ -241,14 +252,19 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('h1')?.textContent).toContain('12');
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('12');
+    });
+
     document.querySelector('button')?.dispatchEvent(new Event('click'));
 
     await flushPromises();
     // fetch was triggered a second time, due to variable change.
-    expect(fetch).toHaveBeenCalledTimes(2);
-    expect(document.querySelector('h1')?.textContent).toContain('13');
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(2);
+      expect(document.querySelector('h1')?.textContent).toContain('13');
+    });
   });
 
   test('variables are watched by default if reactive', async () => {
@@ -262,7 +278,7 @@ describe('useQuery()', () => {
           id: 12,
         });
 
-        const { data } = useQuery({ query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }', variables });
+        const { data } = useQuery({ query: PostQuery, variables });
 
         return { data, variables };
       },
@@ -276,14 +292,19 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('h1')?.textContent).toContain('12');
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('12');
+    });
+
     document.querySelector('button')?.dispatchEvent(new Event('click'));
 
     await flushPromises();
-    // fetch was triggered a second time, due to variable change.
-    expect(fetch).toHaveBeenCalledTimes(2);
-    expect(document.querySelector('h1')?.textContent).toContain('13');
+    await waitForExpect(() => {
+      // fetch was triggered a second time, due to variable change.
+      expect(fetch).toHaveBeenCalledTimes(2);
+      expect(document.querySelector('h1')?.textContent).toContain('13');
+    });
   });
 
   test('cached variables are matched by equality not reference', async () => {
@@ -298,7 +319,7 @@ describe('useQuery()', () => {
         });
 
         const { data } = useQuery({
-          query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
+          query: PostQuery,
           variables,
         });
 
@@ -318,20 +339,28 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('h1')?.textContent).toContain('12');
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('12');
+    });
+
     document.querySelector('button')?.dispatchEvent(new Event('click'));
 
     await flushPromises();
-    // fetch was triggered a second time, due to variable change.
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('h1')?.textContent).toContain('12');
-    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await waitForExpect(() => {
+      // fetch was triggered a second time, due to variable change.
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('12');
+    });
 
     await flushPromises();
-    // fetch was triggered a second time, due to variable change.
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('h1')?.textContent).toContain('12');
+    await waitForExpect(() => {
+      // fetch was triggered a second time, due to variable change.
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('12');
+    });
   });
 
   test('variables watcher can be disabled', async () => {
@@ -346,7 +375,7 @@ describe('useQuery()', () => {
         });
 
         const { data, unwatchVariables, isWatchingVariables, watchVariables } = useQuery({
-          query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
+          query: PostQuery,
           variables,
         });
 
@@ -364,23 +393,30 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('h1')?.textContent).toContain('12');
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('12');
+    });
+
     document.querySelector('#toggle')?.dispatchEvent(new Event('click'));
     document.querySelector('#change')?.dispatchEvent(new Event('click'));
 
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('h1')?.textContent).toContain('12');
-    expect(document.querySelector('#status')?.textContent).toContain('false');
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('12');
+      expect(document.querySelector('#status')?.textContent).toContain('false');
+    });
 
     // toggle it back
     document.querySelector('#toggle')?.dispatchEvent(new Event('click'));
     document.querySelector('#change')?.dispatchEvent(new Event('click'));
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(2);
-    expect(document.querySelector('h1')?.textContent).toContain('14');
-    expect(document.querySelector('#status')?.textContent).toContain('true');
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(2);
+      expect(document.querySelector('h1')?.textContent).toContain('14');
+      expect(document.querySelector('#status')?.textContent).toContain('true');
+    });
   });
 
   test('variables prop arrangement does not trigger queries', async () => {
@@ -396,7 +432,7 @@ describe('useQuery()', () => {
         });
 
         const { data } = useQuery({
-          query: 'query fetchPost($id: ID!) { post (id: $id) { id title } }',
+          query: PostQuery,
           variables,
         });
 
@@ -412,12 +448,17 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('h1')?.textContent).toContain('12');
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('12');
+    });
 
     document.querySelector('button')?.dispatchEvent(new Event('click'));
+
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
   });
 
   test('can be suspended', async () => {
@@ -430,7 +471,7 @@ describe('useQuery()', () => {
       components: {
         Listing: {
           async setup() {
-            const { data } = await useQuery({ query: '{ posts { id title } }' });
+            const { data } = await useQuery({ query: PostsQuery });
 
             return { data };
           },
@@ -454,9 +495,14 @@ describe('useQuery()', () => {
       </div>`,
     });
 
-    expect(document.body.textContent).toBe('Loading...');
+    await waitForExpect(() => {
+      expect(document.body.textContent).toBe('Loading...');
+    });
+
     await flushPromises();
-    expect(document.querySelectorAll('li').length).toBe(5);
+    await waitForExpect(() => {
+      expect(document.querySelectorAll('li').length).toBe(5);
+    });
   });
 
   test('Handles query errors', async () => {
@@ -467,7 +513,7 @@ describe('useQuery()', () => {
         });
 
         const { data, error } = useQuery({
-          query: '{ posts { id title propNotFound } }',
+          query: QueryWithGqlError,
         });
 
         return { data, error };
@@ -482,12 +528,12 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(document.querySelector('#error')?.textContent).toMatch(/Cannot query field/);
+    await waitForExpect(() => {
+      expect(document.querySelector('#error')?.textContent).toMatch(/Not authenticated/);
+    });
   });
 
   test('Handles parse errors', async () => {
-    (global as any).fetchController.simulateParseError = true;
-
     mount({
       setup() {
         useClient({
@@ -495,7 +541,7 @@ describe('useQuery()', () => {
         });
 
         const { data, error } = useQuery({
-          query: '{ posts { id title } }',
+          query: QueryWithParseError,
         });
 
         return { data, error };
@@ -510,12 +556,12 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(document.querySelector('#error')?.textContent).toMatch(/Error parsing/);
+    await waitForExpect(() => {
+      expect(document.querySelector('#error')?.textContent).toMatch(/invalid json response body/);
+    });
   });
 
   test('Handles network errors', async () => {
-    (global as any).fetchController.simulateNetworkError = true;
-
     mount({
       setup() {
         useClient({
@@ -523,7 +569,7 @@ describe('useQuery()', () => {
         });
 
         const { data, error } = useQuery({
-          query: '{ posts { id title } }',
+          query: QueryWithNetworkError,
         });
 
         return { data, error };
@@ -538,7 +584,9 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(document.querySelector('#error')?.textContent).toMatch(/Network Error/);
+    await waitForExpect(() => {
+      expect(document.querySelector('#error')?.textContent).toMatch(/Failed to connect/);
+    });
   });
 
   test('Fails if provider was not resolved', () => {
@@ -563,37 +611,7 @@ describe('useQuery()', () => {
     }
   });
 
-  test('Errors are stringified nicely to their messages', async () => {
-    (global as any).fetchController.simulateNetworkError = true;
-
-    mount({
-      setup() {
-        useClient({
-          url: 'https://test.com/graphql',
-        });
-
-        const { data, error } = useQuery({
-          query: '{ posts { id title } }',
-        });
-
-        return { data, error };
-      },
-      template: `
-    <div>
-      <div v-if="data">
-        <h1>It shouldn't work!</h1>
-      </div>
-      <p id="error" v-if="error">{{ error.toString() }}</p>
-    </div>`,
-    });
-
-    await flushPromises();
-    expect(document.querySelector('#error')?.textContent).toMatch(/Network Error/);
-  });
-
   test('Errors can be separated by type', async () => {
-    (global as any).fetchController.simulateNetworkError = true;
-
     mount({
       setup() {
         useClient({
@@ -601,7 +619,7 @@ describe('useQuery()', () => {
         });
 
         const { data, error } = useQuery({
-          query: '{ posts { id title } }',
+          query: QueryWithNetworkError,
         });
 
         return { data, error };
@@ -616,13 +634,13 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(document.querySelector('#error')?.textContent).toBe('Network');
+    await waitForExpect(() => {
+      expect(document.querySelector('#error')?.textContent).toBe('Network');
+    });
   });
 
   // # 49
   test('Errors can have non 200 response code', async () => {
-    (global as any).fetchController.simulateNetworkErrorWithGraphQLResponse = true;
-
     mount({
       setup() {
         useClient({
@@ -630,7 +648,7 @@ describe('useQuery()', () => {
         });
 
         const { data, error } = useQuery({
-          query: '{ posts { id title } }',
+          query: QueryErrorWith500,
         });
 
         return { data, error };
@@ -645,7 +663,9 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(document.querySelector('#error')?.textContent).toBe('GraphQL');
+    await waitForExpect(() => {
+      expect(document.querySelector('#error')?.textContent).toBe('GraphQL');
+    });
   });
 
   test('cache-only policy returns null results if not found', async () => {
@@ -656,7 +676,7 @@ describe('useQuery()', () => {
           cachePolicy: 'cache-only',
         });
 
-        const { data, execute } = useQuery({ query: '{ posts { id title } }' });
+        const { data, execute } = useQuery({ query: PostsQuery });
 
         return { data, execute };
       },
@@ -668,8 +688,10 @@ describe('useQuery()', () => {
     </div>`,
     });
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(0);
-    expect(document.querySelector('ul')).toBeNull();
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(0);
+      expect(document.querySelector('ul')).toBeNull();
+    });
   });
 
   test('cache-only policy returns results if found in cache', async () => {
@@ -679,7 +701,7 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, execute } = useQuery({ query: '{ posts { id title } }' });
+        const { data, execute } = useQuery({ query: PostsQuery });
 
         return { data, execute };
       },
@@ -692,13 +714,17 @@ describe('useQuery()', () => {
     </div>`,
     });
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(1);
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
 
     document.querySelector('button')?.dispatchEvent(new Event('click'));
     await flushPromises();
-    // cache was used.
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('ul')?.children).toHaveLength(5);
+    await waitForExpect(() => {
+      // cache was used.
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('ul')?.children).toHaveLength(5);
+    });
   });
 
   test('dedups duplicate queries', async () => {
@@ -708,11 +734,11 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        useQuery({ query: '{ posts { id title } }' });
-        useQuery({ query: '{ posts { id title } }' });
-        useQuery({ query: '{ posts { id title } }' });
-        useQuery({ query: '{ posts { id title slug } }' });
-        useQuery({ query: '{ posts { id title slug } }' });
+        useQuery({ query: PostsQuery });
+        useQuery({ query: PostsQuery });
+        useQuery({ query: PostsQuery });
+        useQuery({ query: PostsQueryWithDescription });
+        useQuery({ query: PostsQueryWithDescription });
 
         return {};
       },
@@ -720,7 +746,9 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(fetch).toHaveBeenCalledTimes(2); // only 2 unique queries were executed
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(2); // only 2 unique queries were executed
+    });
   });
 
   test('isFetching should start with true if fetchOnMount is true', async () => {
@@ -732,7 +760,7 @@ describe('useQuery()', () => {
         });
 
         const { isFetching } = useQuery({
-          query: '{ posts { id title } }',
+          query: PostsQuery,
         });
 
         spy(isFetching.value);
@@ -745,7 +773,9 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(spy).toHaveBeenCalledWith(true);
+    await waitForExpect(() => {
+      expect(spy).toHaveBeenCalledWith(true);
+    });
   });
 
   test('isFetching should start with false if fetchOnMount is false', async () => {
@@ -758,7 +788,7 @@ describe('useQuery()', () => {
         });
 
         const { isFetching } = useQuery({
-          query: '{ posts { id title } }',
+          query: PostsQuery,
           fetchOnMount: false,
         });
 
@@ -772,7 +802,9 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(spy).toHaveBeenCalledWith(false);
+    await waitForExpect(() => {
+      expect(spy).toHaveBeenCalledWith(false);
+    });
   });
 
   test('additional context can be provided per query', async () => {
@@ -787,7 +819,7 @@ describe('useQuery()', () => {
         });
 
         useQuery({
-          query: '{ posts { id title } }',
+          query: PostsQuery,
           context: {
             headers: ctx,
           },
@@ -799,14 +831,16 @@ describe('useQuery()', () => {
     });
 
     await flushPromises();
-    expect(fetch).toHaveBeenCalledWith(
-      'https://test.com/graphql',
-      expect.objectContaining({
-        url: 'https://test.com/graphql',
-        body: expect.anything(),
-        method: 'POST',
-        headers: expect.objectContaining(ctx),
-      })
-    );
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledWith(
+        'https://test.com/graphql',
+        expect.objectContaining({
+          url: 'https://test.com/graphql',
+          body: expect.anything(),
+          method: 'POST',
+          headers: expect.objectContaining(ctx),
+        })
+      );
+    });
   });
 });

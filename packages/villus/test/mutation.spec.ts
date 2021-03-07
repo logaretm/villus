@@ -2,6 +2,8 @@
 import { mount } from './helpers/mount';
 import flushPromises from 'flush-promises';
 import { Mutation, Provider } from '../src/index';
+import waitForExpect from 'wait-for-expect';
+import { LikePostMutation, MutationWithNetworkError } from './mocks/queries';
 
 test('runs mutations', async () => {
   const client = {
@@ -20,9 +22,9 @@ test('runs mutations', async () => {
       <div>
         <Provider v-bind="client">
           <div>
-            <Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ data, execute }">
+            <Mutation query="${LikePostMutation}" v-slot="{ data, execute }">
               <div v-if="data">
-                <p>{{ data.likePost.message }}</p>
+                <p>{{ data.likePost.title }}</p>
               </div>
               <button @click="execute()"></button>
             </Mutation>
@@ -33,20 +35,22 @@ test('runs mutations', async () => {
   });
 
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(0);
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(0);
+  });
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  expect(fetch).toHaveBeenCalledTimes(1);
-  expect(document.querySelector('p')?.textContent).toBe('Operation successful');
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('p')?.textContent).toContain('Awesome');
+  });
 });
 
 test('handles errors', async () => {
   const client = {
     url: 'https://test.com/graphql',
   };
-
-  (global as any).fetchController.simulateNetworkError = true;
 
   mount({
     data: () => ({
@@ -60,7 +64,7 @@ test('handles errors', async () => {
       <div>
         <Provider v-bind="client">
           <div>
-            <Mutation query="mutation { likePost (id: 123) { message } }" v-slot="{ error, execute }">
+            <Mutation query="${MutationWithNetworkError}" v-slot="{ error, execute }">
               <div v-if="error">
                 <p>{{ error.message }}</p>
               </div>
@@ -74,5 +78,7 @@ test('handles errors', async () => {
 
   document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
-  expect(document.querySelector('p')?.textContent).toContain('Network Error');
+  await waitForExpect(() => {
+    expect(document.querySelector('p')?.textContent).toContain('Failed to connect');
+  });
 });
