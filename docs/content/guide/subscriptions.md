@@ -17,12 +17,12 @@ import { useClient, handleSubscriptions, defaultPlugins } from 'villus';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 const subscriptionClient = new SubscriptionClient('ws://localhost:4001/graphql', {});
-const subscriptionForwarder = operation => subscriptionClient.request(op),
+const subscriptionForwarder = operation => subscriptionClient.request(op);
 
 // in your setup
 const client = useClient({
   url: 'http://localhost:4000/graphql',
-  use: [handleSubscriptions(subscriptionForwarder), ...defaultPlugins()]
+  use: [handleSubscriptions(subscriptionForwarder), ...defaultPlugins()],
 });
 ```
 
