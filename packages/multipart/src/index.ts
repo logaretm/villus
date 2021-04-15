@@ -1,5 +1,6 @@
 import { definePlugin } from 'villus';
 import { extractFiles } from 'extract-files';
+import { normalizeQuery } from '../../shared/src';
 
 export function multipart() {
   return definePlugin(function multipartPlugin(context) {
@@ -16,7 +17,7 @@ export function multipart() {
     }
 
     const body = new FormData();
-    body.append('operations', JSON.stringify({ query: operation.query, variables }));
+    body.append('operations', JSON.stringify({ query: normalizeQuery(operation.query), variables }));
 
     const map: Record<number, string[]> = {};
     let i = 0;
