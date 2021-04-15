@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.16](https://github.com/logaretm/villus/compare/v1.0.0-rc.15...v1.0.0-rc.16) (2021-04-15)
+
+
+### Bug Fixes
+
+* normalize the multipart queries closes [#112](https://github.com/logaretm/villus/issues/112) ([#113](https://github.com/logaretm/villus/issues/113)) ([c54fd0e](https://github.com/logaretm/villus/commit/c54fd0e80f8d05a4a115630e8b7c83bd2c58a5f3))
+
+
+
+
+
 # [1.0.0-rc.15](https://github.com/logaretm/villus/compare/v1.0.0-rc.14...v1.0.0-rc.15) (2021-03-06)
 
 
