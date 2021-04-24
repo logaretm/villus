@@ -6,7 +6,7 @@ order: 6
 
 # Plugins
 
-villus is very flexible and versatile, and as such you will need to write quite a few plugins of your own for various purposes, wehter to add special headers, transform the body to a specific format or encoding, or even change the `fetch` function used.
+villus is very flexible and versatile, and as such you will need to write quite a few plugins of your own for various purposes, whether to add special headers, transform the body to a specific format or encoding, or even change the `fetch` function used.
 
 Something you might not be aware of is that villus is pre-configured with a couple of plugins that are necessary to execute queries, the default plugins are:
 
@@ -101,7 +101,7 @@ useResult(response, true); // Stops all plugins after it
 
 <doc-tip>
 
-Calling `useResult` mutliple times in the pipeline (by multiple plugins) won't have an effect on the end result, the very first `useResult` call will set the operation response, any subsequent calls are ignored.
+Calling `useResult` multiple times in the pipeline (by multiple plugins) won't have an effect on the end result, the very first `useResult` call will set the operation response, any subsequent calls are ignored.
 
 </doc-tip>
 
