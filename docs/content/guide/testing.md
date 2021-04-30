@@ -65,9 +65,11 @@ import PostsList from '@/components/PostsList.vue';
 test('it lists the blog posts', async () => {
   const wrapper = mount(PostsList, {
     global: {
-      [VILLUS_CLIENT]: createClient({
-        url: 'http://test/graphql',
-      }),
+      provide: {
+        [VILLUS_CLIENT]: createClient({
+          url: 'http://test/graphql',
+        }),
+      },
     },
   });
 
@@ -105,9 +107,11 @@ import PostsList from '@/components/PostsList.vue';
 test('it lists the blog posts', async () => {
   const wrapper = mount(PostsList, {
     global: {
-      [VILLUS_CLIENT]: createClient({
-        url: 'http://test/graphql',
-      }),
+      provide: {
+        [VILLUS_CLIENT]: createClient({
+          url: 'http://test/graphql',
+        }),
+      },
     },
   });
 
