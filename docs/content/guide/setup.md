@@ -150,4 +150,4 @@ You can mix between higher-order components and composable API as higher-order c
 
 ## Next Steps
 
-Now that you have successfully setup the GraphQL client, you can start to [query](/queries) and [execute mutations](/mutations) on your GraphQL APIs.
+Now that you have successfully setup the GraphQL client, you can start to [query](/guide/queries) and [execute mutations](/guide/mutations) on your GraphQL APIs.
