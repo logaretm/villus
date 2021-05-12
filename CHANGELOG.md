@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.17](https://github.com/logaretm/villus/compare/v1.0.0-rc.16...v1.0.0-rc.17) (2021-05-12)
+
+**Note:** Version bump only for package villus-monorepo
+
+
+
+
+
 # [1.0.0-rc.16](https://github.com/logaretm/villus/compare/v1.0.0-rc.15...v1.0.0-rc.16) (2021-04-15)
 
 
