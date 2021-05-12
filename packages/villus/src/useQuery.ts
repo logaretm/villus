@@ -1,14 +1,14 @@
-import { isReactive, isRef, onMounted, Ref, ref, unref, watch } from 'vue-demi';
+import { isReactive, isRef, onMounted, Ref, ref, shallowRef, unref, watch } from 'vue-demi';
 import stringify from 'fast-json-stable-stringify';
 import { CachePolicy, MaybeReactive, OperationResult, QueryExecutionContext, QueryVariables } from './types';
-import { hash, CombinedError, toWatchableSource, injectWithSelf } from './utils';
+import { hash, CombinedError, toWatchableSource, injectWithSelf, createAbortController } from './utils';
 import { VILLUS_CLIENT } from './symbols';
 import { Operation } from '../../shared/src';
 
 interface QueryCompositeOptions<TData, TVars> {
   query: MaybeReactive<Operation<TData, TVars>['query']>;
   variables?: MaybeReactive<TVars>;
-  context?: MaybeReactive<QueryExecutionContext>;
+  context?: MaybeReactive<Partial<QueryExecutionContext>>;
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
 }
@@ -29,6 +29,7 @@ export interface BaseQueryApi<TData = any, TVars = QueryVariables> {
   unwatchVariables(): void;
   watchVariables(): void;
   isWatchingVariables: Ref<boolean>;
+  abort(): void;
 }
 
 export interface QueryApi<TData, TVars> extends BaseQueryApi<TData, TVars> {
@@ -47,11 +48,21 @@ function useQuery<TData = any, TVars = QueryVariables>(
   const isFetching = ref<boolean>(fetchOnMount ?? false);
   const isDone = ref(false);
   const error: Ref<CombinedError | null> = ref(null);
+  const abortController = shallowRef<AbortController | undefined>();
+  function abort() {
+    abortController.value?.abort();
+  }
 
   // This is to prevent state mutation for racing requests, basically favoring the very last one
   let lastPendingOperation: Promise<OperationResult<TData>> | undefined;
+
   async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
+    if (lastPendingOperation) {
+      abort();
+    }
+
     isFetching.value = true;
+    abortController.value = createAbortController();
     const vars = (isRef(variables) ? variables.value : variables) || {};
     const pendingExecution = client.executeQuery<TData, TVars>(
       {
@@ -59,7 +70,10 @@ function useQuery<TData = any, TVars = QueryVariables>(
         variables: overrideOpts?.variables || (vars as TVars), // FIXME: Try to avoid casting
         cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
       },
-      unref(opts?.context)
+      {
+        signal: abortController.value?.signal,
+        ...unref(opts?.context || {}),
+      }
     );
 
     lastPendingOperation = pendingExecution;
@@ -70,11 +84,19 @@ function useQuery<TData = any, TVars = QueryVariables>(
       return { data: res.data as TData, error: res.error };
     }
 
+    lastPendingOperation = undefined;
+    abortController.value = undefined;
+
+    if (res.aborted) {
+      isFetching.value = false;
+
+      return res;
+    }
+
     data.value = res.data as TData;
     error.value = res.error;
     isDone.value = true;
     isFetching.value = false;
-    lastPendingOperation = undefined;
 
     return { data: data.value, error: error.value };
   }
@@ -125,7 +147,17 @@ function useQuery<TData = any, TVars = QueryVariables>(
 
   beginWatchingVars();
 
-  const api = { data, isFetching, isDone, error, execute, unwatchVariables, watchVariables, isWatchingVariables };
+  const api = {
+    data,
+    isFetching,
+    isDone,
+    error,
+    execute,
+    unwatchVariables,
+    watchVariables,
+    isWatchingVariables,
+    abort,
+  };
 
   onMounted(() => {
     if (fetchOnMount) {

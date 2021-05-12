@@ -71,3 +71,7 @@ export class CombinedError extends Error {
     return this.message;
   }
 }
+
+export function isAbortError(err: Error) {
+  return err.name === 'AbortError';
+}

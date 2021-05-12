@@ -26,3 +26,18 @@ export function injectWithSelf<T>(symbol: InjectionKey<T>, onMissing: () => Erro
 
   return injection;
 }
+
+/**
+ * Creates an abort controller while being aware of the execution environment
+ */
+export function createAbortController(): AbortController | undefined {
+  if (typeof window !== 'undefined' && 'AbortController' in window && window.AbortController) {
+    return new window.AbortController();
+  }
+
+  if (typeof global !== 'undefined' && 'AbortController' in global && global.AbortController) {
+    return new global.AbortController();
+  }
+
+  return undefined;
+}
