@@ -17,7 +17,7 @@ import {
   QueryExecutionContext,
 } from './types';
 import { VILLUS_CLIENT } from './symbols';
-import { App } from 'vue-demi';
+import { App } from 'vue';
 
 export interface ClientOptions {
   url: string;
@@ -137,7 +137,7 @@ export class Client {
   public async executeSubscription<TData = any, TVars = QueryVariables>(operation: Operation<TData, TVars>) {
     const result = await this.execute<TData, TVars>(operation, 'subscription');
 
-    return (result as unknown) as ObservableLike<StandardOperationResult<TData>>;
+    return result as unknown as ObservableLike<StandardOperationResult<TData>>;
   }
 }
 

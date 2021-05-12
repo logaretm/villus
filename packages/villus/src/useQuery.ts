@@ -1,4 +1,4 @@
-import { isReactive, isRef, onMounted, Ref, ref, unref, watch } from 'vue-demi';
+import { isReactive, isRef, onMounted, Ref, ref, unref, watch } from 'vue';
 import stringify from 'fast-json-stable-stringify';
 import { CachePolicy, MaybeReactive, OperationResult, QueryExecutionContext, QueryVariables } from './types';
 import { hash, CombinedError, toWatchableSource, injectWithSelf } from './utils';

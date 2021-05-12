@@ -61,10 +61,8 @@ npm install villus graphql --save
 Or because villus is so simple, you can use it via CDN:
 
 ```html
-<!-- Import Vue 2 or 3 -->
+<!-- Import Vue  3 -->
 <script src="https://unpkg.com/vue@3.0.2/dist/vue.global.js"></script>
-<!-- Vue Demi is needed for Vue 2 and 3 support -->
-<script src="https://unpkg.com/vue-demi@0.4.1/lib/index.iife.js"></script>
 <!-- Villus -->
 <script src="https://unpkg.com/villus@latest/dist/villus.min.js"></script>
 ```

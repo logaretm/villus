@@ -1,4 +1,4 @@
-import { defineComponent, h, SetupContext } from 'vue-demi';
+import { defineComponent, h, SetupContext } from 'vue';
 import { normalizeChildren } from './utils';
 import { useClient } from './useClient';
 import { CachePolicy, ClientPlugin } from './types';

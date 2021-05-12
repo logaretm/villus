@@ -1,4 +1,4 @@
-import { provide } from 'vue-demi';
+import { provide } from 'vue';
 import { createClient, ClientOptions } from './client';
 import { VILLUS_CLIENT } from './symbols';
 

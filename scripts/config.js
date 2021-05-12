@@ -23,7 +23,7 @@ const pkgBannerMap = {
 };
 
 const pkgExternals = {
-  villus: ['vue', 'graphql', 'vue-demi'],
+  villus: ['vue', 'graphql'],
   multipart: ['extract-files', 'villus'],
   batch: ['villus', 'graphql'],
 };
@@ -31,7 +31,6 @@ const pkgExternals = {
 const pkgGlobals = {
   villus: {
     vue: 'Vue',
-    'vue-demi': 'VueDemi',
     graphql: 'graphql',
   },
   multipart: {

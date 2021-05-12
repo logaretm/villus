@@ -1,4 +1,4 @@
-import { defineComponent, toRef, watch } from 'vue-demi';
+import { defineComponent, toRef, watch } from 'vue';
 import { normalizeChildren } from './utils';
 import { useSubscription, defaultReducer, Reducer } from './useSubscription';
 

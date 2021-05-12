@@ -1,4 +1,4 @@
-import { defineComponent, Ref, toRef, watch } from 'vue-demi';
+import { defineComponent, Ref, toRef, watch } from 'vue';
 import { CachePolicy } from './types';
 import { useQuery, BaseQueryApi } from './useQuery';
 import { normalizeChildren } from './utils';

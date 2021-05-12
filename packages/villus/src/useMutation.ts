@@ -1,4 +1,4 @@
-import { ref, Ref, unref } from 'vue-demi';
+import { ref, Ref, unref } from 'vue';
 import { MaybeReactive, OperationResult, QueryExecutionContext, QueryVariables } from './types';
 import { CombinedError, injectWithSelf } from './utils';
 import { VILLUS_CLIENT } from './symbols';

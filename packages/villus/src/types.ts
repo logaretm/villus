@@ -1,7 +1,7 @@
-import { ComputedRef, Ref } from 'vue-demi';
+import { ComputedRef, Ref } from 'vue';
+import type { ExecutionResult } from 'graphql';
 import { CombinedError } from './utils/error';
 import { ParsedResponse, FetchOptions, Operation } from '../../shared/src';
-import type { ExecutionResult } from 'graphql';
 
 export interface OperationResult<TData = any> {
   data: TData | null;

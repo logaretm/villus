@@ -1,4 +1,4 @@
-import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef } from 'vue-demi';
+import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef } from 'vue';
 import { VILLUS_CLIENT } from './symbols';
 import { Unsubscribable, OperationResult, QueryVariables, MaybeReactive, StandardOperationResult } from './types';
 import { CombinedError, injectWithSelf } from './utils';

@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue-demi';
+import { defineComponent } from 'vue';
 import { useMutation } from './useMutation';
 import { normalizeChildren } from './utils';
 

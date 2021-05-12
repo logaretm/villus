@@ -1,4 +1,4 @@
-import { SetupContext } from 'vue-demi';
+import { SetupContext } from 'vue';
 
 export function normalizeChildren(context: SetupContext, slotProps: any) {
   if (!context.slots.default) {
