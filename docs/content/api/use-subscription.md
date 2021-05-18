@@ -10,14 +10,13 @@ The `useSubscription` function allows you to execute GraphQL subscriptions, it r
 
 The `useSubscription` function returns the following properties and functions:
 
-| Property | Type                                                       | Description                                                                                 |
-| -------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| data     | `Ref<any/null>`                                            | The GraphQL mutation result's `data`                                                        |
-| error    | `Ref<CombinedError>`                                       | Any errors encountered during mutation execution                                            |
-| execute  | `({variables: object}) => Promise<OperationResult<TData>>` | Executes the mutation and returns the operation result containing `data` and `error` values |
-| isPaused | `Ref<boolean>`                                             | True if the subscription is paused or inactive                                              |
-| pause   | `() => void`                                                | Deactivates the subscription temporarily until `resume` is called                          |
-| resume   | `() => void`                                               | Activates the subscription                                                                  |
+| Property | Type                 | Description                                                       |
+| -------- | -------------------- | ----------------------------------------------------------------- |
+| data     | `Ref<any/null>`      | The GraphQL subscription result's `data`                          |
+| error    | `Ref<CombinedError>` | Any errors encountered during subscription execution              |
+| isPaused | `Ref<boolean>`       | True if the subscription is paused or inactive                    |
+| pause    | `() => void`         | Deactivates the subscription temporarily until `resume` is called |
+| resume   | `() => void`         | Activates the subscription                                        |
 
 ## Usage
 
