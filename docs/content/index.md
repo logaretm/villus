@@ -29,9 +29,7 @@ yarn add villus graphql
 npm install villus graphql --save
 ```
 
-You can now use it with either the new Vue composition API or higher order components:
-
-**villus supports both Vue 2 (with @vue/composition-api) and Vue 3**
+You can now use it with either the [Vue composition API](https://v3.vuejs.org/guide/composition-api-introduction.html) or higher order components:
 
 ### Usage
 

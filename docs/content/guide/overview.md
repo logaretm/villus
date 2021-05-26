@@ -21,7 +21,6 @@ This library is inspired by [URQL](https://github.com/FormidableLabs/urql), and 
 - 💪 **TypeScript**: Written in Typescript
 - 💚 Minimal Vue.js Components
 - 🖇 Composition API support
-- Supports both Vue 2.x (with @vue/composition-api) and 3.0
 
 ## Compatibility
 

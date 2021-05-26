@@ -16,7 +16,7 @@
 
 <h6 align="center">Villus is a finger-like structures in the small intestine. They help to absorb digested food.</h6>
 
-A small and fast GraphQL client for Vue.js.
+A small and fast GraphQL client for **Vue.js 3.x**
 
 This is forked from my previous work at [vue-gql](https://github.com/baianat/vue-gql) before they decide to go for a different direction with this library.
 
@@ -30,7 +30,6 @@ This is forked from my previous work at [vue-gql](https://github.com/baianat/vue
 - ⚡️ **Suspense:** Supports the `<Suspense>` API in Vue 3
 - 🔌 **Plugins:** Use existing plugins and create custom ones
 - Higher-order components available
-- Supports both Vue 2.x (with @vue/composition-api) and 3.0
 
 ## Why use this
 
