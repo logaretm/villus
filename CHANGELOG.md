@@ -5,10 +5,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [1.0.0-rc.17](https://github.com/logaretm/villus/compare/v1.0.0-rc.16...v1.0.0-rc.17) (2021-05-12)
 
-**Note:** Version bump only for package villus-monorepo
+### ☠️ Breaking
 
-
-
+Dropped support for Vue 2.x and removed usage of `vue-demi`, this was decided because half of the codebase didn't work with Vue 2 (HOC) and reactivity caveats of Vue 2 no longer applies to Vue 3 which is limiting.
 
 
 # [1.0.0-rc.16](https://github.com/logaretm/villus/compare/v1.0.0-rc.15...v1.0.0-rc.16) (2021-04-15)
