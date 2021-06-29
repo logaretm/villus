@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.18](https://github.com/logaretm/villus/compare/v1.0.0-rc.17...v1.0.0-rc.18) (2021-06-29)
+
+
+### Bug Fixes
+
+* added TData to client execute variants closes [#128](https://github.com/logaretm/villus/issues/128) ([80426e2](https://github.com/logaretm/villus/commit/80426e21c98301d9896f814e94c106a1374cd385))
+
+
+
+
+
 # [1.0.0-rc.17](https://github.com/logaretm/villus/compare/v1.0.0-rc.16...v1.0.0-rc.17) (2021-05-12)
 
 **Note:** Version bump only for package villus
