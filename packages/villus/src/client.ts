@@ -123,14 +123,14 @@ export class Client {
   public async executeQuery<TData = any, TVars = QueryVariables>(
     operation: OperationWithCachePolicy<TData, TVars>,
     queryContext?: QueryExecutionContext
-  ): Promise<OperationResult> {
+  ): Promise<OperationResult<TData>> {
     return this.execute<TData, TVars>(operation, 'query', queryContext);
   }
 
   public async executeMutation<TData = any, TVars = QueryVariables>(
     operation: Operation<TData, TVars>,
     queryContext?: QueryExecutionContext
-  ): Promise<OperationResult> {
+  ): Promise<OperationResult<TData>> {
     return this.execute<TData, TVars>(operation, 'mutation', queryContext);
   }
 
