@@ -29,7 +29,7 @@ export interface ObservableLike<T> {
   subscribe(observer: ObserverLike<T>): Unsubscribable;
 }
 
-export type MaybeReactive<T> = T | ComputedRef<T> | Ref<T>;
+export type MaybeRef<T> = T | Ref<T>;
 
 export type OperationType = 'query' | 'mutation' | 'subscription';
 

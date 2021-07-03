@@ -1,12 +1,12 @@
 import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef } from 'vue';
 import { VILLUS_CLIENT } from './symbols';
-import { Unsubscribable, OperationResult, QueryVariables, MaybeReactive, StandardOperationResult } from './types';
+import { Unsubscribable, OperationResult, QueryVariables, MaybeRef, StandardOperationResult } from './types';
 import { CombinedError, injectWithSelf } from './utils';
 import { Operation } from '../../shared/src';
 
 interface SubscriptionCompositeOptions<TData, TVars> {
-  query: MaybeReactive<Operation<TData, TVars>['query']>;
-  variables?: MaybeReactive<TVars>;
+  query: MaybeRef<Operation<TData, TVars>['query']>;
+  variables?: MaybeRef<TVars>;
 }
 
 export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value: OperationResult<TData>) => TResult;

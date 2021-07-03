@@ -17,10 +17,6 @@ export function makeObservable(throws = false, simulateError = false) {
         next({ errors: [new Error('sadge')], data: null });
       }, 100);
 
-      afterAll(() => {
-        clearTimeout(interval);
-      });
-
       return {
         unsubscribe() {
           clearTimeout(interval);

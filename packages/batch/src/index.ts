@@ -104,7 +104,7 @@ export function batch(opts?: BatchOptions) {
           };
 
           pending.forEach(function unBatchResult(o, oIdx) {
-            const opResult = ((response.body as unknown) as BatchedGraphQLResponse)[oIdx];
+            const opResult = (response.body as unknown as BatchedGraphQLResponse)[oIdx];
 
             o.resolveOp(
               {

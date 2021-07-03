@@ -1,11 +1,11 @@
 import { ref, Ref, unref } from 'vue';
-import { MaybeReactive, OperationResult, QueryExecutionContext, QueryVariables } from './types';
+import { MaybeRef, OperationResult, QueryExecutionContext, QueryVariables } from './types';
 import { CombinedError, injectWithSelf } from './utils';
 import { VILLUS_CLIENT } from './symbols';
 import { Operation } from '../../shared/src';
 
 interface MutationExecutionOptions {
-  context: MaybeReactive<QueryExecutionContext>;
+  context: MaybeRef<QueryExecutionContext>;
 }
 
 export function useMutation<TData = any, TVars = QueryVariables>(

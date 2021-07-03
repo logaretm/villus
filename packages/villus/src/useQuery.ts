@@ -1,14 +1,14 @@
 import { isReactive, isRef, onMounted, Ref, ref, unref, watch } from 'vue';
 import stringify from 'fast-json-stable-stringify';
-import { CachePolicy, MaybeReactive, OperationResult, QueryExecutionContext, QueryVariables } from './types';
+import { CachePolicy, MaybeRef, OperationResult, QueryExecutionContext, QueryVariables } from './types';
 import { hash, CombinedError, toWatchableSource, injectWithSelf } from './utils';
 import { VILLUS_CLIENT } from './symbols';
 import { Operation } from '../../shared/src';
 
 interface QueryCompositeOptions<TData, TVars> {
-  query: MaybeReactive<Operation<TData, TVars>['query']>;
-  variables?: MaybeReactive<TVars>;
-  context?: MaybeReactive<QueryExecutionContext>;
+  query: MaybeRef<Operation<TData, TVars>['query']>;
+  variables?: MaybeRef<TVars>;
+  context?: MaybeRef<QueryExecutionContext>;
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
 }
