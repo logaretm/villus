@@ -6,9 +6,16 @@ import { useClient, useQuery } from '../../villus/src';
 import waitForExpect from 'wait-for-expect';
 import { PostQuery, PostsQuery, QueryErrorWith500, QueryWithNetworkError } from 'villus/test/mocks/queries';
 
+beforeEach(() => {
+  jest.useFakeTimers();
+});
+
+afterEach(() => {
+  jest.useRealTimers();
+});
+
 describe('batch plugin', () => {
   test('batches queries with batcher', async () => {
-    jest.useFakeTimers();
     mount({
       setup() {
         useClient({
@@ -32,16 +39,17 @@ describe('batch plugin', () => {
 
     jest.advanceTimersByTime(100);
     await flushPromises();
+
+    // wait-for-expect uses timers under the hood, so we need to reset here
+    jest.useRealTimers();
     await waitForExpect(() => {
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(document.querySelector('#multi')?.children).toHaveLength(5);
       expect(document.querySelector('#single')?.textContent).toContain('Awesome');
     });
-    jest.useRealTimers();
   });
 
   test('results with non-200 code will be evaluated separately', async () => {
-    jest.useFakeTimers();
     mount({
       setup() {
         useClient({
@@ -65,16 +73,17 @@ describe('batch plugin', () => {
 
     jest.advanceTimersByTime(100);
     await flushPromises();
+
+    // wait-for-expect uses timers under the hood, so we need to reset here
+    jest.useRealTimers();
     await waitForExpect(() => {
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(document.querySelector('#multi')?.children).toHaveLength(5);
       expect(document.querySelector('#error')?.textContent).toContain('Not authenticated');
     });
-    jest.useRealTimers();
   });
 
   test('handles network errors', async () => {
-    jest.useFakeTimers();
     mount({
       setup() {
         useClient({
@@ -94,9 +103,10 @@ describe('batch plugin', () => {
 
     jest.advanceTimersByTime(100);
     await flushPromises();
+    // wait-for-expect uses timers under the hood, so we need to reset here
+    jest.useRealTimers();
     await waitForExpect(() => {
       expect(document.querySelector('#error')?.textContent).toContain('Failed to connect');
     });
-    jest.useRealTimers();
   });
 });

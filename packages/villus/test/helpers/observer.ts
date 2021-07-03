@@ -1,5 +1,5 @@
+let interval: any;
 export function makeObservable(throws = false, simulateError = false) {
-  let interval: any;
   let counter = 0;
   const observable = {
     subscribe({ next, error }: { error: (err: Error) => any; next: (value: any) => any }) {
@@ -27,6 +27,10 @@ export function makeObservable(throws = false, simulateError = false) {
 
   return observable;
 }
+
+afterAll(() => {
+  clearTimeout(interval);
+});
 
 export function tick(ticks = 1) {
   jest.advanceTimersByTime(ticks * 100 + 1);

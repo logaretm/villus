@@ -4,7 +4,7 @@ function makePost(id: number, title = 'Awesome Post') {
   return { id, title: `${id} ${title}` };
 }
 
-export const handlers = [
+export const handlers: any[] = [
   // Handles a "GetUserInfo" query
   graphql.query('Posts', (req, res, ctx) => {
     return res(
@@ -77,11 +77,11 @@ export const handlers = [
     return res.networkError('Failed to connect');
   }),
   // Handles Batched requests
-  rest.post('https://test.com/graphql', async (req, res) => {
+  rest.post('https://test.com/graphql', async (req, res, ctx) => {
     if (!Array.isArray(req.body)) {
       throw new Error('Unknown operation');
     }
-    const data = await Promise.all(
+    const responses = await Promise.all(
       req.body.map(async op => {
         const partReq = { ...req, body: op };
         const handler = handlers.find(h => h.test(partReq));
@@ -93,15 +93,10 @@ export const handlers = [
       })
     );
 
-    return res(res => {
-      res.headers.set('content-type', 'application/json');
-      res.body = JSON.stringify(
-        data.map(d => {
-          return JSON.parse(d?.response?.body) || {};
-        })
-      );
-
-      return res;
+    const batchedResponse = responses.map(d => {
+      return JSON.parse(d?.response?.body) || {};
     });
+
+    return res(ctx.json(batchedResponse));
   }),
 ];
