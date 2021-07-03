@@ -131,6 +131,12 @@ This library relies on the `fetch` web API to run queries, you can use [`unfetch
 
 Live examples can be found [here](https://villus.logaretm.com/examples/basic-query)
 
+## Sponsorship
+
+You can help this this project by donating one time or by sponsoring via the following link
+
+<a href="https://www.buymeacoffee.com/logaretm" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" height="60" width="217" ></a>
+
 ## License
 
 MIT

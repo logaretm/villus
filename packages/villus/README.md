@@ -27,7 +27,7 @@ This is forked from my previous work at [vue-gql](https://github.com/baianat/vue
 - 🗄 **Caching:** Simple and convenient query caching by default
 - 👕 **TypeScript:** Written in Typescript and Supports GraphQL TS tooling
 - 🖇 **Composable:** Built for the Composition API
-- ⚡️ **Suspense:** Supports the `<Suspense>` API in Vue
+- ⚡️ **Suspense:** Supports the `<Suspense>` API in Vue 3
 - 🔌 **Plugins:** Use existing plugins and create custom ones
 - Higher-order components available
 
@@ -60,7 +60,7 @@ npm install villus graphql --save
 Or because villus is so simple, you can use it via CDN:
 
 ```html
-<!-- Import Vue  3 -->
+<!-- Import Vue 3 -->
 <script src="https://unpkg.com/vue@3.0.2/dist/vue.global.js"></script>
 <!-- Villus -->
 <script src="https://unpkg.com/villus@latest/dist/villus.min.js"></script>
@@ -130,6 +130,12 @@ This library relies on the `fetch` web API to run queries, you can use [`unfetch
 ## Examples
 
 Live examples can be found [here](https://villus.logaretm.com/examples/basic-query)
+
+## Sponsorship
+
+You can help this this project by donating one time or by sponsoring via the following link
+
+<a href="https://www.buymeacoffee.com/logaretm" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" height="60" width="217" ></a>
 
 ## License
 
