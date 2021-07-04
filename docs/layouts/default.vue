@@ -7,7 +7,7 @@
         <div class="mt-20 pt-2 border-t dark:border-gray-600 border-gray-200 flex items-center">
           <EditPage class="" />
 
-          <Sponsorship />
+          <Sponsorship class="ml-auto" />
         </div>
       </main>
 

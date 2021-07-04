@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-4 border-t dark-mode:border-carbon border-gray-700 w-full flex items-center">
+  <div class="flex items-center">
     <a
       :href="pageLink"
       target="_blank"
