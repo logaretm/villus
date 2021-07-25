@@ -267,7 +267,7 @@ By default the client uses `cache-first` policy to handle queries, the full list
 
 - `cache-first`: If found in cache return it, otherwise fetch it from the network
 - `network-only`: Always fetch from the network and do not cache it
-- `cache-and-network`: If found in cache return it, but fetch the fresh value and cache it for next time, if not found in cache it will fetch it from network and cache it
+- `cache-and-network`: If found in cache return it, then fetch a fresh result from the network and update current data (reactive). if not found in cache it will fetch it from network and cache it
 - `cache-only`: If found in cache return it, otherwise returns `null` for both `data` and `errors`
 
 You can specify a different strategy on different levels:

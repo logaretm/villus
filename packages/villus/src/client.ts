@@ -25,6 +25,8 @@ export interface ClientOptions {
   use?: ClientPlugin[];
 }
 
+type OnResultChangedCallback<TData> = (result: OperationResult<TData>) => unknown;
+
 export const defaultPlugins = () => [cache(), dedup(), fetch()];
 
 export class Client {
@@ -48,7 +50,8 @@ export class Client {
   private async execute<TData, TVars>(
     operation: Operation<TData, TVars> | OperationWithCachePolicy<TData, TVars>,
     type: OperationType,
-    queryContext?: QueryExecutionContext
+    queryContext?: QueryExecutionContext,
+    onResultChanged?: OnResultChangedCallback<TData>
   ): Promise<OperationResult<TData>> {
     let result: OperationResult<TData> | undefined;
     const opContext: FetchOptions = {
@@ -64,6 +67,11 @@ export class Client {
       useResult(pluginResult, terminate) {
         if (terminate) {
           terminateSignal = true;
+        }
+
+        // this means the `useResult` was called multiple times
+        if (result) {
+          onResultChanged?.(pluginResult as OperationResult<TData>);
         }
 
         result = pluginResult as OperationResult<TData>;
@@ -122,9 +130,10 @@ export class Client {
 
   public async executeQuery<TData = any, TVars = QueryVariables>(
     operation: OperationWithCachePolicy<TData, TVars>,
-    queryContext?: QueryExecutionContext
+    queryContext?: QueryExecutionContext,
+    onResultChanged?: OnResultChangedCallback<TData>
   ): Promise<OperationResult<TData>> {
-    return this.execute<TData, TVars>(operation, 'query', queryContext);
+    return this.execute<TData, TVars>(operation, 'query', queryContext, onResultChanged);
   }
 
   public async executeMutation<TData = any, TVars = QueryVariables>(

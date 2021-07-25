@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import { ref, computed, reactive } from 'vue';
 import gql from 'graphql-tag';
+import { server } from './mocks/server';
 import flushPromises from 'flush-promises';
 import waitForExpect from 'wait-for-expect';
 import { mount } from './helpers/mount';
@@ -14,6 +15,7 @@ import {
   PostQuery,
   PostsQueryWithDescription,
 } from './mocks/queries';
+import { graphql } from 'msw';
 
 interface Post {
   id: number;
@@ -833,5 +835,54 @@ describe('useQuery()', () => {
         })
       );
     });
+  });
+
+  test('cache-and-network updates the reactive data', async () => {
+    const posts = [{ id: 1, title: 'First post' }];
+    server.use(
+      graphql.query('Posts', (req, res, ctx) => {
+        return res(
+          ctx.data({
+            posts,
+          })
+        );
+      })
+    );
+
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { data, execute } = useQuery({
+          query: PostsQuery,
+          cachePolicy: 'cache-and-network',
+        });
+
+        return { data, execute };
+      },
+      template: `
+    <div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+      <button @click="execute()"></button>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(document.querySelectorAll('li')).toHaveLength(1);
+    });
+
+    posts.push({ id: 2, title: 'Second post' });
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(document.querySelectorAll('li')).toHaveLength(2);
+    });
+
+    server.resetHandlers();
   });
 });

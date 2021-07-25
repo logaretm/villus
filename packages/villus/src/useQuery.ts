@@ -50,6 +50,12 @@ function useQuery<TData = any, TVars = QueryVariables>(
 
   // This is to prevent state mutation for racing requests, basically favoring the very last one
   let lastPendingOperation: Promise<OperationResult<TData>> | undefined;
+
+  function onResultChanged(result: OperationResult<TData>) {
+    data.value = result.data as TData;
+    error.value = result.error;
+  }
+
   async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
     isFetching.value = true;
     const vars = (isRef(variables) ? variables.value : variables) || {};
@@ -59,7 +65,8 @@ function useQuery<TData = any, TVars = QueryVariables>(
         variables: overrideOpts?.variables || (vars as TVars), // FIXME: Try to avoid casting
         cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
       },
-      unref(opts?.context)
+      unref(opts?.context),
+      onResultChanged
     );
 
     lastPendingOperation = pendingExecution;
@@ -70,8 +77,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
       return { data: res.data as TData, error: res.error };
     }
 
-    data.value = res.data as TData;
-    error.value = res.error;
+    onResultChanged(res);
     isDone.value = true;
     isFetching.value = false;
     lastPendingOperation = undefined;

@@ -12,7 +12,7 @@ The cache plugin handles all the cache policies in villus:
 
 - `cache-first`: If found in cache return it, otherwise fetch it from the network
 - `network-only`: Always fetch from the network and do not cache it
-- `cache-and-network`: If found in cache return it, but fetch the fresh value and cache it for next time, if not found in cache it will fetch it from network and cache it
+- `cache-and-network`: If found in cache return it, then fetch a fresh result from the network and update current data (reactive). if not found in cache it will fetch it from network and cache it
 - `cache-only`: If found in cache return it, otherwise returns an empty response without errors
 
 ```js
