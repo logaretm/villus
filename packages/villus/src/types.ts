@@ -15,9 +15,9 @@ export type StandardOperationResult<TData = any> = ExecutionResult<TData>;
 export type QueryVariables = Record<string, any>;
 
 export interface ObserverLike<T> {
-  next: (value: T) => void;
-  error: (err: any) => void;
-  complete: () => void;
+  next?: (value: T) => void;
+  error?: (err: any) => void;
+  complete?: () => void;
 }
 
 export interface Unsubscribable {
