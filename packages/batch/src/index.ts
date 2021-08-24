@@ -104,7 +104,19 @@ export function batch(opts?: BatchOptions) {
           };
 
           pending.forEach(function unBatchResult(o, oIdx) {
-            const opResult = (response.body as unknown as BatchedGraphQLResponse)[oIdx];
+            const opResult = (response.body as unknown as BatchedGraphQLResponse | null)?.[oIdx];
+            // the server returned a non-json response or an empty one
+            if (!opResult) {
+              o.resolveOp(
+                {
+                  ...resInit,
+                  body: response.body,
+                },
+                oIdx,
+                new Error('Received empty response for this operation from server')
+              );
+              return;
+            }
 
             o.resolveOp(
               {

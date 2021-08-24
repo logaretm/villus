@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import flushPromises from 'flush-promises';
+import { rest } from 'msw';
+import { server } from '../../villus/test/mocks/server';
 import { batch } from '../src/index';
 import { mount } from '../../villus/test/helpers/mount';
 import { useClient, useQuery } from '../../villus/src';
@@ -81,6 +83,43 @@ describe('batch plugin', () => {
       expect(document.querySelector('#multi')?.children).toHaveLength(5);
       expect(document.querySelector('#error')?.textContent).toContain('Not authenticated');
     });
+  });
+
+  test('null json responses should be handled', async () => {
+    server.use(
+      rest.post('https://test.com/graphql', async (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json(null));
+      })
+    );
+
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+          use: [batch()],
+        });
+
+        const firstQuery = useQuery({ query: PostsQuery });
+
+        return { error: firstQuery.error };
+      },
+      template: `
+    <div>
+      <p v-if="error" id="error">{{  error.message }}</p>
+    </div>`,
+    });
+
+    jest.advanceTimersByTime(100);
+    await flushPromises();
+
+    // wait-for-expect uses timers under the hood, so we need to reset here
+    jest.useRealTimers();
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('#error')?.textContent).toContain('empty response');
+    });
+
+    server.resetHandlers();
   });
 
   test('handles network errors', async () => {
