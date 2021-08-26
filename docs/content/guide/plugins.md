@@ -206,7 +206,7 @@ const myPluginWithConfig = (config: { prefix: string }) => {
 };
 ```
 
-## Example: Adding Authorization Headers
+## Example - Adding Authorization Headers
 
 It's very likely you have a authentication header you would like to add to your queries to be able to execute protected queries/mutations. A very common header is `Authorization` header which contains an auth token. Here is a snippet that shows how to add such headers to your queries:
 
@@ -226,7 +226,7 @@ useClient({
 
 And that's it,
 
-## Example: Persistent Cache
+## Example - Persistent Cache
 
 You might want to create a custom cache especially that villus default cache plugin does not persist when the page is reloaded or when the client is destroyed, this is because villus default cache is a simple object in memory that keeps track of queries during runtime and each time the page is reloaded or when the client is initialized, it will start with a new object each time. This is convenient for most cases but you might want to leverage a more permanent cache solution.
 
@@ -279,7 +279,7 @@ return useResult(cachedResult, operation.cachePolicy === 'cache-first');
 
 For reference you may look at the implementation of the [`cache` plugin](https://github.com/logaretm/villus/blob/main/packages/villus/src/cache.ts)
 
-## Example: Response Headers
+## Example - Response Headers
 
 You might want to do something after response headers, for example refreshing a user's token after each response to keep them signed in. You can do so by using the plugin context's `response` property which is set after either `fetch` or `batch` plugins are done executing.
 
@@ -317,7 +317,7 @@ It is important that you don't use ES6 destructing if you plan to use the `respo
 
 </doc-tip>
 
-## Example: Global Error Handler
+## Example - Global Error Handler
 
 If you are using an error reporting or bug tracking service like [`Sentry`](https://sentry.io/), it can become tedious to handle each query and mutation errors all over your app.
 
