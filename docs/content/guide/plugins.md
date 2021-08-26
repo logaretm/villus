@@ -316,3 +316,52 @@ useClient({
 It is important that you don't use ES6 destructing if you plan to use the `response` property as it will be set after the query is executed, destructing it at the function level will always yield `undefined`.
 
 </doc-tip>
+
+## Example: Global Error Handler
+
+If you are using an error reporting or bug tracking service like [`Sentry`](https://sentry.io/), it can become tedious to handle each query and mutation errors all over your app.
+
+It would be useful to handle most of the errors in a global handler while leaving the specific errors (e.g: validation) to the component that used that query/mutation.
+
+In this example, a global error handler is created where it reports all 500 and unknown errors to sentry.
+
+```ts
+import { captureException } from '@sentry/browser';
+
+/**
+ * Reports unknown errors to sentry to avoid having to do that ever where.
+ */
+const sentryReportPlugin = definePlugin(({ operation, afterQuery }) => {
+  afterQuery(({ error }, { response }) => {
+    // collect some information about the query that failed
+    const operationContext = {
+      query: operation.query,
+      type: operation.type,
+      variables: operation.variables,
+    };
+
+    if ((response?.status || 200) >= 500) {
+      captureException(error, {
+        contexts: {
+          info: {
+            description: 'received 500 response code from API',
+          },
+          operation: operationContext,
+        },
+      });
+    }
+
+    // Other kinds of error codes should be handled by the consuming component
+    if (error && isUnknownError(error)) {
+      captureException(error, {
+        contexts: {
+          operation: operationContext,
+        },
+      });
+    }
+
+    // Notify user about the error
+    // ...
+  });
+});
+```
