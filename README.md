@@ -37,7 +37,7 @@ GraphQL is just a simple HTTP request. This library is meant to be a tiny client
 
 `villus` also supports file uploads and subscriptions without compromising bundle size through plugins.
 
-If you are looking for a more full-featured client use [vue-apollo](https://github.com/vue/vue-apollo), it has everything you need.
+If you are looking for a more full-featured client use [vue-apollo](https://github.com/vuejs/vue-apollo), it has everything you need.
 
 You can read more about it in the [announcement post](https://logaretm.com/blog/2020-01-11-announcing-villus/).
 
