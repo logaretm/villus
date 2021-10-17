@@ -1,9 +1,11 @@
-import { defineComponent, Ref, toRef, watch } from 'vue';
+import { defineComponent, Ref, toRef, UnwrapRef, VNode, watch } from 'vue';
 import { CachePolicy } from './types';
 import { useQuery, BaseQueryApi } from './useQuery';
 import { normalizeChildren } from './utils';
 
-export const Query = defineComponent({
+type QuerySlotProps = UnwrapRef<Pick<BaseQueryApi, 'data' | 'error' | 'execute' | 'isDone' | 'isFetching'>>;
+
+const QueryImpl = defineComponent({
   name: 'Query',
   props: {
     query: {
@@ -55,13 +57,15 @@ export const Query = defineComponent({
       );
 
       return () => {
-        return normalizeChildren(ctx, {
+        const slotProps: QuerySlotProps = {
           data: data.value,
           error: error.value,
           isFetching: isFetching.value,
           isDone: isDone.value,
           execute,
-        });
+        };
+
+        return normalizeChildren(ctx, slotProps);
       };
     }
 
@@ -79,3 +83,11 @@ export const Query = defineComponent({
     return createRenderFn(useQuery(opts));
   },
 });
+
+export const Query = QueryImpl as typeof QueryImpl & {
+  new (): {
+    $slots: {
+      default: (arg: QuerySlotProps) => VNode[];
+    };
+  };
+};

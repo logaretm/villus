@@ -1,8 +1,17 @@
-import { defineComponent, toRef, watch } from 'vue';
+import { defineComponent, toRef, VNode, watch } from 'vue';
 import { normalizeChildren } from './utils';
 import { useSubscription, defaultReducer, Reducer } from './useSubscription';
+import { CombinedError } from '../dist/villus';
 
-export const Subscription = defineComponent({
+interface SubscriptionSlotProps {
+  data: unknown;
+  error: CombinedError | null;
+  isPaused: boolean;
+  pause(): void;
+  resume(): void;
+}
+
+const SubscriptionImpl = defineComponent({
   name: 'Subscription',
   props: {
     query: {
@@ -45,13 +54,23 @@ export const Subscription = defineComponent({
     });
 
     return () => {
-      return normalizeChildren(ctx, {
+      const slotProps: SubscriptionSlotProps = {
         data: data.value,
         error: error.value,
         pause,
         isPaused: isPaused.value,
         resume,
-      });
+      };
+
+      return normalizeChildren(ctx, slotProps);
     };
   },
 });
+
+export const Subscription = SubscriptionImpl as typeof SubscriptionImpl & {
+  new (): {
+    $slots: {
+      default: (arg: SubscriptionSlotProps) => VNode[];
+    };
+  };
+};

@@ -1,8 +1,11 @@
-import { defineComponent } from 'vue';
+import { defineComponent, UnwrapRef, VNode } from 'vue';
 import { useMutation } from './useMutation';
+import type { BaseQueryApi } from './useQuery';
 import { normalizeChildren } from './utils';
 
-export const Mutation = defineComponent({
+type QuerySlotProps = UnwrapRef<Pick<BaseQueryApi, 'data' | 'error' | 'execute' | 'isDone' | 'isFetching'>>;
+
+const MutationImpl = defineComponent({
   name: 'Mutation',
   props: {
     query: {
@@ -24,3 +27,11 @@ export const Mutation = defineComponent({
     };
   },
 });
+
+export const Mutation = MutationImpl as typeof MutationImpl & {
+  new (): {
+    $slots: {
+      default: (arg: QuerySlotProps) => VNode[];
+    };
+  };
+};
