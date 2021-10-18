@@ -240,6 +240,54 @@ test('Pauses and resumes subscriptions', async () => {
   expect(document.querySelector('#status')?.textContent).toBe('false');
 });
 
+test('Can pause subscriptions initially', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
+      });
+
+      function reduce(oldMessages: string[] | null, response: any) {
+        if (!response.data || !oldMessages) {
+          return oldMessages || [];
+        }
+
+        return [...oldMessages, response.data.message];
+      }
+
+      const { data, resume, isPaused } = useSubscription(
+        { query: `subscription { newMessages }`, paused: true },
+        reduce
+      );
+
+      return { messages: data, resume, isPaused };
+    },
+    template: `
+      <div>
+        <ul v-for="message in messages">
+          <li>{{ message.id }}</li>
+        </ul>
+        <button @click="resume"></button>
+        <span id="status">{{ isPaused }}</span>
+      </div>
+    `,
+  });
+
+  await flushPromises();
+  jest.advanceTimersByTime(201);
+  // pauses subscription
+  expect(document.querySelector('#status')?.textContent).toBe('true');
+  jest.advanceTimersByTime(201);
+  expect(document.querySelectorAll('li')).toHaveLength(0);
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+  await flushPromises();
+  expect(document.querySelector('#status')?.textContent).toBe('false');
+  jest.advanceTimersByTime(201);
+  await flushPromises();
+  expect(document.querySelectorAll('li')).toHaveLength(2);
+});
+
 test('Fails if provider was not resolved', () => {
   try {
     mount({

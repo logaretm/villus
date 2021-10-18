@@ -1,7 +1,6 @@
 import { defineComponent, toRef, VNode, watch } from 'vue';
-import { normalizeChildren } from './utils';
+import { normalizeChildren, CombinedError } from './utils';
 import { useSubscription, defaultReducer, Reducer } from './useSubscription';
-import { CombinedError } from '../dist/villus';
 
 interface SubscriptionSlotProps {
   data: unknown;
@@ -36,6 +35,7 @@ const SubscriptionImpl = defineComponent({
       {
         query: props.query as string,
         variables: props.variables as Record<string, any> | undefined,
+        paused: props.paused,
       },
       (props.reduce as Reducer) || defaultReducer
     );
