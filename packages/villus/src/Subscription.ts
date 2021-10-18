@@ -36,6 +36,7 @@ const SubscriptionImpl = defineComponent({
       {
         query: props.query as string,
         variables: props.variables as Record<string, any> | undefined,
+        paused: props.paused,
       },
       (props.reduce as Reducer) || defaultReducer
     );

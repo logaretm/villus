@@ -7,6 +7,7 @@ import { Operation } from '../../shared/src';
 interface SubscriptionCompositeOptions<TData, TVars> {
   query: MaybeRef<Operation<TData, TVars>['query']>;
   variables?: MaybeRef<TVars>;
+  paused?: boolean;
 }
 
 export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value: OperationResult<TData>) => TResult;
@@ -14,7 +15,7 @@ export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value
 export const defaultReducer: Reducer = (_, val) => val.data;
 
 export function useSubscription<TData = any, TResult = TData, TVars = QueryVariables>(
-  { query, variables }: SubscriptionCompositeOptions<TData, TVars>,
+  { query, variables, paused }: SubscriptionCompositeOptions<TData, TVars>,
   reduce: Reducer<TData, TResult> = defaultReducer
 ) {
   const client = injectWithSelf(VILLUS_CLIENT, () => {
@@ -23,7 +24,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
 
   const data = ref<TResult | null>(reduce(null, { data: null, error: null }));
   const error: Ref<CombinedError | null> = ref(null);
-  const isPaused = ref(false);
+  const isPaused = ref(paused || false);
 
   function handleResponse(result: OperationResult<TData>) {
     data.value = reduce(data.value as TResult, result) as any;
@@ -63,9 +64,11 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   }
 
   let observer: Unsubscribable;
-  onMounted(async () => {
-    observer = await initObserver();
-  });
+  if (!paused) {
+    onMounted(async () => {
+      observer = await initObserver();
+    });
+  }
 
   onBeforeUnmount(() => {
     if (observer) {
@@ -78,6 +81,10 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   }
 
   async function resume() {
+    if (!observer) {
+      reInit();
+    }
+
     isPaused.value = false;
   }
 
