@@ -1,7 +1,6 @@
 import { defineComponent, toRef, VNode, watch } from 'vue';
-import { normalizeChildren } from './utils';
+import { normalizeChildren, CombinedError } from './utils';
 import { useSubscription, defaultReducer, Reducer } from './useSubscription';
-import { CombinedError } from '../dist/villus';
 
 interface SubscriptionSlotProps {
   data: unknown;
