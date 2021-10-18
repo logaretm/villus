@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/logaretm/villus/compare/v1.0.0-rc.21...v1.0.0) (2021-10-18)
+
+
+### Features
+
+* add `paused` for subscriptions init object ([#143](https://github.com/logaretm/villus/issues/143)) ([9cfa418](https://github.com/logaretm/villus/commit/9cfa4188e0679aa72d1c00a7ea40fd39c58f8a06))
+* added slot typing ([1aec7e7](https://github.com/logaretm/villus/commit/1aec7e727a2b2dee2a3f58708307c91198609f78))
+
+
+
+
+
 # [1.0.0-rc.21](https://github.com/logaretm/villus/compare/v1.0.0-rc.20...v1.0.0-rc.21) (2021-08-26)
 
 
