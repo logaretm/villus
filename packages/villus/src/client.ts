@@ -50,7 +50,7 @@ export class Client {
   private async execute<TData, TVars>(
     operation: Operation<TData, TVars> | OperationWithCachePolicy<TData, TVars>,
     type: OperationType,
-    queryContext?: QueryExecutionContext,
+    queryContext?: Partial<QueryExecutionContext>,
     onResultChanged?: OnResultChangedCallback<TData>
   ): Promise<OperationResult<TData>> {
     let result: OperationResult<TData> | undefined;
@@ -58,6 +58,7 @@ export class Client {
       url: this.url,
       ...DEFAULT_FETCH_OPTS,
       headers: { ...DEFAULT_FETCH_OPTS.headers, ...(queryContext?.headers || {}) },
+      signal: queryContext?.signal,
     };
 
     let terminateSignal = false;
@@ -130,7 +131,7 @@ export class Client {
 
   public async executeQuery<TData = any, TVars = QueryVariables>(
     operation: OperationWithCachePolicy<TData, TVars>,
-    queryContext?: QueryExecutionContext,
+    queryContext?: Partial<QueryExecutionContext>,
     onResultChanged?: OnResultChangedCallback<TData>
   ): Promise<OperationResult<TData>> {
     return this.execute<TData, TVars>(operation, 'query', queryContext, onResultChanged);
@@ -138,7 +139,7 @@ export class Client {
 
   public async executeMutation<TData = any, TVars = QueryVariables>(
     operation: Operation<TData, TVars>,
-    queryContext?: QueryExecutionContext
+    queryContext?: Partial<QueryExecutionContext>
   ): Promise<OperationResult<TData>> {
     return this.execute<TData, TVars>(operation, 'mutation', queryContext);
   }

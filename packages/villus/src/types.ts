@@ -6,6 +6,7 @@ import { ParsedResponse, FetchOptions, Operation } from '../../shared/src';
 export interface OperationResult<TData = any> {
   data: TData | null;
   error: CombinedError | null;
+  aborted?: boolean;
 }
 
 export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first' | 'cache-only';
@@ -49,6 +50,7 @@ export type ClientPluginOperation = OperationWithCachePolicy<unknown, QueryVaria
 
 export interface QueryExecutionContext {
   headers: Record<string, string>;
+  signal: AbortSignal;
 }
 
 export interface ClientPluginContext {
