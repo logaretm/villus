@@ -17,13 +17,31 @@ import {
   QueryExecutionContext,
 } from './types';
 import { VILLUS_CLIENT } from './symbols';
-import { App } from 'vue';
+import { App, getCurrentInstance, inject } from 'vue';
 
 export interface ClientOptions {
   url: string;
   cachePolicy?: CachePolicy;
   use?: ClientPlugin[];
 }
+
+/**
+ * setActiveClient should be called to solve problem outside setup
+ */
+// eslint-disable-next-line no-use-before-define
+export let activeClient: Client | undefined;
+
+/**
+ * Sets or unsets the active client
+ *
+ * @param client - villus client instance
+ */
+export const setActiveClient = (client: Client | undefined) => (activeClient = client);
+
+/**
+ * Get the currently active client if there is any.
+ */
+export const getActiveClient = () => (getCurrentInstance() && inject(VILLUS_CLIENT)) || activeClient;
 
 type OnResultChangedCallback<TData> = (result: OperationResult<TData>) => unknown;
 
@@ -152,6 +170,10 @@ export class Client {
 
 export function createClient(opts: ClientOptions) {
   const client = new Client(opts);
-  client.install = (app: App) => app.provide(VILLUS_CLIENT, client);
+  client.install = (app: App) => {
+    // this allows useQuery() etc useFunctions to get client outside of a component setup after
+    setActiveClient(client);
+    app.provide(VILLUS_CLIENT, client);
+  };
   return client;
 }
