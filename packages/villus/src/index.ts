@@ -1,12 +1,12 @@
-export { createClient, defaultPlugins, Client } from './client';
+export { createClient, ClientOptions, defaultPlugins, Client } from './client';
 export { Provider, withProvider } from './Provider';
 export { Query } from './Query';
 export { Mutation } from './Mutation';
 export { Subscription } from './Subscription';
 export { useClient } from './useClient';
-export { useQuery } from './useQuery';
+export { useQuery, QueryApi, BaseQueryApi } from './useQuery';
 export { useMutation } from './useMutation';
-export { useSubscription } from './useSubscription';
+export { useSubscription, Reducer } from './useSubscription';
 export { handleSubscriptions, SubscriptionForwarder } from './handleSubscriptions';
 export { fetch } from './fetch';
 export { cache } from './cache';
