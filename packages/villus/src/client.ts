@@ -29,7 +29,7 @@ export interface ClientOptions {
  * setActiveClient should be called to solve problem outside setup
  */
 // eslint-disable-next-line no-use-before-define
-export let activeClient: Client | undefined;
+let activeClient: Client | undefined;
 
 /**
  * Sets or unsets the active client
@@ -41,7 +41,7 @@ export const setActiveClient = (client: Client | undefined) => (activeClient = c
 /**
  * Get the currently active client if there is any.
  */
-export const getActiveClient = () => (getCurrentInstance() && inject(VILLUS_CLIENT)) || activeClient;
+export const getActiveClient = () => activeClient;
 
 type OnResultChangedCallback<TData> = (result: OperationResult<TData>) => unknown;
 
