@@ -23,7 +23,7 @@ export function resolveClient(): Client {
   let client = vm && inject(symbol, vm?.provides?.[symbol as any]);
 
   if (client) setActiveClient(client);
-  client = activeClient;
+  client = getActiveClient();
 
   if (client === null || client === undefined) {
     throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
