@@ -26,7 +26,7 @@ export function resolveClient(): Client {
   client = activeClient;
 
   if (client === null || client === undefined) {
-    throw onMissing();
+    throw new Error('Cannot detect villus Client, did you forget to call `useClient`?');
   }
 
   return client;
