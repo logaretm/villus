@@ -41,6 +41,7 @@ export const setActiveClient = (client: Client | undefined) => (activeClient = c
 /**
  * Get the currently active client if there is any.
  */
+// If want get currentInstance client and response is not expected, notice resolveClient in common.ts may be exec first.
 export const getActiveClient = () => activeClient;
 
 type OnResultChangedCallback<TData> = (result: OperationResult<TData>) => unknown;
