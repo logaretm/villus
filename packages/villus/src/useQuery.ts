@@ -1,7 +1,7 @@
 import { isReactive, isRef, onMounted, Ref, ref, unref, watch, getCurrentInstance } from 'vue';
 import stringify from 'fast-json-stable-stringify';
 import { CachePolicy, MaybeRef, OperationResult, QueryExecutionContext, QueryVariables } from './types';
-import { hash, CombinedError, toWatchableSource, injectWithSelf } from './utils';
+import { hash, CombinedError, toWatchableSource, resolveClient } from './utils';
 import { VILLUS_CLIENT } from './symbols';
 import { Operation } from '../../shared/src';
 import { Client } from './client';
@@ -40,11 +40,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
   opts: QueryCompositeOptions<TData, TVars>,
   manualClient?: Client
 ): QueryApi<TData, TVars> {
-  const client =
-    manualClient ??
-    injectWithSelf(VILLUS_CLIENT, () => {
-      return new Error('Cannot detect villus Client, did you forget to call `useClient`?');
-    });
+  const client = manualClient ?? resolveClient(VILLUS_CLIENT);
 
   let { query, variables, cachePolicy, fetchOnMount } = normalizeOptions(opts);
   const data: Ref<TData | null> = ref(null);
