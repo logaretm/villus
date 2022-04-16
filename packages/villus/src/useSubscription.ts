@@ -1,7 +1,7 @@
 import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef, getCurrentInstance } from 'vue';
 import { VILLUS_CLIENT } from './symbols';
 import { Unsubscribable, OperationResult, QueryVariables, MaybeRef, StandardOperationResult } from './types';
-import { CombinedError, injectWithSelf } from './utils';
+import { CombinedError, resolveClient } from './utils';
 import { Operation } from '../../shared/src';
 import { Client } from './client';
 
@@ -20,11 +20,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   reduce: Reducer<TData, TResult> = defaultReducer,
   manualClient?: Client
 ) {
-  const client =
-    manualClient ??
-    injectWithSelf(VILLUS_CLIENT, () => {
-      return new Error('Cannot detect villus Client, did you forget to call `useClient`?');
-    });
+  const client = manualClient ?? resolveClient(VILLUS_CLIENT);
 
   const data = ref<TResult | null>(reduce(null, { data: null, error: null }));
   const error: Ref<CombinedError | null> = ref(null);
