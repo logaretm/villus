@@ -17,6 +17,34 @@ features:
     details: Supports the <Suspense /> component API out of the box
 ---
 
+## Sponsors
+
+Thanks for the following companies and individuals who are supporting villus
+
+<br>
+
+<div class="flex justify-center items-center flex-wrap gap-4">
+  <a href="https://getform.io" target="_blank" class="border-2 border-transparent dark:border-gray-600 rounded-xl">
+    <img src="https://raw.githubusercontent.com/logaretm/vee-validate/main/docs/assets/img/sponsors/getform.svg" width="240" title="Go to getform.io">
+  </a>
+</div>
+
+<br>
+
+<br>
+
+You can also help this this project and my other projects by donating one time or by sponsoring via the following link
+
+<br>
+
+<div class="flex justify-center items-center">
+  <a href="https://www.buymeacoffee.com/logaretm" target="_blank">
+      <img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" width="180" title="Go to Buy Me A Coffee site">
+  </a>
+</div>
+
+<br>
+
 ## Quick Start
 
 First install `villus`:
