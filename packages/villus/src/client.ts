@@ -42,7 +42,7 @@ export const setActiveClient = (client: Client | undefined) => (activeClient = c
  * Get the currently active client if there is any.
  */
 export const getActiveClient = () => {
-  const vm = getCurrentInstance();
+  const vm = getCurrentInstance() as any;
   if (!vm) {
     return activeClient;
   }
