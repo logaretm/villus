@@ -1,8 +1,9 @@
-import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef } from 'vue';
+import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef, getCurrentInstance } from 'vue';
 import { VILLUS_CLIENT } from './symbols';
 import { Unsubscribable, OperationResult, QueryVariables, MaybeRef, StandardOperationResult } from './types';
-import { CombinedError, injectWithSelf } from './utils';
+import { CombinedError, resolveClient } from './utils';
 import { Operation } from '../../shared/src';
+import { Client } from './client';
 
 interface SubscriptionCompositeOptions<TData, TVars> {
   query: MaybeRef<Operation<TData, TVars>['query']>;
@@ -16,11 +17,10 @@ export const defaultReducer: Reducer = (_, val) => val.data;
 
 export function useSubscription<TData = any, TResult = TData, TVars = QueryVariables>(
   { query, variables, paused }: SubscriptionCompositeOptions<TData, TVars>,
-  reduce: Reducer<TData, TResult> = defaultReducer
+  reduce: Reducer<TData, TResult> = defaultReducer,
+  manualClient?: Client
 ) {
-  const client = injectWithSelf(VILLUS_CLIENT, () => {
-    return new Error('Cannot detect villus Client, did you forget to call `useClient`?');
-  });
+  const client = manualClient ?? resolveClient(VILLUS_CLIENT);
 
   const data = ref<TResult | null>(reduce(null, { data: null, error: null }));
   const error: Ref<CombinedError | null> = ref(null);
@@ -63,18 +63,21 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     });
   }
 
+  /**
+   * if can not getCurrentInstance, the func use outside of setup, cannot get onMounted
+   * when outside of setup initObserver immediately.
+   */
   let observer: Unsubscribable;
+  const vm = getCurrentInstance();
   if (!paused) {
-    onMounted(async () => {
+    const getObserver = async () => {
       observer = await initObserver();
-    });
+    };
+    vm ? onMounted(() => getObserver()) : getObserver();
   }
 
-  onBeforeUnmount(() => {
-    if (observer) {
-      observer.unsubscribe();
-    }
-  });
+  // todo: if outside of setup, it should be recommend manually pause it(or someaction else)
+  vm && onBeforeUnmount(() => observer && observer.unsubscribe());
 
   function pause() {
     isPaused.value = true;

@@ -1,11 +1,12 @@
-import { isReactive, isRef, onMounted, Ref, ref, unref, watch } from 'vue';
+import { isReactive, isRef, onMounted, Ref, ref, unref, watch, getCurrentInstance } from 'vue';
 import stringify from 'fast-json-stable-stringify';
 import { CachePolicy, MaybeRef, OperationResult, QueryExecutionContext, QueryVariables } from './types';
-import { hash, CombinedError, toWatchableSource, injectWithSelf } from './utils';
+import { hash, CombinedError, toWatchableSource, resolveClient } from './utils';
 import { VILLUS_CLIENT } from './symbols';
 import { Operation } from '../../shared/src';
+import { Client } from './client';
 
-interface QueryCompositeOptions<TData, TVars> {
+export interface QueryCompositeOptions<TData, TVars> {
   query: MaybeRef<Operation<TData, TVars>['query']>;
   variables?: MaybeRef<TVars>;
   context?: MaybeRef<QueryExecutionContext>;
@@ -36,11 +37,10 @@ export interface QueryApi<TData, TVars> extends BaseQueryApi<TData, TVars> {
 }
 
 function useQuery<TData = any, TVars = QueryVariables>(
-  opts: QueryCompositeOptions<TData, TVars>
+  opts: QueryCompositeOptions<TData, TVars>,
+  manualClient?: Client
 ): QueryApi<TData, TVars> {
-  const client = injectWithSelf(VILLUS_CLIENT, () => {
-    return new Error('Cannot detect villus Client, did you forget to call `useClient`?');
-  });
+  const client = manualClient ?? resolveClient(VILLUS_CLIENT);
 
   let { query, variables, cachePolicy, fetchOnMount } = normalizeOptions(opts);
   const data: Ref<TData | null> = ref(null);
@@ -133,11 +133,15 @@ function useQuery<TData = any, TVars = QueryVariables>(
 
   const api = { data, isFetching, isDone, error, execute, unwatchVariables, watchVariables, isWatchingVariables };
 
-  onMounted(() => {
-    if (fetchOnMount) {
-      execute();
-    }
-  });
+  /**
+   * if can not getCurrentInstance, the func use outside of setup, cannot get onMounted
+   * when outside of setup and fetchOnMount is true, execute immediately, but a little confused
+   * todo: maybe better to add a new param decide execute immediately, but it's ok also now
+   */
+  const vm = getCurrentInstance();
+  if (fetchOnMount) {
+    vm ? onMounted(() => execute()) : execute();
+  }
 
   return {
     ...api,

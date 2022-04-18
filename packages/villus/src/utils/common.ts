@@ -1,4 +1,5 @@
 import { getCurrentInstance, inject, InjectionKey, isReactive, isRef, Ref, toRefs, WatchSource } from 'vue';
+import { getActiveClient, setActiveClient, Client } from '../client';
 
 export function toWatchableSource<T = any>(value: Ref<T> | Record<string, any>): WatchSource | WatchSource[] {
   if (isRef(value)) {
@@ -16,13 +17,18 @@ export function toWatchableSource<T = any>(value: Ref<T> | Record<string, any>):
 
 // Uses same component provide as its own injections
 // Due to changes in https://github.com/vuejs/vue-next/pull/2424
-export function injectWithSelf<T>(symbol: InjectionKey<T>, onMissing: () => Error): T {
+export function resolveClient<T>(symbol: InjectionKey<T>): Client {
   const vm = getCurrentInstance() as any;
+  let client = vm && inject(symbol, vm?.provides?.[symbol as any]);
 
-  const injection = inject(symbol, vm?.provides?.[symbol as any]);
-  if (injection === null || injection === undefined) {
-    throw onMissing();
+  if (client) setActiveClient(client);
+  client = getActiveClient();
+
+  if (client === null || client === undefined) {
+    throw new Error(
+      'Cannot detect villus Client, did you forget to call `useClient`? Alternatively, you can explicitly pass a client as the `manualClient` argument.'
+    );
   }
 
-  return injection;
+  return client;
 }
