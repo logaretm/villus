@@ -1,5 +1,4 @@
 import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef, getCurrentInstance } from 'vue';
-import { VILLUS_CLIENT } from './symbols';
 import { Unsubscribable, OperationResult, QueryVariables, MaybeRef, StandardOperationResult } from './types';
 import { CombinedError, resolveClient } from './utils';
 import { Operation } from '../../shared/src';
@@ -9,6 +8,7 @@ interface SubscriptionCompositeOptions<TData, TVars> {
   query: MaybeRef<Operation<TData, TVars>['query']>;
   variables?: MaybeRef<TVars>;
   paused?: boolean;
+  client?: Client;
 }
 
 export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value: OperationResult<TData>) => TResult;
@@ -16,12 +16,11 @@ export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value
 export const defaultReducer: Reducer = (_, val) => val.data;
 
 export function useSubscription<TData = any, TResult = TData, TVars = QueryVariables>(
-  { query, variables, paused }: SubscriptionCompositeOptions<TData, TVars>,
-  reduce: Reducer<TData, TResult> = defaultReducer,
-  manualClient?: Client
+  opts: SubscriptionCompositeOptions<TData, TVars>,
+  reduce: Reducer<TData, TResult> = defaultReducer
 ) {
-  const client = manualClient ?? resolveClient(VILLUS_CLIENT);
-
+  const client = opts.client ?? resolveClient();
+  const { query, variables, paused } = opts;
   const data = ref<TResult | null>(reduce(null, { data: null, error: null }));
   const error: Ref<CombinedError | null> = ref(null);
   const isPaused = ref(paused || false);

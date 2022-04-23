@@ -1,5 +1,6 @@
-import { getCurrentInstance, inject, InjectionKey, isReactive, isRef, Ref, toRefs, WatchSource } from 'vue';
+import { getCurrentInstance, inject, isReactive, isRef, Ref, toRefs, WatchSource } from 'vue';
 import { getActiveClient, setActiveClient, Client } from '../client';
+import { VILLUS_CLIENT } from '../symbols';
 
 export function toWatchableSource<T = any>(value: Ref<T> | Record<string, any>): WatchSource | WatchSource[] {
   if (isRef(value)) {
@@ -15,11 +16,11 @@ export function toWatchableSource<T = any>(value: Ref<T> | Record<string, any>):
   throw new Error('value is not reactive');
 }
 
-// Uses same component provide as its own injections
-// Due to changes in https://github.com/vuejs/vue-next/pull/2424
-export function resolveClient<T>(symbol: InjectionKey<T>): Client {
+export function resolveClient(): Client {
   const vm = getCurrentInstance() as any;
-  let client = vm && inject(symbol, vm?.provides?.[symbol as any]);
+  // Uses same component provide as its own injections
+  // Due to changes in https://github.com/vuejs/vue-next/pull/2424
+  let client = vm && inject(VILLUS_CLIENT, vm?.provides?.[VILLUS_CLIENT as any]);
 
   if (client) setActiveClient(client);
   client = getActiveClient();

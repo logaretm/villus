@@ -2,7 +2,6 @@ import { isReactive, isRef, onMounted, Ref, ref, unref, watch, getCurrentInstanc
 import stringify from 'fast-json-stable-stringify';
 import { CachePolicy, MaybeRef, OperationResult, QueryExecutionContext, QueryVariables } from './types';
 import { hash, CombinedError, toWatchableSource, resolveClient } from './utils';
-import { VILLUS_CLIENT } from './symbols';
 import { Operation } from '../../shared/src';
 import { Client } from './client';
 
@@ -12,6 +11,7 @@ export interface QueryCompositeOptions<TData, TVars> {
   context?: MaybeRef<QueryExecutionContext>;
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
+  client?: Client;
 }
 
 interface QueryExecutionOpts<TVars> {
@@ -37,10 +37,9 @@ export interface QueryApi<TData, TVars> extends BaseQueryApi<TData, TVars> {
 }
 
 function useQuery<TData = any, TVars = QueryVariables>(
-  opts: QueryCompositeOptions<TData, TVars>,
-  manualClient?: Client
+  opts: QueryCompositeOptions<TData, TVars>
 ): QueryApi<TData, TVars> {
-  const client = manualClient ?? resolveClient(VILLUS_CLIENT);
+  const client = opts?.client ?? resolveClient();
 
   let { query, variables, cachePolicy, fetchOnMount } = normalizeOptions(opts);
   const data: Ref<TData | null> = ref(null);

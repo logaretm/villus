@@ -1,20 +1,19 @@
 import { ref, Ref, unref } from 'vue';
 import { MaybeRef, OperationResult, QueryExecutionContext, QueryVariables } from './types';
 import { CombinedError, resolveClient } from './utils';
-import { VILLUS_CLIENT } from './symbols';
 import { Operation } from '../../shared/src';
 import { Client } from './client';
 
 interface MutationExecutionOptions {
   context: MaybeRef<QueryExecutionContext>;
+  client?: Client;
 }
 
 export function useMutation<TData = any, TVars = QueryVariables>(
   query: Operation<TData, TVars>['query'],
-  opts?: Partial<MutationExecutionOptions>,
-  manualClient?: Client
+  opts?: Partial<MutationExecutionOptions>
 ) {
-  const client = manualClient ?? resolveClient(VILLUS_CLIENT);
+  const client = opts?.client ?? resolveClient();
 
   const data: Ref<TData | null> = ref(null);
   const isFetching = ref(false);
