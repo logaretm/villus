@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/logaretm/villus/compare/v1.0.1...v1.1.0) (2022-04-23)
+
+
+### Bug Fixes
+
+* add export types for villus.d.ts ([#155](https://github.com/logaretm/villus/issues/155)) ([ca2a6b2](https://github.com/logaretm/villus/commit/ca2a6b290b5fec2262cc65c4baf71716c4282501))
+
+
+### Features
+
+* enable useQuery etc function outside of setup and outside component ([#156](https://github.com/logaretm/villus/issues/156)) ([14335b3](https://github.com/logaretm/villus/commit/14335b31a8713c03b6573561d1c1fbdc1e84c731))
+
+
+
+
+
 ## [1.0.1](https://github.com/logaretm/villus/compare/v1.0.0...v1.0.1) (2021-11-06)
 
 **Note:** Version bump only for package villus-monorepo
