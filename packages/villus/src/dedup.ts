@@ -2,7 +2,7 @@ import { ClientPlugin, OperationResult } from './types';
 
 export function dedup(): ClientPlugin {
   // Holds references to pending operations
-  const pendingLookup: Record<number, Promise<OperationResult>> = {};
+  const pendingLookup: Partial<Record<number, Promise<OperationResult>>> = {};
 
   return function dedupPlugin(ctx) {
     // Don't dedup mutations or subscriptions
@@ -19,8 +19,9 @@ export function dedup(): ClientPlugin {
     });
 
     // If pending, re-route the result to it
-    if (pendingLookup[ctx.operation.key]) {
-      return pendingLookup[ctx.operation.key].then(result => {
+    const existingOp = pendingLookup[ctx.operation.key];
+    if (existingOp) {
+      return existingOp.then(result => {
         useResult(result, true);
       });
     }

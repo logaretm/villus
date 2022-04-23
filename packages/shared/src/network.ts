@@ -15,7 +15,7 @@ export async function parseResponse<TData>(response: Response): Promise<ParsedRe
   } catch (err) {
     return {
       ...responseData,
-      statusText: err.message,
+      statusText: (err as Error).message,
       body: null,
     };
   }

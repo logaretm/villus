@@ -600,7 +600,7 @@ describe('useQuery()', () => {
       });
     } catch (err) {
       // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
-      expect(err.message).toContain('Cannot detect villus Client');
+      expect((err as Error).message).toContain('Cannot detect villus Client');
     }
   });
 

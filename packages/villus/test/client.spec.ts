@@ -24,7 +24,7 @@ test('fails if executes an non-provided query', async () => {
     await client.executeQuery({ query: null });
   } catch (err) {
     // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
-    expect(err.message).toMatch(/A query must be provide/);
+    expect((err as Error).message).toMatch(/A query must be provide/);
   }
 });
 

@@ -24,7 +24,7 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
       return useResult(
         {
           data: null,
-          error: new CombinedError({ response, networkError: err }),
+          error: new CombinedError({ response, networkError: err as any }),
         },
         true
       );

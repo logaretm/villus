@@ -130,7 +130,7 @@ export function batch(opts?: BatchOptions) {
           // This usually mean a network fetch error which is limited to DNS lookup errors
           // or the user may not be connected to the internet, so it's safe to assume no data is in the response
           pending.forEach(function unBatchErrorResult(o, oIdx) {
-            o.resolveOp(undefined, oIdx, err);
+            o.resolveOp(undefined, oIdx, err as Error);
           });
         }
       }, timeout);
