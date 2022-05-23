@@ -48,7 +48,7 @@ export const getActiveClient = () => {
   }
 
   return vm.provides?.[VILLUS_CLIENT as any] || inject(VILLUS_CLIENT, activeClient);
-}
+};
 
 type OnResultChangedCallback<TData> = (result: OperationResult<TData>) => unknown;
 

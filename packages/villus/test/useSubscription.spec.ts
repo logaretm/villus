@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 /* eslint-disable no-unused-expressions */
 import flushPromises from 'flush-promises';
 import { mount } from './helpers/mount';
@@ -306,7 +307,6 @@ test('Fails if provider was not resolved', () => {
     `,
     });
   } catch (err) {
-    // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
     expect((err as Error).message).toContain('Cannot detect villus Client');
   }
 });
@@ -333,7 +333,6 @@ test('Fails if subscription forwarder was not set', () => {
     `,
     });
   } catch (err) {
-    // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
     expect((err as Error).message).toContain('No subscription forwarder was set');
   }
 });

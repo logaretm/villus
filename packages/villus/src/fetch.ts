@@ -57,9 +57,7 @@ export function fetch(opts?: FetchPluginOpts): ClientPlugin {
     useResult(
       {
         data,
-        error: response.body.errors
-          ? new CombinedError({ response: response, graphqlErrors: response.body.errors })
-          : null,
+        error: response.body.errors ? new CombinedError({ response, graphqlErrors: response.body.errors }) : null,
       },
       true
     );

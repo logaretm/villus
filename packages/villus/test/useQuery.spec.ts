@@ -310,7 +310,7 @@ describe('useQuery()', () => {
   });
 
   test('cached variables are matched by equality not reference', async () => {
-    const vm = mount({
+    mount({
       setup() {
         useClient({
           url: 'https://test.com/graphql',
@@ -599,7 +599,7 @@ describe('useQuery()', () => {
     `,
       });
     } catch (err) {
-      // eslint-disable-next-line jest/no-try-expect, jest/no-conditional-expect
+      // eslint-disable-next-line jest/no-conditional-expect
       expect((err as Error).message).toContain('Cannot detect villus Client');
     }
   });

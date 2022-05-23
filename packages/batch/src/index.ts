@@ -44,7 +44,7 @@ export function batch(opts?: BatchOptions) {
               {
                 data: null,
                 error: new CombinedError({
-                  response: response,
+                  response,
                   networkError: err,
                 }),
               },
@@ -70,9 +70,7 @@ export function batch(opts?: BatchOptions) {
           useResult(
             {
               data,
-              error: response.body.errors
-                ? new CombinedError({ response: response, graphqlErrors: response.body.errors })
-                : null,
+              error: response.body.errors ? new CombinedError({ response, graphqlErrors: response.body.errors }) : null,
             },
             true
           );

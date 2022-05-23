@@ -20,7 +20,7 @@ export const handlers: any[] = [
       })
     );
   }),
-  graphql.query('QueryParseError', (req, res, ctx) => {
+  graphql.query('QueryParseError', (req, res) => {
     return res(res => {
       res.headers.set('content-type', 'text/html');
       res.body = '<div></div>';
@@ -28,7 +28,7 @@ export const handlers: any[] = [
       return res;
     });
   }),
-  graphql.query('QueryNetworkError', (req, res, ctx) => {
+  graphql.query('QueryNetworkError', (req, res) => {
     return res.networkError('Failed to connect');
   }),
   graphql.query('QueryError', (req, res, ctx) => {
@@ -65,7 +65,7 @@ export const handlers: any[] = [
       ])
     );
   }),
-  graphql.mutation('MutationParseError', (req, res, ctx) => {
+  graphql.mutation('MutationParseError', (req, res) => {
     return res(res => {
       res.headers.set('content-type', 'text/html');
       res.body = '<div></div>';
@@ -73,7 +73,7 @@ export const handlers: any[] = [
       return res;
     });
   }),
-  graphql.mutation('MutationNetworkError', (req, res, ctx) => {
+  graphql.mutation('MutationNetworkError', (req, res) => {
     return res.networkError('Failed to connect');
   }),
   // Handles Batched requests
