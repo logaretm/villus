@@ -1,7 +1,7 @@
 import { isReactive, isRef, onMounted, Ref, ref, unref, watch, getCurrentInstance } from 'vue';
 import stringify from 'fast-json-stable-stringify';
-import { CachePolicy, MaybeRef, OperationResult, QueryExecutionContext, QueryVariables } from './types';
-import { hash, CombinedError, toWatchableSource, resolveClient } from './utils';
+import { CachePolicy, MaybeRef, OperationResult, QueryExecutionContext, QueryVariables, SkipQuery } from './types';
+import { hash, CombinedError, toWatchableSource, resolveClient, isSkipped } from './utils';
 import { Operation } from '../../shared/src';
 import { Client } from './client';
 
@@ -12,6 +12,7 @@ export interface QueryCompositeOptions<TData, TVars> {
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
   client?: Client;
+  skip?: SkipQuery<TVars>;
 }
 
 interface QueryExecutionOpts<TVars> {
@@ -56,12 +57,20 @@ function useQuery<TData = any, TVars = QueryVariables>(
   }
 
   async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
+    const vars = (isRef(variables) ? variables.value : variables) || ({} as TVars);
+    // result won't change if execution is skipped
+    if (opts.skip && isSkipped(opts.skip, vars)) {
+      return {
+        data: data.value,
+        error: error.value,
+      };
+    }
+
     isFetching.value = true;
-    const vars = (isRef(variables) ? variables.value : variables) || {};
     const pendingExecution = client.executeQuery<TData, TVars>(
       {
         query: isRef(query) ? query.value : query,
-        variables: overrideOpts?.variables || (vars as TVars), // FIXME: Try to avoid casting
+        variables: overrideOpts?.variables || vars,
         cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
       },
       unref(opts?.context),

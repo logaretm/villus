@@ -23,26 +23,21 @@ To execute a query the `useQuery` accepts a GraphQL query as the first argument.
   </div>
 </template>
 
-<script>
+<script setup>
 import { useQuery } from 'villus';
 
-export default {
-  setup() {
-    const GetTodos = `
-      GetTodos {
-        todos {
-          id
-          title
-        }
-      }
-    `;
-    const { data } = useQuery({
-      query: GetTodos,
-    });
+const GetTodos = `
+  GetTodos {
+    todos {
+      id
+      title
+    }
+  }
+`;
 
-    return { data };
-  },
-};
+const { data } = useQuery({
+  query: GetTodos,
+});
 </script>
 ```
 
@@ -441,10 +436,10 @@ import Listing from '@/components/Listing.vue';
 
 export default {
   components: {
-    Listing
-  }
+    Listing,
+  },
 };
-<script>
+</script>
 ```
 
 ## Fetching Indication
@@ -462,27 +457,21 @@ It is very common to display an indication for pending queries in your UI so you
   </div>
 </template>
 
-<script>
+<script setup>
 import { useQuery } from 'villus';
 
-export default {
-  setup() {
-    const GetPosts = `
-      query GetPosts {
-        posts {
-          id
-          title
-        }
-      }
-    `;
+const GetPosts = `
+  query GetPosts {
+    posts {
+      id
+      title
+    }
+  }
+`;
 
-    const { data, isFetching } = useQuery({
-      query: GetPosts,
-    });
-
-    return { data, isFetching };
-  },
-};
+const { data, isFetching } = useQuery({
+  query: GetPosts,
+});
 </script>
 ```
 
@@ -493,3 +482,99 @@ Whenever a re-fetch is triggered, or the query was executed again the `isFetchin
 Is fetching default value is `true` if `fetchOnMount` is enabled, otherwise it will start off with `false`.
 
 </doc-tip>
+
+## Skipping Queries
+
+You can also skip executing queries by providing a `skip` argument to the query options. This can be particularly useful if you want to prevent fetching or refetching a query if a variable value is invalid.
+
+In the following example we avoid fetching the post if the `id` doesn't exist.
+
+```vue
+<template>
+  <div>
+    <ul v-if="data">
+      <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+    </ul>
+
+    <p v-if="isFetching">Loading...</p>
+  </div>
+</template>
+
+<script setup>
+import { computed } from 'vue';
+import { useQuery } from 'villus';
+import { useRoute } from 'vue-router';
+
+const GetSinglePost = `
+  query GetSinglePost($id: Int!) {
+    post (id: $id) {
+      id
+      title
+    }
+  }
+`;
+
+const route = useRoute();
+const postId = computed(() => {
+  return route.params.postId;
+});
+
+// skip fetching/refetching the query if the postId is not available
+const shouldSkip = computed(() => {
+  return !postId.value;
+});
+
+const { data, isFetching } = useQuery({
+  query: GetSinglePost,
+  skip: shouldSkip,
+  variables: computed(() => {
+    return {
+      id: postId.value,
+    };
+  }),
+});
+</script>
+```
+
+You can also pass a function instead of a reactive variable, this function receives the current variables as the first argument.
+
+```vue
+<template>
+  <div>
+    <ul v-if="data">
+      <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+    </ul>
+
+    <p v-if="isFetching">Loading...</p>
+  </div>
+</template>
+
+<script setup>
+import { computed } from 'vue';
+import { useQuery } from 'villus';
+import { useRoute } from 'vue-router';
+
+const GetSinglePost = `
+  query GetSinglePost($id: Int!) {
+    post (id: $id) {
+      id
+      title
+    }
+  }
+`;
+
+const route = useRoute();
+
+const { data, isFetching } = useQuery({
+  query: GetSinglePost,
+  variables: computed(() => {
+    return {
+      id: route.params.postId,
+    };
+  }),
+  skip: ({ id }) => {
+    return !id;
+  },
+});
+</script>
+```

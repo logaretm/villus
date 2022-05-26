@@ -356,6 +356,118 @@ describe('useQuery()', () => {
     });
   });
 
+  test('can skip execution given a skip ref', async () => {
+    const skip = ref(false);
+    const variables = ref({ id: 12 });
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { data, execute } = useQuery({
+          query: PostQuery,
+          variables,
+          skip,
+        });
+
+        return { data, execute };
+      },
+      template: `
+    <div>
+      <div v-if="data">
+        <h1>{{ data.post.title }}</h1>
+      </div>
+      <button @click="execute"></button>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('12');
+    });
+
+    variables.value = { id: 13 };
+    skip.value = true;
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(1);
+    // data didn't change
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+
+    // explicit execution won't work either
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+
+    skip.value = false;
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(2);
+
+    // fetch was triggered a second time, due to variable change.
+    await waitForExpect(() => {
+      expect(document.querySelector('h1')?.textContent).toContain('13');
+    });
+  });
+
+  test('can skip execution given a skip getter', async () => {
+    const skip = ref(false);
+    const variables = ref({ id: 12 });
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { data, execute } = useQuery({
+          query: PostQuery,
+          variables,
+          skip: () => skip.value,
+        });
+
+        return { data, execute };
+      },
+      template: `
+    <div>
+      <div v-if="data">
+        <h1>{{ data.post.title }}</h1>
+      </div>
+      <button @click="execute"></button>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('12');
+    });
+
+    variables.value = { id: 13 };
+    skip.value = true;
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(1);
+    // data didn't change
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+
+    // explicit execution won't work either
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+
+    skip.value = false;
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(2);
+
+    // fetch was triggered a second time, due to variable change.
+    await waitForExpect(() => {
+      expect(document.querySelector('h1')?.textContent).toContain('13');
+    });
+  });
+
   test('variables watcher can be disabled', async () => {
     mount({
       setup() {

@@ -1,6 +1,8 @@
+import { QueryVariables } from 'packages/villus/dist/villus';
 import { getCurrentInstance, inject, isReactive, isRef, Ref, toRefs, WatchSource } from 'vue';
 import { getActiveClient, setActiveClient, Client } from '../client';
 import { VILLUS_CLIENT } from '../symbols';
+import { SkipQuery } from '../types';
 
 export function toWatchableSource<T = any>(value: Ref<T> | Record<string, any>): WatchSource | WatchSource[] {
   if (isRef(value)) {
@@ -32,4 +34,12 @@ export function resolveClient(): Client {
   }
 
   return client;
+}
+
+export function isSkipped<TVars = QueryVariables>(skip: SkipQuery<TVars>, vars: TVars) {
+  if (isRef(skip)) {
+    return skip.value;
+  }
+
+  return skip(vars);
 }
