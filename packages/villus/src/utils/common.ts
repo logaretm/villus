@@ -1,21 +1,13 @@
 import { QueryVariables } from 'packages/villus/dist/villus';
-import { getCurrentInstance, inject, isReactive, isRef, Ref, toRefs, WatchSource } from 'vue';
+import { computed, getCurrentInstance, inject, isReactive, isRef, Ref, unref } from 'vue';
 import { getActiveClient, setActiveClient, Client } from '../client';
 import { VILLUS_CLIENT } from '../symbols';
-import { SkipQuery } from '../types';
+import { MaybeLazyOrRef, SkipQuery } from '../types';
 
-export function toWatchableSource<T = any>(value: Ref<T> | Record<string, any>): WatchSource | WatchSource[] {
-  if (isRef(value)) {
-    return value;
-  }
-
-  if (isReactive(value)) {
-    const refs = toRefs(value);
-
-    return Object.keys(refs).map(refKey => refs[refKey]);
-  }
-
-  throw new Error('value is not reactive');
+export function toWatchableSource<T = any>(value: MaybeLazyOrRef<T> | Record<string, any>): Ref<T> {
+  return computed(() => {
+    return unwrap(value);
+  });
 }
 
 export function resolveClient(): Client {
@@ -42,4 +34,17 @@ export function isSkipped<TVars = QueryVariables>(skip: SkipQuery<TVars>, vars: 
   }
 
   return skip(vars);
+}
+
+export function unwrap<TValue>(val: MaybeLazyOrRef<TValue>) {
+  if (isRef(val)) {
+    return unref(val);
+  }
+
+  // TODO: typescript bug to fix here
+  return typeof val === 'function' ? (val as any)() : val;
+}
+
+export function isWatchable<T>(val: unknown): val is MaybeLazyOrRef<T> {
+  return isRef(val) || isReactive(val) || typeof val === 'function';
 }

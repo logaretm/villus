@@ -269,6 +269,49 @@ describe('useQuery()', () => {
     });
   });
 
+  test('variables are watched by default if a getter', async () => {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const variables = ref({
+          id: 12,
+        });
+
+        const { data } = useQuery({
+          query: PostQuery,
+          variables: () => variables.value,
+        });
+
+        return { data, variables };
+      },
+      template: `
+    <div>
+      <div v-if="data">
+        <h1>{{ data.post.title }}</h1>
+      </div>
+      <button @click="variables.id = 13"></button>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('12');
+    });
+
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+
+    await flushPromises();
+    // fetch was triggered a second time, due to variable change.
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(2);
+      expect(document.querySelector('h1')?.textContent).toContain('13');
+    });
+  });
+
   test('variables are watched by default if reactive', async () => {
     mount({
       setup() {

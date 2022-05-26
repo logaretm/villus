@@ -31,6 +31,8 @@ export interface ObservableLike<T> {
 
 export type MaybeRef<T> = T | Ref<T>;
 
+export type MaybeLazyOrRef<T> = MaybeRef<T> | (() => T);
+
 export type OperationType = 'query' | 'mutation' | 'subscription';
 
 export type AfterQueryCallback = (

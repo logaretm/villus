@@ -1,13 +1,21 @@
 import { isReactive, isRef, onMounted, Ref, ref, unref, watch, getCurrentInstance } from 'vue';
 import stringify from 'fast-json-stable-stringify';
-import { CachePolicy, MaybeRef, OperationResult, QueryExecutionContext, QueryVariables, SkipQuery } from './types';
-import { hash, CombinedError, toWatchableSource, resolveClient, isSkipped } from './utils';
+import {
+  CachePolicy,
+  MaybeLazyOrRef,
+  MaybeRef,
+  OperationResult,
+  QueryExecutionContext,
+  QueryVariables,
+  SkipQuery,
+} from './types';
+import { hash, CombinedError, toWatchableSource, resolveClient, isSkipped, unwrap, isWatchable } from './utils';
 import { Operation } from '../../shared/src';
 import { Client } from './client';
 
 export interface QueryCompositeOptions<TData, TVars> {
   query: MaybeRef<Operation<TData, TVars>['query']>;
-  variables?: MaybeRef<TVars>;
+  variables?: MaybeLazyOrRef<TVars>;
   context?: MaybeRef<QueryExecutionContext>;
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
@@ -57,7 +65,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
   }
 
   async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
-    const vars = (isRef(variables) ? variables.value : variables) || ({} as TVars);
+    const vars = unwrap(variables) || ({} as TVars);
     // result won't change if execution is skipped
     if (opts.skip && isSkipped(opts.skip, vars)) {
       return {
@@ -70,7 +78,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
     const pendingExecution = client.executeQuery<TData, TVars>(
       {
         query: isRef(query) ? query.value : query,
-        variables: overrideOpts?.variables || vars,
+        variables: unwrap(overrideOpts?.variables || vars),
         cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
       },
       unref(opts?.context),
@@ -102,7 +110,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
 
   function beginWatchingVars() {
     let oldCache: number;
-    if ((!isRef(variables) && !isReactive(variables)) || !variables) {
+    if (!variables || !isWatchable(variables)) {
       return;
     }
 
