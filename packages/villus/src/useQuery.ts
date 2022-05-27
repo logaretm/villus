@@ -1,4 +1,4 @@
-import { isReactive, isRef, onMounted, Ref, ref, unref, watch, getCurrentInstance } from 'vue';
+import { isRef, onMounted, Ref, ref, unref, watch, getCurrentInstance } from 'vue';
 import stringify from 'fast-json-stable-stringify';
 import {
   CachePolicy,
@@ -9,9 +9,9 @@ import {
   QueryVariables,
   SkipQuery,
 } from './types';
-import { hash, CombinedError, toWatchableSource, resolveClient, isSkipped, unwrap, isWatchable } from './utils';
+import { hash, CombinedError, toWatchableSource, isSkipped, unwrap, isWatchable } from './utils';
 import { Operation } from '../../shared/src';
-import { Client } from './client';
+import { Client, resolveClient } from './client';
 
 export interface QueryCompositeOptions<TData, TVars> {
   query: MaybeRef<Operation<TData, TVars>['query']>;

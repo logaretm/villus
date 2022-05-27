@@ -1,8 +1,8 @@
 import { ref, Ref, unref } from 'vue';
 import { MaybeRef, OperationResult, QueryExecutionContext, QueryVariables } from './types';
-import { CombinedError, resolveClient } from './utils';
+import { CombinedError } from './utils';
 import { Operation } from '../../shared/src';
-import { Client } from './client';
+import { Client, resolveClient } from './client';
 
 interface MutationExecutionOptions {
   context: MaybeRef<QueryExecutionContext>;

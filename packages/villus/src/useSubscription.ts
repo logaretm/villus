@@ -1,8 +1,8 @@
 import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef, getCurrentInstance } from 'vue';
 import { Unsubscribable, OperationResult, QueryVariables, MaybeRef, StandardOperationResult } from './types';
-import { CombinedError, resolveClient } from './utils';
+import { CombinedError } from './utils';
 import { Operation } from '../../shared/src';
-import { Client } from './client';
+import { Client, resolveClient } from './client';
 
 interface SubscriptionCompositeOptions<TData, TVars> {
   query: MaybeRef<Operation<TData, TVars>['query']>;

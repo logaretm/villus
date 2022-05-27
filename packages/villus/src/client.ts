@@ -184,3 +184,21 @@ export function createClient(opts: ClientOptions) {
   };
   return client;
 }
+
+export function resolveClient(): Client {
+  const vm = getCurrentInstance() as any;
+  // Uses same component provide as its own injections
+  // Due to changes in https://github.com/vuejs/vue-next/pull/2424
+  let client = vm && inject(VILLUS_CLIENT, vm?.provides?.[VILLUS_CLIENT as any]);
+
+  if (client) setActiveClient(client);
+  client = getActiveClient();
+
+  if (client === null || client === undefined) {
+    throw new Error(
+      'Cannot detect villus Client, did you forget to call `useClient`? Alternatively, you can explicitly pass a client as the `manualClient` argument.'
+    );
+  }
+
+  return client;
+}
