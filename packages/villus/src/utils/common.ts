@@ -1,6 +1,5 @@
-import { QueryVariables } from 'packages/villus/dist/villus';
 import { computed, isReactive, isRef, Ref, unref } from 'vue';
-import { MaybeLazyOrRef, SkipQuery } from '../types';
+import { MaybeLazyOrRef, SkipQuery, QueryVariables } from '../types';
 
 export function toWatchableSource<T = any>(value: MaybeLazyOrRef<T> | Record<string, any>): Ref<T> {
   return computed(() => {
