@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/logaretm/villus/compare/v1.1.0...v1.2.0) (2022-05-30)
+
+
+### Bug Fixes
+
+* query variables import path ([6a05aee](https://github.com/logaretm/villus/commit/6a05aeeb8dbee1a1aa84fb46f6d13a7346a2e222))
+
+
+### Features
+
+* added query skip argument ([9b0ba85](https://github.com/logaretm/villus/commit/9b0ba8591546ef8d17f66cd0dbbad1229902dfb4))
+* allow lazy variables to be passed in to queries ([980673b](https://github.com/logaretm/villus/commit/980673b347f49f56312f60bb0367fe1aca13c2e4))
+
+
+
+
+
 # [1.1.0](https://github.com/logaretm/villus/compare/v1.0.1...v1.1.0) (2022-04-23)
 
 
