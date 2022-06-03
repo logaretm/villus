@@ -408,19 +408,20 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, execute } = useQuery({
+        const { data, execute, isFetching } = useQuery({
           query: PostQuery,
           variables,
           skip,
         });
 
-        return { data, execute };
+        return { data, execute, isFetching };
       },
       template: `
     <div>
       <div v-if="data">
         <h1>{{ data.post.title }}</h1>
       </div>
+      <span id="fetching">{{ isFetching }}</span>
       <button @click="execute"></button>
     </div>`,
     });
@@ -443,6 +444,7 @@ describe('useQuery()', () => {
     await flushPromises();
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(document.querySelector('h1')?.textContent).toContain('12');
+    expect(document.querySelector('#fetching')?.textContent).toBe('false');
 
     skip.value = false;
     document.querySelector('button')?.dispatchEvent(new Event('click'));
@@ -464,19 +466,20 @@ describe('useQuery()', () => {
           url: 'https://test.com/graphql',
         });
 
-        const { data, execute } = useQuery({
+        const { data, execute, isFetching } = useQuery({
           query: PostQuery,
           variables,
           skip: () => skip.value,
         });
 
-        return { data, execute };
+        return { data, execute, isFetching };
       },
       template: `
     <div>
       <div v-if="data">
         <h1>{{ data.post.title }}</h1>
       </div>
+      <span id="fetching">{{ isFetching }}</span>
       <button @click="execute"></button>
     </div>`,
     });
@@ -499,6 +502,7 @@ describe('useQuery()', () => {
     await flushPromises();
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(document.querySelector('h1')?.textContent).toContain('12');
+    expect(document.querySelector('#fetching')?.textContent).toBe('false');
 
     skip.value = false;
     document.querySelector('button')?.dispatchEvent(new Event('click'));

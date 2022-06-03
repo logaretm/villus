@@ -68,6 +68,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
     const vars = unwrap(variables) || ({} as TVars);
     // result won't change if execution is skipped
     if (opts.skip && isSkipped(opts.skip, vars)) {
+      isFetching.value = false;
       return {
         data: data.value,
         error: error.value,
