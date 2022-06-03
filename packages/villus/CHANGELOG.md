@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/logaretm/villus/compare/v1.2.0...v1.2.1) (2022-06-03)
+
+
+### Bug Fixes
+
+* ensure isFetching is false after a query was skipped ([659820a](https://github.com/logaretm/villus/commit/659820acb2a5fcaf98b8ec90282a7f8179601fe8))
+
+
+
+
+
 # [1.2.0](https://github.com/logaretm/villus/compare/v1.1.0...v1.2.0) (2022-05-30)
 
 
