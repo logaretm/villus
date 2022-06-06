@@ -35,6 +35,10 @@ export function resolveGlobalFetch(): typeof fetch | undefined {
     return (global as any).fetch;
   }
 
+  if (typeof self !== 'undefined' && 'fetch' in self) {
+    return self.fetch;
+  }
+
   return undefined;
 }
 
