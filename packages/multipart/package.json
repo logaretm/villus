@@ -1,6 +1,6 @@
 {
   "name": "@villus/multipart",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "File Upload support for villus",
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",
@@ -24,7 +24,7 @@
   ],
   "dependencies": {
     "extract-files": "^11.0.0",
-    "villus": "^1.2.1"
+    "villus": "^1.2.2"
   },
   "devDependencies": {
     "@types/extract-files": "^8.1.0"
