@@ -3,118 +3,75 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.3](https://github.com/logaretm/villus/compare/v1.2.2...v1.2.3) (2022-07-03)
+
+### Features
+
+* added batch max op limit ([6b38c1c](https://github.com/logaretm/villus/commit/6b38c1c58b5ad686c3d198aca726c42dc655ae60))
+
 ## [1.2.2](https://github.com/logaretm/villus/compare/v1.2.1...v1.2.2) (2022-06-13)
 
 **Note:** Version bump only for package villus-monorepo
 
-
-
-
-
 ## [1.2.1](https://github.com/logaretm/villus/compare/v1.2.0...v1.2.1) (2022-06-03)
-
 
 ### Bug Fixes
 
 * ensure isFetching is false after a query was skipped ([659820a](https://github.com/logaretm/villus/commit/659820acb2a5fcaf98b8ec90282a7f8179601fe8))
 
-
-
-
-
 # [1.2.0](https://github.com/logaretm/villus/compare/v1.1.0...v1.2.0) (2022-05-30)
-
 
 ### Bug Fixes
 
 * query variables import path ([6a05aee](https://github.com/logaretm/villus/commit/6a05aeeb8dbee1a1aa84fb46f6d13a7346a2e222))
-
 
 ### Features
 
 * added query skip argument ([9b0ba85](https://github.com/logaretm/villus/commit/9b0ba8591546ef8d17f66cd0dbbad1229902dfb4))
 * allow lazy variables to be passed in to queries ([980673b](https://github.com/logaretm/villus/commit/980673b347f49f56312f60bb0367fe1aca13c2e4))
 
-
-
-
-
 # [1.1.0](https://github.com/logaretm/villus/compare/v1.0.1...v1.1.0) (2022-04-23)
-
 
 ### Bug Fixes
 
 * add export types for villus.d.ts ([#155](https://github.com/logaretm/villus/issues/155)) ([ca2a6b2](https://github.com/logaretm/villus/commit/ca2a6b290b5fec2262cc65c4baf71716c4282501))
 
-
 ### Features
 
 * enable useQuery etc function outside of setup and outside component ([#156](https://github.com/logaretm/villus/issues/156)) ([14335b3](https://github.com/logaretm/villus/commit/14335b31a8713c03b6573561d1c1fbdc1e84c731))
-
-
-
-
 
 ## [1.0.1](https://github.com/logaretm/villus/compare/v1.0.0...v1.0.1) (2021-11-06)
 
 **Note:** Version bump only for package villus-monorepo
 
-
-
-
-
 # [1.0.0](https://github.com/logaretm/villus/compare/v1.0.0-rc.21...v1.0.0) (2021-10-18)
-
 
 ### Features
 
 * add `paused` for subscriptions init object ([#143](https://github.com/logaretm/villus/issues/143)) ([9cfa418](https://github.com/logaretm/villus/commit/9cfa4188e0679aa72d1c00a7ea40fd39c58f8a06))
 * added slot typing ([1aec7e7](https://github.com/logaretm/villus/commit/1aec7e727a2b2dee2a3f58708307c91198609f78))
 
-
-
-
-
 # [1.0.0-rc.21](https://github.com/logaretm/villus/compare/v1.0.0-rc.20...v1.0.0-rc.21) (2021-08-26)
-
 
 ### Bug Fixes
 
 * handle possible empty responses ([bc96bf8](https://github.com/logaretm/villus/commit/bc96bf849fe2a1797170ff5a693899be6fd9f260))
 
-
-
-
-
 # [1.0.0-rc.20](https://github.com/logaretm/villus/compare/v1.0.0-rc.19...v1.0.0-rc.20) (2021-08-07)
 
 **Note:** Version bump only for package villus-monorepo
 
-
-
-
-
 # [1.0.0-rc.19](https://github.com/logaretm/villus/compare/v1.0.0-rc.18...v1.0.0-rc.19) (2021-07-25)
-
 
 ### Features
 
 * update the reactive result for cache-and-network policy closes [#76](https://github.com/logaretm/villus/issues/76) ([23cd60b](https://github.com/logaretm/villus/commit/23cd60ba3646b95514af37cd3f174e21f2151867))
 
-
-
-
-
 # [1.0.0-rc.18](https://github.com/logaretm/villus/compare/v1.0.0-rc.17...v1.0.0-rc.18) (2021-06-29)
-
 
 ### Bug Fixes
 
 * added TData to client execute variants closes [#128](https://github.com/logaretm/villus/issues/128) ([80426e2](https://github.com/logaretm/villus/commit/80426e21c98301d9896f814e94c106a1374cd385))
-
-
-
-
 
 # [1.0.0-rc.17](https://github.com/logaretm/villus/compare/v1.0.0-rc.16...v1.0.0-rc.17) (2021-05-12)
 
@@ -122,55 +79,33 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Dropped support for Vue 2.x and removed usage of `vue-demi`, this was decided because half of the codebase didn't work with Vue 2 (HOC) and reactivity caveats of Vue 2 no longer applies to Vue 3 which is limiting.
 
-
 # [1.0.0-rc.16](https://github.com/logaretm/villus/compare/v1.0.0-rc.15...v1.0.0-rc.16) (2021-04-15)
-
 
 ### Bug Fixes
 
 * normalize the multipart queries closes [#112](https://github.com/logaretm/villus/issues/112) ([#113](https://github.com/logaretm/villus/issues/113)) ([c54fd0e](https://github.com/logaretm/villus/commit/c54fd0e80f8d05a4a115630e8b7c83bd2c58a5f3))
 
-
-
-
-
 # [1.0.0-rc.15](https://github.com/logaretm/villus/compare/v1.0.0-rc.14...v1.0.0-rc.15) (2021-03-06)
-
 
 ### Bug Fixes
 
 * explose villus public types closes [#105](https://github.com/logaretm/villus/issues/105) ([a9b62de](https://github.com/logaretm/villus/commit/a9b62de2e24fba25c26cbf3527606d6f258a8b4c))
 * used correct import of type ([608018a](https://github.com/logaretm/villus/commit/608018a6fad13cd2626cf3cc9609e28d5dc472b4))
 
-
-
-
-
 # [1.0.0-rc.14](https://github.com/logaretm/villus/compare/v1.0.0-rc.13...v1.0.0-rc.14) (2021-03-04)
-
 
 ### Bug Fixes
 
 * handle multiple executions state integrity ([43d936b](https://github.com/logaretm/villus/commit/43d936b91a407af0e3e83a1f1a1c81dbb00d0806))
 
-
-
-
-
 # [1.0.0-rc.13](https://github.com/logaretm/villus/compare/v1.0.0-rc.12...v1.0.0-rc.13) (2021-02-27)
-
 
 ### Bug Fixes
 
 * ensure fetch recongizes partial error responses ([6c0a6fa](https://github.com/logaretm/villus/commit/6c0a6fa81a57131c9c23758435a1143f3fafd33d))
 * handle batched respones with non 200 codes closes [#104](https://github.com/logaretm/villus/issues/104) ([5cb088d](https://github.com/logaretm/villus/commit/5cb088df59d0b0d64b71a27b21181a1e50e9e57e))
 
-
-
-
-
 # [1.0.0-rc.12](https://github.com/logaretm/villus/compare/v1.0.0-beta.0...v1.0.0-rc.12) (2021-02-16)
-
 
 ### Bug Fixes
 
@@ -191,7 +126,6 @@ Dropped support for Vue 2.x and removed usage of `vue-demi`, this was decided be
 * use QueryVariables as default type for subscription forwarder [#93](https://github.com/logaretm/villus/issues/93) ([3791251](https://github.com/logaretm/villus/commit/37912514ce7f5fe1123d0f2c46c95963c67203ef))
 * use standard execution result for subscription forwarder closes [#93](https://github.com/logaretm/villus/issues/93) ([9ced480](https://github.com/logaretm/villus/commit/9ced480d387edb8d1d8893cc88d3ae0e856a897c))
 * weird linting issue ([e0141d5](https://github.com/logaretm/villus/commit/e0141d512b65ab4b5ec2e714caa57c716fd53491))
-
 
 ### Features
 
