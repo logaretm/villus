@@ -90,16 +90,38 @@ export default {
 
 This will add a `50ms` time window between queries to be batched together.
 
+## Batched operations limit
+
+You can also introduce a limit on how many operations can be executed in a batch. Usually this is a good idea to make sure you don't include a lot of operations in a single batch which could have inverse effect on performance since the total execution time now depends on all the operations being executed.
+
+You can configure the batch limit by passing a `maxOperationCount` option to the `batch` function configuration:
+
+```js{8}
+import { useClient, batch } from 'villus';
+
+export default {
+  setup() {
+    useClient({
+      url: 'https://test.com/graphql',
+      use: [batch({ maxOperationCount: 5 })],
+    });
+  },
+};
+```
+
+By default it is `10`.
+
 ## Options
 
 You can customize a few aspects of the `batch` plugin:
 
 The available options are:
 
-| Option  | Type                  | Description                                                                                                                                                                                                             |
-| ------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| fetch   | `typeof window.fetch` | Pass this option if you plan to be specific about the `fetch` polyfill that will be used, by default it tries to find `window.fetch` on the browser or `global.fetch` on Node.js depending on the execution environment |
-| timeout | `number`              | The number of milliseconds to wait for before executing the batched queries                                                                                                                                             |
+| Option            | Type                  | Description                                                                                                                                                                                                             |
+| ----------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| fetch             | `typeof window.fetch` | Pass this option if you plan to be specific about the `fetch` polyfill that will be used, by default it tries to find `window.fetch` on the browser or `global.fetch` on Node.js depending on the execution environment |
+| timeout           | `number`              | The number of milliseconds to wait for before executing the batched queries                                                                                                                                             |
+| maxOperationCount | `number`              | The maximum number of operations to be included in a single batch                                                                                                                                                       |
 
 ## Code
 
