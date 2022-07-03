@@ -107,7 +107,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
   }
 
   let stopVarsWatcher: ReturnType<typeof watch>;
-  const isWatchingVariables: Ref<boolean> = ref(true);
+  const isWatchingVariables: Ref<boolean> = ref(false);
 
   function beginWatchingVars() {
     let oldCache: number;
