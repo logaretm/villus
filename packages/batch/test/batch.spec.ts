@@ -148,4 +148,37 @@ describe('batch plugin', () => {
       expect(document.querySelector('#error')?.textContent).toContain('Failed to connect');
     });
   });
+
+  test('can set batched queries limit with maxOperationCount', async () => {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+          use: [
+            batch({
+              maxOperationCount: 2,
+            }),
+          ],
+        });
+
+        useQuery({ query: PostsQuery });
+        useQuery({ query: PostQuery });
+        useQuery({ query: PostQuery, variables: { id: 1 } });
+        useQuery({ query: PostQuery, variables: { id: 2 } });
+        useQuery({ query: PostQuery, variables: { id: 3 } });
+
+        return {};
+      },
+      template: `<div></div>`,
+    });
+
+    jest.advanceTimersByTime(100);
+    await flushPromises();
+
+    jest.useRealTimers();
+    await waitForExpect(() => {
+      // we've set the limit to 2, so 5 queries will be executed over 3 HTTP calls
+      expect(fetch).toHaveBeenCalledTimes(3);
+    });
+  });
 });
