@@ -16,3 +16,4 @@ export { CombinedError } from './utils/error';
 export { getQueryKey } from './utils/query';
 export * from './types';
 export { VILLUS_CLIENT } from './symbols';
+export * from '../../shared/src/types';
