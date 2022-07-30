@@ -41,6 +41,7 @@ export function batch(opts?: Partial<BatchOptions>) {
           headers: {
             ...opContext.headers,
           },
+          credentials: opContext.credentials,
           body,
         }).then(parseResponse);
 
