@@ -4,7 +4,7 @@ import { rest } from 'msw';
 import { server } from '../../villus/test/mocks/server';
 import { batch } from '../src/index';
 import { mount } from '../../villus/test/helpers/mount';
-import { useClient, useQuery } from '../../villus/src';
+import { useClient, useQuery, definePlugin } from '../../villus/src';
 import waitForExpect from 'wait-for-expect';
 import { PostQuery, PostsQuery, QueryErrorWith500, QueryWithNetworkError } from 'villus/test/mocks/queries';
 
@@ -179,6 +179,47 @@ describe('batch plugin', () => {
     await waitForExpect(() => {
       // we've set the limit to 2, so 5 queries will be executed over 3 HTTP calls
       expect(fetch).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  // #166
+  test('can set fetch options', async () => {
+    const headerPlugin = definePlugin(({ opContext }) => {
+      opContext.headers['X-CUSTOM-HEADER'] = 'TEST';
+      opContext.credentials = 'include';
+    });
+
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+          use: [headerPlugin, batch()],
+        });
+
+        useQuery({ query: PostsQuery });
+
+        return {};
+      },
+      template: `<div></div>`,
+    });
+
+    await flushPromises();
+    jest.advanceTimersByTime(100);
+    await flushPromises();
+
+    // wait-for-expect uses timers under the hood, so we need to reset here
+    jest.useRealTimers();
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(fetch).toHaveBeenLastCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          credentials: 'include',
+          headers: expect.objectContaining({
+            'X-CUSTOM-HEADER': 'TEST',
+          }),
+        })
+      );
     });
   });
 });
