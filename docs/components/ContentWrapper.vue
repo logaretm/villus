@@ -68,10 +68,11 @@ export default {
   .features {
     ul {
       li {
-        @apply relative flex items-center;
+        @apply relative flex items-center antialiased;
         &:before {
-          @apply w-5 h-5 absolute rounded-full flex text-accent-900 bg-accent-100 items-center justify-center;
-          content: '✓';
+          @apply w-6 h-6 text-lg absolute rounded-full flex items-center justify-center flex-shrink-0;
+          content: '';
+          background-image: url("data:image/svg+xml,%3Csvg fill='none' stroke='%239580FF' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'%3E%3C/path%3E%3C/svg%3E");
           left: -2rem;
         }
       }

@@ -13,6 +13,7 @@ module.exports = {
     removeDeprecatedGapUtilities: true,
     purgeLayersByDefault: true,
   },
+  mode: 'jit',
   purge: {
     content: [
       'components/**/*.vue',
