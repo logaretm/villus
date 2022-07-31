@@ -1,6 +1,13 @@
 import { GraphQLError } from 'graphql';
 import { CombinedError, definePlugin } from 'villus';
-import { GraphQLResponse, resolveGlobalFetch, parseResponse, makeFetchOptions, ParsedResponse } from '../../shared/src';
+import {
+  GraphQLResponse,
+  makeFetchOptions,
+  mergeFetchOpts,
+  ParsedResponse,
+  parseResponse,
+  resolveGlobalFetch,
+} from '../../shared/src';
 
 interface BatchOptions {
   fetch?: typeof fetch;
@@ -28,6 +35,7 @@ export function batch(opts?: Partial<BatchOptions>) {
     async function consume() {
       const pending = operations;
       const body = `[${operations.map(o => o.body).join(',')}]`;
+      const fetchOpts = mergeFetchOpts(opContext, { headers: {}, body });
       operations = [];
 
       if (!fetch) {
@@ -36,14 +44,7 @@ export function batch(opts?: Partial<BatchOptions>) {
 
       let response: ParsedResponse<unknown>;
       try {
-        response = await fetch(opContext.url as string, {
-          method: opContext.method,
-          headers: {
-            ...opContext.headers,
-          },
-          credentials: opContext.credentials,
-          body,
-        }).then(parseResponse);
+        response = await fetch(opContext.url as string, fetchOpts).then(parseResponse);
 
         ctx.response = response;
         const resInit: Partial<Response> = {
