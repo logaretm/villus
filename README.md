@@ -18,31 +18,15 @@ A small and fast GraphQL client for **Vue.js 3.x**
 
 This is forked from my previous work at [vue-gql](https://github.com/baianat/vue-gql) before they decide to go for a different direction with this library.
 
-## Sponsors
-
-Thanks for the following companies and individuals who are supporting villus
-
-<br>
-
 <p align="center">
-  <a href="https://getform.io" target="_blank">
-    <img src="https://raw.githubusercontent.com/logaretm/vee-validate/main/docs/assets/img/sponsors/getform.svg" width="230" title="Go to getform.io">
+  <a href="https://github.com/sponsors/logaretm">
+    <img src='https://sponsors.logaretm.com/sponsors.svg'>
   </a>
 </p>
 
 <br>
 
-You can also help this this project and my other projects by donating one time or by sponsoring via the following link
-
-<br>
-
-<p align="center">
-  <a href="https://www.buymeacoffee.com/logaretm" target="_blank">
-      <img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" width="180" title="Go to Buy Me A Coffee site">
-  </a>
-</p>
-
-<br>
+You can also help this this project and my other projects by donating one time or by sponsoring.
 
 ## Features
 
@@ -154,12 +138,6 @@ This library relies on the `fetch` web API to run queries, you can use [`unfetch
 ## Examples
 
 Live examples can be found [here](https://villus.logaretm.com/examples/basic-query)
-
-## Sponsorship
-
-You can help this this project by donating one time or by sponsoring via the following link
-
-<a href="https://www.buymeacoffee.com/logaretm" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" height="60" width="217" ></a>
 
 ## License
 

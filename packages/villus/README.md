@@ -6,8 +6,6 @@
 
 <p align="center">
 
-[![codecov](https://codecov.io/gh/logaretm/villus/branch/main/graph/badge.svg)](https://codecov.io/gh/logaretm/villus)
-[![circleci](https://circleci.com/gh/logaretm/villus.svg?style=svg)](https://circleci.com/gh/logaretm/vee-validate)
 [![Bundle Size](https://badgen.net/bundlephobia/minzip/villus)](https://bundlephobia.com/result?p=villus)
 [![npm](https://img.shields.io/npm/dm/villus.svg)](https://npm-stat.com/charts.html?package=villus)
 [![npm](https://img.shields.io/npm/v/villus.svg)](https://www.npmjs.com/package/villus)
@@ -19,6 +17,16 @@
 A small and fast GraphQL client for **Vue.js 3.x**
 
 This is forked from my previous work at [vue-gql](https://github.com/baianat/vue-gql) before they decide to go for a different direction with this library.
+
+<p align="center">
+  <a href="https://github.com/sponsors/logaretm">
+    <img src='https://sponsors.logaretm.com/sponsors.svg'>
+  </a>
+</p>
+
+<br>
+
+You can also help this this project and my other projects by donating one time or by sponsoring.
 
 ## Features
 
@@ -37,7 +45,7 @@ GraphQL is just a simple HTTP request. This library is meant to be a tiny client
 
 `villus` also supports file uploads and subscriptions without compromising bundle size through plugins.
 
-If you are looking for a more full-featured client use [vue-apollo](https://github.com/vue/vue-apollo), it has everything you need.
+If you are looking for a more full-featured client use [vue-apollo](https://github.com/vuejs/vue-apollo), it has everything you need.
 
 You can read more about it in the [announcement post](https://logaretm.com/blog/2020-01-11-announcing-villus/).
 
@@ -130,12 +138,6 @@ This library relies on the `fetch` web API to run queries, you can use [`unfetch
 ## Examples
 
 Live examples can be found [here](https://villus.logaretm.com/examples/basic-query)
-
-## Sponsorship
-
-You can help this this project by donating one time or by sponsoring via the following link
-
-<a href="https://www.buymeacoffee.com/logaretm" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" height="60" width="217" ></a>
 
 ## License
 
