@@ -515,62 +515,6 @@ describe('useQuery()', () => {
     });
   });
 
-  test('variables watcher can be disabled', async () => {
-    mount({
-      setup() {
-        useClient({
-          url: 'https://test.com/graphql',
-        });
-
-        const variables = ref({
-          id: 12,
-        });
-
-        const { data, unwatchVariables, isWatchingVariables, watchVariables } = useQuery({
-          query: PostQuery,
-          variables,
-        });
-
-        return { data, variables, unwatchVariables, watchVariables, isWatchingVariables };
-      },
-      template: `
-    <div>
-      <div v-if="data">
-        <h1>{{ data.post.title }}</h1>
-      </div>
-      <button id="change" @click="variables.id = variables.id + 1"></button>
-      <button id="toggle" @click="isWatchingVariables ? unwatchVariables() : watchVariables()"></button>
-      <span id="status">{{ isWatchingVariables }}</span>
-    </div>`,
-    });
-
-    await flushPromises();
-    await waitForExpect(() => {
-      expect(fetch).toHaveBeenCalledTimes(1);
-      expect(document.querySelector('h1')?.textContent).toContain('12');
-    });
-
-    document.querySelector('#toggle')?.dispatchEvent(new Event('click'));
-    document.querySelector('#change')?.dispatchEvent(new Event('click'));
-
-    await flushPromises();
-    await waitForExpect(() => {
-      expect(fetch).toHaveBeenCalledTimes(1);
-      expect(document.querySelector('h1')?.textContent).toContain('12');
-      expect(document.querySelector('#status')?.textContent).toContain('false');
-    });
-
-    // toggle it back
-    document.querySelector('#toggle')?.dispatchEvent(new Event('click'));
-    document.querySelector('#change')?.dispatchEvent(new Event('click'));
-    await flushPromises();
-    await waitForExpect(() => {
-      expect(fetch).toHaveBeenCalledTimes(2);
-      expect(document.querySelector('h1')?.textContent).toContain('14');
-      expect(document.querySelector('#status')?.textContent).toContain('true');
-    });
-  });
-
   test('variables prop arrangement does not trigger queries', async () => {
     mount({
       setup() {

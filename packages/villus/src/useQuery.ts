@@ -36,9 +36,6 @@ export interface BaseQueryApi<TData = any, TVars = QueryVariables> {
   execute(
     overrideOpts?: Partial<QueryExecutionOpts<TVars>>
   ): Promise<{ data: TData | null; error: CombinedError | null }>;
-  unwatchVariables(): void;
-  watchVariables(): void;
-  isWatchingVariables: Ref<boolean>;
 }
 
 export interface QueryApi<TData, TVars> extends BaseQueryApi<TData, TVars> {
@@ -106,10 +103,9 @@ function useQuery<TData = any, TVars = QueryVariables>(
     watch(query, () => execute());
   }
 
-  let stopVarsWatcher: ReturnType<typeof watch>;
   const isWatchingVariables: Ref<boolean> = ref(false);
 
-  function beginWatchingVars() {
+  function initVarWatchers() {
     let oldCache: number;
     if (!variables || !isWatchable(variables)) {
       return;
@@ -117,7 +113,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
 
     const watchableVars = toWatchableSource(variables);
     isWatchingVariables.value = true;
-    stopVarsWatcher = watch(
+    watch(
       watchableVars,
       newValue => {
         const id = hash(stringify(newValue));
@@ -133,22 +129,9 @@ function useQuery<TData = any, TVars = QueryVariables>(
     );
   }
 
-  function unwatchVariables() {
-    if (!isWatchingVariables.value) return;
+  initVarWatchers();
 
-    stopVarsWatcher();
-    isWatchingVariables.value = false;
-  }
-
-  function watchVariables() {
-    if (isWatchingVariables.value) return;
-
-    beginWatchingVars();
-  }
-
-  beginWatchingVars();
-
-  const api = { data, isFetching, isDone, error, execute, unwatchVariables, watchVariables, isWatchingVariables };
+  const api = { data, isFetching, isDone, error, execute, isWatchingVariables };
 
   /**
    * if can not getCurrentInstance, the func use outside of setup, cannot get onMounted
