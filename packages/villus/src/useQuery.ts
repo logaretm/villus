@@ -7,9 +7,9 @@ import {
   OperationResult,
   QueryExecutionContext,
   QueryVariables,
-  SkipQuery,
+  QueryPredicateOrSignal,
 } from './types';
-import { hash, CombinedError, toWatchableSource, isSkipped, unwrap, isWatchable } from './utils';
+import { hash, CombinedError, toWatchableSource, unwrap, isWatchable, unravel } from './utils';
 import { Operation } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
@@ -20,7 +20,8 @@ export interface QueryCompositeOptions<TData, TVars> {
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
   client?: Client;
-  skip?: SkipQuery<TVars>;
+  skip?: QueryPredicateOrSignal<TVars>;
+  waitFor?: QueryPredicateOrSignal<TVars>;
 }
 
 interface QueryExecutionOpts<TVars> {
@@ -64,8 +65,9 @@ function useQuery<TData = any, TVars = QueryVariables>(
   async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
     const vars = unwrap(variables) || ({} as TVars);
     // result won't change if execution is skipped
-    if (opts.skip && isSkipped(opts.skip, vars)) {
+    if (opts.skip && unravel(opts.skip, vars)) {
       isFetching.value = false;
+
       return {
         data: data.value,
         error: error.value,
@@ -101,6 +103,18 @@ function useQuery<TData = any, TVars = QueryVariables>(
 
   if (isRef(query)) {
     watch(query, () => execute());
+  }
+
+  const waitFor = opts.waitFor;
+  if (waitFor) {
+    watch(
+      () => unravel(waitFor, (variables || {}) as TVars),
+      shouldExecute => {
+        if (shouldExecute) {
+          execute();
+        }
+      }
+    );
   }
 
   const isWatchingVariables: Ref<boolean> = ref(false);
@@ -140,7 +154,9 @@ function useQuery<TData = any, TVars = QueryVariables>(
    */
   const vm = getCurrentInstance();
   if (fetchOnMount) {
-    vm ? onMounted(() => execute()) : execute();
+    if (!waitFor || unravel(waitFor, (variables || {}) as TVars)) {
+      vm ? onMounted(() => execute()) : execute();
+    }
   }
 
   return {
