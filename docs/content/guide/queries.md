@@ -6,7 +6,7 @@ order: 3
 
 # Queries
 
-You can query GraphQL APIs with the `useQuery` function or `Query` component after you've setup the [GraphQL Client](/setup.md). This guide will focus on using the composable API because it is more flexible and concise, everything covered in this guide can be done with the `Query` component.
+You can query GraphQL APIs with the `useQuery` composition function after you've setup the [GraphQL Client](/setup.md).
 
 ## Queries Basics
 
@@ -150,7 +150,9 @@ This is only one way to re-fetch queries, because `villus` is built with composa
 
 ## Re-fetching Queries
 
-Sometimes you want to re-fetch the query or run it after some action, the `execute` function that is returned from the `useQuery` function and available on the `Query` component slot props. When called it re-executes the query. This example executes the query after the button has been clicked, note that the query is still fetched initially.
+Sometimes you want to re-fetch the query or run it after some action, the `execute` function that is returned from the `useQuery` function. When called it re-executes the query.
+
+This example executes the query after the button has been clicked, note that the query is still fetched initially.
 
 Here is a snippet for calling `execute` with `useQuery`:
 
@@ -453,19 +455,6 @@ You can specify a different strategy on different levels:
 
 You can set the default policy on the client level when you are [building the GraphQL client](/client.md) by passing `cachePolicy` option to either:
 
-The `createClient` function:
-
-```js{3,10}
-const client = createClient({
-  url: '/graphql', // Your endpoint
-  cachePolicy: 'network-only',
-});
-```
-
-This will make all the `Query` components under the `Provider` tree use the `network-only` policy by default.
-
-You can also pass it to the `useClient` composition function:
-
 ```js{4}
 // in setup
 useClient({
@@ -474,7 +463,7 @@ useClient({
 });
 ```
 
-This will make all the child-components using `useQuery` or `Query` component use the `network-only` policy by default.
+This will make all the child-components using `useQuery` use the `network-only` policy by default.
 
 ### On the query level
 
@@ -540,7 +529,7 @@ This feature is only available with Vue 3 at the moment
 
 </doc-tip>
 
-Both the `useQuery` and `Query` component can take advantage of the `Suspense` component shipped by Vue 3.x.
+You can use `useQuery` with the `Suspense` API component shipped in Vue 3.x.
 
 To utilize the suspense feature, you need to `await` the `useQuery` function and it returns the exact same API after executing the query:
 

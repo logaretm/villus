@@ -6,9 +6,9 @@ order: 5
 
 # Subscriptions
 
-`villus` handles subscriptions with the `useSubscription` or the `Subscription` component in the same way as the `useQuery` or the `Query` component.
+`villus` handles subscriptions with the `useSubscription` function.
 
-To add support for subscriptions you need to add the `handleSubscriptions` plugin to the `useClient` plugin list, which in turn will call your subscription client. The plugin expects an a function that returns an object that follows the [observable spec](https://github.com/tc39/proposal-observable) to be returned, this function is called a **subscription forwarder**
+To add support for subscriptions you need to add the `handleSubscriptions` plugin to the `useClient` plugin list, which in turn will call your subscription client. The plugin expects an a function that returns an object that follows the [observable spec](https://github.com/tc39/proposal-observable) to be returned, this function is called a **subscription forwarder**.
 
 The following example uses `apollo-server` with the `subscriptions-transport-ws` package:
 
@@ -26,7 +26,7 @@ const client = useClient({
 });
 ```
 
-Once you've setup the `handleSubscriptions` plugin, you can now use the `useSubscription` function or the `Subscription`.
+Once you've setup the `handleSubscriptions` plugin, you can now use the `useSubscription` function.
 
 <doc-tip>
   

@@ -26,7 +26,7 @@ const client = createClient({
 
 ### useClient()
 
-The `useClient` function exported by `villus` package allows you to create a villus client that can be injected into your components using `useQuery` or `useMutation` or `useSubscription` and their higher-order components variants. It accepts the same options as [createClient()](#createclient).
+The `useClient` function exported by `villus` package allows you to create a villus client that can be injected into your components using `useQuery` or `useMutation` or `useSubscription`. It accepts the same options as [createClient()](#createclient).
 
 ```js
 useClient({
@@ -146,7 +146,7 @@ You can make use of `async/await` as `executeQuery` and `executeMutation` both r
 
 Subscriptions are trickier, because they are more **event-driven**, so you cannot wait for them to execute like queries or mutations. Because of this, the `executeSubscription` method returns an **Observable** that allows you respond to incoming data.
 
-The `useSubscription` function and `Subscription` component offer a great abstraction for dealing with subscriptions but you can still execute your own arbitrary subscriptions without resorting to either:
+The `useSubscription` function offers an abstraction for dealing with subscriptions but you can still execute your own arbitrary subscriptions without resorting to either:
 
 ```js
 import { createClient, handleSubscriptions, defaultPlugins } from 'villus';
