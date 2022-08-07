@@ -17,7 +17,7 @@ import {
   QueryExecutionContext,
 } from './types';
 import { VILLUS_CLIENT } from './symbols';
-import { App, getCurrentInstance, inject } from 'vue';
+import { App, getCurrentInstance, inject, InjectionKey } from 'vue';
 
 export interface ClientOptions {
   url: string;
@@ -185,11 +185,17 @@ export function createClient(opts: ClientOptions) {
   return client;
 }
 
+function resolveInternalInjection<T>(vm: any, symbol: InjectionKey<T>) {
+  // Vue 2 uses `proxy._provided` while Vue 3 has `provides`
+  // Vue 2.7's proxy property might be a bug but thats the IRL situation.
+  return vm?.proxy?._provided?.[symbol as any] || vm?._provided?.[symbol as any] || vm?.provides?.[symbol as any];
+}
+
 export function resolveClient(): Client {
   const vm = getCurrentInstance() as any;
   // Uses same component provide as its own injections
   // Due to changes in https://github.com/vuejs/vue-next/pull/2424
-  let client = vm && inject(VILLUS_CLIENT, vm?.provides?.[VILLUS_CLIENT as any]);
+  let client = vm && inject(VILLUS_CLIENT, resolveInternalInjection(vm, VILLUS_CLIENT));
 
   if (client) setActiveClient(client);
   client = getActiveClient();
