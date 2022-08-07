@@ -10,22 +10,21 @@ The `useSubscription` function allows you to execute GraphQL subscriptions, it r
 
 The `useSubscription` function returns the following properties and functions:
 
-| Property | Type                 | Description                                                       |
-| -------- | -------------------- | ----------------------------------------------------------------- |
-| data     | `Ref<any/null>`      | The GraphQL subscription result's `data`                          |
-| error    | `Ref<CombinedError>` | Any errors encountered during subscription execution              |
-| isPaused | `Ref<boolean>`       | True if the subscription is paused or inactive                    |
-| pause    | `() => void`         | Deactivates the subscription temporarily until `resume` is called |
-| resume   | `() => void`         | Activates the subscription                                        |
+| Property | Type                   | Description                                                                                                              |
+| -------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| data     | `Ref<any/null>`        | The GraphQL subscription result's `data`                                                                                 |
+| error    | `Ref<CombinedError>`   | Any errors encountered during subscription execution                                                                     |
+| paused   | `ComputedRef<boolean>` | True if the subscription is paused or inactive. This is readonly and you should control it by the passed `paused` value. |
 
 ## Usage
 
-The `useSubscription` function is slightly more complex and accepts two arguments, the first being the operation object which contains the following properties:
+The `useSubscription` function accepts two arguments, the first being the operation object which contains the following properties:
 
-| Property  | Type                                        | Required | Description                     |
-| --------- | ------------------------------------------- | -------- | ------------------------------- |
-| query     | `string` or `DocumentNode` or `Ref<string>` | **Yes**  | The subscription to be executed |
-| variables | `object` or `Ref<object>`                   | **No**   | The subscription variables      |
+| Property  | Type                                        | Required        | Description                     |
+| --------- | ------------------------------------------- | --------------- | ------------------------------- | -------------------------------------------------------------------------------------------------- |
+| query     | `string` or `DocumentNode` or `Ref<string>` | **Yes**         | The subscription to be executed |
+| variables | `object` or `Ref<object>`                   | **No**          | The subscription variables      |
+| paused    | `Ref<boolean>`                              | `() => boolean` | **No**                          | If the subscription should be paused, if `true` any incoming values will be ignored by the reducer |
 
 The second argument is what is called a `Reducer` which allows you aggregate subscription results. For more information about that, [check the subscription guide](/guide/subscriptions).
 

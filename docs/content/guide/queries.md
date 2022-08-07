@@ -223,7 +223,7 @@ Reactive queries are very flexible and one of the many advantages of using the c
 
 ### Disabling Re-fetching
 
-You can disable the automatic refetch behavior by calling the `pause` function returned by the `useQuery` function:
+You can disable the automatic refetch behavior by passing a `paused` getter function to the `useQuery` function. The getter should return a boolean.
 
 ```js
 import { ref } from 'vue';
@@ -239,20 +239,202 @@ const GetPostById = `
 
 // Create a reactive variables object
 const variables = ref({ id: 123 });
-const { data, watchVariables, unwatchVariables, isWatchingVariables } = useQuery({
+const { data } = useQuery({
   query: GetPostById,
+  variables,
+  paused: () => !variables.id, // Don't re-fetch automatically unless the id is present
+});
+```
+
+The previous example can be also re-written like this, since the `paused` function receives the current variables as an argument.
+
+```js
+const { data } = useQuery({
+  query: GetPostById,
+  variables,
+  paused: ({ id }) => !id, // Don't re-fetch automatically unless the id is present
+});
+```
+
+This is useful if you want to build variable guards to make sure you don't pass invalid values to your GraphQL servers.
+
+In addition to passing a function, you can also pass reactive refs or a plain boolean:
+
+```js
+const { data } = useQuery({
+  query: GetPostById,
+  variables,
+  paused: computed(() => !variables.id), // computed or `ref`
+});
+
+const { data, execute } = useQuery({
+  query: GetPostById,
+  variables,
+  paused: true, // boolean, this query is now "lazy" and you have to trigger executions manually with `execute`.
+});
+
+function runQuery() {
+  execute(); // won't be stopped
+}
+```
+
+Whenever the `paused` is a reactive value and it changes to `false`, the query will be re-executed automatically so you can also use `paused` to wait for when some condition is met before the query is executed. For example maybe you have a query that depends on another and want to make sure not to fetch the second one unless the first one was fetched.
+
+```js
+const Post = `
+  query GetPost ($postId: ID!) {
+    post (id: $postId) {
+      id
+      title
+    }
+  }
+`;
+
+const Comments = `
+  query Comments ($postId: ID!) {
+    post (id: $postId) {
+      comments {
+        body
+      }
+    }
+  }
+`;
+
+const variables = { postId: 1 };
+
+const { data: postData } = useQuery({
+  query: Post,
   variables,
 });
 
-// variables/query watching is stopped.
-unwatchVariables();
-
-// variables/query watching is resumed.
-watchVariables();
-
-// Reports the current watching status true/false
-isWatchingVariables.value;
+const { data } = useQuery({
+  query: Comments,
+  variables,
+  // Causes the query to wait for the post to be found and fetched.
+  paused: () => !!postData.value.post,
+});
 ```
+
+## Skipping Queries
+
+You can also skip executing queries by providing a `skip` argument to the query options. This can be particularly useful if you want to prevent fetching or refetching a query if a variable value is invalid. This may seem similar to `paused` except it doesn't stop query or variables watching and it prevents all executions, even manual ones with `execute`. Also it doesn't re-fetch automatically whenever it is set back to `false`.
+
+In the following example we skip the query unless the user has entered enough characters for the search terms.
+
+```vue
+<template>
+  <div>
+    <input v-model="searchTerm" type="search" placeholder="Enter search terms" />
+    <ul v-if="data">
+      <li v-for="post in data.searchPosts" :key="post.id">{{ post.title }}</li>
+    </ul>
+
+    <p v-if="isFetching">Searching...</p>
+  </div>
+</template>
+
+<script setup>
+import { computed } from 'vue';
+import { useQuery } from 'villus';
+
+const SearchPosts = `
+  query SearchPosts($term: String!) {
+    searchPosts (term: $term) {
+      id
+      title
+    }
+  }
+`;
+
+const searchTerm = ref('');
+
+// Skip the query if the search term has less than 3 characters.
+const shouldSkip = computed(() => {
+  return searchTerm.value && searchTerm.value.length >= 3;
+});
+
+const { data, isFetching } = useQuery({
+  query: SearchPosts,
+  skip: shouldSkip,
+  variables: computed(() => {
+    return {
+      term: searchTerm.value,
+    };
+  }),
+});
+</script>
+```
+
+You can also pass a function instead of a reactive variable, this function receives the current variables as an argument.
+
+```vue
+<template>
+  <div>
+    <input v-model="searchTerm" type="search" placeholder="Enter search terms" />
+    <ul v-if="data">
+      <li v-for="post in data.searchPosts" :key="post.id">{{ post.title }}</li>
+    </ul>
+
+    <p v-if="isFetching">Searching...</p>
+  </div>
+</template>
+
+<script setup>
+import { computed, ref } from 'vue';
+import { useQuery } from 'villus';
+
+const SearchPosts = `
+  query SearchPosts($term: String!) {
+    searchPosts (term: $term) {
+      id
+      title
+    }
+  }
+`;
+
+const searchTerm = ref('');
+
+const { data, isFetching } = useQuery({
+  query: SearchPosts,
+  skip: ({ term }) => {
+    return term && term.length >= 3;
+  },
+  variables: computed(() => {
+    return {
+      term: searchTerm.value,
+    };
+  }),
+});
+</script>
+```
+
+Of course you could've used `paused` for the previous example, but because `paused` stops watching the query variables it means you query won't trigger whenever the user type something into the search terms. Also it wouldn't work correctly if you call `execute` manually with a watcher because `paused` doesn't stop manual executions. This makes `skip` ideal for situations where you want to keep the reactivity of the query while also ignoring certain executions of it.
+
+## Fetching on Mounted
+
+By default queries are executed when the component is mounted. You can configure this behavior by setting the `fetchOnMount` option:
+
+```js
+const GetPosts = `
+  query GetPosts {
+    posts {
+      id
+      title
+    }
+  }
+`;
+
+const { data } = useQuery({
+  query: GetPosts,
+  fetchOnMount: false, // disables query fetching on mounted
+});
+```
+
+<doc-tip type="warn" title="Pausing and Skipping with fetchOnMount">
+
+Note that this behavior is subject to `paused` or `skip` being set. Meaning if a query is paused or skipped it won't fetch when the component is mounted.
+
+</doc-tip>
 
 ## Caching
 
@@ -349,26 +531,6 @@ function runWithPolicy() {
 ```
 
 You can build your own cache layer and plugins for villus, check the [Plugins Guide](/plugins)
-
-## Fetching on Mounted
-
-By default the `useQuery` and `Query` component automatically execute their queries when the component is mounted. You can configure this behavior by setting the `fetchOnMount` option:
-
-```js
-const GetPosts = `
-  query GetPosts {
-    posts {
-      id
-      title
-    }
-  }
-`;
-
-const { data } = useQuery({
-  query: GetPosts,
-  fetchOnMount: false, // disables query fetching on mounted
-});
-```
 
 ## Suspense
 
@@ -482,99 +644,3 @@ Whenever a re-fetch is triggered, or the query was executed again the `isFetchin
 Is fetching default value is `true` if `fetchOnMount` is enabled, otherwise it will start off with `false`.
 
 </doc-tip>
-
-## Skipping Queries
-
-You can also skip executing queries by providing a `skip` argument to the query options. This can be particularly useful if you want to prevent fetching or refetching a query if a variable value is invalid.
-
-In the following example we avoid fetching the post if the `id` doesn't exist.
-
-```vue
-<template>
-  <div>
-    <ul v-if="data">
-      <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
-    </ul>
-
-    <p v-if="isFetching">Loading...</p>
-  </div>
-</template>
-
-<script setup>
-import { computed } from 'vue';
-import { useQuery } from 'villus';
-import { useRoute } from 'vue-router';
-
-const GetSinglePost = `
-  query GetSinglePost($id: Int!) {
-    post (id: $id) {
-      id
-      title
-    }
-  }
-`;
-
-const route = useRoute();
-const postId = computed(() => {
-  return route.params.postId;
-});
-
-// skip fetching/refetching the query if the postId is not available
-const shouldSkip = computed(() => {
-  return !postId.value;
-});
-
-const { data, isFetching } = useQuery({
-  query: GetSinglePost,
-  skip: shouldSkip,
-  variables: computed(() => {
-    return {
-      id: postId.value,
-    };
-  }),
-});
-</script>
-```
-
-You can also pass a function instead of a reactive variable, this function receives the current variables as the first argument.
-
-```vue
-<template>
-  <div>
-    <ul v-if="data">
-      <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
-    </ul>
-
-    <p v-if="isFetching">Loading...</p>
-  </div>
-</template>
-
-<script setup>
-import { computed } from 'vue';
-import { useQuery } from 'villus';
-import { useRoute } from 'vue-router';
-
-const GetSinglePost = `
-  query GetSinglePost($id: Int!) {
-    post (id: $id) {
-      id
-      title
-    }
-  }
-`;
-
-const route = useRoute();
-
-const { data, isFetching } = useQuery({
-  query: GetSinglePost,
-  variables: computed(() => {
-    return {
-      id: route.params.postId,
-    };
-  }),
-  skip: ({ id }) => {
-    return !id;
-  },
-});
-</script>
-```

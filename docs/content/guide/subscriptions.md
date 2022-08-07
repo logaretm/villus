@@ -71,13 +71,11 @@ The `useSubscription` function has a similar API as it exposes a `data` property
   </ul>
 </template>
 
-<script>
+<script setup>
 import { watch, ref } from 'vue';
 import { useSubscription } from 'villus';
 
-export default {
-  setup() {
-    const NewMessages = `
+const NewMessages = `
       subscription NewMessages {
         newMessages {
           id
@@ -87,16 +85,12 @@ export default {
       }
     `;
 
-    const { data } = useSubscription({ query: NewMessages });
-    const messages = ref([]);
-    watch(data, incoming => {
-      // do stuff with incoming data
-      messages.value.push(incoming);
-    });
-
-    return { messages };
-  },
-};
+const { data } = useSubscription({ query: NewMessages });
+const messages = ref([]);
+watch(data, incoming => {
+  // do stuff with incoming data
+  messages.value.push(incoming);
+});
 </script>
 ```
 
@@ -157,3 +151,38 @@ The `reduceMessages` function acts as a reducer for the incoming data, whenever 
 Keep in mind that initially we have `null` for the initial value so we needed to provide a fallback for that.
 
 </doc-tip>
+
+## Pausing subscriptions
+
+Similar to queries, subscriptions could also be paused by passing a `paused` value to `useSubscription`.
+
+```js
+import { ref } from 'vue';
+import { useSubscription } from 'villus';
+
+const NewMessages = `
+  subscription ConversationMessages ($id: ID!) {
+    conversation(id: $id) {
+      id
+      from
+      message
+    }
+  }
+`;
+
+const paused = ref(false);
+
+const { data } = useSubscription({
+  query: NewMessages,
+  variables: { id: 1 },
+  paused,
+});
+
+// pause the subscription
+paused.value = true;
+
+// resume the subscription
+paused.value = false;
+```
+
+Note that pausing or unpausing doesn't sever the established connection (if websocket implementation is used), all it does is ignore the incoming values.

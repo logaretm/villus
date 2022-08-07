@@ -63,4 +63,4 @@ export interface ClientPluginContext {
 
 export type ClientPlugin = ({ useResult, operation }: ClientPluginContext) => void | Promise<void>;
 
-export type QueryPredicateOrSignal<TVars = QueryVariables> = Ref<boolean> | ((variables: TVars) => boolean);
+export type QueryPredicateOrSignal<TVars = QueryVariables> = boolean | Ref<boolean> | ((variables: TVars) => boolean);
