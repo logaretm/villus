@@ -6,9 +6,22 @@
 
 <p align="center">
 
-[![Bundle Size](https://badgen.net/bundlephobia/minzip/villus)](https://bundlephobia.com/result?p=villus)
-[![npm](https://img.shields.io/npm/dm/villus.svg)](https://npm-stat.com/charts.html?package=villus)
-[![npm](https://img.shields.io/npm/v/villus.svg)](https://www.npmjs.com/package/villus)
+<a target="_blank" href="https://www.npmjs.com/package/villus">
+  <img src="https://img.shields.io/npm/v/villus.svg?label=&color=05bda8">
+</a>
+
+<a target="_blank" href="https://npm-stat.com/charts.html?package=villus">
+  <img src="https://img.shields.io/npm/dm/villus.svg?color=05bd6d&label=">
+</a>
+
+<a href="https://villus.logaretm.com/" target="_blank">
+  <img src="https://img.shields.io/badge/-docs%20and%20demos-009f53">
+</a>
+
+<a href="https://github.com/sponsors/logaretm">
+  <img src="https://img.shields.io/badge/-%E2%99%A5%20Sponsors-ec5cc6">
+
+</a>
 
 </p>
 
