@@ -1,6 +1,6 @@
 {
   "name": "villus",
-  "version": "1.2.5",
+  "version": "2.0.0",
   "description": "A small and fast GraphQL client for Vue.js",
   "module": "dist/villus.esm.js",
   "unpkg": "dist/villus.js",
@@ -14,6 +14,6 @@
   ],
   "peerDependencies": {
     "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0 || ^2.7.0"
   }
 }

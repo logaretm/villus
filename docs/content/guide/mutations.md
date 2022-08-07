@@ -8,10 +8,10 @@ order: 4
 
 ## Mutations Basics
 
-**villus** offers both a `useMutation` function and a `Mutation` component that are very similar their **[querying](/queries.md)** counterparts but with few distinct differences:
+**villus** offers a `useMutation` function that os very similar to its **[querying](/queries.md)** counterpart but with few distinct differences:
 
-- They **do not** accept a `variables` prop or argument.
-- They **do not** run automatically, you have to explicitly call `execute`.
+- It **does not** accept a `variables` option.
+- It **does not** execute automatically, you have to explicitly call `execute`.
 - Cache policies do not apply to mutations as mutations represent user actions and will always use `network-only` policy.
 
 Here is an example for the `useMutation` function:
@@ -101,4 +101,4 @@ function onSubmit() {
 }
 ```
 
-There are more stuff you can do with mutations, like displaying progress for users. Check the API documentation for [useMutation](/api/use-mutation) and [Mutation component](/api/mutation).
+There are more things you can do with mutations, like displaying progress for users. Check the API documentation for [useMutation](/api/use-mutation).

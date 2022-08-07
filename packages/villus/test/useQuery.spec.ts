@@ -515,32 +515,30 @@ describe('useQuery()', () => {
     });
   });
 
-  test('variables watcher can be disabled', async () => {
+  test('can pause execution given a pause ref', async () => {
+    const paused = ref(false);
+    const variables = ref({ id: 12 });
     mount({
       setup() {
         useClient({
           url: 'https://test.com/graphql',
         });
 
-        const variables = ref({
-          id: 12,
-        });
-
-        const { data, unwatchVariables, isWatchingVariables, watchVariables } = useQuery({
+        const { data, execute, isFetching } = useQuery({
           query: PostQuery,
           variables,
+          paused,
         });
 
-        return { data, variables, unwatchVariables, watchVariables, isWatchingVariables };
+        return { data, execute, isFetching };
       },
       template: `
     <div>
       <div v-if="data">
         <h1>{{ data.post.title }}</h1>
       </div>
-      <button id="change" @click="variables.id = variables.id + 1"></button>
-      <button id="toggle" @click="isWatchingVariables ? unwatchVariables() : watchVariables()"></button>
-      <span id="status">{{ isWatchingVariables }}</span>
+      <span id="fetching">{{ isFetching }}</span>
+      <button @click="execute"></button>
     </div>`,
     });
 
@@ -550,24 +548,94 @@ describe('useQuery()', () => {
       expect(document.querySelector('h1')?.textContent).toContain('12');
     });
 
-    document.querySelector('#toggle')?.dispatchEvent(new Event('click'));
-    document.querySelector('#change')?.dispatchEvent(new Event('click'));
+    variables.value = { id: 13 };
+    paused.value = true;
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(1);
+    // data didn't change
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+
+    // explicit execution still works
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(2);
+    await waitForExpect(() => {
+      expect(document.querySelector('h1')?.textContent).toContain('13');
+      expect(document.querySelector('#fetching')?.textContent).toBe('false');
+    });
+
+    variables.value = { id: 14 };
+    await flushPromises();
+    // changing back to `false` will trigger an additional fetch
+    paused.value = false;
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(3);
+
+    // fetch was triggered a second time, due to variable change.
+    await waitForExpect(() => {
+      expect(document.querySelector('h1')?.textContent).toContain('14');
+    });
+  });
+
+  test('can pause execution given a pause getter', async () => {
+    const paused = ref(false);
+    const variables = ref({ id: 12 });
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { data, execute, isFetching } = useQuery({
+          query: PostQuery,
+          variables,
+          paused: () => paused.value,
+        });
+
+        return { data, execute, isFetching };
+      },
+      template: `
+    <div>
+      <div v-if="data">
+        <h1>{{ data.post.title }}</h1>
+      </div>
+      <span id="fetching">{{ isFetching }}</span>
+      <button @click="execute"></button>
+    </div>`,
+    });
 
     await flushPromises();
     await waitForExpect(() => {
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(document.querySelector('h1')?.textContent).toContain('12');
-      expect(document.querySelector('#status')?.textContent).toContain('false');
     });
 
-    // toggle it back
-    document.querySelector('#toggle')?.dispatchEvent(new Event('click'));
-    document.querySelector('#change')?.dispatchEvent(new Event('click'));
+    paused.value = true;
+    variables.value = { id: 13 };
     await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(1);
+    // data didn't change
+    expect(document.querySelector('h1')?.textContent).toContain('12');
+
+    // explicit execution will work
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(2);
     await waitForExpect(() => {
-      expect(fetch).toHaveBeenCalledTimes(2);
+      expect(document.querySelector('h1')?.textContent).toContain('13');
+      expect(document.querySelector('#fetching')?.textContent).toBe('false');
+    });
+
+    variables.value = { id: 14 };
+    await flushPromises();
+    paused.value = false;
+    // will trigger an additional fetch
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(3);
+
+    // fetch was triggered a second time, due to variable change.
+    await waitForExpect(() => {
       expect(document.querySelector('h1')?.textContent).toContain('14');
-      expect(document.querySelector('#status')?.textContent).toContain('true');
     });
   });
 

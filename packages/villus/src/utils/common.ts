@@ -1,18 +1,19 @@
-import { computed, isReactive, isRef, Ref, unref } from 'vue';
-import { MaybeLazyOrRef, SkipQuery, QueryVariables } from '../types';
+import { isReactive, isRef, Ref, unref } from 'vue';
+import { MaybeLazyOrRef, QueryVariables, QueryPredicateOrSignal, MaybeRef } from '../types';
 
-export function toWatchableSource<T = any>(value: MaybeLazyOrRef<T> | Record<string, any>): Ref<T> {
-  return computed(() => {
-    return unwrap(value);
-  });
-}
-
-export function isSkipped<TVars = QueryVariables>(skip: SkipQuery<TVars>, vars: TVars) {
-  if (isRef(skip)) {
-    return skip.value;
+export function unravel<TVars = QueryVariables>(
+  signal: QueryPredicateOrSignal<TVars> | undefined,
+  vars: MaybeRef<TVars>
+) {
+  if (isRef(signal)) {
+    return signal.value;
   }
 
-  return skip(vars);
+  if (typeof signal === 'function') {
+    return signal(unref(vars));
+  }
+
+  return signal;
 }
 
 export function unwrap<TValue>(val: MaybeLazyOrRef<TValue>) {
@@ -24,6 +25,6 @@ export function unwrap<TValue>(val: MaybeLazyOrRef<TValue>) {
   return typeof val === 'function' ? (val as any)() : val;
 }
 
-export function isWatchable<T>(val: unknown): val is MaybeLazyOrRef<T> {
+export function isWatchable<T>(val: unknown): val is Ref<T> {
   return isRef(val) || isReactive(val) || typeof val === 'function';
 }

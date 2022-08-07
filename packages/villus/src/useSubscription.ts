@@ -1,13 +1,20 @@
-import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef, getCurrentInstance } from 'vue';
-import { Unsubscribable, OperationResult, QueryVariables, MaybeRef, StandardOperationResult } from './types';
-import { CombinedError } from './utils';
+import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef, getCurrentInstance, computed } from 'vue';
+import {
+  Unsubscribable,
+  OperationResult,
+  QueryVariables,
+  MaybeRef,
+  StandardOperationResult,
+  QueryPredicateOrSignal,
+} from './types';
+import { CombinedError, isWatchable, unravel } from './utils';
 import { Operation } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
 interface SubscriptionCompositeOptions<TData, TVars> {
   query: MaybeRef<Operation<TData, TVars>['query']>;
   variables?: MaybeRef<TVars>;
-  paused?: boolean;
+  paused?: QueryPredicateOrSignal<TVars>;
   client?: Client;
 }
 
@@ -23,22 +30,27 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   const { query, variables, paused } = opts;
   const data = ref<TResult | null>(reduce(null, { data: null, error: null }));
   const error: Ref<CombinedError | null> = ref(null);
-  const isPaused = ref(paused || false);
+  const isPaused = computed(() => unravel(paused, variables as TVars));
 
   function handleResponse(result: OperationResult<TData>) {
     data.value = reduce(data.value as TResult, result) as any;
     error.value = result.error;
   }
 
-  async function initObserver() {
-    isPaused.value = false;
+  /**
+   * if can not getCurrentInstance, the func use outside of setup, cannot get onMounted
+   * when outside of setup initObserver immediately.
+   */
+  let observer: Unsubscribable;
 
+  async function initObserver() {
+    observer?.unsubscribe();
     const result = await client.executeSubscription<TData, TVars>({
       query: unref(query),
       variables: unref(variables) as TVars,
     });
 
-    return result.subscribe({
+    observer = result.subscribe({
       next(result) {
         if (isPaused.value) {
           return;
@@ -60,53 +72,35 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
         return handleResponse(response);
       },
     });
+
+    return observer;
   }
 
-  /**
-   * if can not getCurrentInstance, the func use outside of setup, cannot get onMounted
-   * when outside of setup initObserver immediately.
-   */
-  let observer: Unsubscribable;
   const vm = getCurrentInstance();
-  if (!paused) {
-    const getObserver = async () => {
-      observer = await initObserver();
-    };
-    vm ? onMounted(() => getObserver()) : getObserver();
+  if (!isPaused.value) {
+    vm ? onMounted(initObserver) : initObserver();
   }
 
-  // todo: if outside of setup, it should be recommend manually pause it(or someaction else)
-  vm && onBeforeUnmount(() => observer && observer.unsubscribe());
+  // TODO: if outside of setup, it should be recommend manually pause it(or some action else)
+  vm && onBeforeUnmount(() => observer?.unsubscribe());
 
-  function pause() {
-    isPaused.value = true;
-  }
-
-  async function resume() {
-    if (!observer) {
-      reInit();
-    }
-
-    isPaused.value = false;
-  }
-
-  async function reInit() {
-    if (observer) {
-      observer.unsubscribe();
-    }
-
-    observer = await initObserver();
+  if (isWatchable(paused)) {
+    watch(paused, val => {
+      if (!val) {
+        initObserver();
+      }
+    });
   }
 
   if (isRef(query)) {
-    watch(query, reInit);
+    watch(query, initObserver);
   }
 
   if (isRef(variables)) {
-    watch(variables, reInit);
+    watch(variables, initObserver);
   }
 
-  return { data, error, isPaused, pause, resume };
+  return { data, error, paused: isPaused };
 }
 
 /**

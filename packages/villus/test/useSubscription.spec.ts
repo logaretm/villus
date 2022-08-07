@@ -75,7 +75,6 @@ test('Re-executes subscriptions if query changes', async () => {
   expect(unSubSpy).not.toHaveBeenCalled();
   id.value++;
   await flushPromises();
-  await flushPromises();
   expect(unSubSpy).toHaveBeenCalledTimes(1);
   expect(subSpy).toHaveBeenCalledTimes(2);
 });
@@ -194,6 +193,7 @@ test('Handles observer errors', async () => {
 });
 
 test('Pauses and resumes subscriptions', async () => {
+  const paused = ref(false);
   mount({
     setup() {
       useClient({
@@ -209,16 +209,15 @@ test('Pauses and resumes subscriptions', async () => {
         return [...oldMessages, response.data.message];
       }
 
-      const { data, pause, resume, isPaused } = useSubscription({ query: `subscription { newMessages }` }, reduce);
+      const { data, paused: isPaused } = useSubscription({ query: `subscription { newMessages }`, paused }, reduce);
 
-      return { messages: data, pause, resume, isPaused };
+      return { messages: data, isPaused };
     },
     template: `
       <div>
         <ul v-for="message in messages">
           <li>{{ message.id }}</li>
         </ul>
-        <button @click="isPaused ? resume() : pause()"></button>
         <span id="status">{{ isPaused }}</span>
       </div>
     `,
@@ -228,11 +227,11 @@ test('Pauses and resumes subscriptions', async () => {
   jest.advanceTimersByTime(201);
   // pauses subscription
   expect(document.querySelector('#status')?.textContent).toBe('false');
-  document.querySelector('button')?.dispatchEvent(new Event('click'));
+  paused.value = true;
   await flushPromises();
   expect(document.querySelectorAll('li')).toHaveLength(2);
   expect(document.querySelector('#status')?.textContent).toBe('true');
-  document.querySelector('button')?.dispatchEvent(new Event('click'));
+  paused.value = false;
   await flushPromises();
   jest.advanceTimersByTime(201);
   await flushPromises();
@@ -242,6 +241,7 @@ test('Pauses and resumes subscriptions', async () => {
 });
 
 test('Can pause subscriptions initially', async () => {
+  const paused = ref(true);
   mount({
     setup() {
       useClient({
@@ -257,19 +257,15 @@ test('Can pause subscriptions initially', async () => {
         return [...oldMessages, response.data.message];
       }
 
-      const { data, resume, isPaused } = useSubscription(
-        { query: `subscription { newMessages }`, paused: true },
-        reduce
-      );
+      const { data, paused: isPaused } = useSubscription({ query: `subscription { newMessages }`, paused }, reduce);
 
-      return { messages: data, resume, isPaused };
+      return { messages: data, isPaused };
     },
     template: `
       <div>
         <ul v-for="message in messages">
           <li>{{ message.id }}</li>
         </ul>
-        <button @click="resume"></button>
         <span id="status">{{ isPaused }}</span>
       </div>
     `,
@@ -281,7 +277,7 @@ test('Can pause subscriptions initially', async () => {
   expect(document.querySelector('#status')?.textContent).toBe('true');
   jest.advanceTimersByTime(201);
   expect(document.querySelectorAll('li')).toHaveLength(0);
-  document.querySelector('button')?.dispatchEvent(new Event('click'));
+  paused.value = false;
   await flushPromises();
   expect(document.querySelector('#status')?.textContent).toBe('false');
   jest.advanceTimersByTime(201);

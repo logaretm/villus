@@ -6,15 +6,28 @@
 
 <p align="center">
 
-[![Bundle Size](https://badgen.net/bundlephobia/minzip/villus)](https://bundlephobia.com/result?p=villus)
-[![npm](https://img.shields.io/npm/dm/villus.svg)](https://npm-stat.com/charts.html?package=villus)
-[![npm](https://img.shields.io/npm/v/villus.svg)](https://www.npmjs.com/package/villus)
+<a target="_blank" href="https://www.npmjs.com/package/villus">
+  <img src="https://img.shields.io/npm/v/villus.svg?label=&color=05bda8">
+</a>
+
+<a target="_blank" href="https://npm-stat.com/charts.html?package=villus">
+  <img src="https://img.shields.io/npm/dm/villus.svg?color=05bd6d&label=">
+</a>
+
+<a href="https://villus.logaretm.com/" target="_blank">
+  <img src="https://img.shields.io/badge/-docs%20and%20demos-009f53">
+</a>
+
+<a href="https://github.com/sponsors/logaretm">
+  <img src="https://img.shields.io/badge/-%E2%99%A5%20Sponsors-ec5cc6">
+
+</a>
 
 </p>
 
 <h6 align="center">Villus is a finger-like structures in the small intestine. They help to absorb digested food.</h6>
 
-A small and fast GraphQL client for **Vue.js 3.x**
+A small and fast GraphQL client for **Vue.js**
 
 This is forked from my previous work at [vue-gql](https://github.com/baianat/vue-gql) before they decide to go for a different direction with this library.
 
@@ -35,9 +48,8 @@ You can also help this this project and my other projects by donating one time o
 - 🗄 **Caching:** Simple and convenient query caching by default
 - 👕 **TypeScript:** Written in Typescript and Supports GraphQL TS tooling
 - 🖇 **Composable:** Built for the Composition API
-- ⚡️ **Suspense:** Supports the `<Suspense>` API in Vue 3
+- ⚡️ **Suspense:** Supports the `<Suspense>` API
 - 🔌 **Plugins:** Use existing plugins and create custom ones
-- Higher-order components available
 
 ## Why use this
 
@@ -73,8 +85,6 @@ Or because villus is so simple, you can use it via CDN:
 <!-- Villus -->
 <script src="https://unpkg.com/villus@latest/dist/villus.min.js"></script>
 ```
-
-You can now use it with either the new Vue composition API or higher order components.
 
 ### Usage
 
@@ -127,13 +137,13 @@ export default {
 </script>
 ```
 
-There is also the higher-order component flavor if you prefer to use them instead. Read the [docs for more examples and details](https://villus.logaretm.com/).
-
 `villus` makes frequent tasks such as re-fetching, caching, deduplication, mutations, and subscriptions a breeze. It has even built-in `Suspense` support with Vue 3! Consult the [documentation](https://villus.logaretm.com) for more use-cases and examples.
 
 ## Compatibility
 
 This library relies on the `fetch` web API to run queries, you can use [`unfetch`](https://github.com/developit/unfetch) (client-side) or [`node-fetch`](https://www.npmjs.com/package/node-fetch) (server-side) to use as a polyfill.
+
+This library is compatible with Vue 3.0+ or 2.7+
 
 ## Examples
 

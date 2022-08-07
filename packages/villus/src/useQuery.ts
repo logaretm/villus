@@ -7,9 +7,9 @@ import {
   OperationResult,
   QueryExecutionContext,
   QueryVariables,
-  SkipQuery,
+  QueryPredicateOrSignal,
 } from './types';
-import { hash, CombinedError, toWatchableSource, isSkipped, unwrap, isWatchable } from './utils';
+import { hash, CombinedError, unwrap, isWatchable, unravel } from './utils';
 import { Operation } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
@@ -20,7 +20,8 @@ export interface QueryCompositeOptions<TData, TVars> {
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
   client?: Client;
-  skip?: SkipQuery<TVars>;
+  paused?: QueryPredicateOrSignal<TVars>;
+  skip?: QueryPredicateOrSignal<TVars>;
 }
 
 interface QueryExecutionOpts<TVars> {
@@ -36,9 +37,6 @@ export interface BaseQueryApi<TData = any, TVars = QueryVariables> {
   execute(
     overrideOpts?: Partial<QueryExecutionOpts<TVars>>
   ): Promise<{ data: TData | null; error: CombinedError | null }>;
-  unwatchVariables(): void;
-  watchVariables(): void;
-  isWatchingVariables: Ref<boolean>;
 }
 
 export interface QueryApi<TData, TVars> extends BaseQueryApi<TData, TVars> {
@@ -50,14 +48,17 @@ function useQuery<TData = any, TVars = QueryVariables>(
 ): QueryApi<TData, TVars> {
   const client = opts?.client ?? resolveClient();
 
-  let { query, variables, cachePolicy, fetchOnMount } = normalizeOptions(opts);
+  const { query, variables, cachePolicy, fetchOnMount, paused, skip } = normalizeOptions(opts);
+  let currentFetchOnMount = fetchOnMount;
   const data: Ref<TData | null> = ref(null);
   const isFetching = ref<boolean>(fetchOnMount ?? false);
   const isDone = ref(false);
+  const isStale = ref(true);
   const error: Ref<CombinedError | null> = ref(null);
 
   // This is to prevent state mutation for racing requests, basically favoring the very last one
   let lastPendingOperation: Promise<OperationResult<TData>> | undefined;
+  const isCurrentlyPaused = () => unravel(paused, (variables || {}) as TVars);
 
   function onResultChanged(result: OperationResult<TData>) {
     data.value = result.data as TData;
@@ -67,8 +68,9 @@ function useQuery<TData = any, TVars = QueryVariables>(
   async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
     const vars = unwrap(variables) || ({} as TVars);
     // result won't change if execution is skipped
-    if (opts.skip && isSkipped(opts.skip, vars)) {
+    if (unravel(skip, vars)) {
       isFetching.value = false;
+
       return {
         data: data.value,
         error: error.value,
@@ -97,28 +99,42 @@ function useQuery<TData = any, TVars = QueryVariables>(
     onResultChanged(res);
     isDone.value = true;
     isFetching.value = false;
+    isStale.value = false;
     lastPendingOperation = undefined;
 
     return { data: data.value, error: error.value };
   }
 
-  if (isRef(query)) {
-    watch(query, () => execute());
+  function executeIfNotPaused() {
+    const isPaused = isCurrentlyPaused();
+    if (!isPaused) {
+      execute();
+    }
   }
 
-  let stopVarsWatcher: ReturnType<typeof watch>;
-  const isWatchingVariables: Ref<boolean> = ref(false);
+  if (isRef(query)) {
+    watch(query, executeIfNotPaused);
+  }
 
-  function beginWatchingVars() {
+  if (isWatchable<boolean>(paused)) {
+    watch(
+      () => !isCurrentlyPaused(),
+      shouldExecute => {
+        if (shouldExecute && isStale.value) {
+          execute();
+        }
+      }
+    );
+  }
+
+  function initVarWatchers() {
     let oldCache: number;
     if (!variables || !isWatchable(variables)) {
       return;
     }
 
-    const watchableVars = toWatchableSource(variables);
-    isWatchingVariables.value = true;
-    stopVarsWatcher = watch(
-      watchableVars,
+    watch(
+      () => unwrap(variables),
       newValue => {
         const id = hash(stringify(newValue));
         // prevents duplicate queries.
@@ -127,28 +143,16 @@ function useQuery<TData = any, TVars = QueryVariables>(
         }
 
         oldCache = id;
-        execute();
+        isStale.value = true;
+        executeIfNotPaused();
       },
       { deep: true }
     );
   }
 
-  function unwatchVariables() {
-    if (!isWatchingVariables.value) return;
+  initVarWatchers();
 
-    stopVarsWatcher();
-    isWatchingVariables.value = false;
-  }
-
-  function watchVariables() {
-    if (isWatchingVariables.value) return;
-
-    beginWatchingVars();
-  }
-
-  beginWatchingVars();
-
-  const api = { data, isFetching, isDone, error, execute, unwatchVariables, watchVariables, isWatchingVariables };
+  const api = { data, isFetching, isDone, error, execute };
 
   /**
    * if can not getCurrentInstance, the func use outside of setup, cannot get onMounted
@@ -156,14 +160,16 @@ function useQuery<TData = any, TVars = QueryVariables>(
    * todo: maybe better to add a new param decide execute immediately, but it's ok also now
    */
   const vm = getCurrentInstance();
-  if (fetchOnMount) {
-    vm ? onMounted(() => execute()) : execute();
+  if (currentFetchOnMount) {
+    if (!paused || !isCurrentlyPaused()) {
+      vm ? onMounted(() => execute()) : execute();
+    }
   }
 
   return {
     ...api,
     async then(onFulfilled: (value: BaseQueryApi<TData, TVars>) => any): Promise<BaseQueryApi<TData, TVars>> {
-      fetchOnMount = false;
+      currentFetchOnMount = false;
       await api.execute();
 
       return onFulfilled(api);

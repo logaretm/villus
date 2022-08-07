@@ -9,8 +9,6 @@ features:
     details: Reasonable caching behavior out of the box which can be adjusted per query
   - title: 👕 TypeScript
     details: Written in TypeScript and supports Typed query Responses and variables
-  - title: 😋 Two Flavors
-    details: Available as composable functions (hooks) or higher-order components
   - title: ☢️ Reactive
     details: Write reactive queries/variables with the composition API
   - title: 🚟 Suspense API
@@ -52,8 +50,6 @@ yarn add villus graphql
 
 npm install villus graphql --save
 ```
-
-You can now use it with either the [Vue composition API](https://v3.vuejs.org/guide/composition-api-introduction.html) or higher order components:
 
 ### Usage
 
@@ -97,5 +93,3 @@ export default {
 };
 </script>
 ```
-
-There is also the higher-order component flavor if you prefer to use them instead. Check the docs for more examples and details.

@@ -10,16 +10,13 @@ The `useQuery` function allows you to execute GraphQL queries, it requires a `Pr
 
 The `useQuery` function returns the following properties and functions:
 
-| Property            | Type                                                              | Description                                                                                                                            |
-| ------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| data                | `Ref<any/null>`                                                   | The GraphQL query result's `data`                                                                                                      |
-| error               | `Ref<CombinedError>`                                              | Any errors encountered during query execution                                                                                          |
-| execute             | `({cachePolicy: CachePolicy}) => Promise<OperationResult<TData>>` | Executes the query and returns the operation result containing `data` and `error` values                                               |
-| isDone              | `Ref<boolean>`                                                    | Set to true when the query is executed at least once, never resets to `false`                                                          |
-| isFetching          | `Ref<boolean>`                                                    | Set to true when the query is executing either by calling `execute` explicitly or by watch effect due to reactive variables or queries |
-| isWatchingVariables | `Ref<boolean>`                                                    | If the variables watchers are enabled or not                                                                                           |
-| unwatchVariables    | `() => void`                                                      | Pauses variable watching                                                                                                               |
-| watchVariables      | `() => void`                                                      | Resumes variable watching                                                                                                              |
+| Property   | Type                                                              | Description                                                                                                                            |
+| ---------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| data       | `Ref<any/null>`                                                   | The GraphQL query result's `data`                                                                                                      |
+| error      | `Ref<CombinedError>`                                              | Any errors encountered during query execution                                                                                          |
+| execute    | `({cachePolicy: CachePolicy}) => Promise<OperationResult<TData>>` | Executes the query and returns the operation result containing `data` and `error` values                                               |
+| isDone     | `Ref<boolean>`                                                    | Set to true when the query is executed at least once, never resets to `false`                                                          |
+| isFetching | `Ref<boolean>`                                                    | Set to true when the query is executing either by calling `execute` explicitly or by watch effect due to reactive variables or queries |
 
 There might be undocumented properties, such properties are no intended for public use and should be ignored.
 
@@ -58,13 +55,15 @@ const { data, error } = useQuery({
 
 This is the full object fields that the `useQuery` function accepts:
 
-| Property     | Type                                                                                         | Required | Description                                                                                                                         |
-| ------------ | -------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| query        | `string` or `DocumentNode` or `Ref<string>`                                                  | **Yes**  | The query to be executed                                                                                                            |
-| variables    | `object` or `Ref<object>`                                                                    | **No**   | The query variables                                                                                                                 |
-| cachePolicy  | A `string` with those possible values `cache-and-network` or `network-only` or `cache-first` | **No**   | The cache policy to execute the query with, defaults to the value configured with the provided client                               |
-| fetchOnMount | `boolean`                                                                                    | **No**   | If the query **should be** executed on `mounted`, default is `true`                                                                 |
-| context      | `{ headers: Record<string, string> }`                                                        | **No**   | A object to be merged with the fetch options, currently accepts `headers`. The `context` can be a reactive `ref` or `computed ref`. |
+| Property     | Type                                                                                         | Required | Description                                                                                                                                                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| query        | `string` or `DocumentNode` or `Ref<string>`                                                  | **Yes**  | The query to be executed                                                                                                                                                                                                      |
+| variables    | `object` or `Ref<object>`                                                                    | **No**   | The query variables                                                                                                                                                                                                           |
+| cachePolicy  | A `string` with those possible values `cache-and-network` or `network-only` or `cache-first` | **No**   | The cache policy to execute the query with, defaults to the value configured with the provided client                                                                                                                         |
+| fetchOnMount | `boolean`                                                                                    | **No**   | If the query **should be** executed on `mounted`, default is `true`                                                                                                                                                           |
+| context      | `{ headers: Record<string, string> }`                                                        | **No**   | A object to be merged with the fetch options, currently accepts `headers`. The `context` can be a reactive `ref` or `computed ref`.                                                                                           |
+| paused       | `boolean` or `Ref<boolean>` or `(variables?: TVars) => boolean`                              | **No**   | When `true` it will pause executing the query when the variables change. If it is a reactive or a function and it changes back to `false` it will re-execute the query automatically if no execution was already in progress. |
+| skip         | `Ref<boolean>` or `(variables?: TVars) => boolean`                                           | **No**   | When `true` any execution calls will be prevented. Similar to `paused` except it doesn't trigger any automatic executions when it changes.                                                                                    |
 
 This signature allows you to tweak the `fetchOnMount` and `cachePolicy` behaviors for the query, Here is an example:
 
