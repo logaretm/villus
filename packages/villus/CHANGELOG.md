@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/logaretm/villus/compare/v1.2.5...v2.0.0) (2022-08-07)
+
+
+### Bug Fixes
+
+* handle internal injections for vue 2.7 ([163242e](https://github.com/logaretm/villus/commit/163242e8e6395c3ddfb9e0d14f799101cb86db64))
+
+
+### Features
+
+* add waitFor ([e1a5aee](https://github.com/logaretm/villus/commit/e1a5aee9cd0f52e1feadb957153326189efa30fb))
+* deprecate variable watching API in useQuery ([cbeef72](https://github.com/logaretm/villus/commit/cbeef721137ab75a1b09975abed23481644a3578))
+* normalize the skip and pause behaviors ([3ba3576](https://github.com/logaretm/villus/commit/3ba357657ebaac868a24bdbb6f93493545afb0da))
+
+
+
+
+
 ## [1.2.5](https://github.com/logaretm/villus/compare/v1.2.4...v1.2.5) (2022-07-31)
 
 **Note:** Version bump only for package villus
