@@ -1,0 +1,74 @@
+---
+layout: ../../layouts/PageLayout.astro
+title: Application Setup
+order: 2
+---
+
+# Application Setup
+
+To start querying GraphQL endpoints, you need to setup a client for that endpoint. **villus** exposes multiple functions and components that allow you to create GraphQL clients for your endpoints.
+
+You don't need to create a client for each component, any of these methods makes the villus client available for all the child components. So you only need to do this once for your application.
+
+## Composition API
+
+The `useClient` composition API function allows your components to define a GraphQL endpoint that all children of that component will query against.
+
+To create a GraphQL client with the composition API:
+
+```vue[App.vue]
+<script setup>
+import { useClient } from 'villus';
+
+useClient({
+  url: '/graphql', // your endpoint.
+});
+</script>
+```
+
+Internally it uses `provide/inject` API to inject the client into your components or composable functions. You can find the full options the `useClient` accepts in the [API reference](/api/client)
+
+## Vue Plugin
+
+You can use `createClient` function result as a Vue plugin that conveniently adds a `villus` client to your app root.
+
+```js[main.js]
+import { createClient } from 'villus';
+import { createApp } from 'vue';
+
+const app = createApp({...});
+
+// Creates a villus client instance
+const client = createClient({
+  url: '/graphql', // your endpoint.
+});
+
+// Makes the villus client available to your app
+app.use(client);
+```
+
+## Multiple Providers
+
+While uncommon, there is no limitations on how many endpoints you can use within your app, you can use as many clients as you like and that allows you to query different GraphQL APIs within the same app without hassle.
+
+To do that you will need to create a parent component for each client:
+
+```vue
+<script setup>
+// ComponentA
+useClient({
+  url: '{GITHUB_API_ENDPOINT}',
+});
+</script>
+
+<script setup>
+// ComponentB
+useClient({
+  url: '{MY_API}',
+});
+</script>
+```
+
+## Next Steps
+
+Now that you have successfully setup the GraphQL client, you can start to [query](/guide/queries) and [execute mutations](/guide/mutations) on your GraphQL APIs.

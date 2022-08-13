@@ -90,17 +90,14 @@ Or because villus is so simple, you can use it via CDN:
 
 Configure the GraphQL client for your root component:
 
-```js
+```vue[App.vue]
+<script setup>
 import { useClient } from 'villus';
 
-export default {
-  name: 'App',
-  setup() {
-    useClient({
-      url: 'http://localhost:3002/graphql',
-    });
-  },
-};
+useClient({
+  url: 'http://localhost:3002/graphql',
+});
+</script>
 ```
 
 Then you can use `useQuery` in any child component:
@@ -114,26 +111,20 @@ Then you can use `useQuery` in any child component:
   </div>
 </template>
 
-<script>
+<script setup>
 import { useQuery } from 'villus';
 
-export default {
-  setup() {
-    const AllPosts = `
-      query AllPosts {
-        posts {
-          title
-        }
-      }
-    `;
+const AllPosts = `
+  query AllPosts {
+    posts {
+      title
+    }
+  }
+`;
 
-    const { data } = useQuery({
-      query: AllPosts,
-    });
-
-    return { data };
-  },
-};
+const { data } = useQuery({
+  query: AllPosts,
+});
 </script>
 ```
 

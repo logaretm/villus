@@ -1,0 +1,84 @@
+<template>
+  <aside class="px-6 pt-24">
+    <nav class="space-y-8 md:text-sm overflow-y-auto overscroll-y-contain">
+      <div v-for="category in menu" :key="category.title">
+        <p class="text-xs font-bold text-gray-800 uppercase">
+          {{ category.title }}
+        </p>
+        <ul class="mt-3 space-y-2">
+          <li v-for="page in category.pages" :key="page.title">
+            <a :href="page.path" :aria-current="'page'">{{ page.title }}</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
+</template>
+
+<script setup lang="ts">
+const props = defineProps<{
+  menu: { title: string; pages: any[] }[];
+}>();
+</script>
+
+<style lang="postcss" scoped>
+nav {
+  padding-right: 7px;
+  max-height: calc(80vh - 96px);
+
+  a {
+    @apply cursor-pointer;
+    @screen motion {
+      transition: color 0.2s ease-in-out;
+    }
+
+    &:hover {
+      @apply text-accent-800;
+    }
+
+    &:current {
+      @apply text-accent-800;
+    }
+  }
+
+  /* Global Scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 7px;
+    cursor: pointer;
+    /*background-color: rgba(229, 231, 235, var(--bg-opacity));*/
+  }
+  &::-webkit-scrollbar-track {
+    background-color: none;
+    cursor: pointer;
+    /*background: red;*/
+  }
+  &::-webkit-scrollbar-thumb {
+    cursor: pointer;
+    background-color: #e8e8e8; /* #E7E5E4; */
+    border-radius: 50px;
+    /*outline: 1px solid grey;*/
+  }
+}
+
+.dark {
+  nav {
+    /* Global Scrollbar styling */
+    &::-webkit-scrollbar {
+      width: 7px;
+      cursor: pointer;
+      /*background-color: rgba(229, 231, 235, var(--bg-opacity));*/
+    }
+    &::-webkit-scrollbar-track {
+      background-color: none;
+      cursor: pointer;
+      /*background: red;*/
+    }
+    &::-webkit-scrollbar-thumb {
+      cursor: pointer;
+      background-color: #333; /* #E7E5E4; */
+      border-radius: 50px;
+      /*outline: 1px solid grey;*/
+    }
+  }
+}
+</style>

@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build --modern",
-    "start": "nuxt start --modern",
-    "generate": "nuxt generate",
-    "export": "nuxt export",
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
     "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "lint": "yarn lint:js"
   },
@@ -20,16 +19,14 @@
     }
   },
   "dependencies": {
+    "@astrojs/vue": "^1.0.0",
     "@docsearch/css": "^3.0.0-alpha.41",
     "@docsearch/js": "^3.0.0-alpha.41",
-    "@nuxt/content": "^1.13.1",
-    "@nuxtjs/pwa": "^3.3.5",
-    "lodash.groupby": "^4.6.0",
-    "nuxt": "^2.15.0"
+    "astro": "^1.0.5",
+    "autoprefixer": "^10.4.8",
+    "cheerio": "^1.0.0-rc.12",
+    "tailwindcss": "^3.1.8",
+    "unist-util-visit": "^4.1.0"
   },
-  "devDependencies": {
-    "@nuxtjs/eslint-config": "^4.0.0",
-    "@nuxtjs/tailwindcss": "^3.4.2",
-    "postcss-nested": "^4.2.3"
-  }
+  "devDependencies": {}
 }

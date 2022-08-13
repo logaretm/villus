@@ -1,0 +1,99 @@
+---
+layout: ../../layouts/PageLayout.astro
+title: Mutations
+description: Learn how to run GraphQL mutations
+order: 4
+---
+
+# Mutations
+
+## Mutations Basics
+
+**villus** offers a `useMutation` function that os very similar to its **[querying](/queries.md)** counterpart but with few distinct differences:
+
+- It **does not** accept a `variables` option.
+- It **does not** execute automatically, you have to explicitly call `execute`.
+- Cache policies do not apply to mutations as mutations represent user actions and will always use `network-only` policy.
+
+Here is an example for the `useMutation` function:
+
+```vue
+<template>
+  <div>
+    <div v-if="data">
+      <p>{{ data.likePost.message }}</p>
+    </div>
+    <button @click="execute()">Submit</button>
+  </div>
+</template>
+
+<script setup>
+import { useMutation } from 'villus';
+
+const LikePost = `
+  mutation {
+    likePost (id: 123) {
+      message
+    }
+  }
+`;
+
+const { data, execute } = useMutation(LikePost);
+</script>
+```
+
+## Passing Variables
+
+Since the `useMutation` function does not accept a `variables` property you can pass them to the `execute` function:
+
+```vue
+<script setup>
+const LikePost = `
+  mutation LikePost ($id: ID!) {
+    likePost (id: $id) {
+      message
+    }
+  }
+`;
+
+const { data, execute } = useMutation(LikePost);
+const variables = {
+  id: 123,
+};
+
+function onSubmit() {
+  execute(variables);
+}
+</script>
+```
+
+## Handling Errors
+
+You can handle errors by either grabbing the `error` ref returned from the `useMutation` function or by checking the result of the `execute` promise, the latter is preferable as it makes more sense in most situations. The `execute` function doesn't throw and collects all encountered errors into a `CombinedError` instance that contains any GraphQL or network errors encountered.
+
+```vue
+<script setup>
+const LikePost = `
+  mutation LikePost ($id: ID!) {
+    likePost (id: $id) {
+      message
+    }
+  }
+`;
+
+const { data, execute } = useMutation(LikePost);
+const variables = {
+  id: 123,
+};
+
+function onSubmit() {
+  execute(variables).then(result => {
+    if (result.error) {
+      // Do something
+    }
+  });
+}
+</script>
+```
+
+There are more things you can do with mutations, like displaying progress for users. Check the API documentation for [useMutation](/api/use-mutation).
