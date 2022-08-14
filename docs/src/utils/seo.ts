@@ -1,3 +1,5 @@
+import { MarkdownInstance } from 'astro';
+
 export function generateMetaTags({ title, description, image, url, keywords }: any) {
   return [
     {
@@ -74,4 +76,19 @@ export function generateLinks({ url }) {
       href: url,
     },
   ];
+}
+
+export interface Frontmatter {
+  title: string;
+  order: number;
+}
+
+export function buildMenu(pages: MarkdownInstance<Frontmatter>[]) {
+  return [...pages.sort((a, b) => a.frontmatter.order - b.frontmatter.order)].map(p => {
+    return {
+      title: p.frontmatter.title,
+      order: p.frontmatter.order,
+      path: p.url,
+    };
+  });
 }

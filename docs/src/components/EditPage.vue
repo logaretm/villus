@@ -4,7 +4,7 @@
       :href="pageLink"
       target="_blank"
       rel="noopener"
-      class="flex items-center text-sm font-bold text-carbon dark:text-gray-800"
+      class="flex items-center text-sm font-bold text-carbon dark:text-gray-400"
     >
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -22,9 +22,13 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-const pageLink = computed(() => {
-  const path = ''.replace(/\/$/g, '');
+const props = defineProps<{
+  path: string;
+}>();
 
-  return `https://github.com/logaretm/villus/edit/main/docs/content${path}.md`;
+const pageLink = computed(() => {
+  const path = props.path.replace(/\/$/g, '');
+
+  return `https://github.com/logaretm/villus/edit/main/${path}`;
 });
 </script>

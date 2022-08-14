@@ -11,11 +11,11 @@
   }
 
   h2 {
-    @apply text-3xl;
+    @apply text-2xl lg:text-3xl;
   }
 
   h3 {
-    @apply text-xl;
+    @apply text-lg lg:text-xl;
   }
 
   h4,
@@ -33,7 +33,7 @@
   h3,
   h4,
   h5 {
-    @apply font-semibold my-8 relative;
+    @apply font-semibold my-8 relative w-max max-w-full break-normal;
     transform: translateX(2ch);
     &::before {
       @apply absolute text-accent-800;
@@ -43,6 +43,11 @@
 
     @screen lg {
       transform: none;
+    }
+
+    &::after {
+      content: '';
+      display: block;
     }
   }
 

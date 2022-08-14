@@ -1,5 +1,5 @@
 <template>
-  <button @click="$emit('input', !modelValue)" class="burger burger-squeeze" :class="{ open: modelValue }">
+  <button @click="$emit('update:modelValue', !modelValue)" class="burger burger-squeeze" :class="{ open: modelValue }">
     <div class="burger-lines"></div>
   </button>
 </template>

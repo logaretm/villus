@@ -6,7 +6,7 @@
       </div>
 
       <SideMenuButton v-model="isMenuOpen" class="ml-auto block lg:hidden relative z-30" />
-      <SideMenu v-model="isMenuOpen" />
+      <SideMenu v-model="isMenuOpen" :menu="menu" :currentUrl="currentUrl" />
 
       <a
         href="https://github.com/logaretm/villus"
@@ -32,6 +32,11 @@ import { ref } from 'vue';
 import ThemeSwitcher from '@/components/ThemeSwitcher.vue';
 import SideMenuButton from '@/components/SideMenuButton.vue';
 import SideMenu from '@/components/SideMenu.vue';
+
+defineProps<{
+  menu: { title: string; pages: any[] }[];
+  currentUrl: string;
+}>();
 
 const isMenuOpen = ref(false);
 </script>

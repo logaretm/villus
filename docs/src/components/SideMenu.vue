@@ -1,24 +1,23 @@
 <template>
   <transition name="slide">
-    <div v-if="isOpen" class="SideMenu lg:hidden">
-      <DocMenu />
+    <div v-if="modelValue" class="SideMenu lg:hidden">
+      <DocMenu :menu="menu" :current-url="currentUrl" />
     </div>
   </transition>
 </template>
 
 <script setup lang="ts">
-import DocMenu from '@/components/DocMenu.vue';
 import { watch } from 'vue';
+import DocMenu from '@/components/DocMenu.vue';
 
-const props = defineProps({
-  isOpen: {
-    type: Boolean,
-    default: false,
-  },
-});
+const props = defineProps<{
+  modelValue: boolean;
+  menu: { title: string; pages: any[] }[];
+  currentUrl: string;
+}>();
 
 watch(
-  () => props.isOpen,
+  () => props.modelValue,
   val => {
     document.body.classList.toggle('overflow-hidden', val);
   }
@@ -27,13 +26,7 @@ watch(
 
 <style lang="postcss" scoped>
 .SideMenu {
-  @apply fixed h-screen w-screen inset-0 z-20 overflow-y-auto bg-white text-dark flex flex-col;
-}
-
-.dark {
-  .SideMenu {
-    @apply bg-dark text-white;
-  }
+  @apply fixed h-screen w-screen inset-0 z-20 overflow-y-auto bg-white dark:bg-dark dark:text-white text-dark flex flex-col overflow-hidden;
 }
 
 @screen motion {
