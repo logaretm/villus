@@ -73,43 +73,33 @@
   }
 
   .shiki-snippet {
-    @apply my-5 relative overflow-hidden rounded-md text-sm border border-emerald-500 border-opacity-30 shadow;
-    background-color: var(--code-background);
+    @apply my-5 rounded-md text-sm shadow;
+
+    .filename {
+      @apply inline-block py-2 px-8 bottom-full  rounded-t-md font-extrabold text-sm select-none tracking-wide border border-b-0 border-emerald-500 border-opacity-30 bg-gray-200;
+      font-family: 'Courier New', monospace;
+    }
+
+    .shiki-language {
+      @apply absolute right-4 top-4 text-xs;
+      color: var(--code-lang-label);
+    }
   }
 
   .shiki {
-    @apply font-mono pb-4 pt-6 text-sm;
-
+    @apply font-mono pb-4 pt-6 text-sm border border-emerald-500 border-opacity-30 relative rounded-md;
     counter-reset: step;
     counter-increment: step 0;
     line-height: 1.4;
     overflow: auto;
     overflow: overlay;
 
-    .filename {
-      @apply w-full block py-2 px-8 top-0 bg-gray-200 rounded-t-md font-extrabold text-sm select-none tracking-wide absolute inset-x-0;
-      font-family: 'Courier New', monospace;
-    }
-
-    .filename + pre {
-      @apply mt-0 rounded-t-none;
+    &.with-filename {
+      @apply rounded-tl-none rounded-tr-md;
     }
 
     code {
       @apply flex flex-col w-full;
-    }
-
-    &-language {
-      @apply absolute right-4 top-4 text-xs;
-      color: var(--code-lang-label);
-    }
-
-    &.with-filename {
-      margin-top: 30px;
-
-      .shiki-language {
-        @apply top-2.5;
-      }
     }
 
     &.with-line-highlights {
@@ -237,9 +227,9 @@
     @apply border border-carbon;
   }
 
-  .shiki {
+  .shiki-snippet {
     .filename {
-      @apply bg-gray-800;
+      @apply bg-gray-700;
     }
   }
 }

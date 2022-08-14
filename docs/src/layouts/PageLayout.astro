@@ -6,6 +6,7 @@ import EditPage from '@/components/EditPage.vue';
 import SponsorButton from '@/components/SponsorButton.vue';
 import DocMenu from '@/components/DocMenu.vue';
 import DocToc from '@/components/DocToc.vue';
+import DocSearch from '@/components/DocSearch.vue';
 import ContentWrapper from '@/components/ContentWrapper.vue';
 import '@/styles/tailwind.css';
 import '@/styles/page.css';
@@ -67,12 +68,16 @@ const menu = [
           </div>
         </main>
 
-        <div class="lside hidden lg:block">
-          <DocMenu current-url={frontmatter.url} menu={menu} class="sticky top-0" />
-        </div>
+        <aside class="lside hidden lg:block px-5">
+          <div class="sticky top-24"> 
+
+            <DocSearch client:idle />
+            <DocMenu current-url={frontmatter.url} menu={menu} />
+          </div>
+        </aside>
 
         <div class="rside hidden xl:block">
-          <DocToc headings={headings} class="sticky top-0" />
+          <DocToc headings={headings} class="sticky top-24" />
         </div>
       </div>
     </div>

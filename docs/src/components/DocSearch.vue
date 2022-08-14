@@ -1,5 +1,49 @@
 <template>
-  <div id="docsearch" class="lg:w-full mx-5" />
+  <div>
+    <button
+      type="button"
+      class="border border-gray-200 hover:border-gray-300 dark:border-carbon dark:bg-gray-600 dark:hover:border-accent-800 dark:hover:border-opacity-50 flex items-center px-4 py-2 rounded-md w-full"
+      @click="onClick"
+    >
+      <svg
+        width="24"
+        height="24"
+        fill="none"
+        aria-hidden="true"
+        class="mr-3 flex-none text-gray-300 dark:text-gray-400"
+      >
+        <path
+          d="m19 19-3.5-3.5"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
+        <circle
+          cx="11"
+          cy="11"
+          r="6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></circle>
+      </svg>
+
+      <span class="text-sm text-gray-400 dark:text-gray-300"> Search Docs...</span>
+
+      <span class="ml-auto flex items-center text-xs text-gray-500 dark:text-gray-300 space-x-1">
+        <kbd class="bg-gray-200 dark:bg-gray-500 p-1 shadow flex-shrink-0 w-4 h-4 flex items-center justify-center"
+          >⌘</kbd
+        >
+        <kbd class="bg-gray-200 dark:bg-gray-500 p-1 shadow flex-shrink-0 w-4 h-4 flex items-center justify-center"
+          >K</kbd
+        >
+      </span>
+    </button>
+
+    <div id="docsearch" class="hidden"></div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -41,6 +85,10 @@ function initialize(userOptions) {
 onMounted(() => {
   initialize(config.algolia);
 });
+
+function onClick() {
+  (document.querySelector('#docsearch button') as HTMLElement)?.click();
+}
 </script>
 
 <style lang="postcss">
@@ -48,7 +96,6 @@ onMounted(() => {
 
 .DocSearch {
   font-family: Arial, Helvetica, sans-serif;
-  --accent: #9580ff;
   --docsearch-primary-color: var(--accent);
   --docsearch-highlight-color: var(--docsearch-primary-color);
   --docsearch-text-color: var(--color-gray-200);

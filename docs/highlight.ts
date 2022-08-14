@@ -27,13 +27,13 @@ export default function highlight() {
           });
           $('.shiki').addClass('with-line-highlights');
         }
-        if (fileName) {
-          $('.shiki').prepend(`<span class="filename">${fileName}</span>`);
-          $('.shiki').addClass('with-filename');
-        }
         $('.line:last-child:empty').remove();
         const wrapper = $('<div class="shiki-snippet"></div>');
         $('.shiki').wrap(wrapper);
+        if (fileName) {
+          $('.shiki-snippet').prepend(`<span class="filename">${fileName}</span>`);
+          $('.shiki').addClass('with-filename');
+        }
         node.value = $.html($('.shiki-snippet'));
         node.type = 'html';
         $('.shiki-snippet').html('');

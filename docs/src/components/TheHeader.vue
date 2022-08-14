@@ -5,8 +5,6 @@
         <a href="/" class="ml-1 text-accent font-bold">Villus</a>
       </div>
 
-      <AlgoliaSearchBox client:load />
-
       <SideMenuButton v-model="isMenuOpen" class="ml-auto block lg:hidden relative z-30" />
       <SideMenu v-model="isMenuOpen" />
 
@@ -32,7 +30,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import ThemeSwitcher from '@/components/ThemeSwitcher.vue';
-import AlgoliaSearchBox from '@/components/AlgoliaSearchBox.vue';
 import SideMenuButton from '@/components/SideMenuButton.vue';
 import SideMenu from '@/components/SideMenu.vue';
 

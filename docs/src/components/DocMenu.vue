@@ -1,8 +1,9 @@
 <template>
-  <aside class="px-6 pt-24">
-    <nav class="space-y-8 md:text-sm overflow-y-auto overscroll-y-contain">
+  <div class="relative mt-4">
+    <div class="bg-gradient-to-b from-gray-700 to-transparent h-4 absolute top-0 inset-x-0"></div>
+    <nav class="py-4 space-y-8 md:text-sm overflow-y-auto overscroll-y-contain px-4">
       <div v-for="category in menu" :key="category.title">
-        <p class="text-xs font-bold text-gray-800 uppercase">
+        <p class="text-xs font-bold text-gray-800 dark:text-gray-400 uppercase">
           {{ category.title }}
         </p>
         <ul class="mt-3 space-y-2">
@@ -12,7 +13,8 @@
         </ul>
       </div>
     </nav>
-  </aside>
+    <div class="bg-gradient-to-b from-transparent to-gray-700 h-4 absolute bottom-0 inset-x-0"></div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -24,7 +26,6 @@ const props = defineProps<{
 
 <style lang="postcss" scoped>
 nav {
-  padding-right: 7px;
   max-height: calc(80vh - 96px);
 
   a {
