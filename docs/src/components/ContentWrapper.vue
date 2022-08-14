@@ -143,7 +143,7 @@
         padding-left: 0;
 
         &::before {
-          padding-left: 1.4rem;
+          padding-left: 1.7rem;
           margin-right: 2rem;
           border-color: var(--code-line-highlight-border);
         }

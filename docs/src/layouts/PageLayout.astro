@@ -31,20 +31,20 @@ function tidyup(pages: MarkdownInstance<Frontmatter>[]) {
 const menu = [
   {
     title: 'guide',
-    pages: tidyup(await Astro.glob<Frontmatter>('../pages/guide/*.md')),
+    pages: tidyup(await Astro.glob<Frontmatter>('../pages/guide/*.mdx')),
   },
   {
     title: 'plugins',
-    pages: tidyup(await Astro.glob<Frontmatter>('../pages/plugins/*.md')),
+    pages: tidyup(await Astro.glob<Frontmatter>('../pages/plugins/*.mdx')),
 
   },
   {
     title: 'examples',
-    pages: tidyup(await Astro.glob<Frontmatter>('../pages/examples/*.md')),
+    pages: tidyup(await Astro.glob<Frontmatter>('../pages/examples/*.mdx')),
   },
   {
     title: 'api reference',
-    pages: tidyup(await Astro.glob<Frontmatter>('../pages/api/*.md')),
+    pages: tidyup(await Astro.glob<Frontmatter>('../pages/api/*.mdx')),
   },
 ];
 
