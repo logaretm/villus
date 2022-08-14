@@ -13,7 +13,6 @@ import '@/styles/tailwind.css';
 import '@/styles/page.css';
 
 const { headings, frontmatter } = Astro.props;
-
 const filePath = path.relative(path.resolve('../'), frontmatter.file);
 
 const menu = [
@@ -41,32 +40,30 @@ const menu = [
 <html>
   <SiteHead {...Astro.props} />
   <body>
-    <div class="AppWrapper">
-      <TheHeader client:load currentUrl={frontmatter.url} menu={menu}  />
-      <div class="App">
-        <main class="main">
-          <ContentWrapper>
-            <slot />
-          </ContentWrapper>
+    <TheHeader client:load currentUrl={frontmatter.url} menu={menu}  />
+    <div class="App is-content-page">
+      <main class="main">
+        <ContentWrapper>
+          <slot />
+        </ContentWrapper>
 
-          <div class="mt-20 pt-2 border-t dark:border-gray-600 border-gray-200 flex items-center">
-            <EditPage path={filePath} />
+        <div class="mt-20 pt-2 border-t dark:border-gray-600 border-gray-200 flex items-center">
+          <EditPage path={filePath} />
 
-            <SponsorButton class="ml-auto" />
-          </div>
-        </main>
-
-        <aside class="lside hidden lg:block px-5">
-          <div class="sticky top-24"> 
-
-            <DocSearch client:idle />
-            <DocMenu currentUrl={frontmatter.url} menu={menu} />
-          </div>
-        </aside>
-
-        <div class="rside hidden xl:block">
-          <DocToc headings={headings} class="sticky top-24" />
+          <SponsorButton class="ml-auto" />
         </div>
+      </main>
+
+      <aside class="lside hidden lg:block px-5">
+        <div class="sticky top-24"> 
+
+          <DocSearch client:idle />
+          <DocMenu currentUrl={frontmatter.url} menu={menu} />
+        </div>
+      </aside>
+
+      <div class="rside hidden xl:block">
+        <DocToc headings={headings} class="sticky top-24" />
       </div>
     </div>
   </body>

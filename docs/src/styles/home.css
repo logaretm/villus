@@ -15,6 +15,7 @@
 
 .main {
   @apply py-12 px-6 min-w-0;
+  grid-area: content;
 
   @screen lg {
     @apply px-0;
