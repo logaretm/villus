@@ -19,6 +19,7 @@
     }
   },
   "dependencies": {
+    "@astrojs/sitemap": "^1.0.0",
     "@astrojs/vue": "^1.0.0",
     "@docsearch/css": "^3.0.0-alpha.41",
     "@docsearch/js": "^3.0.0-alpha.41",

@@ -1,4 +1,6 @@
 ---
+import { MarkdownInstance } from 'astro';
+import SiteHead from '@/components/SiteHead.astro';
 import TheHeader from '@/components/TheHeader.vue';
 import EditPage from '@/components/EditPage.vue';
 import SponsorButton from '@/components/SponsorButton.vue';
@@ -7,7 +9,8 @@ import DocToc from '@/components/DocToc.vue';
 import ContentWrapper from '@/components/ContentWrapper.vue';
 import '@/styles/tailwind.css';
 import '@/styles/page.css';
-import { MarkdownInstance } from 'astro';
+
+const {  headings } = Astro.props;
 
 interface Frontmatter {
   title: string;
@@ -23,8 +26,6 @@ function tidyup(pages: MarkdownInstance<Frontmatter>[]) {
     };
   });
 }
-
-const { headings } = Astro.props;
 
 const menu = [
   {
@@ -46,12 +47,11 @@ const menu = [
   },
 ];
 
-
 ---
 
 <html>
+  <SiteHead {...Astro.props} />
   <body>
-    <script is:inline src="/loadTheme.js"></script>
     <div class="AppWrapper">
       <TheHeader client:load />
       <div class="App">

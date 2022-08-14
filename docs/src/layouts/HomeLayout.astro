@@ -1,16 +1,15 @@
 ---
-const { frontmatter } = Astro.props;
 import TheHeader from '@/components/TheHeader.vue';
+import SiteHead from '@/components/SiteHead.astro';
 import ContentWrapper from '@/components/ContentWrapper.vue';
 import '@/styles/tailwind.css';
 import '@/styles/home.css';
+
+const { frontmatter } = Astro.props;
 ---
 
 <html>
-  <head>
-
-    <script is:inline src="/loadTheme.js"></script>
-  </head>
+  <SiteHead {...Astro.props} />
   <body>
     <div class="AppWrapper">
       <TheHeader client:load  />

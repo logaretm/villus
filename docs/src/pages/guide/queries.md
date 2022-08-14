@@ -485,7 +485,6 @@ You can set the default policy on the client level when you are [building the Gr
 <script setup>
 import { useClient } from 'villus';
 
-// in setup
 useClient({
   url: '/graphql', // Your endpoint
   cachePolicy: 'network-only',
@@ -509,7 +508,6 @@ Note the usage of a different signature here for the `useQuery` function, what y
 <script setup>
 import { useQuery } from 'villus';
 
-// in setup
 const GetPosts = `
   query GetPosts {
     posts {
@@ -536,7 +534,6 @@ Here is a snippet for doing so with the `useQuery` function:
 <script setup>
 import { useQuery } from 'villus';
 
-// in setup
 const GetPosts = `
   query GetPosts {
     posts {
