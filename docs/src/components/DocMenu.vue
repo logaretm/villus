@@ -7,7 +7,7 @@
         </p>
         <ul class="mt-3 space-y-2">
           <li v-for="page in category.pages" :key="page.title">
-            <a :href="page.path" :aria-current="'page'">{{ page.title }}</a>
+            <a :href="page.path" :aria-current="page.path === currentUrl ? 'page' : undefined">{{ page.title }}</a>
           </li>
         </ul>
       </div>
@@ -18,6 +18,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   menu: { title: string; pages: any[] }[];
+  currentUrl: string;
 }>();
 </script>
 
@@ -36,7 +37,7 @@ nav {
       @apply text-accent-800;
     }
 
-    &:current {
+    &[aria-current='page'] {
       @apply text-accent-800;
     }
   }

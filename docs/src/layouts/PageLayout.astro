@@ -10,7 +10,7 @@ import ContentWrapper from '@/components/ContentWrapper.vue';
 import '@/styles/tailwind.css';
 import '@/styles/page.css';
 
-const {  headings } = Astro.props;
+const { headings, frontmatter } = Astro.props;
 
 interface Frontmatter {
   title: string;
@@ -68,7 +68,7 @@ const menu = [
         </main>
 
         <div class="lside hidden lg:block">
-          <DocMenu menu={menu} class="sticky top-0" />
+          <DocMenu current-url={frontmatter.url} menu={menu} class="sticky top-0" />
         </div>
 
         <div class="rside hidden xl:block">
