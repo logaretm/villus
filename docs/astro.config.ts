@@ -1,4 +1,3 @@
-import path from 'path';
 import { defineConfig } from 'astro/config';
 import vue from '@astrojs/vue';
 import sitemap from '@astrojs/sitemap';
@@ -15,11 +14,4 @@ export default defineConfig({
       remarkPlugins: [highlight],
     }),
   ],
-  vite: {
-    resolve: {
-      alias: {
-        '@/': path.join(path.resolve(), 'src/'),
-      },
-    },
-  },
 });

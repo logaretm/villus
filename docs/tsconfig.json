@@ -1,6 +1,7 @@
 // Example: starter tsconfig.json for Astro projects
 {
   "compilerOptions": {
+    "baseUrl": ".",
     // Enable top-level await and other modern ESM features.
     "target": "ESNext",
     "module": "ESNext",
@@ -12,10 +13,10 @@
     "isolatedModules": true,
     // Astro will directly run your TypeScript code, no transpilation needed.
     "noEmit": true,
-    "jsx": "preserve"
-  },
-  "paths": {
-    "@/*": ["src/*"]
+    "jsx": "preserve",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
