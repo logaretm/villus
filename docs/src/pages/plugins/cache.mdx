@@ -5,6 +5,8 @@ description: How the default cache works in villus
 order: 2
 ---
 
+import DocTip from '@/components/DocTip.vue';
+
 # Cache Plugin
 
 The cache plugin is a simple in-memory cache that clears whenever the page reloads or when the client is destroyed. The cache plugin only applies it's caching logic to queries, as mutations require a fresh response from the server.
@@ -26,11 +28,11 @@ useClient({
 </script>
 ```
 
-<doc-tip>
+<DocTip>
 
 The cache plugin is one of the default plugins that are pre-configured with any villus client unless specified otherwise
 
-</doc-tip>
+</DocTip>
 
 ## Options
 

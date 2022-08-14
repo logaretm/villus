@@ -5,6 +5,8 @@ description: Learn how to run GraphQL subscriptions
 order: 5
 ---
 
+import DocTip from '@/components/DocTip.vue';
+
 # Subscriptions
 
 `villus` handles subscriptions with the `useSubscription` function.
@@ -31,7 +33,7 @@ const client = useClient({
 
 Once you've setup the `handleSubscriptions` plugin, you can now use the `useSubscription` function.
 
-<doc-tip>
+<DocTip>
   
 You can also use [`graphql-ws`](https://github.com/enisdenjo/graphql-ws) package for your subscriptions, but you will need to modify your `subscriptionForwarder` to look like this:
 
@@ -63,7 +65,7 @@ const client = useClient({
 </script>
 ```
 
-</doc-tip>
+</DocTip>
 
 ## Executing Subscriptions
 
@@ -164,11 +166,11 @@ const { data } = useSubscription(
 
 The `reduceMessages` function acts as a reducer for the incoming data, whenever a new response is received it will be passed to `reduceMessages` function as the second argument, the first argument will be the previous value.
 
-<doc-tip>
+<DocTip>
 
 Keep in mind that initially we have `null` for the initial value so we needed to provide a fallback for that.
 
-</doc-tip>
+</DocTip>
 
 ## Pausing subscriptions
 

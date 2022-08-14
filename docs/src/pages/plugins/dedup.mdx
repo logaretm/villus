@@ -5,6 +5,8 @@ description: How the default dedup plugin works in villus
 order: 3
 ---
 
+import DocTip from '@/components/DocTip.vue';
+
 # Dedup Plugin
 
 The dedup plugin removes any duplicate pending queries from executing which means you can safely run the same queries at the same time without worrying about excessive requests.
@@ -21,11 +23,11 @@ useClient({
 </script>
 ```
 
-<doc-tip>
+<DocTip>
 
 The dedup plugin is one of the default plugins that are pre-configured with any villus client unless specified otherwise
 
-</doc-tip>
+</DocTip>
 
 ## Options
 

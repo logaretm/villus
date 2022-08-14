@@ -137,11 +137,13 @@ client
   });
 ```
 
-<doc-tip>
+import DocTip from '@/components/DocTip.vue';
+
+<DocTip>
 
 You can make use of `async/await` as `executeQuery` and `executeMutation` both return a native Promise.
 
-</doc-tip>
+</DocTip>
 
 ### Subscriptions
 
@@ -179,8 +181,8 @@ observable.subscribe({
 });
 ```
 
-<doc-tip type="danger">
+<DocTip type="danger">
 
 Don't forget to configure the `handleSubscriptions` plugin with a subscription forwarder, which is a function that returns an observable.
 
-</doc-tip>
+</DocTip>

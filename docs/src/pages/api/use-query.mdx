@@ -5,6 +5,8 @@ description: API reference for the useQuery composable function
 order: 1
 ---
 
+import DocTip from '@/components/DocTip.vue';
+
 # useQuery()
 
 The `useQuery` function allows you to execute GraphQL queries, it requires a `Provider` or `useClient` to be called in the component tree, so make sure to [set that up](/guide/setup) before using `useQuery`
@@ -130,11 +132,11 @@ id.value = 2;
 
 This works the same if you are using `graphql-tag` and returning `ASTs` for your queries. But it's unlikely you will be switching between two different queries.
 
-<doc-tip type="danger" title="reactive() Support">
+<DocTip type="danger" title="reactive() Support">
 
 Note that reactive objects created with `reactive()` are not considered reactive queries, only `Ref` and `ComputedRef` are accepted.
 
-</doc-tip>
+</DocTip>
 
 ### Reactive Variables
 

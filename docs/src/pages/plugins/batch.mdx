@@ -5,6 +5,8 @@ description: Learn how to run batch multiple GraphQL queries
 order: 4
 ---
 
+import DocTip from '@/components/DocTip.vue';
+
 # Query Batching
 
 Villus has support for query batching but it is not configured out of the box, this is because not all GraphQL implementations support query-batching. So you would need to manually import it and configure it with `villus` client.
@@ -35,9 +37,10 @@ useClient({
 </script>
 ```
 
-<doc-tip type="danger">
-  Careful not to use `batch` with the default `fetch` plugin, both of them act as a fetcher and there can only be 1 fetcher plugin for `villus` at any given time.
-</doc-tip>
+<DocTip type="danger">
+  Careful not to use `batch` with the default `fetch` plugin, both of them act as a fetcher and there can only be 1
+  fetcher plugin for `villus` at any given time.
+</DocTip>
 
 And that's it, all your nested components that use `useQuery` or `useMutation` will automatically be batched together in a single request:
 

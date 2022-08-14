@@ -5,6 +5,8 @@ description: Learn how to run GraphQL queries
 order: 3
 ---
 
+import DocTip from '@/components/DocTip.vue';
+
 # Queries
 
 You can query GraphQL APIs with the `useQuery` composition function after you've setup the [GraphQL Client](/setup.md).
@@ -458,11 +460,11 @@ const { data } = useQuery({
 </script>
 ```
 
-<doc-tip type="warn" title="Pausing and Skipping with fetchOnMount">
+<DocTip type="warn" title="Pausing and Skipping with fetchOnMount">
 
 Note that this behavior is subject to `paused` or `skip` being set. Meaning if a query is paused or skipped it won't fetch when the component is mounted.
 
-</doc-tip>
+</DocTip>
 
 ## Caching
 
@@ -498,11 +500,11 @@ This will make all the child-components using `useQuery` use the `network-only` 
 
 You can pass the `cachePolicy` property to the `useQuery` function to set the default caching policy for that query:
 
-<doc-tip>
+<DocTip>
 
 Note the usage of a different signature here for the `useQuery` function, what you have seen so far is the "short-hand" but when you need to modify the query behavior you will need to use the full or extended options. The main difference is that this signature only accepts exactly 1 argument containing the query options, you can find more information about the available options in the [API reference page](/api/use-query).
 
-</doc-tip>
+</DocTip>
 
 ```vue
 <script setup>
@@ -558,11 +560,11 @@ You can build your own cache layer and plugins for villus, check the [Plugins Gu
 
 ## Suspense
 
-<doc-tip type="danger" title="Vue 3">
+<DocTip type="danger" title="Vue 3">
 
 This feature is only available with Vue 3 at the moment
 
-</doc-tip>
+</DocTip>
 
 You can use `useQuery` with the `Suspense` API component shipped in Vue 3.x.
 
@@ -650,8 +652,8 @@ const { data, isFetching } = useQuery({
 
 Whenever a re-fetch is triggered, or the query was executed again the `isFetching` will be updated accordingly so you don't have to keep it in sync with anything nor you have to create your own boolean refs for indications.
 
-<doc-tip title="Initial isFetching value">
+<DocTip title="Initial isFetching value">
 
 Is fetching default value is `true` if `fetchOnMount` is enabled, otherwise it will start off with `false`.
 
-</doc-tip>
+</DocTip>

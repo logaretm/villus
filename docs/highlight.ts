@@ -1,8 +1,10 @@
 /* eslint-disable no-console */
 import * as shiki from 'shiki';
-import cheerio from 'cheerio';
+import { JSDOM } from 'jsdom';
 import { visit } from 'unist-util-visit';
 import theme from './theme.json';
+
+const dom = new JSDOM();
 
 export default function highlight() {
   return async function (tree) {
@@ -15,34 +17,56 @@ export default function highlight() {
     visit(tree, 'code', visitor);
 
     function visitor(node) {
+      const document = dom.window.document;
       const { lang, lines, fileName } = parseParts(node.lang || 'sh');
       try {
         const html = replaceColorsWithVariables(highlighter.codeToHtml(node.value, { lang: lang || 'sh' }));
-        const $ = cheerio.load(html);
-        $('.shiki').attr('data-language', lang);
-        $('.shiki').prepend(`<span class="shiki-language">${lang}</span>`);
+        const fragment = document.createDocumentFragment();
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('shiki-snippet');
+        wrapper.innerHTML = html;
+        fragment.appendChild(wrapper);
+
+        const langSpan = createSpan(lang, 'shiki-language', {
+          'data-language': lang,
+        });
+        (fragment.querySelector('.shiki') as HTMLElement | null)?.prepend(langSpan);
+
         if (lines.length) {
           lines.forEach(line => {
-            $(`.line:nth-child(${line})`).addClass('is-highlighted');
+            const lineEl = fragment.querySelector(`.line:nth-child(${line})`) as HTMLElement | null;
+            lineEl?.classList.add('is-highlighted');
           });
-          $('.shiki').addClass('with-line-highlights');
+          (fragment.querySelector('.shiki') as HTMLElement | null)?.classList.add('with-line-highlights');
         }
-        $('.line:last-child:empty').remove();
-        const wrapper = $('<div class="shiki-snippet"></div>');
-        $('.shiki').wrap(wrapper);
+        fragment.querySelector('.line:last-child:empty')?.remove();
         if (fileName) {
-          $('.shiki-snippet').prepend(`<span class="filename">${fileName}</span>`);
-          $('.shiki').addClass('with-filename');
+          wrapper.prepend(createSpan(fileName, 'filename'));
+          (fragment.querySelector('.shiki') as HTMLElement | null)?.classList.add('with-filename');
         }
-        node.value = $.html($('.shiki-snippet'));
+        node.value = fragment.querySelector('.shiki-snippet')?.outerHTML;
         node.type = 'html';
-        $('.shiki-snippet').html('');
       } catch (err) {
         console.error(err);
         console.log(node.lang);
       }
     }
   };
+}
+
+function createSpan(text: string, className: string, attrs?: Record<string, string>) {
+  const document = dom.window.document;
+
+  const span = document.createElement('span');
+  span.textContent = text;
+  span.classList.add(className);
+  if (attrs) {
+    Object.keys(attrs).forEach(attr => {
+      span.setAttribute(attr, attrs[attr]);
+    });
+  }
+
+  return span;
 }
 
 function replaceColorsWithVariables(html) {

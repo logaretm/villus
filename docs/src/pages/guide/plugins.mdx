@@ -5,6 +5,8 @@ description: Learn how villus plugins work
 order: 6
 ---
 
+import DocTip from '@/components/DocTip.vue';
+
 # Plugins
 
 villus is very flexible and versatile, and as such you will need to write quite a few plugins of your own for various purposes, whether to add special headers, transform the body to a specific format or encoding, or even change the `fetch` function used.
@@ -101,11 +103,11 @@ The other type is a **terminating** resolution, meaning your plugin has decided 
 useResult(response, true); // Stops all plugins after it
 ```
 
-<doc-tip>
+<DocTip>
 
 Calling `useResult` multiple times in the pipeline (by multiple plugins) won't have an effect on the end result, the very first `useResult` call will set the operation response, any subsequent calls are ignored.
 
-</doc-tip>
+</DocTip>
 
 ### afterQuery()
 
@@ -168,11 +170,11 @@ function myPlugin({ opContext, operation }) {
 }
 ```
 
-<doc-tip>
+<DocTip>
 
 All plugins are processed in the same order they were added in, and as you can imagine the order of these plugins is critical as some plugins may override options for others and some may resolve the value too early. So keep the order in mind when defining the plugins
 
-</doc-tip>
+</DocTip>
 
 ## Plugin Configuration
 
@@ -315,11 +317,11 @@ useClient({
 </script>
 ```
 
-<doc-tip type="danger">
+<DocTip type="danger">
 
 It is important that you don't use ES6 destructing if you plan to use the `response` property as it will be set after the query is executed, destructing it at the function level will always yield `undefined`.
 
-</doc-tip>
+</DocTip>
 
 ## Example - Global Error Handler
 

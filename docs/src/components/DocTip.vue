@@ -3,7 +3,7 @@
     class="p-6 rounded my-8 border-l-4 dark:bg-black bg-gray-100"
     :class="{
       'border-accent-800 text-accent-800': type === 'tip',
-      'border-warning text-warning': type === 'warn',
+      'border-yellow-600 text-yellow-600': type === 'warn',
       'border-error text-error': type === 'danger',
     }"
   >

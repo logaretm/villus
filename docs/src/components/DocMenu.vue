@@ -1,6 +1,6 @@
 <template>
   <div class="relative mt-4">
-    <div class="bg-gradient-to-b from-gray-700 to-transparent h-4 absolute top-0 inset-x-0"></div>
+    <div class="bg-gradient-to-b from-white dark:from-gray-700 to-transparent h-4 absolute top-0 inset-x-0"></div>
     <nav class="py-4 space-y-8 md:text-sm overflow-y-auto overscroll-y-contain px-4">
       <div v-for="category in menu" :key="category.title">
         <p class="text-xs font-bold text-gray-800 dark:text-gray-400 uppercase">
@@ -13,7 +13,7 @@
         </ul>
       </div>
     </nav>
-    <div class="bg-gradient-to-b from-transparent to-gray-700 h-4 absolute bottom-0 inset-x-0"></div>
+    <div class="bg-gradient-to-b from-transparent to-white dark:to-gray-700 h-4 absolute bottom-0 inset-x-0"></div>
   </div>
 </template>
 
