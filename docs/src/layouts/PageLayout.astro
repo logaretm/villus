@@ -41,7 +41,7 @@ const menu = [
   <SiteHead {...Astro.props} />
   <body>
     <TheHeader client:load currentUrl={frontmatter.url} menu={menu}  />
-    <div class="App is-content-page">
+    <div class="PageApp">
       <main class="main">
         <ContentWrapper>
           <slot />

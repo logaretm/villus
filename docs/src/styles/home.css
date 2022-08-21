@@ -21,13 +21,3 @@
     @apply px-0;
   }
 }
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.8s ease-in-out, transform 0.2s ease-in-out;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-  transform: translate3d(40%, 0, 0);
-}
