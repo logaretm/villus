@@ -1,8 +1,9 @@
-import { defineConfig } from 'astro/config';
-import vue from '@astrojs/vue';
-import sitemap from '@astrojs/sitemap';
-import mdx from '@astrojs/mdx';
-import highlight from './highlight';
+import { defineConfig } from "astro/config"
+import remarkGfm from "remark-gfm"
+import mdx from "@astrojs/mdx"
+import sitemap from "@astrojs/sitemap"
+import vue from "@astrojs/vue"
+import highlight from "./highlight"
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,7 +12,7 @@ export default defineConfig({
     vue(),
     sitemap(),
     mdx({
-      remarkPlugins: [highlight],
+      remarkPlugins: [remarkGfm, highlight],
     }),
   ],
 });
