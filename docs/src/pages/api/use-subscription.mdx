@@ -15,7 +15,7 @@ The `useSubscription` function returns the following properties and functions:
 | -------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | data     | `Ref<any/null>`        | The GraphQL subscription result's `data`                                                                                 |
 | error    | `Ref<CombinedError>`   | Any errors encountered during subscription execution                                                                     |
-| paused   | `ComputedRef<boolean>` | True if the subscription is paused or inactive. This is readonly and you should control it by the passed `paused` value. |
+| paused   | `ComputedRef<boolean>` | True if the subscription is paused or inactive. This is readonly, and you should control it by the passed `paused` value. |
 
 ## Usage
 
@@ -27,7 +27,7 @@ The `useSubscription` function accepts two arguments, the first being the operat
 | variables | `object` or `Ref<object>`                   | **No**          | The subscription variables      |
 | paused    | `Ref<boolean>`                              | `() => boolean` | **No**                          | If the subscription should be paused, if `true` any incoming values will be ignored by the reducer |
 
-The second argument is what is called a `Reducer` which allows you aggregate subscription results. For more information about that, [check the subscription guide](/guide/subscriptions).
+The second argument is what is called a `Reducer` which allows you to aggregate subscription results. For more information about that, [check the subscription guide](/guide/subscriptions).
 
 Here is a full example of the usage:
 

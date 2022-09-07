@@ -14,7 +14,7 @@ villus is very flexible and versatile, and as such you will need to write quite 
 Something you might not be aware of is that villus is pre-configured with a couple of plugins that are necessary to execute queries, the default plugins are:
 
 - [`fetch`](/plugins/fetch): used to execute queries on the network (actual fetching)
-- [`cache`](/plugins/cache): an in-memory simple cache that comes with villus by default, supports all cache policies
+- [`cache`](/plugins/cache): an in-memory simple cache that comes with villus by default, and supports all cache policies
 - [`dedup`](/plugins/dedup): removes any duplicate pending queries
 
 Furthermore, villus exposes the default plugins as `defaultPlugins` function. To add plugins to villus client you need to pass a `use` array containing the plugins you would like to have
@@ -41,8 +41,8 @@ In addition to the default plugins, villus also offers the following plugins but
 Under the hood, plugins are simple callbacks that run through various life-cycles of the operation execution, the main features of villus plugins compared to other libraries are:
 
 - All plugins can be synchronous or asynchronous
-- They will be executed at the same order they are defined in
-- Each plugin can set anything about the current operation fetch options, like `url` or `body` or `headers` (ex: adding auth token to headers)
+- They will be executed in the same order they are defined in
+- Each plugin can set anything about the current operations fetch options, like `url` or `body` or `headers` (ex: adding auth token to headers)
 - Each plugin can choose to set the operation result at any time without stopping other plugins (ex: cache plugins)
 - Each plugin can choose to end the operation with a specific result while skipping other plugins by setting the terminate signal (ex: fetch and batch plugins)
 - Each plugin can execute a callback that's synchronous or asynchronous after the query is executed (ex: cache plugin)
@@ -83,11 +83,11 @@ The following sections will explain the purpose of each item in the context
 
 ### useResult()
 
-The `useResult` function allows your plugin to resolve a value for the GraphQL operation. Plugins like `fetch`, `batch` and `cache` make use of this as each of them is responsible for setting a response value for the GraphQL operation.
+The `useResult` function allows your plugin to resolve a value for the GraphQL operation. Plugins like `fetch`, `batch`, and `cache` make use of this as each of them are responsible for setting a response value for the GraphQL operation.
 
 #### Non-terminating Results
 
-There is two types of `useResult` calls, the first being a **non-terminating** resolution, meaning that while your plugin found a value, it still wants other plugins to continue executing:
+There are two types of `useResult` calls, the first being a **non-terminating** resolution, meaning that while your plugin found a value, it still wants other plugins to continue executing:
 
 ```js
 useResult(response); // Other plugins will still execute
@@ -97,7 +97,7 @@ This is useful for the `cache` plugin with the `cache-and-network` policy as it 
 
 #### Terminating Results
 
-The other type is a **terminating** resolution, meaning your plugin has decided to take over the pipeline and stop executing all others. This is useful with the `cache` plugin, because with the `cache-first` policy, it doesn't want any requests to go through.
+The other type is a **terminating** resolution, meaning your plugin has decided to take over the pipeline and stop executing all others. This is useful with the `cache` plugin because with the `cache-first` policy, it doesn't want any requests to go through.
 
 ```js
 useResult(response, true); // Stops all plugins after it
@@ -105,7 +105,7 @@ useResult(response, true); // Stops all plugins after it
 
 <DocTip>
 
-Calling `useResult` multiple times in the pipeline (by multiple plugins) won't have an effect on the end result, the very first `useResult` call will set the operation response, any subsequent calls are ignored.
+Calling `useResult` multiple times in the pipeline (by multiple plugins) won't have an effect on the end result as the very first `useResult` call will set the operation response, and any subsequent calls are ignored.
 
 </DocTip>
 
@@ -113,7 +113,7 @@ Calling `useResult` multiple times in the pipeline (by multiple plugins) won't h
 
 The `afterQuery` function allows you to run a callback after the query is finished, the callback receives the GraphQL response as the first argument.
 
-For example the `cache` plugin makes use of this to cache the operation response, here is an snippet of what happens in the `cache` plugin:
+For example, the `cache` plugin makes use of this to cache the operation response, here is a snippet of what happens in the `cache` plugin:
 
 ```js
 function cachePlugin({ afterQuery, useResult, operation }) {
@@ -126,7 +126,7 @@ function cachePlugin({ afterQuery, useResult, operation }) {
 }
 ```
 
-Additionally you can have access to the actual response returned by the `fetch` API, the second argument is an object that contains the `response` property:
+Additionally, you can have access to the actual response returned by the `fetch` API, the second argument is an object that contains the `response` property:
 
 ```js
 function somePlugin({ afterQuery, useResult, operation }) {
@@ -147,7 +147,7 @@ The `operation` field contains useful information about the GraphQL operation be
 | ----------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
 | query       | `string \| DocumentNode`                                                 | The query/mutation being executed                                                     |
 | variables   | `Record<string, any>`                                                    | The query variables passed with the operation                                         |
-| cachePolicy | `'cache-first' \| 'network-only' \| 'cache-and-network' \| 'cache-only'` | The cache policy for this operation, useful if you are building a custom cache plugin |
+| cachePolicy | `'cache-first' \| 'network-only' \| 'cache-and-network' \| 'cache-only'` | The cache policy for this operation, which is useful if you are building a custom cache plugin |
 | key         | `number`                                                                 | A unique identifier to use for this operation, useful for cache and dedup plugins     |
 | type        | `'query' \| 'mutation' \| 'subscription'`                                | The operation type                                                                    |
 
@@ -155,7 +155,7 @@ The `operation` field contains useful information about the GraphQL operation be
 
 The `opContext` field is the `fetch` options that will be passed to the `fetch` or `batch` plugins or your custom plugin that makes the actual request, it has the same shape as [`RequestInit` interface](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#Parameters). This is particularly useful if you are building a `fetch` plugin or some kind of authentication plugin with headers or cookies.
 
-Here is a few useful snippets:
+Here are a few useful snippets:
 
 ```js
 function myPlugin({ opContext, operation }) {
@@ -178,7 +178,7 @@ All plugins are processed in the same order they were added in, and as you can i
 
 ## Plugin Configuration
 
-You might want to create a configurable plugin to publish or re-use in various ways. `villus` doesn't really offer any API for that but good old higher-order functions can be used to achieve that:
+You might want to create a configurable plugin to publish or re-use in various ways. `villus` doesn't offer any API for that but good old higher-order functions can be used to achieve that:
 
 ```js
 function myPluginWithConfig({ prefix }) {
@@ -212,7 +212,7 @@ const myPluginWithConfig = (config: { prefix: string }) => {
 
 ## Example - Adding Authorization Headers
 
-It's very likely you have a authentication header you would like to add to your queries to be able to execute protected queries/mutations. A very common header is `Authorization` header which contains an auth token. Here is a snippet that shows how to add such headers to your queries:
+You likely have an authentication header you would like to add to your queries to be able to execute protected queries/mutations. A very common header is `Authorization` header which contains an auth token. Here is a snippet that shows how to add such headers to your queries:
 
 ```js
 function authPlugin({ opContext }) {
@@ -232,11 +232,11 @@ And that's it,
 
 ## Example - Persistent Cache
 
-You might want to create a custom cache especially that villus default cache plugin does not persist when the page is reloaded or when the client is destroyed, this is because villus default cache is a simple object in memory that keeps track of queries during runtime and each time the page is reloaded or when the client is initialized, it will start with a new object each time. This is convenient for most cases but you might want to leverage a more permanent cache solution.
+You might want to create a custom cache especially since the villus default cache plugin does not persist when the page is reloaded or when the client is destroyed, this is because villus default cache is a simple object in memory that keeps track of queries during runtime and each time the page is reloaded or when the client is initialized, it will start with a new object each time. This is convenient for most cases but you might want to leverage a more permanent cache solution.
 
-In our example we will use `localStorage` as our storage to cache queries, you are free to use anything else as a storage like [`indexedDB`](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) which should offer more powerful capabilities and flexibility.
+In our example we will use `localStorage` as our storage to cache queries, you are free to use anything else as storage like [`indexedDB`](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) which should offer more powerful capabilities and flexibility.
 
-Here is an example of such cache:
+Here is an example of such a cache:
 
 ```js
 function localStorageCache({ afterQuery, useResult, operation }) {
@@ -329,13 +329,13 @@ If you are using an error reporting or bug tracking service like [`Sentry`](http
 
 It would be useful to handle most of the errors in a global handler while leaving the specific errors (e.g: validation) to the component that used that query/mutation.
 
-In this example, a global error handler is created where it reports all 500 and unknown errors to sentry.
+In this example, a global error handler is created where it reports all 500 (and unknown) errors to Sentry.
 
 ```ts
 import { captureException } from '@sentry/browser';
 
 /**
- * Reports unknown errors to sentry to avoid having to do that ever where.
+ * Reports unknown errors to Sentry to avoid having to do that everywhere.
  */
 const sentryReportPlugin = definePlugin(({ operation, afterQuery }) => {
   afterQuery(({ error }, { response }) => {

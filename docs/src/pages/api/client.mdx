@@ -5,7 +5,7 @@ title: Client
 
 # Client API Reference
 
-This is a detailed documented of the villus client
+This is a detailed document of the villus client
 
 ## API Reference
 
@@ -67,9 +67,9 @@ app.use(client);
 
 ### Queries
 
-First you need to build the client instance, which can be done using `createClient` function exported by `villus`:
+First, you'll need to build the client instance, which can be done using `createClient` function exported by `villus`:
 
-Then you can run queries, mutations or subscriptions using any of their corresponding methods.
+Then you can run queries, mutations, or subscriptions using any of their corresponding methods.
 
 You can execute queries using `executeQuery` method on the client instance:
 
@@ -147,7 +147,7 @@ You can make use of `async/await` as `executeQuery` and `executeMutation` both r
 
 ### Subscriptions
 
-Subscriptions are trickier, because they are more **event-driven**, so you cannot wait for them to execute like queries or mutations. Because of this, the `executeSubscription` method returns an **Observable** that allows you respond to incoming data.
+Subscriptions are trickier because they are more **event-driven**, so you cannot wait for them to execute like queries or mutations. Because of this, the `executeSubscription` method returns an **Observable** that allows you to respond to incoming data.
 
 The `useSubscription` function offers an abstraction for dealing with subscriptions but you can still execute your own arbitrary subscriptions without resorting to either:
 
