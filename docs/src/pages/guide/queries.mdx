@@ -13,7 +13,7 @@ You can query GraphQL APIs with the `useQuery` composition function after you've
 
 ## Queries Basics
 
-The `useQuery` function is a composable function that provides query state and various helper methods around managing the query.
+The `useQuery` function is a composable function that provides query state and various helper methods for managing the query.
 
 To execute a query the `useQuery` accepts a GraphQL query as the first argument. The `query` property is a `string` containing the query body or a `DocumentNode` (AST) created by `graphql-tag`.
 
@@ -48,7 +48,7 @@ const { data } = useQuery({
 
 You can use `graphql-tag` to compile your queries or load them with the `graphql-tag/loader`.
 
-This a sample with the `useQuery` function:
+This is an example with the `useQuery` function:
 
 ```vue
 <script setup>
@@ -102,7 +102,7 @@ const { data } = useQuery({
 </script>
 ```
 
-However if you want to re-fetch the query whenever the variables change, then this is where the composition API shines. You can pass a [reactive object](https://v3.vuejs.org/api/basic-reactivity.html#reactive) containing your variables and the query will automatically execute with the new variables value:
+However, if you want to re-fetch the query whenever the variables change, then this is where the composition API shines. You can pass a [reactive object](https://v3.vuejs.org/api/basic-reactivity.html#reactive) containing your variables and the query will automatically execute with the new variables value:
 
 ```vue
 <script setup>
@@ -151,7 +151,7 @@ const { data } = useQuery({
 </script>
 ```
 
-This is only one way to re-fetch queries, because `villus` is built with composable API first you will find many ways to re-fetch your queries no matter how complex your requirements are.
+This is only one way to re-fetch queries because `villus` is built with composable API first you will find many ways to re-fetch your queries no matter how complex your requirements are.
 
 ## Re-fetching Queries
 
@@ -174,7 +174,7 @@ execute();
 </script>
 ```
 
-This can be very useful in situations where you have a complex logic that triggers a refetch, that means `watch` and `watchEffect` play really well with the `execute` function:
+This can be very useful in situations where you have complex logic that triggers a refetch, which means `watch` and `watchEffect` play well with the `execute` function:
 
 ```vue
 <script setup>
@@ -259,7 +259,7 @@ const { data } = useQuery({
 </script>
 ```
 
-The previous example can be also re-written like this, since the `paused` function receives the current variables as an argument.
+The previous example can be also re-written as shown below, since the `paused` function receives the current variables as an argument.
 
 ```vue
 <script setup>
@@ -301,7 +301,7 @@ function runQuery() {
 </script>
 ```
 
-Whenever the `paused` is a reactive value and it changes to `false`, the query will be re-executed automatically so you can also use `paused` to wait for when some condition is met before the query is executed. For example maybe you have a query that depends on another and want to make sure not to fetch the second one unless the first one was fetched.
+Whenever the `paused` is a reactive value and it changes to `false`, the query will be re-executed automatically so you can also use `paused` to wait for when some condition is met before the query is executed. For example, maybe you have a query that depends on another and would like to make sure not to fetch the second one unless the first one was fetched.
 
 ```vue
 <script setup>
@@ -342,9 +342,9 @@ const { data } = useQuery({
 
 ## Skipping Queries
 
-You can also skip executing queries by providing a `skip` argument to the query options. This can be particularly useful if you want to prevent fetching or refetching a query if a variable value is invalid. This may seem similar to `paused` except it doesn't stop query or variables watching and it prevents all executions, even manual ones with `execute`. Also it doesn't re-fetch automatically whenever it is set back to `false`.
+You can also skip executing queries by providing a `skip` argument to the query options. This can be particularly useful if you want to prevent fetching or refetching a query if a variable value is invalid. This may seem similar to `paused` except it doesn't stop query or variables watching and it prevents all executions, even manual ones with `execute`. Also, it doesn't re-fetch automatically whenever it is set back to `false`.
 
-In the following example we skip the query unless the user has entered enough characters for the search terms.
+In the following example, we skip the query unless the user has entered enough characters for the search terms.
 
 ```vue
 <template>
@@ -433,7 +433,7 @@ const { data, isFetching } = useQuery({
 </script>
 ```
 
-Of course you could've used `paused` for the previous example, but because `paused` stops watching the query variables it means you query won't trigger whenever the user type something into the search terms. Also it wouldn't work correctly if you call `execute` manually with a watcher because `paused` doesn't stop manual executions. This makes `skip` ideal for situations where you want to keep the reactivity of the query while also ignoring certain executions of it.
+Of course, you could've used `paused` for the previous example, but because `paused` stops watching the query variables it means your query won't trigger whenever the user type something into the search terms. Also, it wouldn't work correctly if you call `execute` manually with a watcher because `paused` doesn't stop manual executions. This makes `skip` ideal for situations where you want to keep the reactivity of the query while also ignoring certain executions of it.
 
 ## Fetching on Mounted
 
@@ -474,7 +474,7 @@ By default the client uses `cache-first` policy to handle queries, the full list
 
 - `cache-first`: If found in cache return it, otherwise fetch it from the network
 - `network-only`: Always fetch from the network and do not cache it
-- `cache-and-network`: If found in cache return it, then fetch a fresh result from the network and update current data (reactive). if not found in cache it will fetch it from network and cache it
+- `cache-and-network`: If found in cache return it, then fetch a fresh result from the network and update current data (reactive). if not found in cache, it will fetch it from the network and cache it
 - `cache-only`: If found in cache return it, otherwise returns `null` for both `data` and `errors`
 
 You can specify a different strategy on different levels:
@@ -650,10 +650,10 @@ const { data, isFetching } = useQuery({
 </script>
 ```
 
-Whenever a re-fetch is triggered, or the query was executed again the `isFetching` will be updated accordingly so you don't have to keep it in sync with anything nor you have to create your own boolean refs for indications.
+Whenever a re-fetch is triggered, or the query was executed again, the `isFetching` property will update accordingly so you don't have to keep it in sync, nor will you have to create your own boolean refs for indications.
 
 <DocTip title="Initial isFetching value">
 
-Is fetching default value is `true` if `fetchOnMount` is enabled, otherwise it will start off with `false`.
+The default value for `isFetching` is `true` if `fetchOnMount` is enabled, otherwise it will default to `false`.
 
 </DocTip>

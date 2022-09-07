@@ -9,7 +9,7 @@ order: 7
 
 `villus` is built with TypeScript in its core, you can provide typings for your fetched queries and their variables.
 
-Providing typings manually for your queries and variables can be as straight forward as this:
+Providing typings manually for your queries and variables can be as straightforward as this:
 
 ```ts
 import { useQuery } from 'villus';
@@ -41,11 +41,11 @@ const { data } = useQuery<PostsQuery, PostsVariables>({
 data.value; // is now typed as PostsQuery type!
 ```
 
-This however simple it is, it can be very tedious and will be hard to maintain as your schema evolve with time. Which is why it is better to automatically generate them with [GraphQL code generator](https://graphql-code-generator.com/).
+However, it can be very tedious (and will be hard to maintain) as your schema evolves with time. This is why it is better to automatically generate them with [GraphQL code generator](https://graphql-code-generator.com/).
 
 ## Automatically Generating Types
 
-The [GraphQL code generator](https://graphql-code-generator.com/) tool allow you to configure automation to generate the TypeScript definitions for your schema, queries, mutations and their variables.
+The [GraphQL code generator](https://graphql-code-generator.com/) tool allows you to configure automation to generate the TypeScript definitions for your schema, queries, mutations, and their variables.
 
 Make to read their [documentation](https://graphql-code-generator.com/docs/getting-started/index) to get familiar with the setup and tools you will need, this guide will focus on the relevant parts of `villus`.
 
@@ -87,7 +87,7 @@ const { data } = useQuery({
 data.value; // is now typed as PostsQuery type!
 ```
 
-This reduces the noise you have to import in your file and allow your code to be more concise.
+This reduces the noise you have to import into your file and allows your code to be more concise.
 
 ## Demo
 

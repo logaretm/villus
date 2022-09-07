@@ -80,13 +80,13 @@ The next step would be to mock the response the component expects from the API. 
 - Mock the `fetch` function and have it return the response
 - Use an advanced mocking library like [mswjs](https://mswjs.io/) to mock an API server
 
-While the former can be simpler, It is recommended to go with the mswjs approach since it allows you to test GraphQL error responses and it allows you to test your component in an environment that's much closer to real-world.
+While the former can be simpler, It is recommended to go with the mswjs approach as it allows you to test GraphQL error responses and it allows you to test your component in an environment that's much closer to real-world.
 
 This guide won't focus on how to do either of these methods, but it is recommended to go with mswjs.
 
 ## Writing Assertions
 
-Assuming you've set up your network request mocked environment, the next step would be writing the actual assertion to make sure the component does its job.
+Assuming you've set up your network request-mocked environment, the next step would be writing the actual assertion to make sure the component does its job.
 
 Here is some assertions that test if the component fetches the data when mounted and displays the posts returned from the API:
 

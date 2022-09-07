@@ -31,10 +31,10 @@ const client = useClient({
 </script>
 ```
 
-Once you've setup the `handleSubscriptions` plugin, you can now use the `useSubscription` function.
+Once you've set up the `handleSubscriptions` plugin, you can now use the `useSubscription` function.
 
 <DocTip>
-  
+
 You can also use [`graphql-ws`](https://github.com/enisdenjo/graphql-ws) package for your subscriptions, but you will need to modify your `subscriptionForwarder` to look like this:
 
 ```vue
@@ -128,7 +128,7 @@ const { data } = useSubscription({
 
 ## Handling Subscription Data
 
-The previous examples are not very useful as usually you would like to be able to use the `data` as a continuos value rather than a reference to the last received value, that is why you can pass a custom reducer as the second argument to the `useSubscription` function, think of it as a subscription handler that aggregates the results into a single value. The aggregated value will become the `data` returned from `useSubscription`.
+The previous examples are not very useful, as usually you would like to be able to use the `data` as a continuous value rather than a reference to the last received value, that is why you can pass a custom reducer as the second argument to the `useSubscription` function, think of it as a subscription handler that aggregates the results into a single value. The aggregated value will become the `data` returned from `useSubscription`.
 
 Here is the last example with a custom reducer, we will be covering the `setup` function only since the rest of the component is mostly the same:
 
@@ -168,7 +168,7 @@ The `reduceMessages` function acts as a reducer for the incoming data, whenever 
 
 <DocTip>
 
-Keep in mind that initially we have `null` for the initial value so we needed to provide a fallback for that.
+Keep in mind that initially, we have `null` for the initial value so we needed to provide a fallback for that.
 
 </DocTip>
 

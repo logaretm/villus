@@ -15,7 +15,7 @@ The batch plugin is available as its own package under the name `@villus/batch`
 
 ## Basic Batching
 
-First add the plugin to your dependencies using `yarn` or `npm`:
+First, add the plugin to your dependencies using `yarn` or `npm`:
 
 ```bash
 yarn add @villus/batch
@@ -87,7 +87,7 @@ This will add a `50ms` time window between queries to be batched together.
 
 ## Batched operations limit
 
-You can also introduce a limit on how many operations can be executed in a batch. Usually this is a good idea to make sure you don't include a lot of operations in a single batch which could have inverse effect on performance since the total execution time now depends on all the operations being executed.
+You can also introduce a limit on how many operations can be executed in a batch. Usually, it is a good idea to make sure you don't include a lot of operations in a single batch which could have an inverse effect on performance since the total execution time now depends on all the operations being executed.
 
 You can configure the batch limit by passing a `maxOperationCount` option to the `batch` function configuration:
 
@@ -103,7 +103,7 @@ useClient({
 </script>
 ```
 
-By default it is `10`.
+By default, it is `10`.
 
 ## Options
 
