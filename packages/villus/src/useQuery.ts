@@ -24,10 +24,10 @@ export interface QueryCompositeOptions<TData, TVars> {
   skip?: QueryPredicateOrSignal<TVars>;
 }
 
-interface QueryExecutionOpts<TVars> {
+export type QueryExecutionOpts<TVars> = {
   cachePolicy: CachePolicy;
   variables: TVars;
-}
+};
 
 export interface BaseQueryApi<TData = any, TVars = QueryVariables> {
   data: Ref<TData | null>;
