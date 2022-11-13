@@ -24,7 +24,7 @@ export interface QueryCompositeOptions<TData, TVars> {
   skip?: QueryPredicateOrSignal<TVars>;
 }
 
-interface QueryExecutionOpts<TVars> {
+export interface QueryExecutionOpts<TVars> {
   cachePolicy: CachePolicy;
   variables: TVars;
 }
