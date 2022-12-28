@@ -1,11 +1,11 @@
-import { OperationResult, ClientPlugin, ClientPluginOperation } from './types';
+import { OperationResult, ClientPlugin, ClientPluginContext, ClientPluginOperation } from './types';
 
 interface ResultCache {
   [k: string]: OperationResult;
 }
 
-export function cache(): ClientPlugin {
-  const resultCache: ResultCache = {};
+export function cache(): ClientPlugin & { clear(): void } {
+  let resultCache: ResultCache = {};
 
   function setCacheResult({ key }: ClientPluginOperation, result: OperationResult) {
     resultCache[key] = result;
@@ -15,7 +15,11 @@ export function cache(): ClientPlugin {
     return resultCache[key];
   }
 
-  return function cachePlugin({ afterQuery, useResult, operation }) {
+  function clear() {
+    resultCache = {};
+  }
+
+  function cachePlugin({ afterQuery, useResult, operation }: ClientPluginContext) {
     if (operation.type !== 'query' || operation.cachePolicy === 'network-only') {
       return;
     }
@@ -35,5 +39,9 @@ export function cache(): ClientPlugin {
     if (cachedResult) {
       return useResult(cachedResult, operation.cachePolicy === 'cache-first');
     }
-  };
+  }
+
+  cachePlugin.clear = clear;
+
+  return cachePlugin;
 }

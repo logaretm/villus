@@ -5,7 +5,7 @@ import { server } from './mocks/server';
 import flushPromises from 'flush-promises';
 import waitForExpect from 'wait-for-expect';
 import { mount } from './helpers/mount';
-import { useClient, useQuery } from '../src/index';
+import { useClient, useQuery, cache as cachePlugin, fetch as fetchPlugin } from '../src/index';
 import {
   PostsQuery,
   QueryWithGqlError,
@@ -114,6 +114,50 @@ describe('useQuery()', () => {
     // cache was used.
     await waitForExpect(() => {
       expect(fetch).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  test('clears cache by calling `clearCache` on the cache plugin', async () => {
+    const cache = cachePlugin();
+
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+          use: [cache, fetchPlugin()],
+        });
+
+        const { data, execute } = useQuery({ query: PostsQuery });
+
+        return { data, execute };
+      },
+      template: `
+    <div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+      <button @click="execute()"></button>
+    </div>`,
+    });
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
+
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    // cache was used.
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
+
+    cache.clear();
+
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    // cache was evicted.
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(2);
     });
   });
 
