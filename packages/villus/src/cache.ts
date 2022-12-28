@@ -4,7 +4,7 @@ interface ResultCache {
   [k: string]: OperationResult;
 }
 
-export function cache(): ClientPlugin & { clear(): void } {
+export function cache(): ClientPlugin & { clearCache(): void } {
   let resultCache: ResultCache = {};
 
   function setCacheResult({ key }: ClientPluginOperation, result: OperationResult) {
@@ -15,7 +15,7 @@ export function cache(): ClientPlugin & { clear(): void } {
     return resultCache[key];
   }
 
-  function clear() {
+  function clearCache() {
     resultCache = {};
   }
 
@@ -41,7 +41,7 @@ export function cache(): ClientPlugin & { clear(): void } {
     }
   }
 
-  cachePlugin.clear = clear;
+  cachePlugin.clearCache = clearCache;
 
   return cachePlugin;
 }

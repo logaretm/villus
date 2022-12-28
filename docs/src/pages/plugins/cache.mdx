@@ -38,6 +38,29 @@ The cache plugin is one of the default plugins that are pre-configured with any 
 
 At this moment the cache plugin doesn't have any options to customize
 
+## Clearing cache
+
+You can clear the cache for all queries using `clearCache()` present on the cachePlugin instance. You can export the cache plugin to make it accessible to other parts of your code like so:
+
+```ts
+import { useClient, cache, fetch } from 'villus';
+
+export const cachePlugin = cache();
+
+useClient({
+  use: [cachePlugin, fetch()],
+});
+```
+
+Then you can import it and clear it whenever it makes sense in your logic:
+
+```ts
+import { cachePlugin } from '../client';
+
+// anywhere in your code
+cachePlugin.clearCache();
+```
+
 ## Code
 
 You can check the [source code for the `cache` plugin](https://github.com/logaretm/villus/blob/main/packages/villus/src/cache.ts) and use it as a reference to build your own

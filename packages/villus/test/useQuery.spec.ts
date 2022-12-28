@@ -151,7 +151,7 @@ describe('useQuery()', () => {
       expect(fetch).toHaveBeenCalledTimes(1);
     });
 
-    cache.clear();
+    cache.clearCache();
 
     document.querySelector('button')?.dispatchEvent(new Event('click'));
     await flushPromises();
