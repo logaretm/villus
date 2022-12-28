@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.2](https://github.com/logaretm/villus/compare/v2.0.1...v2.0.2) (2022-12-28)
+
+
+### Bug Fixes
+
+* **types:** ensure mutation data and error are nullable closes [#182](https://github.com/logaretm/villus/issues/182) ([#183](https://github.com/logaretm/villus/issues/183)) ([25b6e5c](https://github.com/logaretm/villus/commit/25b6e5c8b8831b697748e2dba5c8ca7b41dfd004))
+
+
+
+
+
 ## [2.0.1](https://github.com/logaretm/villus/compare/v1.2.5...v2.0.1) (2022-10-23)
 
 **Note:** Version bump only for package villus-monorepo
