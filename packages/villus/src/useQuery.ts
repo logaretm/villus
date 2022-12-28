@@ -22,6 +22,7 @@ export interface QueryCompositeOptions<TData, TVars> {
   client?: Client;
   paused?: QueryPredicateOrSignal<TVars>;
   skip?: QueryPredicateOrSignal<TVars>;
+  cacheTags?: string[];
 }
 
 export interface QueryExecutionOpts<TVars> {
@@ -83,6 +84,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
         query: isRef(query) ? query.value : query,
         variables: unwrap(overrideOpts?.variables || vars),
         cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
+        cacheTags: opts?.cacheTags,
       },
       unref(opts?.context),
       onResultChanged

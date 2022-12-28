@@ -42,6 +42,7 @@ export type AfterQueryCallback = (
 
 export interface OperationWithCachePolicy<TData, TVars> extends Operation<TData, TVars> {
   cachePolicy?: CachePolicy;
+  cacheTags?: string[];
 }
 
 export type ClientPluginOperation = OperationWithCachePolicy<unknown, QueryVariables> & {

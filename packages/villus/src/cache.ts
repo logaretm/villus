@@ -1,26 +1,62 @@
 import { OperationResult, ClientPlugin, ClientPluginContext, ClientPluginOperation } from './types';
+import { arrayToExistHash } from './utils';
 
 interface ResultCache {
-  [k: string]: OperationResult;
+  [k: string]: { result: OperationResult; tags?: string[] };
 }
 
-export function cache(): ClientPlugin & { clearCache(): void } {
+export function cache(): ClientPlugin & { clearCache(tags?: string | string[]): void } {
   let resultCache: ResultCache = {};
 
-  function setCacheResult({ key }: ClientPluginOperation, result: OperationResult) {
-    resultCache[key] = result;
+  function setCacheResult({ key, cacheTags }: ClientPluginOperation, result: OperationResult) {
+    resultCache[key] = { result, tags: cacheTags };
   }
 
   function getCachedResult({ key }: ClientPluginOperation): OperationResult | undefined {
-    return resultCache[key];
+    return resultCache[key]?.result;
   }
 
-  function clearCache() {
-    resultCache = {};
+  function clearCache(tags?: string | string[]) {
+    if (!tags) {
+      resultCache = {};
+      return;
+    }
+
+    const tagArray = Array.isArray(tags) ? tags : [tags];
+    if (!tagArray.length) {
+      return;
+    }
+
+    const tagsLookup = arrayToExistHash(tagArray);
+
+    // clears cache keys one by one
+    Object.keys(resultCache).forEach(key => {
+      const cacheItem = resultCache[key];
+      if (!cacheItem.tags) {
+        return;
+      }
+
+      const tagExists = cacheItem.tags.some(t => tagsLookup[t]);
+      if (tagExists) {
+        delete resultCache[key];
+      }
+    });
   }
 
   function cachePlugin({ afterQuery, useResult, operation }: ClientPluginContext) {
-    if (operation.type !== 'query' || operation.cachePolicy === 'network-only') {
+    if (operation.cachePolicy === 'network-only') {
+      return;
+    }
+
+    if (operation.type === 'mutation') {
+      if (operation.cacheTags?.length) {
+        afterQuery(result => {
+          if (result.data) {
+            clearCache(operation.cacheTags);
+          }
+        });
+      }
+
       return;
     }
 

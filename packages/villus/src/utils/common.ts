@@ -28,3 +28,11 @@ export function unwrap<TValue>(val: MaybeLazyOrRef<TValue>) {
 export function isWatchable<T>(val: unknown): val is Ref<T> {
   return isRef(val) || isReactive(val) || typeof val === 'function';
 }
+
+export function arrayToExistHash<T extends string | number>(items: T[]): Record<string, boolean> {
+  return items.reduce((acc, item) => {
+    acc[String(item)] = true;
+
+    return acc;
+  }, {} as Record<string, boolean>);
+}

@@ -162,7 +162,7 @@ export class Client {
   }
 
   public async executeMutation<TData = any, TVars = QueryVariables>(
-    operation: Operation<TData, TVars>,
+    operation: Operation<TData, TVars> & { cacheTags?: string[] },
     queryContext?: QueryExecutionContext
   ): Promise<OperationResult<TData>> {
     return this.execute<TData, TVars>(operation, 'mutation', queryContext);

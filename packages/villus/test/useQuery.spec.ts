@@ -117,7 +117,7 @@ describe('useQuery()', () => {
     });
   });
 
-  test('clears cache by calling `clearCache` on the cache plugin', async () => {
+  test('clears all cache by calling `clearCache` on the cache plugin', async () => {
     const cache = cachePlugin();
 
     mount({
@@ -152,6 +152,50 @@ describe('useQuery()', () => {
     });
 
     cache.clearCache();
+
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    // cache was evicted.
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  test('clears specific queries cache by calling `clearCache` on the cache plugin', async () => {
+    const cache = cachePlugin();
+
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+          use: [cache, fetchPlugin()],
+        });
+
+        const { data, execute } = useQuery({ query: PostsQuery, cacheTags: ['posts'] });
+
+        return { data, execute };
+      },
+      template: `
+    <div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+      <button @click="execute()"></button>
+    </div>`,
+    });
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
+
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    // cache was used.
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
+
+    cache.clearCache('posts');
 
     document.querySelector('button')?.dispatchEvent(new Event('click'));
     await flushPromises();
