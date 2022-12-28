@@ -1,7 +1,7 @@
 export { createClient, defaultPlugins, setActiveClient, getActiveClient, ClientOptions, Client } from './client';
 export { useClient } from './useClient';
 export { useQuery, QueryApi, BaseQueryApi, QueryCompositeOptions, QueryExecutionOpts } from './useQuery';
-export { useMutation } from './useMutation';
+export { useMutation, MutationResult, MutationApi } from './useMutation';
 export { useSubscription, Reducer } from './useSubscription';
 export { handleSubscriptions, SubscriptionForwarder } from './handleSubscriptions';
 export { fetch } from './fetch';
