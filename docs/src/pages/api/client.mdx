@@ -13,11 +13,11 @@ This is a detailed document of the villus client
 
 The `createClient` function exported by `villus` package allows you to create raw villus client instances to be used freely without being attached to components/composable functions. Here are the options that `createClient` accepts:
 
-| Option      | Description                                                                                                                |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------- |
-| url         | The URL of the GraphQL API service                                                                                         |
-| fetch       | The `fetch` function to be used, must be compatible with `window.fetch`                                                    |
-| cachePolicy | The global cache policy to be used for queries, possible values are: `cache-and-network`, `network-only`, or `cache-first` |
+| Option      | Description                                                                                                                            |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| url         | The URL of the GraphQL API service                                                                                                     |
+| use         | An array of [plugins](/api/guide/plugins) to be used on this client. By default the `cache`, `fetch`, and `dedup` plugins are present. |
+| cachePolicy | The global cache policy to be used for queries, possible values are: `cache-and-network`, `network-only`, or `cache-first`             |
 
 ```js
 const client = createClient({
