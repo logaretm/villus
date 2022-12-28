@@ -9,12 +9,24 @@ interface MutationExecutionOptions {
   client?: Client;
 }
 
+export interface MutationResult<TData> {
+  data: TData | null;
+  error: CombinedError | null;
+}
+
+export interface MutationApi<TData, TVars> {
+  data: Ref<TData | null>;
+  isFetching: Ref<boolean>;
+  isDone: Ref<boolean>;
+  error: Ref<CombinedError | null>;
+  execute(vars?: TVars): Promise<MutationResult<TData>>;
+}
+
 export function useMutation<TData = any, TVars = QueryVariables>(
   query: Operation<TData, TVars>['query'],
   opts?: Partial<MutationExecutionOptions>
-) {
+): MutationApi<TData, TVars> {
   const client = opts?.client ?? resolveClient();
-
   const data: Ref<TData | null> = ref(null);
   const isFetching = ref(false);
   const isDone = ref(false);
@@ -22,7 +34,7 @@ export function useMutation<TData = any, TVars = QueryVariables>(
 
   // This is to prevent state mutation for racing requests, basically favoring the very last one
   let lastPendingOperation: Promise<OperationResult<TData>> | undefined;
-  async function execute(variables?: TVars) {
+  async function execute(variables?: TVars): Promise<MutationResult<TData>> {
     isFetching.value = true;
     const vars = variables || {};
     const pendingExecution = client.executeMutation<TData, TVars>(
