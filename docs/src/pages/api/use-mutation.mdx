@@ -23,9 +23,11 @@ The `useMutation` function returns the following properties and functions:
 
 Aside from the mutation itself, the `useMutation` function accepts an optional second argument containing these options:
 
-| Property | Type                                  | Required | Description                                                                                                                         |
-| -------- | ------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| context  | `{ headers: Record<string, string> }` | **No**   | A object to be merged with the fetch options, currently accepts `headers`. The `context` can be a reactive `ref` or `computed ref`. |
+| Property       | Type                                  | Required | Description                                                                                                                         |
+| -------------- | ------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| context        | `{ headers: Record<string, string> }` | **No**   | A object to be merged with the fetch options, currently accepts `headers`. The `context` can be a reactive `ref` or `computed ref`. |
+| clearCacheTags | `string[]`                            | **No**   | Passing this will clear the tagged queries cache if they have any of the tags specified                                             |
+| refetchTags    | `string[]`                            | **No**   | Passing this will clear the tagged queries cache and will trigger a refetch if those queries have any one of the tags specified     |
 
 ## Signature and Usage
 
