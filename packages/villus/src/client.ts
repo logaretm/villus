@@ -15,6 +15,9 @@ import {
   OperationWithCachePolicy,
   StandardOperationResult,
   QueryExecutionContext,
+  QueryOperation,
+  MutationOperation,
+  SubscriptionOperation,
 } from './types';
 import { VILLUS_CLIENT } from './symbols';
 import { App, getCurrentInstance, inject, InjectionKey } from 'vue';
@@ -154,7 +157,7 @@ export class Client {
   }
 
   public async executeQuery<TData = any, TVars = QueryVariables>(
-    operation: OperationWithCachePolicy<TData, TVars>,
+    operation: Omit<QueryOperation<TData, TVars>, 'type'>,
     queryContext?: QueryExecutionContext,
     onResultChanged?: OnResultChangedCallback<TData>
   ): Promise<OperationResult<TData>> {
@@ -162,13 +165,15 @@ export class Client {
   }
 
   public async executeMutation<TData = any, TVars = QueryVariables>(
-    operation: Operation<TData, TVars> & { cacheTags?: string[] },
+    operation: Omit<MutationOperation<TData, TVars>, 'type'>,
     queryContext?: QueryExecutionContext
   ): Promise<OperationResult<TData>> {
     return this.execute<TData, TVars>(operation, 'mutation', queryContext);
   }
 
-  public async executeSubscription<TData = any, TVars = QueryVariables>(operation: Operation<TData, TVars>) {
+  public async executeSubscription<TData = any, TVars = QueryVariables>(
+    operation: Omit<SubscriptionOperation<TData, TVars>, 'type'>
+  ) {
     const result = await this.execute<TData, TVars>(operation, 'subscription');
 
     return result as unknown as ObservableLike<StandardOperationResult<TData>>;

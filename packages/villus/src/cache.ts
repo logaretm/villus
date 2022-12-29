@@ -8,8 +8,8 @@ interface ResultCache {
 export function cache(): ClientPlugin & { clearCache(tags?: string | string[]): void } {
   let resultCache: ResultCache = {};
 
-  function setCacheResult({ key, cacheTags }: ClientPluginOperation, result: OperationResult) {
-    resultCache[key] = { result, tags: cacheTags };
+  function setCacheResult({ key, tags }: ClientPluginOperation & { type: 'query' }, result: OperationResult) {
+    resultCache[key] = { result, tags };
   }
 
   function getCachedResult({ key }: ClientPluginOperation): OperationResult | undefined {
@@ -44,19 +44,22 @@ export function cache(): ClientPlugin & { clearCache(tags?: string | string[]): 
   }
 
   function cachePlugin({ afterQuery, useResult, operation }: ClientPluginContext) {
-    if (operation.cachePolicy === 'network-only') {
+    if (operation.type === 'query' && operation.cachePolicy === 'network-only') {
       return;
     }
 
-    if (operation.type === 'mutation') {
-      if (operation.cacheTags?.length) {
-        afterQuery(result => {
-          if (result.data) {
-            clearCache(operation.cacheTags);
-          }
-        });
-      }
+    if (operation.type === 'mutation' && operation.clearCacheTags?.length) {
+      afterQuery(result => {
+        // only after successful operation
+        if (result.data) {
+          clearCache(operation.clearCacheTags);
+        }
+      });
 
+      return;
+    }
+
+    if (operation.type !== 'query') {
       return;
     }
 

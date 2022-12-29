@@ -7,7 +7,7 @@ import { Client, resolveClient } from './client';
 interface MutationExecutionOptions {
   context: MaybeRef<QueryExecutionContext>;
   client?: Client;
-  cacheTags?: string[];
+  clearCacheTags?: string[];
 }
 
 export interface MutationResult<TData> {
@@ -42,7 +42,7 @@ export function useMutation<TData = any, TVars = QueryVariables>(
       {
         query,
         variables: vars as TVars, // FIXME: fix this casting
-        cacheTags: opts?.cacheTags,
+        clearCacheTags: opts?.clearCacheTags,
       },
       unref(opts?.context)
     );

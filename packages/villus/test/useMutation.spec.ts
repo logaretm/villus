@@ -241,9 +241,9 @@ test('clears cache of previous queries which has the same tag', async () => {
         url: 'https://test.com/graphql',
       });
 
-      const query = useQuery({ query: PostsQuery, cacheTags: ['test'] });
+      const query = useQuery({ query: PostsQuery, tags: ['test'] });
       const mutation = useMutation(LikePostMutation, {
-        cacheTags: ['test'],
+        clearCacheTags: ['test'],
       });
 
       refetch = query.execute;

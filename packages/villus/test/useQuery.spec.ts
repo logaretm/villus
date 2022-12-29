@@ -171,7 +171,7 @@ describe('useQuery()', () => {
           use: [cache, fetchPlugin()],
         });
 
-        const { data, execute } = useQuery({ query: PostsQuery, cacheTags: ['posts'] });
+        const { data, execute } = useQuery({ query: PostsQuery, tags: ['posts'] });
 
         return { data, execute };
       },
