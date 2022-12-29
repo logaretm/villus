@@ -57,15 +57,44 @@ const LikePost = `
 `;
 
 const { data, execute } = useMutation(LikePost);
-const variables = {
-  id: 123,
-};
 
 function onSubmit() {
+  const variables = {
+    id: 123,
+  };
+
   execute(variables);
 }
 </script>
 ```
+
+## Clearing Tagged Queries Cache
+
+To clear [tagged queries'](/guide/queries#tagged-queries) cache, you can specify a `clearCacheTags` option when calling `useMutation` composable:
+
+```vue
+<script setup>
+const CreatePost = `
+  mutation CreatePost ($title: String!) {
+    createPost (title: $title) {
+      id
+    }
+  }
+`;
+
+const { data, execute } = useMutation(CreatePost, {
+  clearCacheTags: ['all_posts'],
+});
+
+function onSubmit() {
+  execute({
+    title: 'hello there',
+  });
+}
+</script>
+```
+
+This will clear all the cache entries for any queries tagged with `all_posts` when using `useQuery`. The next time they are fetched they will go straight to the network and fetch the fresh data from the server.
 
 ## Handling Errors
 
