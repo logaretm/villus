@@ -1,4 +1,4 @@
-import { getQueryKey } from './utils';
+import { arrayToExistHash, getQueryKey } from './utils';
 import { cache } from './cache';
 import { fetch } from './fetch';
 import { dedup } from './dedup';
@@ -57,6 +57,12 @@ type OnResultChangedCallback<TData> = (result: OperationResult<TData>) => unknow
 
 export const defaultPlugins = () => [cache(), dedup(), fetch()];
 
+interface TaggedQueryEntry {
+  id: symbol;
+  refetch(): Promise<void>;
+  tags: string[];
+}
+
 export class Client {
   public install: (app: App) => void = () => undefined;
 
@@ -66,10 +72,13 @@ export class Client {
 
   private plugins: ClientPlugin[];
 
+  private taggedQueries: TaggedQueryEntry[];
+
   public constructor(opts: ClientOptions) {
     this.url = opts.url;
     this.defaultCachePolicy = opts.cachePolicy || 'cache-first';
     this.plugins = opts.use || [...defaultPlugins()];
+    this.taggedQueries = [];
   }
 
   /**
@@ -177,6 +186,33 @@ export class Client {
     const result = await this.execute<TData, TVars>(operation, 'subscription');
 
     return result as unknown as ObservableLike<StandardOperationResult<TData>>;
+  }
+
+  public registerTaggedQuery(tags: string[], refetch: () => Promise<void>): symbol {
+    const id = Symbol('Tagged query');
+
+    this.taggedQueries.push({ id, tags, refetch });
+
+    return id;
+  }
+
+  public unregisterTaggedQuery(id: symbol) {
+    const idx = this.taggedQueries.findIndex(tq => tq.id === id);
+    if (idx === -1) {
+      return;
+    }
+
+    this.taggedQueries.splice(idx, 1);
+  }
+
+  public async refetchTaggedQueries(tags: string[]) {
+    const tagsLookup = arrayToExistHash(tags);
+
+    const queries = this.taggedQueries.filter(tq => {
+      return tq.tags.some(t => tagsLookup[t]);
+    });
+
+    return Promise.all(queries.map(q => q.refetch())).then(() => undefined);
   }
 }
 

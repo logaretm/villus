@@ -1,4 +1,4 @@
-import { isRef, onMounted, Ref, ref, unref, watch, getCurrentInstance } from 'vue';
+import { isRef, onMounted, Ref, ref, unref, watch, getCurrentInstance, onBeforeUnmount } from 'vue';
 import stringify from 'fast-json-stable-stringify';
 import {
   CachePolicy,
@@ -48,6 +48,16 @@ function useQuery<TData = any, TVars = QueryVariables>(
   opts: QueryCompositeOptions<TData, TVars>
 ): QueryApi<TData, TVars> {
   const client = opts?.client ?? resolveClient();
+
+  if (opts.tags) {
+    const id = client.registerTaggedQuery(opts.tags, async () => {
+      await execute();
+    });
+
+    onBeforeUnmount(() => {
+      client.unregisterTaggedQuery(id);
+    });
+  }
 
   const { query, variables, cachePolicy, fetchOnMount, paused, skip } = normalizeOptions(opts);
   let currentFetchOnMount = fetchOnMount;
