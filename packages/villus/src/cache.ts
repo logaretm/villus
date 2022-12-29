@@ -44,10 +44,6 @@ export function cache(): ClientPlugin & { clearCache(tags?: string | string[]): 
   }
 
   function cachePlugin({ afterQuery, useResult, operation }: ClientPluginContext) {
-    if (operation.type === 'query' && operation.cachePolicy === 'network-only') {
-      return;
-    }
-
     if (operation.type === 'mutation' && operation.clearCacheTags?.length) {
       afterQuery(result => {
         // only after successful operation
@@ -59,7 +55,7 @@ export function cache(): ClientPlugin & { clearCache(tags?: string | string[]): 
       return;
     }
 
-    if (operation.type !== 'query') {
+    if (operation.type !== 'query' || operation.cachePolicy === 'network-only') {
       return;
     }
 
