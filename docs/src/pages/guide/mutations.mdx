@@ -57,15 +57,98 @@ const LikePost = `
 `;
 
 const { data, execute } = useMutation(LikePost);
-const variables = {
-  id: 123,
-};
 
 function onSubmit() {
+  const variables = {
+    id: 123,
+  };
+
   execute(variables);
 }
 </script>
 ```
+
+## Clearing Tagged Queries Cache
+
+To clear [tagged queries'](/guide/queries#tagged-queries) cache, you can specify a `clearCacheTags` option when calling `useMutation` composable:
+
+```vue
+<script setup>
+const CreatePost = `
+  mutation CreatePost ($title: String!) {
+    createPost (title: $title) {
+      id
+    }
+  }
+`;
+
+const GetPosts = `
+  query GetPosts {
+    posts {
+      id
+      title
+    }
+  }
+`;
+
+const { data } = useQuery(GetPosts, {
+  tags: ['all_posts'],
+});
+
+const { execute } = useMutation(CreatePost, {
+  clearCacheTags: ['all_posts'],
+});
+
+function onSubmit() {
+  execute({
+    title: 'hello there',
+  });
+}
+</script>
+```
+
+This will clear all the cache entries for any queries tagged with `all_posts` when using `useQuery`. The next time they are fetched they will go straight to the network and fetch the fresh data from the server.
+
+## Refetching queries after a mutation
+
+Aside from clearing the cache for tagged queries, you can also refetch them. By specifying `refetchTags` option when calling `useMutation` composable:
+
+```vue
+<script setup>
+const CreatePost = `
+  mutation CreatePost ($title: String!) {
+    createPost (title: $title) {
+      id
+    }
+  }
+`;
+
+const GetPosts = `
+  query GetPosts {
+    posts {
+      id
+      title
+    }
+  }
+`;
+
+const { data } = useQuery(GetPosts, {
+  tags: ['all_posts'],
+});
+
+const { execute } = useMutation(CreatePost, {
+  refetchTags: ['all_posts'],
+});
+
+function onSubmit() {
+  execute({
+    title: 'hello there',
+  });
+}
+</script>
+```
+
+After the mutation execution completes, it will trigger a refetch for all queries tagged with `all_posts` tag. Note that `refetchTags` also clear the cache if present for those tagged queries, so the refetch will always override the network policy and the cached results.
 
 ## Handling Errors
 

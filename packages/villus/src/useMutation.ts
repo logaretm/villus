@@ -1,4 +1,4 @@
-import { ref, Ref, unref } from 'vue';
+import { ref, Ref, unref, nextTick } from 'vue';
 import { MaybeRef, OperationResult, QueryExecutionContext, QueryVariables } from './types';
 import { CombinedError } from './utils';
 import { Operation } from '../../shared/src';
@@ -7,6 +7,8 @@ import { Client, resolveClient } from './client';
 interface MutationExecutionOptions {
   context: MaybeRef<QueryExecutionContext>;
   client?: Client;
+  clearCacheTags?: string[];
+  refetchTags?: string[];
 }
 
 export interface MutationResult<TData> {
@@ -41,12 +43,19 @@ export function useMutation<TData = any, TVars = QueryVariables>(
       {
         query,
         variables: vars as TVars, // FIXME: fix this casting
+        clearCacheTags: [...(opts?.clearCacheTags || []), ...(opts?.refetchTags || [])],
       },
       unref(opts?.context)
     );
 
     lastPendingOperation = pendingExecution;
     const res = await pendingExecution;
+    nextTick(() => {
+      if (opts?.refetchTags) {
+        client.refetchTaggedQueries(opts.refetchTags);
+      }
+    });
+
     // Avoid state mutation if the pendingExecution isn't the last pending operation
     if (pendingExecution !== lastPendingOperation) {
       // we still return this result to preserve the integrity of "execute" calls

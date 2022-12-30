@@ -6,6 +6,7 @@ order: 3
 ---
 
 import DocTip from '@/components/DocTip.vue';
+import DocBadge from '@/components/DocBadge.vue';
 
 # Queries
 
@@ -557,6 +558,41 @@ function runWithPolicy() {
 ```
 
 You can build your own cache layer and plugins for villus, check the [Plugins Guide](/plugins)
+
+## Query tags <DocBadge title="2.1.0" />
+
+You can tag the queries with an array of strings. These tags have a couple of uses:
+
+- You can clear the cache for those tagged queries and also allow mutations to auto-clear the queries' cache that has any of the same tags.
+- You can refetch all of tagged queries after a mutation that has any of the same tags.
+
+You can specify tags by passing `tags` to the query options when first calling `useQuery` composable:
+
+```vue
+<script setup>
+import { useQuery } from 'villus';
+
+const GetPosts = `
+  query GetPosts {
+    posts {
+      id
+      title
+    }
+  }
+`;
+
+const { execute, data } = useQuery({
+  query: GetPosts,
+  tags: ['all_posts'],
+});
+</script>
+```
+
+The previous snippet tags the query with `all_posts` tag. Meaning any mutation that has `clearCacheTags` with the same value will clear this query's cache. So next time it is refetched, the query will be go to the network, skipping the cache entirely.
+
+To see how mutations can be configured to clear tagged queries or refetch them, check the [mutation's guide](/guide/mutations#clearing-tagged-queries-cache).
+
+You can manually clear the entire cache or any specific cache tags, read more in the [cache plugin page](/plugins/cache).
 
 ## Suspense
 

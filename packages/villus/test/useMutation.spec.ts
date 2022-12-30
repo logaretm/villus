@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-expressions */
 import { mount } from './helpers/mount';
-import { useClient, useMutation } from '../src/index';
-import { computed } from 'vue';
+import { useClient, useMutation, useQuery } from '../src/index';
+import { computed, defineComponent, ref } from 'vue';
 import {
   LikePostMutation,
   MutationWithNetworkError,
   MutationWithParseError,
   MutationWithGqlError,
+  PostsQuery,
 } from './mocks/queries';
 import flushPromises from 'flush-promises';
 import waitForExpect from 'wait-for-expect';
@@ -228,5 +229,140 @@ test('runs mutations with custom headers per mutation', async () => {
         headers: expect.objectContaining(ctx),
       })
     );
+  });
+});
+
+test('clears cache of previous queries which has the same tag', async () => {
+  let refetch!: () => void;
+  let mutate!: () => void;
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+
+      const query = useQuery({ query: PostsQuery, tags: ['test'] });
+      const mutation = useMutation(LikePostMutation, {
+        clearCacheTags: ['test'],
+      });
+
+      refetch = query.execute;
+      mutate = mutation.execute;
+
+      return { data: query.data };
+    },
+    template: `
+    <div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </div>`,
+  });
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  await refetch();
+  await flushPromises();
+  // cache was used.
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  await mutate();
+  await flushPromises();
+  // mutation was executed
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  // cache was evicted.
+  await refetch();
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(3);
+  });
+});
+
+test('refetch tagged queries that has the same tag', async () => {
+  let mutate!: () => void;
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+
+      const query = useQuery({ query: PostsQuery, tags: ['test'] });
+      const mutation = useMutation(LikePostMutation, {
+        refetchTags: ['test'],
+      });
+
+      mutate = mutation.execute;
+
+      return { data: query.data };
+    },
+    template: `
+    <div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </div>`,
+  });
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  await mutate();
+  await flushPromises();
+  // mutation was executed and also the query
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(3);
+  });
+});
+
+test('unmounted queries do not refetch', async () => {
+  let mutate!: () => void;
+  const show = ref(true);
+  const Query = defineComponent({
+    setup() {
+      const query = useQuery({ query: PostsQuery, tags: ['test'] });
+
+      return { data: query.data };
+    },
+    template: '<div></div>',
+  });
+  mount({
+    components: {
+      Query,
+    },
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+
+      const mutation = useMutation(LikePostMutation, {
+        refetchTags: ['test'],
+      });
+
+      mutate = mutation.execute;
+
+      return { show };
+    },
+    template: `<Query v-if="show"></Query>`,
+  });
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  show.value = false;
+  await flushPromises();
+  await mutate();
+  await flushPromises();
+  // mutation was executed but not the query
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(2);
   });
 });

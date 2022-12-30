@@ -40,12 +40,27 @@ export type AfterQueryCallback = (
   ctx: { response?: ParsedResponse<unknown> }
 ) => void | Promise<void>;
 
-export interface OperationWithCachePolicy<TData, TVars> extends Operation<TData, TVars> {
+export interface QueryOperation<TData, TVars> extends Operation<TData, TVars> {
+  type: 'query';
   cachePolicy?: CachePolicy;
+  tags?: string[];
 }
 
+export interface MutationOperation<TData, TVars> extends Operation<TData, TVars> {
+  type: 'mutation';
+  clearCacheTags?: string[];
+}
+
+export interface SubscriptionOperation<TData, TVars> extends Operation<TData, TVars> {
+  type: 'subscription';
+}
+
+export type OperationWithCachePolicy<TData, TVars> =
+  | QueryOperation<TData, TVars>
+  | MutationOperation<TData, TVars>
+  | SubscriptionOperation<TData, TVars>;
+
 export type ClientPluginOperation = OperationWithCachePolicy<unknown, QueryVariables> & {
-  type: OperationType;
   key: number;
 };
 
