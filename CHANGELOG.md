@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/logaretm/villus/compare/v2.0.2...v2.1.0) (2022-12-30)
+
+
+### Features
+
+* added a mechanism to clear all cache closes [#84](https://github.com/logaretm/villus/issues/84) ([c78dfd2](https://github.com/logaretm/villus/commit/c78dfd21fbeea97ee36666f252b15b0fde235006))
+* added refetching tagged queries ([18e04b9](https://github.com/logaretm/villus/commit/18e04b95e6a1efd4cedf1e77f1178033bf56508b))
+* implement tag based eviction closes [#147](https://github.com/logaretm/villus/issues/147) ([9139f7e](https://github.com/logaretm/villus/commit/9139f7e5c945f053cfe5eb3d3ceb3fb717492976))
+* write docs on clearing cache ([4e8e156](https://github.com/logaretm/villus/commit/4e8e1567eaa68a553c927eb15ba0fa6c350d961b))
+
+
+
+
+
 ## [2.0.2](https://github.com/logaretm/villus/compare/v2.0.1...v2.0.2) (2022-12-28)
 
 
