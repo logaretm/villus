@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.1](https://github.com/logaretm/villus/compare/v2.1.0...v2.1.1) (2023-02-08)
+
+
+### Bug Fixes
+
+* ensure subscription queries are normalized closes [#188](https://github.com/logaretm/villus/issues/188) ([7a50249](https://github.com/logaretm/villus/commit/7a502495c17b8b34dc6edd6ecc5fc5620bb279c0))
+* require observerlike props closes [#186](https://github.com/logaretm/villus/issues/186) closes [#154](https://github.com/logaretm/villus/issues/154) ([0c91f11](https://github.com/logaretm/villus/commit/0c91f11d44da84195636327f908a265769d72cb6))
+
+
+
+
+
 # [2.1.0](https://github.com/logaretm/villus/compare/v2.0.2...v2.1.0) (2022-12-30)
 
 
