@@ -1,10 +1,12 @@
 /* eslint-disable jest/no-conditional-expect */
 /* eslint-disable no-unused-expressions */
 import flushPromises from 'flush-promises';
+import gql from 'graphql-tag';
 import { mount } from './helpers/mount';
 import { makeObservable, tick } from './helpers/observer';
 import { defaultPlugins, handleSubscriptions, useClient, useSubscription } from '../src/index';
 import { computed, ref } from 'vue';
+import { print } from 'graphql';
 
 jest.useFakeTimers();
 
@@ -350,7 +352,7 @@ test('handles subscription errors', async () => {
         <div v-if="messages && !error">
           <span>{{ messages.id }}</span>
         </div>
-        <span id="error" v-if="error">{{ error }}</span> 
+        <span id="error" v-if="error">{{ error }}</span>
       </div>
     `,
   });
@@ -359,4 +361,56 @@ test('handles subscription errors', async () => {
   await tick(1);
   await flushPromises();
   expect(document.querySelector('#error')?.textContent).toBeTruthy();
+});
+
+test('normalizes subscription queries', async () => {
+  const spy = jest.fn();
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        use: [
+          handleSubscriptions(op => {
+            spy(op.query);
+
+            return makeObservable();
+          }),
+          ...defaultPlugins(),
+        ],
+      });
+
+      const { data, error } = useSubscription<Message>({
+        query: gql`
+          subscription {
+            newMessages
+          }
+        `,
+        variables: { id: 2 },
+      });
+
+      return { messages: data.value, error };
+    },
+    template: `
+      <div>
+        <div v-if="messages && !error">
+          <span>{{ messages.id }}</span>
+        </div>
+        <span id="error" v-if="error">{{ error }}</span>
+      </div>
+    `,
+  });
+
+  await flushPromises();
+  await tick(1);
+  await flushPromises();
+  expect(spy).toHaveBeenCalledTimes(1);
+  expect(spy).toHaveBeenLastCalledWith(
+    print(
+      gql`
+        subscription {
+          newMessages
+        }
+      `
+    )
+  );
 });

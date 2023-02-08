@@ -1,7 +1,8 @@
+import { normalizeQuery } from '../../shared/src/utils';
 import { ClientPlugin, ClientPluginOperation, ObservableLike, StandardOperationResult } from './types';
 
 export type SubscriptionForwarder<TData = any> = (
-  operation: ClientPluginOperation
+  operation: ClientPluginOperation & { query: string }
 ) => ObservableLike<StandardOperationResult<TData>>;
 
 export function handleSubscriptions(forwarder: SubscriptionForwarder): ClientPlugin {
@@ -16,6 +17,11 @@ export function handleSubscriptions(forwarder: SubscriptionForwarder): ClientPlu
       throw new Error('No subscription forwarder was set.');
     }
 
-    useResult(forward(operation) as any, true);
+    const normalizedQuery = normalizeQuery(operation.query);
+    if (!normalizedQuery) {
+      throw new Error('A query must be provided.');
+    }
+
+    useResult(forward({ ...operation, query: normalizedQuery }) as any, true);
   };
 }
