@@ -16,15 +16,37 @@ The `handleSubscriptions` plugin requires only one option, a **subscription forw
 ```vue
 <script setup>
 import { useClient, handleSubscriptions, defaultPlugins } from 'villus';
-import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { createClient } from 'graphql-ws';
 
-const subscriptionClient = new SubscriptionClient('ws://localhost:4001/graphql', {});
-const subscriptionForwarder = operation => subscriptionClient.request(op),
+const wsClient = createClient({
+  url: 'ws://localhost:9005/graphql',
+});
+
+const subscriptionsHandler = handleSubscriptions(operation => {
+  return {
+    subscribe: obs => {
+      wsClient.subscribe(
+        {
+          query: operation.query,
+          variables: operation.variables,
+        },
+        obs
+      );
+
+      return {
+        unsubscribe: () => {
+          // No OP
+        },
+      };
+    },
+  };
+});
 
 // in your setup
-useClient({
+const client = useClient({
   url: 'http://localhost:4000/graphql',
-  use: [handleSubscriptions(subscriptionForwarder), ...defaultPlugins()]
+  // Install the subscriptions handler
+  use: [subscriptionsHandler, ...defaultPlugins()],
 });
 </script>
 ```

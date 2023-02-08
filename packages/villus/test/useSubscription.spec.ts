@@ -7,6 +7,7 @@ import { makeObservable, tick } from './helpers/observer';
 import { defaultPlugins, handleSubscriptions, useClient, useSubscription } from '../src/index';
 import { computed, ref } from 'vue';
 import { print } from 'graphql';
+import { createClient } from 'graphql-ws';
 
 jest.useFakeTimers();
 
@@ -413,4 +414,36 @@ test('normalizes subscription queries', async () => {
       `
     )
   );
+});
+
+test('ensure type compatability with graphql-ws', async () => {
+  const wsClient = createClient({
+    url: 'ws://localhost:9005/graphql',
+  });
+
+  const subscriptionForwarder = handleSubscriptions(operation => {
+    return {
+      subscribe: obs => {
+        wsClient.subscribe(
+          {
+            query: operation.query,
+            variables: operation.variables,
+          },
+          obs
+        );
+
+        return {
+          unsubscribe: () => {
+            // No OP
+          },
+        };
+      },
+    };
+  });
+
+  expect(subscriptionForwarder).toBeTruthy();
+  useClient({
+    url: 'https://test.com/graphql',
+    use: [subscriptionForwarder],
+  });
 });
