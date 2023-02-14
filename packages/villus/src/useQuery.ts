@@ -23,6 +23,8 @@ export interface QueryCompositeOptions<TData, TVars> {
   paused?: QueryPredicateOrSignal<TVars>;
   skip?: QueryPredicateOrSignal<TVars>;
   tags?: string[];
+  onSuccess?: (data: TData) => void;
+  onError?: (err: CombinedError) => void;
 }
 
 export interface QueryExecutionOpts<TVars> {
@@ -59,7 +61,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
     });
   }
 
-  const { query, variables, cachePolicy, fetchOnMount, paused, skip } = normalizeOptions(opts);
+  const { query, variables, cachePolicy, fetchOnMount, paused, skip, onSuccess, onError } = normalizeOptions(opts);
   let currentFetchOnMount = fetchOnMount;
   const data: Ref<TData | null> = ref(null);
   const isFetching = ref<boolean>(fetchOnMount ?? false);
@@ -72,6 +74,8 @@ function useQuery<TData = any, TVars = QueryVariables>(
   const isCurrentlyPaused = () => unravel(paused, (variables || {}) as TVars);
 
   function onResultChanged(result: OperationResult<TData>) {
+    if (result.data) onSuccess?.(result.data);
+    if (result.error) onError?.(result.error);
     data.value = result.data as TData;
     error.value = result.error;
   }
