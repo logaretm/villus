@@ -21,11 +21,11 @@ The `useSubscription` function returns the following properties and functions:
 
 The `useSubscription` function accepts two arguments, the first being the operation object which contains the following properties:
 
-| Property  | Type                                        | Required        | Description                     |
-| --------- | ------------------------------------------- | --------------- | ------------------------------- | -------------------------------------------------------------------------------------------------- |
-| query     | `string` or `DocumentNode` or `Ref<string>` | **Yes**         | The subscription to be executed |
-| variables | `object` or `Ref<object>`                   | **No**          | The subscription variables      |
-| paused    | `Ref<boolean>`                              | `() => boolean` | **No**                          | If the subscription should be paused, if `true` any incoming values will be ignored by the reducer |
+| Property  | Type                                                      | Required  | Description                     |
+| --------- | --------------------------------------------------------- | --------- | ------------------------------- |
+| query     | `string` or `DocumentNode` or `Ref<string>`               | **Yes**   | The subscription to be executed |
+| variables | `object` or `Ref<object>`                                 | **No**    | The subscription variables      |
+| paused    | `boolean`, `Ref<boolean>` or `({ variables }) => boolean` | **No**    | If the subscription should be paused, if `true` any incoming values will be ignored by the reducer |
 
 The second argument is what is called a `Reducer` which allows you to aggregate subscription results. For more information about that, [check the subscription guide](/guide/subscriptions).
 
