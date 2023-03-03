@@ -1200,4 +1200,128 @@ describe('useQuery()', () => {
 
     server.resetHandlers();
   });
+
+  test('onSuccess hook is called when query get data', async () => {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const posts = ref<Post[]>();
+
+        const { error } = useQuery<{ posts: Post[] }>({
+          query: PostsQuery,
+          onSuccess: data => (posts.value = data.posts),
+        });
+
+        return { error, posts };
+      },
+      template: `
+    <div>'
+      <div>{{ error }}</div>
+      <ul v-if="posts">
+        <li v-for="post in posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(document.querySelectorAll('li').length).toBe(5);
+    });
+  });
+
+  test('onError hook is called when query get error', async () => {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const errorMessage = ref<string>();
+
+        const { data } = useQuery({
+          query: QueryWithGqlError,
+          onError: err => (errorMessage.value = err.message),
+        });
+
+        return { data, errorMessage };
+      },
+      template: `
+    <div>
+      <div v-if="data">
+        <h1>It shouldn't work!</h1>
+      </div>
+      <p id="error" v-if="errorMessage">{{ errorMessage }}</p>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(document.querySelector('#error')?.textContent).toMatch(/Not authenticated/);
+    });
+  });
+
+  test('onSuccess hook is not called when query get error', async () => {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const posts = ref<Post[]>();
+
+        const { error } = useQuery({
+          query: QueryWithGqlError,
+          onSuccess: data => (posts.value = data.posts),
+        });
+
+        return { error, posts };
+      },
+      template: `
+    <div>'
+      <div>{{ error }}</div>
+      <ul v-if="posts">
+        <li v-for="post in posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(document.querySelectorAll('li').length).toBe(0);
+    });
+  });
+
+  test('onError hook is not called when query get data', async () => {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const errorMessage = ref<string>();
+
+        const { data } = useQuery<{ posts: Post[] }>({
+          query: PostsQuery,
+          onError: err => (errorMessage.value = err.message),
+        });
+
+        return { data, errorMessage };
+      },
+      template: `
+    <div>
+      <div v-if="data">
+        <h1>It shouldn't work!</h1>
+      </div>
+      <p id="error" v-if="errorMessage">{{ errorMessage }}</p>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(document.querySelector('#error')?.textContent).toBeUndefined();
+    });
+  });
 });

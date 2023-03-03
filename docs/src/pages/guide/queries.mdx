@@ -693,3 +693,43 @@ Whenever a re-fetch is triggered, or the query was executed again, the `isFetchi
 The default value for `isFetching` is `true` if `fetchOnMount` is enabled, otherwise it will default to `false`.
 
 </DocTip>
+
+## Event hooks
+
+useQuery returns event hooks allowing you to execute code when a specific event occurs.
+
+### onSuccess
+
+This is called whenever a new result is available.
+
+```vue
+<script setup>
+import { useQuery } from 'villus';
+
+const { data } = useQuery({
+  query: GetPostById,
+  variables,
+  onSuccess: (data) => {
+    console.log(data)
+  },
+});
+</script>
+```
+
+### onError
+
+It is triggered when an error occurs.
+
+```vue
+<script setup>
+import { useQuery } from 'villus';
+
+const { data } = useQuery({
+  query: GetPostById,
+  variables,
+  onError: (err) => {
+    console.log(err)
+  },
+});
+</script>
+```
