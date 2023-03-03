@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/logaretm/villus/compare/v2.1.1...v2.2.0) (2023-03-03)
+
+
+### Features
+
+* add onSuccess and onError hooks in useQuery function ([151b928](https://github.com/logaretm/villus/commit/151b928f14147051a530845f362655db67d7bb4d))
+* **useQuery:** add tests ([2e3152a](https://github.com/logaretm/villus/commit/2e3152a7a5e2056100968f7b2ea893a0a11329e3))
+
+
+
+
+
 ## [2.1.1](https://github.com/logaretm/villus/compare/v2.1.0...v2.1.1) (2023-02-08)
 
 
