@@ -14,6 +14,8 @@ export type StandardOperationResult<TData = any> = ExecutionResult<TData>;
 
 export type QueryVariables = Record<string, any>;
 
+export type MaybePromise<T> = T | Promise<T>;
+
 export interface ObserverLike<T> {
   next: (value: T) => void;
   error: (err: any) => void;

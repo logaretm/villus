@@ -1,14 +1,14 @@
 import { normalizeQuery } from '../../shared/src/utils';
-import { ClientPlugin, ClientPluginOperation, ObservableLike, StandardOperationResult } from './types';
+import { ClientPlugin, ClientPluginOperation, ObservableLike, StandardOperationResult, MaybePromise } from './types';
 
 export type SubscriptionForwarder<TData = any> = (
   operation: ClientPluginOperation & { query: string }
-) => ObservableLike<StandardOperationResult<TData>>;
+) => MaybePromise<ObservableLike<StandardOperationResult<TData>>>;
 
 export function handleSubscriptions(forwarder: SubscriptionForwarder): ClientPlugin {
   const forward = forwarder;
 
-  return function subscriptionsHandlerPlugin({ operation, useResult }) {
+  return async function subscriptionsHandlerPlugin({ operation, useResult }) {
     if (operation.type !== 'subscription') {
       return;
     }
@@ -22,6 +22,8 @@ export function handleSubscriptions(forwarder: SubscriptionForwarder): ClientPlu
       throw new Error('A query must be provided.');
     }
 
-    useResult(forward({ ...operation, query: normalizedQuery }) as any, true);
+    const result = await forward({ ...operation, query: normalizedQuery });
+
+    useResult(result as any, true);
   };
 }

@@ -288,6 +288,47 @@ test('Can pause subscriptions initially', async () => {
   expect(document.querySelectorAll('li')).toHaveLength(2);
 });
 
+test('Skips subscribing if skip is true', async () => {
+  const unSubSpy = jest.fn();
+  const subSpy = jest.fn(() => ({
+    subscribe() {
+      return {
+        unsubscribe: unSubSpy,
+      };
+    },
+  }));
+
+  const id = ref(0);
+
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        use: [handleSubscriptions(subSpy), ...defaultPlugins()],
+      });
+
+      const query = `subscription (id) { newMessages }`;
+
+      const { data } = useSubscription<Message>({ query, variables: () => ({ id: id.value }), skip: ({ id }) => !id });
+
+      return { messages: data };
+    },
+    template: `<div></div>`,
+  });
+
+  await flushPromises();
+  expect(subSpy).not.toHaveBeenCalled();
+  expect(unSubSpy).not.toHaveBeenCalled();
+  id.value++;
+  await flushPromises();
+  expect(subSpy).toHaveBeenCalledTimes(1);
+  expect(unSubSpy).toHaveBeenCalledTimes(0);
+  id.value--;
+  await flushPromises();
+  expect(subSpy).toHaveBeenCalledTimes(1);
+  expect(unSubSpy).toHaveBeenCalledTimes(1);
+});
+
 test('Fails if provider was not resolved', () => {
   try {
     mount({

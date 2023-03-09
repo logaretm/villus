@@ -6,14 +6,16 @@ import {
   MaybeRef,
   StandardOperationResult,
   QueryPredicateOrSignal,
+  MaybeLazyOrRef,
 } from './types';
-import { CombinedError, isWatchable, unravel } from './utils';
+import { CombinedError, isWatchable, unravel, unwrap, debounceAsync, isEqual } from './utils';
 import { Operation } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
 interface SubscriptionCompositeOptions<TData, TVars> {
   query: MaybeRef<Operation<TData, TVars>['query']>;
-  variables?: MaybeRef<TVars>;
+  variables?: MaybeLazyOrRef<TVars>;
+  skip?: QueryPredicateOrSignal<TVars>;
   paused?: QueryPredicateOrSignal<TVars>;
   client?: Client;
 }
@@ -27,7 +29,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   reduce: Reducer<TData, TResult> = defaultReducer
 ) {
   const client = opts.client ?? resolveClient();
-  const { query, variables, paused } = opts;
+  const { query, variables, paused, skip } = opts;
   const data = ref<TResult | null>(reduce(null, { data: null, error: null }));
   const error: Ref<CombinedError | null> = ref(null);
   const isPaused = computed(() => unravel(paused, variables as TVars));
@@ -41,13 +43,17 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
    * if can not getCurrentInstance, the func use outside of setup, cannot get onMounted
    * when outside of setup initObserver immediately.
    */
-  let observer: Unsubscribable;
+  let observer: Unsubscribable | undefined;
 
-  async function initObserver() {
-    observer?.unsubscribe();
+  const subscribe = debounceAsync(async function subscribe() {
+    unsubscribe();
+    if (shouldSkip()) {
+      return;
+    }
+
     const result = await client.executeSubscription<TData, TVars>({
       query: unref(query),
-      variables: unref(variables) as TVars,
+      variables: unwrap(variables),
     });
 
     observer = result.subscribe({
@@ -74,30 +80,53 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     });
 
     return observer;
+  });
+
+  function unsubscribe() {
+    observer?.unsubscribe();
+    observer = undefined;
   }
 
   const vm = getCurrentInstance();
-  if (!isPaused.value) {
-    vm ? onMounted(initObserver) : initObserver();
+  if (!isPaused.value && !shouldSkip()) {
+    vm ? onMounted(subscribe) : subscribe();
   }
 
   // TODO: if outside of setup, it should be recommend manually pause it(or some action else)
-  vm && onBeforeUnmount(() => observer?.unsubscribe());
+  vm && onBeforeUnmount(unsubscribe);
+
+  function shouldSkip() {
+    return unravel(skip, unwrap(variables) || {});
+  }
 
   if (isWatchable(paused)) {
     watch(paused, val => {
       if (!val) {
-        initObserver();
+        subscribe();
       }
     });
   }
 
   if (isRef(query)) {
-    watch(query, initObserver);
+    watch(query, subscribe);
   }
 
-  if (isRef(variables)) {
-    watch(variables, initObserver);
+  if (isWatchable(variables)) {
+    watch(variables, (value, oldValue) => {
+      if (!isEqual(value, oldValue)) {
+        subscribe();
+      }
+    });
+  }
+
+  if (isWatchable(skip)) {
+    watch(shouldSkip, (value, oldValue) => {
+      if (value === oldValue) {
+        return;
+      }
+
+      value ? unsubscribe() : subscribe();
+    });
   }
 
   return { data, error, paused: isPaused };
