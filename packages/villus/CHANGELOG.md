@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/logaretm/villus/compare/v2.2.0...v2.2.1) (2023-03-09)
+
+
+### Bug Fixes
+
+* subscriptions enhancements ([b88190b](https://github.com/logaretm/villus/commit/b88190b8528d6d9dfd7aad7514647cce6f2b4bff))
+
+
+
+
+
 # [2.2.0](https://github.com/logaretm/villus/compare/v2.1.1...v2.2.0) (2023-03-03)
 
 
