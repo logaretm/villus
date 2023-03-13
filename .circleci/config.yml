@@ -12,23 +12,33 @@ jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   test:
     docker:
-      - image: cimg/node:16.13
+      - image: cimg/node:19.7
     steps:
       # Checkout the code as the first step.
       - checkout
-      # Next, the node orb's install-packages step will install the dependencies from a package.json.
-      # The orb install-packages step will also automatically cache them for faster future runs.
-      - node/install-packages:
-          pkg-manager: yarn
+      - restore_cache:
+          name: Restore pnpm Package Cache
+          keys:
+            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
       - run:
-          name: Bootstrap Monorepo
-          command: yarn lerna bootstrap
+          name: Install pnpm package manager
+          command: |
+            corepack enable
+            corepack prepare pnpm@latest-7 --activate
+      - run:
+          name: Install dependencies
+          command: pnpm install
+      - save_cache:
+          name: Save pnpm Package Cache
+          key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - node_modules
       - run:
           name: Build
-          command: yarn build
+          command: pnpm build
       - run:
           name: Generate Coverage
-          command: npm run cover:ci
+          command: pnpm cover:ci
       - run:
           name: Upload Coverage
           command: bash <(curl -s https://codecov.io/bash)

@@ -1,8 +1,12 @@
-const path = require('path');
-const typescript = require('rollup-plugin-typescript2');
-const replace = require('rollup-plugin-replace');
-const commonjs = require('rollup-plugin-commonjs');
-const resolve = require('rollup-plugin-node-resolve');
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import typescript from 'rollup-plugin-typescript2';
+import replace from 'rollup-plugin-replace';
+import commonjs from 'rollup-plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const formatNameMap = {
   villus: 'Villus',
@@ -48,7 +52,7 @@ const formatMap = {
   umd: '',
 };
 
-function createConfig(pkg, format) {
+async function createConfig(pkg, format) {
   const tsPlugin = typescript({
     tsconfig: path.resolve(__dirname, '../tsconfig.json'),
     cacheRoot: path.resolve(__dirname, '../node_modules/.rts2_cache'),
@@ -58,7 +62,14 @@ function createConfig(pkg, format) {
     },
   });
 
-  const version = require(path.resolve(__dirname, `../packages/${pkg}/package.json`)).version;
+  // An import assertion in a dynamic import
+  const { default: info } = await import(path.resolve(__dirname, `../packages/${pkg}/package.json`), {
+    assert: {
+      type: 'json',
+    },
+  });
+
+  const { version } = info;
 
   const config = {
     input: {
@@ -98,9 +109,4 @@ function createConfig(pkg, format) {
   return config;
 }
 
-module.exports = {
-  formatNameMap,
-  pkgNameMap,
-  formatMap,
-  createConfig,
-};
+export { formatNameMap, pkgNameMap, formatMap, createConfig };
