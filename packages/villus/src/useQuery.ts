@@ -204,7 +204,7 @@ function normalizeOptions<TData, TVars>(
   return {
     ...defaultOpts,
     ...opts,
-    query: opts.query as NonNullable<typeof opts['query']>,
+    query: opts.query as NonNullable<(typeof opts)['query']>,
   };
 }
 

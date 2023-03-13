@@ -4,7 +4,7 @@ import { makeFetchOptions, resolveGlobalFetch, parseResponse } from '../../share
 import { CombinedError } from './utils';
 
 interface FetchPluginOpts {
-  fetch?: typeof window['fetch'];
+  fetch?: (typeof window)['fetch'];
 }
 
 export function fetch(opts?: FetchPluginOpts): ClientPlugin {

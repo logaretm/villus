@@ -48,7 +48,7 @@ test('throws if no plugins set the result for the operation', async () => {
     use: [],
   });
 
-  await expect(client.executeQuery({ query: PostsQuery })).rejects.toThrowError(
+  await expect(client.executeQuery({ query: PostsQuery })).rejects.toThrow(
     'Operation result was not set by any plugin, make sure you have default plugins configured or review documentation'
   );
 });
