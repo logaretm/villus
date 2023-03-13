@@ -6,14 +6,14 @@ jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   test:
     docker:
-      - image: cimg/node:18.15
+      - image: cimg/node:18
     steps:
       # Checkout the code as the first step.
       - checkout
       - restore_cache:
           name: Restore pnpm Package Cache
           keys:
-            - pnpm-packages-v2-{{ checksum "pnpm-lock.yaml" }}
+            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
       - run:
           name: Install pnpm package manager
           command: |
