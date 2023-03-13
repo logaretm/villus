@@ -136,7 +136,7 @@ importers:
 
   packages/batch:
     specifiers:
-      villus: ^2.2.1
+      villus: '*'
     dependencies:
       villus: link:../villus
 
@@ -144,7 +144,7 @@ importers:
     specifiers:
       '@types/extract-files': ^8.1.0
       extract-files: ^11.0.0
-      villus: ^2.2.1
+      villus: '*'
     dependencies:
       extract-files: 11.0.0
       villus: link:../villus
