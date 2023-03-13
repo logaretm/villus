@@ -13,7 +13,7 @@ jobs:
       - restore_cache:
           name: Restore pnpm Package Cache
           keys:
-            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+            - pnpm-packages-v2-{{ checksum "pnpm-lock.yaml" }}
       - run:
           name: Install pnpm package manager
           command: |
