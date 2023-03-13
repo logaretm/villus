@@ -16,7 +16,7 @@
   "repository": "https://github.com/logaretm/villus",
   "sideEffects": false,
   "dependencies": {
-    "villus": "*"
+    "villus": "^2.2.1"
   },
   "keywords": [
     "VueJS",
