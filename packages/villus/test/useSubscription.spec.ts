@@ -488,3 +488,60 @@ test('ensure type compatability with graphql-ws', async () => {
     use: [subscriptionForwarder],
   });
 });
+
+test('Allows providing initial data', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
+      });
+
+      const { data } = useSubscription<Message>({
+        query: `subscription { newMessages }`,
+        initialData: { id: 1, message: 'initial' },
+      });
+
+      return { data };
+    },
+    template: `
+      <div>
+          <span>{{ data.message }}</span>
+      </div>
+    `,
+  });
+
+  await flushPromises();
+  expect(document.querySelector('span')?.textContent).toBe('initial');
+  jest.advanceTimersByTime(101);
+  await flushPromises();
+  expect(document.querySelector('span')?.textContent).toBe('New message');
+});
+
+test('isFetching is set to true until initial data is received', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
+      });
+
+      const { isFetching } = useSubscription<Message>({
+        query: `subscription { newMessages }`,
+      });
+
+      return { isFetching };
+    },
+    template: `
+      <div>
+          <span>{{ isFetching }}</span>
+      </div>
+    `,
+  });
+
+  await flushPromises();
+  expect(document.querySelector('span')?.textContent).toBe('true');
+  jest.advanceTimersByTime(101);
+  await flushPromises();
+  expect(document.querySelector('span')?.textContent).toBe('false');
+});

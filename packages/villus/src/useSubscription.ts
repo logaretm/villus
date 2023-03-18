@@ -12,12 +12,13 @@ import { CombinedError, isWatchable, unravel, unwrap, debounceAsync, isEqual } f
 import { Operation } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
-interface SubscriptionCompositeOptions<TData, TVars> {
+interface SubscriptionCompositeOptions<TData, TVars, TResult = TData> {
   query: MaybeRef<Operation<TData, TVars>['query']>;
   variables?: MaybeLazyOrRef<TVars>;
   skip?: QueryPredicateOrSignal<TVars>;
   paused?: QueryPredicateOrSignal<TVars>;
   client?: Client;
+  initialData?: TResult;
 }
 
 export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value: OperationResult<TData>) => TResult;
@@ -25,14 +26,15 @@ export type Reducer<TData = any, TResult = TData> = (prev: TResult | null, value
 export const defaultReducer: Reducer = (_, val) => val.data;
 
 export function useSubscription<TData = any, TResult = TData, TVars = QueryVariables>(
-  opts: SubscriptionCompositeOptions<TData, TVars>,
+  opts: SubscriptionCompositeOptions<TData, TVars, TResult>,
   reduce: Reducer<TData, TResult> = defaultReducer
 ) {
   const client = opts.client ?? resolveClient();
   const { query, variables, paused, skip } = opts;
-  const data = ref<TResult | null>(reduce(null, { data: null, error: null }));
+  const data = ref<TResult | null>(opts?.initialData ?? reduce(null, { data: null, error: null }));
   const error: Ref<CombinedError | null> = ref(null);
   const isPaused = computed(() => unravel(paused, variables as TVars));
+  const isFetching = ref(true);
 
   function handleResponse(result: OperationResult<TData>) {
     data.value = reduce(data.value as TResult, result) as any;
@@ -51,6 +53,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
       return;
     }
 
+    isFetching.value = true;
     const result = await client.executeSubscription<TData, TVars>({
       query: unref(query),
       variables: unwrap(variables),
@@ -63,6 +66,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
         }
 
         const response = transformResult(result);
+        isFetching.value = false;
 
         handleResponse(response);
       },
@@ -74,6 +78,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
         }
 
         const response = { data: null, error: new CombinedError({ networkError: err, response: null }) };
+        isFetching.value = false;
 
         return handleResponse(response);
       },
@@ -129,7 +134,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     });
   }
 
-  return { data, error, paused: isPaused };
+  return { data, error, paused: isPaused, isFetching };
 }
 
 /**

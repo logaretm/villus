@@ -18,6 +18,7 @@ import {
   QueryOperation,
   MutationOperation,
   SubscriptionOperation,
+  ClientPluginOperation,
 } from './types';
 import { VILLUS_CLIENT } from './symbols';
 import { App, getCurrentInstance, inject, InjectionKey } from 'vue';
@@ -122,7 +123,7 @@ export class Client {
         type,
         cachePolicy:
           ('cachePolicy' in operation ? operation.cachePolicy : this.defaultCachePolicy) || this.defaultCachePolicy,
-      },
+      } as ClientPluginOperation,
       opContext,
     };
 
