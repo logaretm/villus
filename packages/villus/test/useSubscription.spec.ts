@@ -133,7 +133,7 @@ test('Handles subscriptions with a custom reducer', async () => {
 
       const { data } = useSubscription<Message, string[]>(
         { query: `subscription { newMessages }` },
-        (oldMessages, response) => {
+        (response, oldMessages) => {
           if (!response.data || !oldMessages) {
             return oldMessages || [];
           }
@@ -167,7 +167,7 @@ test('Handles observer errors', async () => {
         use: [handleSubscriptions(() => makeObservable(true)), ...defaultPlugins()],
       });
 
-      function reduce(oldMessages: string[] | null, response: any): string[] {
+      function reduce(response: any, oldMessages: string[] | null): string[] {
         if (!response.data || !oldMessages) {
           return oldMessages || [];
         }
@@ -204,7 +204,7 @@ test('Pauses and resumes subscriptions', async () => {
         use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
       });
 
-      function reduce(oldMessages: string[] | null, response: any) {
+      function reduce(response: any, oldMessages: string[] | null) {
         if (!response.data || !oldMessages) {
           return oldMessages || [];
         }
@@ -252,7 +252,7 @@ test('Can pause subscriptions initially', async () => {
         use: [handleSubscriptions(() => makeObservable()), ...defaultPlugins()],
       });
 
-      function reduce(oldMessages: string[] | null, response: any) {
+      function reduce(response: any, oldMessages: string[] | null) {
         if (!response.data || !oldMessages) {
           return oldMessages || [];
         }
