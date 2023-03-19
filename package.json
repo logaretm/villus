@@ -24,6 +24,7 @@
     "@types/node-fetch": "^2.6.2",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
+    "@vitest/coverage-c8": "^0.29.3",
     "@vue/compiler-sfc": "^3.2.47",
     "bundlesize": "^0.18.0",
     "chalk": "^5.2.0",
