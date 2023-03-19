@@ -126,7 +126,7 @@ to understand the difference between a mapper and a reducer check the next coupl
 
 In the following example, the passed function only extracts the `lastMessage` field out from the response data. That means it only returns a mapped version of the last result recieved.
 
-```vue{18-20}
+```vue{19-22}
 <script setup>
 import { useSubscription } from 'villus';
 
@@ -158,7 +158,7 @@ lastMessage.value; // { id: 1, from: 'someone', message: 'hello' }
 
 This is useful for subscriptions that represent a live state for something on your API. You are not limited to mapping the results in a specific way, for example if you want to return a boolean, you can do so:
 
-```vue{18-20}
+```vue{17-19}
 <script setup>
 import { useSubscription } from 'villus';
 
@@ -193,7 +193,7 @@ The reducer is a subscription handler that aggregates past and future results in
 
 Here is the last example with a custom reducer:
 
-```vue
+```vue{19-29}
 <script setup>
 import { useSubscription } from 'villus';
 

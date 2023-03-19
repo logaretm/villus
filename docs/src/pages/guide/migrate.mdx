@@ -2,7 +2,7 @@
 layout: ../../layouts/PageLayout.astro
 title: Migration Guide
 description: Migrating from villus 2.x to 3.0
-order: 8
+order: 9
 ---
 
 # Migration Guide
@@ -22,7 +22,7 @@ This makes the reducer more flexible as it can now be used as either a callback 
 
 Here is how to migrate:
 
-```diff-ts
+```diff
 - function reduceMessages(old, incoming) {
 + function reduceMessages(incoming, old) {
   // reduce values
@@ -35,7 +35,7 @@ For consistency, the recently introduced `onSuccess` option on `useQuery` has be
 
 Here is how to migrate:
 
-```diff-ts
+```diff
 import { useQuery } from 'villus';
 
 useQuery({

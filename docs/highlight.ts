@@ -17,7 +17,7 @@ const LANG_REPLACEMENTS = {
 const highlighterPromise = shiki.getHighlighter({
   // Complete themes: https://github.com/shikijs/shiki/tree/master/packages/themes
   theme: theme as any,
-  langs: ['js', 'ts', 'vue', 'graphql', 'jsx', 'css', 'sh', 'yaml', 'json', 'vue-html', 'html'],
+  langs: ['js', 'ts', 'vue', 'graphql', 'jsx', 'css', 'sh', 'yaml', 'json', 'vue-html', 'html', 'diff'],
 });
 
 export default function highlight() {
