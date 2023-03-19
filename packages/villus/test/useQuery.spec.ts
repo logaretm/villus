@@ -6,7 +6,7 @@ import { server } from './mocks/server';
 import flushPromises from 'flush-promises';
 import waitForExpect from 'wait-for-expect';
 import { mount } from './helpers/mount';
-import { useClient, useQuery, cache as cachePlugin, fetch as fetchPlugin } from '../src/index';
+import { useClient, useQuery, cache as cachePlugin, fetch as fetchPlugin, CombinedError } from '../src/index';
 import {
   PostsQuery,
   QueryWithGqlError,
@@ -1317,6 +1317,130 @@ describe('useQuery()', () => {
     await flushPromises();
     await waitForExpect(() => {
       expect(document.querySelector('#error')?.textContent).toBeUndefined();
+    });
+  });
+
+  test('can have multiple onData hooks', async () => {
+    const spies = [vi.fn(), vi.fn()] as const;
+    const errorSpy = vi.fn();
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { onData, onError } = useQuery<{ posts: Post[] }>({
+          query: PostsQuery,
+        });
+
+        onData(spies[0]);
+        onData(spies[1]);
+        onError(errorSpy);
+      },
+      template: `<div></div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(spies[0]).toHaveBeenCalledWith(
+        expect.objectContaining({
+          posts: expect.any(Array),
+        })
+      );
+      expect(spies[1]).toHaveBeenCalledWith(
+        expect.objectContaining({
+          posts: expect.any(Array),
+        })
+      );
+
+      expect(errorSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  test('can have multiple onError hooks', async () => {
+    const spies = [vi.fn(), vi.fn()] as const;
+    const dataSpy = vi.fn();
+
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { onError, onData } = useQuery({
+          query: QueryWithGqlError,
+        });
+
+        onError(spies[0]);
+        onError(spies[1]);
+        onData(dataSpy);
+      },
+      template: `<div></div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(spies[0]).toHaveBeenCalledWith(expect.any(CombinedError));
+      expect(spies[1]).toHaveBeenCalledWith(expect.any(CombinedError));
+      expect(dataSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  test('can unregister data hooks', async () => {
+    const spies = [vi.fn(), vi.fn()] as const;
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { onData } = useQuery<{ posts: Post[] }>({
+          query: PostsQuery,
+        });
+
+        onData(spies[0]);
+        const unregister = onData(spies[1]);
+        unregister();
+      },
+      template: `<div></div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(spies[0]).toHaveBeenCalledWith(
+        expect.objectContaining({
+          posts: expect.any(Array),
+        })
+      );
+
+      expect(spies[1]).not.toHaveBeenCalled();
+    });
+  });
+
+  test('can unregister onError hooks', async () => {
+    const spies = [vi.fn(), vi.fn()] as const;
+
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { onError } = useQuery({
+          query: QueryWithGqlError,
+        });
+
+        onError(spies[0]);
+        const unregister = onError(spies[1]);
+        unregister();
+      },
+      template: `<div></div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(spies[0]).toHaveBeenCalledWith(expect.any(CombinedError));
+      expect(spies[1]).not.toHaveBeenCalled();
     });
   });
 });

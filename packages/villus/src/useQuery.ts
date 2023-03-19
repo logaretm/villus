@@ -9,7 +9,7 @@ import {
   QueryVariables,
   QueryPredicateOrSignal,
 } from './types';
-import { hash, CombinedError, unwrap, isWatchable, unravel } from './utils';
+import { hash, CombinedError, unwrap, isWatchable, unravel, useCallback } from './utils';
 import { Operation } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
@@ -32,11 +32,18 @@ export interface QueryExecutionOpts<TVars> {
   variables: TVars;
 }
 
+export type DataHookHandler<TData> = (data: TData) => unknown;
+export type ErrorHookHandler = (error: CombinedError) => unknown;
+
+type UnregisterHookFn = () => void;
+
 export interface BaseQueryApi<TData = any, TVars = QueryVariables> {
   data: Ref<TData | null>;
   isFetching: Ref<boolean>;
   isDone: Ref<boolean>;
   error: Ref<CombinedError | null>;
+  onData(handler: DataHookHandler<TData>): UnregisterHookFn;
+  onError(handler: ErrorHookHandler): UnregisterHookFn;
   execute(
     overrideOpts?: Partial<QueryExecutionOpts<TVars>>
   ): Promise<{ data: TData | null; error: CombinedError | null }>;
@@ -50,7 +57,6 @@ function useQuery<TData = any, TVars = QueryVariables>(
   opts: QueryCompositeOptions<TData, TVars>
 ): QueryApi<TData, TVars> {
   const client = opts?.client ?? resolveClient();
-
   if (opts.tags) {
     const id = client.registerTaggedQuery(opts.tags, async () => {
       await execute();
@@ -61,7 +67,16 @@ function useQuery<TData = any, TVars = QueryVariables>(
     });
   }
 
-  const { query, variables, cachePolicy, fetchOnMount, paused, skip, onSuccess, onError } = normalizeOptions(opts);
+  const {
+    query,
+    variables,
+    cachePolicy,
+    fetchOnMount,
+    paused,
+    skip,
+    onSuccess: dataHook,
+    onError: errorHook,
+  } = normalizeOptions(opts);
   let currentFetchOnMount = fetchOnMount;
   const data: Ref<TData | null> = ref(null);
   const isFetching = ref<boolean>(fetchOnMount ?? false);
@@ -69,13 +84,30 @@ function useQuery<TData = any, TVars = QueryVariables>(
   const isStale = ref(true);
   const error: Ref<CombinedError | null> = ref(null);
 
+  const { on: onData, run: executeDataHooks } = useCallback<DataHookHandler<TData>>();
+  const { on: onError, run: executeErrorHooks } = useCallback<ErrorHookHandler>();
+
+  if (dataHook) {
+    onData(dataHook);
+  }
+
+  if (errorHook) {
+    onError(errorHook);
+  }
+
   // This is to prevent state mutation for racing requests, basically favoring the very last one
   let lastPendingOperation: Promise<OperationResult<TData>> | undefined;
   const isCurrentlyPaused = () => unravel(paused, (variables || {}) as TVars);
 
   function onResultChanged(result: OperationResult<TData>) {
-    if (result.data) onSuccess?.(result.data);
-    if (result.error) onError?.(result.error);
+    if (result.data) {
+      executeDataHooks(result.data);
+    }
+
+    if (result.error) {
+      executeErrorHooks(result.error);
+    }
+
     data.value = result.data as TData;
     error.value = result.error;
   }
@@ -168,7 +200,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
 
   initVarWatchers();
 
-  const api = { data, isFetching, isDone, error, execute };
+  const api = { data, isFetching, isDone, error, execute, onData, onError };
 
   /**
    * if can not getCurrentInstance, the func use outside of setup, cannot get onMounted

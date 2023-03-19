@@ -63,3 +63,25 @@ export function debounceAsync<TFunction extends (...args: any) => Promise<any>, 
 export function isEqual(lhs: unknown, rhs: unknown) {
   return stringify(lhs) === stringify(rhs);
 }
+
+export function useCallback<THandler extends (...a: any[]) => any>() {
+  const hooks: Set<THandler> = new Set();
+  function on(handler: THandler) {
+    hooks.add(handler);
+
+    return () => {
+      hooks.delete(handler);
+    };
+  }
+
+  async function run(...args: Parameters<THandler>) {
+    for (const hook of hooks) {
+      await hook(...args);
+    }
+  }
+
+  return {
+    on,
+    run,
+  };
+}
