@@ -1196,7 +1196,7 @@ describe('useQuery()', () => {
     server.resetHandlers();
   });
 
-  test('onSuccess hook is called when query get data', async () => {
+  test('onData option hook is called when query get data', async () => {
     mount({
       setup() {
         useClient({
@@ -1207,7 +1207,7 @@ describe('useQuery()', () => {
 
         const { error } = useQuery<{ posts: Post[] }>({
           query: PostsQuery,
-          onSuccess: data => (posts.value = data.posts),
+          onData: data => (posts.value = data.posts),
         });
 
         return { error, posts };
@@ -1258,7 +1258,7 @@ describe('useQuery()', () => {
     });
   });
 
-  test('onSuccess hook is not called when query get error', async () => {
+  test('onData option hook is not called when query get error', async () => {
     mount({
       setup() {
         useClient({
@@ -1269,7 +1269,7 @@ describe('useQuery()', () => {
 
         const { error } = useQuery({
           query: QueryWithGqlError,
-          onSuccess: data => (posts.value = data.posts),
+          onData: data => (posts.value = data.posts),
         });
 
         return { error, posts };

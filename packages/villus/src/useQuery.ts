@@ -23,7 +23,7 @@ export interface QueryCompositeOptions<TData, TVars> {
   paused?: QueryPredicateOrSignal<TVars>;
   skip?: QueryPredicateOrSignal<TVars>;
   tags?: string[];
-  onSuccess?: (data: TData) => void;
+  onData?: (data: TData) => void;
   onError?: (err: CombinedError) => void;
 }
 
@@ -74,7 +74,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
     fetchOnMount,
     paused,
     skip,
-    onSuccess: dataHook,
+    onData: dataHook,
     onError: errorHook,
   } = normalizeOptions(opts);
   let currentFetchOnMount = fetchOnMount;
