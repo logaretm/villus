@@ -77,11 +77,16 @@ const NewMessages = `
   }
 `;
 
-const { data } = useSubscription({ query: NewMessages });
 const messages = ref([]);
-watch(data, incoming => {
+useSubscription({ query: NewMessages }, ({ data, error }) => {
   // do stuff with incoming data
-  messages.value.push(incoming);
+  if (data) {
+    messages.value.push(...data.newMessages);
+  }
+
+  // Handler errors
+  if (error) {
+  }
 });
 </script>
 ```
@@ -113,22 +118,84 @@ const { data } = useSubscription({
 
 ## Handling Subscription Data
 
-The previous examples are not very useful, as usually you would like to be able to use the `data` as a continuous value rather than a reference to the last received value, that is why you can pass a custom reducer as the second argument to the `useSubscription` function, think of it as a subscription handler that aggregates the results into a single value. The aggregated value will become the `data` returned from `useSubscription`.
+The previous examples are not very useful, as usually you would like to be able to use the `data` as a continuous value rather than a reference to the last received value, that is why you can pass a custom mapper or a reducer as the second argument to the `useSubscription` function. This callback function receives the new result from the subscription as the first argument, and the reduced data if available as the second argument. You can use it as either a mapper or a reducer depending on what you return from the function.
 
-Here is the last example with a custom reducer, we will be covering the `setup` function only since the rest of the component is mostly the same:
+to understand the difference between a mapper and a reducer check the next couple of examples.
+
+### Mapping data
+
+In the following example, the passed function only extracts the `lastMessage` field out from the response data. That means it only returns a mapped version of the last result recieved.
+
+```vue{18-20}
+<script setup>
+import { useSubscription } from 'villus';
+
+const LastMessage = `
+  subscription LastMessage {
+    lastMessage {
+      id
+      from
+      message
+    }
+  }
+`;
+
+// rename data to be more descriptive of its usage
+const { data: lastMessage } = useSubscription(
+  {
+    query: LastMessage,
+  },
+  ({ data }) => {
+    // remember that data can be null
+    return data?.lastMessage;
+  }
+);
+
+// anywhere
+lastMessage.value; // { id: 1, from: 'someone', message: 'hello' }
+</script>
+```
+
+This is useful for subscriptions that represent a live state for something on your API. You are not limited to mapping the results in a specific way, for example if you want to return a boolean, you can do so:
+
+```vue{18-20}
+<script setup>
+import { useSubscription } from 'villus';
+
+const UnreadMessages = `
+  subscription UnreadMessages {
+    unreadMessages {
+      id
+    }
+  }
+`;
+
+// rename data to be more descriptive of its usage
+const { data: hasUnread } = useSubscription(
+  {
+    query: UnreadMessages,
+  },
+  ({ data }) => {
+    return data?.unreadMessages.length > 1
+  }
+);
+
+// anywhere
+hasUnread.value; // true or false
+</script>
+```
+
+So it is completely is up to you how to map the data and make them useful to your needs.
+
+### Reducing data
+
+The reducer is a subscription handler that aggregates past and future results into a single value. The aggregated value will become the `data` returned from `useSubscription`.
+
+Here is the last example with a custom reducer:
 
 ```vue
 <script setup>
 import { useSubscription } from 'villus';
-
-function reduceMessages(oldValue, response) {
-  oldValue = oldValue || [];
-  if (!response.data || response.errors) {
-    return oldValue;
-  }
-
-  return [...oldValue, response.data.newMessages];
-}
 
 const NewMessages = `
   subscription NewMessages {
@@ -140,16 +207,29 @@ const NewMessages = `
   }
 `;
 
-const { data } = useSubscription(
+// rename data to make it more clear
+const { data: messages } = useSubscription(
   {
     query: NewMessages,
   },
-  reduceMessages
+  ({ data, error }, oldValue) => {
+    // old value is nullable
+    oldValue = oldValue || [];
+    // in case of error just return the last value
+    if (!data || error) {
+      return oldValue;
+    }
+
+    // combine old and incoming messages
+    return [...oldValue, response.data.newMessages];
+  }
 );
+
+messages.value; // { id, from, message }[]
 </script>
 ```
 
-The `reduceMessages` function acts as a reducer for the incoming data, whenever a new response is received it will be passed to `reduceMessages` function as the second argument, the first argument will be the previous value.
+The function here acts as a reducer for the incoming data, whenever a new response is received it will be passed to `reduceMessages` function as the second argument, the first argument will be the previous value. This makes it more compact than having to declare state or watching over the data yourself.
 
 <DocTip>
 

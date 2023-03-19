@@ -1,0 +1,47 @@
+---
+layout: ../../layouts/PageLayout.astro
+title: Migration Guide
+description: Migrating from villus 2.x to 3.0
+order: 8
+---
+
+# Migration Guide
+
+## From 2.x to 3.0
+
+3.0 contains very few breaking changes.
+
+### useSubscription() reducer arguments
+
+For better TypeScript detection with TypedDocuments and more versastility with the reducer function, the argument order has been flipped.
+
+- So instead of getting the previous value as the first argument, you will get the new subscription result instead.
+- The second argument will recieve the previous reduced value.
+
+This makes the reducer more flexible as it can now be used as either a callback for when incoming data is received or a mapper if you only plan to use the last result or map it to a different value, or a reducer that combines the previous and incoming values if applicable.
+
+Here is how to migrate:
+
+```diff-ts
+- function reduceMessages(old, incoming) {
++ function reduceMessages(incoming, old) {
+  // reduce values
+}
+```
+
+### onSuccess query hook renamed
+
+For consistency, the recently introduced `onSuccess` option on `useQuery` has been renamed to `onData` to be more consistent with other naming conventions.
+
+Here is how to migrate:
+
+```diff-ts
+import { useQuery } from 'villus';
+
+useQuery({
+  query: GetPostById,
+  variables,
+-  onSuccess: data => console.log(data),
++  onData: data => console.log(data),
+});
+```

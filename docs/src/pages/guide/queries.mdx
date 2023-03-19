@@ -698,7 +698,7 @@ The default value for `isFetching` is `true` if `fetchOnMount` is enabled, other
 
 useQuery returns event hooks allowing you to execute code when a specific event occurs.
 
-### onSuccess
+### onData
 
 This is called whenever a new result is available.
 
@@ -706,29 +706,125 @@ This is called whenever a new result is available.
 <script setup>
 import { useQuery } from 'villus';
 
-const { data } = useQuery({
+const { onData } = useQuery({
   query: GetPostById,
   variables,
-  onSuccess: (data) => {
-    console.log(data)
-  },
+});
+
+onData(data => {
+  // Do something
+  console.log(data);
 });
 </script>
 ```
 
-### onError
+You can also register multiple callbacks, if you need to.
 
-It is triggered when an error occurs.
+```ts
+onData(data => {
+  // Do one thing
+});
+
+onData(data => {
+  // Do another
+});
+```
+
+You can unregister any callback by calling the function returned from calling `onData`.
 
 ```vue
 <script setup>
 import { useQuery } from 'villus';
 
-const { data } = useQuery({
+const { onData } = useQuery({
   query: GetPostById,
   variables,
-  onError: (err) => {
-    console.log(err)
+});
+
+const stop = onData(data => {
+  // Do something
+  console.log(data);
+});
+
+// removes the callback and will no longer execute
+stop();
+</script>
+```
+
+`useQuery` also accepts `onData` option if you are only interested in registering one callback:
+
+```ts
+import { useQuery } from 'villus';
+
+useQuery({
+  query: GetPostById,
+  variables,
+  onData: data => console.log(data),
+});
+```
+
+### onError
+
+only triggered when an error occurs.
+
+```vue
+<script setup>
+import { useQuery } from 'villus';
+
+const { onError } = useQuery({
+  query: GetPostById,
+  variables,
+});
+
+onError(error => {
+  // Handle the error
+});
+</script>
+```
+
+You can also register multiple callbacks, if you need to.
+
+```ts
+onError(error => {
+  // Do one thing
+});
+
+onError(error => {
+  // Do another
+});
+```
+
+You can unregister any callback by calling the function returned from calling `onError`.
+
+```vue
+<script setup>
+import { useQuery } from 'villus';
+
+const { onError } = useQuery({
+  query: GetPostById,
+  variables,
+});
+
+const stop = onError(error => {
+  // Do something
+});
+
+// removes the callback and will no longer execute
+stop();
+</script>
+```
+
+`useQuery` also accepts `onError` option if you are only interested in registering one callback:
+
+```vue
+<script setup>
+import { useQuery } from 'villus';
+
+useQuery({
+  query: GetPostById,
+  variables,
+  onError: err => {
+    console.log(err);
   },
 });
 </script>
