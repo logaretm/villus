@@ -1,4 +1,5 @@
 import { server } from './mocks/server';
+import { beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
 import { fetchMock } from './mocks/fetch';
 
 // Establish API mocking before all tests.

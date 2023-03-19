@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import flushPromises from 'flush-promises';
+import { test, expect } from 'vitest';
 import { multipart } from '../src/index';
 import { mount } from '../../villus/test/helpers/mount';
 import { useClient, useMutation, fetch } from '../../villus/src';
@@ -7,7 +8,6 @@ import { useClient, useMutation, fetch } from '../../villus/src';
 const content = { hello: 'world' };
 const file = new File([new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' })], 'index.ts');
 
-// eslint-disable-next-line jest/expect-expect
 test('handles single file uploads', async () => {
   mount({
     setup() {

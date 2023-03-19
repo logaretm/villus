@@ -1,6 +1,5 @@
-/* eslint-disable jest/no-conditional-expect */
-/* eslint-disable no-unused-expressions */
 import flushPromises from 'flush-promises';
+import { test, expect, vi } from 'vitest';
 import gql from 'graphql-tag';
 import { mount } from './helpers/mount';
 import { makeObservable, tick } from './helpers/observer';
@@ -9,7 +8,7 @@ import { computed, ref } from 'vue';
 import { print } from 'graphql';
 import { createClient } from 'graphql-ws';
 
-jest.useFakeTimers();
+vi.useFakeTimers();
 
 interface Message {
   id: number;
@@ -38,14 +37,14 @@ test('Default reducer', async () => {
   });
 
   await flushPromises();
-  jest.advanceTimersByTime(501);
+  vi.advanceTimersByTime(501);
   await flushPromises();
   expect(document.querySelector('span')?.textContent).toBe('4');
 });
 
 test('Re-executes subscriptions if query changes', async () => {
-  const unSubSpy = jest.fn();
-  const subSpy = jest.fn(() => ({
+  const unSubSpy = vi.fn();
+  const subSpy = vi.fn(() => ({
     subscribe() {
       return {
         unsubscribe: unSubSpy,
@@ -83,8 +82,8 @@ test('Re-executes subscriptions if query changes', async () => {
 });
 
 test('Re-executes subscriptions if variables changes', async () => {
-  const unSubSpy = jest.fn();
-  const subSpy = jest.fn(() => ({
+  const unSubSpy = vi.fn();
+  const subSpy = vi.fn(() => ({
     subscribe() {
       return {
         unsubscribe: unSubSpy,
@@ -154,7 +153,7 @@ test('Handles subscriptions with a custom reducer', async () => {
   });
 
   await flushPromises();
-  jest.advanceTimersByTime(501);
+  vi.advanceTimersByTime(501);
   await flushPromises();
   expect(document.querySelectorAll('li')).toHaveLength(5);
 });
@@ -190,7 +189,7 @@ test('Handles observer errors', async () => {
   });
 
   await flushPromises();
-  jest.advanceTimersByTime(150);
+  vi.advanceTimersByTime(150);
   await flushPromises();
   expect(document.querySelector('#error')?.textContent).toContain('oops!');
 });
@@ -227,7 +226,7 @@ test('Pauses and resumes subscriptions', async () => {
   });
 
   await flushPromises();
-  jest.advanceTimersByTime(201);
+  vi.advanceTimersByTime(201);
   // pauses subscription
   expect(document.querySelector('#status')?.textContent).toBe('false');
   paused.value = true;
@@ -236,7 +235,7 @@ test('Pauses and resumes subscriptions', async () => {
   expect(document.querySelector('#status')?.textContent).toBe('true');
   paused.value = false;
   await flushPromises();
-  jest.advanceTimersByTime(201);
+  vi.advanceTimersByTime(201);
   await flushPromises();
 
   expect(document.querySelectorAll('li')).toHaveLength(4);
@@ -275,22 +274,22 @@ test('Can pause subscriptions initially', async () => {
   });
 
   await flushPromises();
-  jest.advanceTimersByTime(201);
+  vi.advanceTimersByTime(201);
   // pauses subscription
   expect(document.querySelector('#status')?.textContent).toBe('true');
-  jest.advanceTimersByTime(201);
+  vi.advanceTimersByTime(201);
   expect(document.querySelectorAll('li')).toHaveLength(0);
   paused.value = false;
   await flushPromises();
   expect(document.querySelector('#status')?.textContent).toBe('false');
-  jest.advanceTimersByTime(201);
+  vi.advanceTimersByTime(201);
   await flushPromises();
   expect(document.querySelectorAll('li')).toHaveLength(2);
 });
 
 test('Skips subscribing if skip is true', async () => {
-  const unSubSpy = jest.fn();
-  const subSpy = jest.fn(() => ({
+  const unSubSpy = vi.fn();
+  const subSpy = vi.fn(() => ({
     subscribe() {
       return {
         unsubscribe: unSubSpy,
@@ -406,7 +405,7 @@ test('handles subscription errors', async () => {
 });
 
 test('normalizes subscription queries', async () => {
-  const spy = jest.fn();
+  const spy = vi.fn();
   mount({
     setup() {
       useClient({
@@ -513,7 +512,7 @@ test('Allows providing initial data', async () => {
 
   await flushPromises();
   expect(document.querySelector('span')?.textContent).toBe('initial');
-  jest.advanceTimersByTime(101);
+  vi.advanceTimersByTime(101);
   await flushPromises();
   expect(document.querySelector('span')?.textContent).toBe('New message');
 });
@@ -541,7 +540,7 @@ test('isFetching is set to true until initial data is received', async () => {
 
   await flushPromises();
   expect(document.querySelector('span')?.textContent).toBe('true');
-  jest.advanceTimersByTime(101);
+  vi.advanceTimersByTime(101);
   await flushPromises();
   expect(document.querySelector('span')?.textContent).toBe('false');
 });

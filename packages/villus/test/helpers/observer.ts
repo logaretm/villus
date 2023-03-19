@@ -1,4 +1,6 @@
+import { vi, afterAll } from 'vitest';
 let interval: any;
+
 export function makeObservable(throws = false, simulateError = false) {
   let counter = 0;
   const observable = {
@@ -33,5 +35,5 @@ afterAll(() => {
 });
 
 export function tick(ticks = 1) {
-  jest.advanceTimersByTime(ticks * 100 + 1);
+  vi.advanceTimersByTime(ticks * 100 + 1);
 }

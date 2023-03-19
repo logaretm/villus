@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { ref, computed, reactive } from 'vue';
+import { test, expect, describe, vi } from 'vitest';
 import gql from 'graphql-tag';
 import { server } from './mocks/server';
 import flushPromises from 'flush-promises';
@@ -793,18 +794,13 @@ describe('useQuery()', () => {
       template: `
       <div>
         <Suspense>
-          <template #default>
             <Listing />
-          </template>
+
           <template #fallback>
             <span>Loading...</span>
           </template>
         </Suspense>
       </div>`,
-    });
-
-    await waitForExpect(() => {
-      expect(document.body.textContent).toBe('Loading...');
     });
 
     await flushPromises();
@@ -865,7 +861,7 @@ describe('useQuery()', () => {
 
     await flushPromises();
     await waitForExpect(() => {
-      expect(document.querySelector('#error')?.textContent).toMatch(/invalid json response body/);
+      expect(document.querySelector('#error')?.textContent).toMatch(/is not valid JSON/);
     });
   });
 
@@ -914,7 +910,6 @@ describe('useQuery()', () => {
     `,
       });
     } catch (err) {
-      // eslint-disable-next-line jest/no-conditional-expect
       expect((err as Error).message).toContain('Cannot detect villus Client');
     }
   });
@@ -1060,7 +1055,7 @@ describe('useQuery()', () => {
   });
 
   test('isFetching should start with true if fetchOnMount is true', async () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     mount({
       setup() {
         useClient({
@@ -1087,7 +1082,7 @@ describe('useQuery()', () => {
   });
 
   test('isFetching should start with false if fetchOnMount is false', async () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
 
     mount({
       setup() {

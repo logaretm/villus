@@ -26,6 +26,5 @@
       "~/*": ["packages/*/test"]
     }
   },
-  "include": ["packages/*/src", "packages/*/tests"],
-  "exclude": ["jest.config.js"]
+  "include": ["packages/*/src", "packages/*/tests"]
 }

@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { test, expect, vi } from 'vitest';
 import flushPromises from 'flush-promises';
 import { defaultPlugins } from '../src/client';
 import { createClient, useQuery } from '../src/index';
@@ -22,7 +23,6 @@ test('fails if executes an non-provided query', async () => {
 
     await client.executeQuery({ query: null as any });
   } catch (err) {
-    // eslint-disable-next-line jest/no-conditional-expect
     expect((err as Error).message).toMatch(/A query must be provide/);
   }
 });
@@ -54,7 +54,7 @@ test('throws if no plugins set the result for the operation', async () => {
 });
 
 test('plugins can use the response', async () => {
-  const spy = jest.fn();
+  const spy = vi.fn();
   const plugin: ClientPlugin = async ({ afterQuery }) => {
     afterQuery((_, { response }) => {
       spy(response?.headers.get('content-type'));

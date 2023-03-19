@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import flushPromises from 'flush-promises';
+import { test, expect, vi, beforeEach, afterEach, describe } from 'vitest';
 import { rest } from 'msw';
 import { server } from '../../villus/test/mocks/server';
 import { batch } from '../src/index';
@@ -9,11 +10,11 @@ import waitForExpect from 'wait-for-expect';
 import { PostQuery, PostsQuery, QueryErrorWith500, QueryWithNetworkError } from 'villus/test/mocks/queries';
 
 beforeEach(() => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 });
 
 afterEach(() => {
-  jest.useRealTimers();
+  vi.useRealTimers();
 });
 
 describe('batch plugin', () => {
@@ -39,11 +40,11 @@ describe('batch plugin', () => {
     </div>`,
     });
 
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     await flushPromises();
 
     // wait-for-expect uses timers under the hood, so we need to reset here
-    jest.useRealTimers();
+    vi.useRealTimers();
     await waitForExpect(() => {
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(document.querySelector('#multi')?.children).toHaveLength(5);
@@ -73,11 +74,11 @@ describe('batch plugin', () => {
     </div>`,
     });
 
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     await flushPromises();
 
     // wait-for-expect uses timers under the hood, so we need to reset here
-    jest.useRealTimers();
+    vi.useRealTimers();
     await waitForExpect(() => {
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(document.querySelector('#multi')?.children).toHaveLength(5);
@@ -109,11 +110,11 @@ describe('batch plugin', () => {
     </div>`,
     });
 
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     await flushPromises();
 
     // wait-for-expect uses timers under the hood, so we need to reset here
-    jest.useRealTimers();
+    vi.useRealTimers();
     await waitForExpect(() => {
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(document.querySelector('#error')?.textContent).toContain('empty response');
@@ -140,10 +141,10 @@ describe('batch plugin', () => {
     </div>`,
     });
 
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     await flushPromises();
     // wait-for-expect uses timers under the hood, so we need to reset here
-    jest.useRealTimers();
+    vi.useRealTimers();
     await waitForExpect(() => {
       expect(document.querySelector('#error')?.textContent).toContain('Failed to connect');
     });
@@ -172,10 +173,10 @@ describe('batch plugin', () => {
       template: `<div></div>`,
     });
 
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     await flushPromises();
 
-    jest.useRealTimers();
+    vi.useRealTimers();
     await waitForExpect(() => {
       // we've set the limit to 2, so 5 queries will be executed over 3 HTTP calls
       expect(fetch).toHaveBeenCalledTimes(3);
@@ -204,11 +205,11 @@ describe('batch plugin', () => {
     });
 
     await flushPromises();
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     await flushPromises();
 
     // wait-for-expect uses timers under the hood, so we need to reset here
-    jest.useRealTimers();
+    vi.useRealTimers();
     await waitForExpect(() => {
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(fetch).toHaveBeenLastCalledWith(

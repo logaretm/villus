@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-expressions */
+import { test, expect } from 'vitest';
+import { computed, defineComponent, ref } from 'vue';
+import flushPromises from 'flush-promises';
+import waitForExpect from 'wait-for-expect';
 import { mount } from './helpers/mount';
 import { useClient, useMutation, useQuery } from '../src/index';
-import { computed, defineComponent, ref } from 'vue';
 import {
   LikePostMutation,
   MutationWithNetworkError,
@@ -9,8 +12,6 @@ import {
   MutationWithGqlError,
   PostsQuery,
 } from './mocks/queries';
-import flushPromises from 'flush-promises';
-import waitForExpect from 'wait-for-expect';
 
 test('runs mutations', async () => {
   mount({
@@ -102,7 +103,7 @@ test('handles parse errors', async () => {
   document.querySelector('button')?.dispatchEvent(new Event('click'));
   await flushPromises();
   await waitForExpect(() => {
-    expect(document.querySelector('#error')?.textContent).toMatch(/invalid json response body/);
+    expect(document.querySelector('#error')?.textContent).toMatch(/is not valid JSON/);
   });
 });
 
@@ -180,7 +181,6 @@ test('Fails if provider was not resolved', async () => {
     });
   } catch (err) {
     await waitForExpect(() => {
-      // eslint-disable-next-line jest/no-conditional-expect
       expect((err as Error).message).toContain('Cannot detect villus Client');
     });
   }
