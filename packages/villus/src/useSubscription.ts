@@ -2,14 +2,13 @@ import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef, getCurrentIn
 import {
   Unsubscribable,
   OperationResult,
-  QueryVariables,
   MaybeRef,
   StandardOperationResult,
   QueryPredicateOrSignal,
   MaybeLazyOrRef,
 } from './types';
 import { CombinedError, isWatchable, unravel, unwrap, debounceAsync, isEqual } from './utils';
-import { Operation } from '../../shared/src';
+import { Operation, QueryVariables } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
 interface SubscriptionCompositeOptions<TData, TVars, TResult = TData> {

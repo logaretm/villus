@@ -1,4 +1,4 @@
-import { FetchOptions, GraphQLResponse, ParsedResponse, Operation } from './types';
+import { FetchOptions, GraphQLResponse, ParsedResponse, Operation, QueryVariables } from './types';
 import { normalizeQuery } from './utils';
 
 export async function parseResponse<TData>(response: Response): Promise<ParsedResponse<TData>> {
@@ -61,7 +61,7 @@ export function mergeFetchOpts(lhs: FetchOptions, rhs: FetchOptions) {
   };
 }
 
-export function makeFetchOptions({ query, variables }: Operation<unknown, unknown>, opts: FetchOptions) {
+export function makeFetchOptions({ query, variables }: Operation<unknown, QueryVariables>, opts: FetchOptions) {
   const normalizedQuery = normalizeQuery(query);
   if (!normalizedQuery) {
     throw new Error('A query must be provided.');

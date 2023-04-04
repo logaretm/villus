@@ -6,11 +6,10 @@ import {
   MaybeRef,
   OperationResult,
   QueryExecutionContext,
-  QueryVariables,
   QueryPredicateOrSignal,
 } from './types';
 import { hash, CombinedError, unwrap, isWatchable, unravel, useCallback } from './utils';
-import { Operation } from '../../shared/src';
+import { Operation, QueryVariables } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
 export interface QueryCompositeOptions<TData, TVars> {

@@ -2,11 +2,10 @@ import { arrayToExistHash, getQueryKey } from './utils';
 import { cache } from './cache';
 import { fetch } from './fetch';
 import { dedup } from './dedup';
-import { DEFAULT_FETCH_OPTS, FetchOptions, Operation } from '../../shared/src';
+import { DEFAULT_FETCH_OPTS, FetchOptions, Operation, QueryVariables } from '../../shared/src';
 import {
   OperationResult,
   CachePolicy,
-  QueryVariables,
   ClientPlugin,
   ClientPluginContext,
   OperationType,

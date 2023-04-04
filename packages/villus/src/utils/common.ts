@@ -1,6 +1,7 @@
 import { isReactive, isRef, Ref, unref, nextTick } from 'vue';
-import { MaybeLazyOrRef, QueryVariables, QueryPredicateOrSignal, MaybeRef } from '../types';
+import { MaybeLazyOrRef, QueryPredicateOrSignal, MaybeRef } from '../types';
 import stringify from 'fast-json-stable-stringify';
+import { QueryVariables } from '../../../shared/src';
 
 export function unravel<TVars = QueryVariables>(
   signal: QueryPredicateOrSignal<TVars> | undefined,

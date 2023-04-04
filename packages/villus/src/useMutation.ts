@@ -1,7 +1,7 @@
 import { ref, Ref, unref, nextTick } from 'vue';
-import { MaybeRef, OperationResult, QueryExecutionContext, QueryVariables } from './types';
+import { MaybeRef, OperationResult, QueryExecutionContext } from './types';
 import { CombinedError } from './utils';
-import { Operation } from '../../shared/src';
+import { Operation, QueryVariables } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
 interface MutationExecutionOptions {

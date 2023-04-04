@@ -1,7 +1,7 @@
 import { Ref } from 'vue';
 import type { ExecutionResult } from 'graphql';
 import { CombinedError } from './utils/error';
-import { ParsedResponse, FetchOptions, Operation } from '../../shared/src';
+import { ParsedResponse, FetchOptions, Operation, QueryVariables } from '../../shared/src';
 
 export interface OperationResult<TData = any> {
   data: TData | null;
@@ -11,8 +11,6 @@ export interface OperationResult<TData = any> {
 export type CachePolicy = 'cache-and-network' | 'network-only' | 'cache-first' | 'cache-only';
 
 export type StandardOperationResult<TData = any> = ExecutionResult<TData>;
-
-export type QueryVariables = Record<string, any>;
 
 export type MaybePromise<T> = T | Promise<T>;
 

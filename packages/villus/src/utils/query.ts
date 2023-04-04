@@ -10,7 +10,7 @@ export function hash(x: string) {
   return h >>> 0;
 }
 
-export function getQueryKey(operation: Operation<unknown, unknown>, ...components: string[]) {
+export function getQueryKey(operation: Operation<any, any>, ...components: string[]) {
   const variables = operation.variables ? stringify(operation.variables) : '';
   const query = normalizeQuery(operation.query);
 
