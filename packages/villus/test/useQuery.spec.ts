@@ -17,6 +17,7 @@ import {
   PostsQueryWithDescription,
 } from './mocks/queries';
 import { graphql } from 'msw';
+import { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
 
 interface Post {
   id: number;
@@ -68,6 +69,55 @@ describe('useQuery()', () => {
               }
             }
           `,
+        });
+
+        return { data };
+      },
+      template: `
+    <div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(document.querySelectorAll('li').length).toBe(5);
+    });
+  });
+
+  test('accepts typed document strings', async () => {
+    class TypedDocumentString<TResult, TVariables>
+      extends String
+      implements DocumentTypeDecoration<TResult, TVariables>
+    {
+      __apiType?: DocumentTypeDecoration<TResult, TVariables>['__apiType'];
+
+      constructor(private value: string, public __meta__?: { hash: string }) {
+        super(value);
+      }
+
+      toString(): string & DocumentTypeDecoration<TResult, TVariables> {
+        return this.value;
+      }
+    }
+
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { data } = useQuery({
+          query: new TypedDocumentString(`
+            query Posts {
+              posts {
+                id
+                title
+              }
+            }
+          `),
         });
 
         return { data };
