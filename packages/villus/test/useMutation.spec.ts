@@ -366,3 +366,72 @@ test('unmounted queries do not refetch', async () => {
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 });
+
+test('onData option hook is called when mutation get data', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+      type Post = { id: number; title: string };
+      const post = ref<Post>();
+
+      const { execute } = useMutation<{ likePost: Post }>(LikePostMutation, {
+        onData: data => (post.value = data.likePost),
+      });
+
+      return { execute, post };
+    },
+    template: `
+    <div>
+      <div v-if="post">
+        <p>{{ post.title }}</p>
+      </div>
+      <button @click="execute()"></button>
+    </div>`,
+  });
+
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(0);
+  });
+
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('p')?.textContent).toContain('Awesome Post');
+  });
+});
+
+test('onError option hook is called when mutation get error', async () => {
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+      });
+
+      const error = ref<string>();
+
+      const { data, execute } = useMutation(MutationWithNetworkError, {
+        onError: err => (error.value = err.message),
+      });
+
+      return { data, execute, error };
+    },
+    template: `
+    <div>
+      <div v-if="data">
+        <p>{{ data.likePost.id }}</p>
+      </div>
+      <p id="error" v-if="error">{{ error }}</p>
+      <button @click="execute()"></button>
+    </div>`,
+  });
+
+  document.querySelector('button')?.dispatchEvent(new Event('click'));
+  await flushPromises();
+  await waitForExpect(() => {
+    expect(document.querySelector('#error')?.textContent).toContain('Failed to connect');
+  });
+});

@@ -179,4 +179,42 @@ function onSubmit() {
 </script>
 ```
 
+## Event hooks
+
+useMutation returns event hooks allowing you to execute code when a specific event occurs.
+
+### onData
+
+This is called whenever a new result is available.
+
+```vue
+<script setup>
+import { useMutation } from 'villus';
+
+const { data, execute } = useMutation(LikePost, {
+  onData: (data) => {
+    // Do something
+    console.log(data)
+  },
+});
+</script>
+```
+
+### onError
+
+It is triggered when an error occurs.
+
+```vue
+<script setup>
+import { useMutation } from 'villus';
+
+const { data, execute } = useMutation(LikePost, {
+  onError: (error) => {
+    // Handle the error
+    console.log(error)
+  },
+});
+</script>
+```
+
 There are more things you can do with mutations, like displaying progress for users. Check the API documentation for [useMutation](/api/use-mutation).

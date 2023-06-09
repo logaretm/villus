@@ -4,11 +4,13 @@ import { CombinedError } from './utils';
 import { Operation } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
-interface MutationExecutionOptions {
+interface MutationExecutionOptions<TData> {
   context: MaybeRef<QueryExecutionContext>;
   client?: Client;
   clearCacheTags?: string[];
   refetchTags?: string[];
+  onData?: (data: TData) => void;
+  onError?: (err: CombinedError) => void;
 }
 
 export interface MutationResult<TData> {
@@ -26,7 +28,7 @@ export interface MutationApi<TData, TVars> {
 
 export function useMutation<TData = any, TVars = QueryVariables>(
   query: Operation<TData, TVars>['query'],
-  opts?: Partial<MutationExecutionOptions>
+  opts?: Partial<MutationExecutionOptions<TData>>
 ): MutationApi<TData, TVars> {
   const client = opts?.client ?? resolveClient();
   const data: Ref<TData | null> = ref(null);
@@ -62,6 +64,8 @@ export function useMutation<TData = any, TVars = QueryVariables>(
       return { data: res.data as TData, error: res.error };
     }
 
+    if (res.data) opts?.onData?.(res.data);
+    if (res.error) opts?.onError?.(res.error);
     data.value = res.data;
     error.value = res.error;
     isDone.value = true;
