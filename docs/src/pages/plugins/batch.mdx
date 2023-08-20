@@ -105,17 +105,35 @@ useClient({
 
 By default, it is `10`.
 
+## Excluding certain operations
+
+You can also exclude certain operations from being batched by passing an `exclude` option to the `batch` function configuration:
+
+```vue{7,8}
+<script setup>
+import { useClient } from 'villus';
+import { batch } from '@villus/batch';
+
+useClient({
+  url: 'https://test.com/graphql',
+  // Exclude all queries named "Posts"
+  use: [batch({ exclude: ({ query }) => /query Posts/.test(query) })],
+});
+</script>
+```
+
 ## Options
 
 You can customize a few aspects of the `batch` plugin:
 
 The available options are:
 
-| Option            | Type                  | Description                                                                                                                                                                                                             |
-| ----------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| fetch             | `typeof window.fetch` | Pass this option if you plan to be specific about the `fetch` polyfill that will be used, by default it tries to find `window.fetch` on the browser or `global.fetch` on Node.js depending on the execution environment |
-| timeout           | `number`              | The number of milliseconds to wait for before executing the batched queries                                                                                                                                             |
-| maxOperationCount | `number`              | The maximum number of operations to be included in a single batch                                                                                                                                                       |
+| Option            | Type                                                                | Description                                                                                                                                                                                                             |
+| ----------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| fetch             | `typeof window.fetch`                                               | Pass this option if you plan to be specific about the `fetch` polyfill that will be used, by default it tries to find `window.fetch` on the browser or `global.fetch` on Node.js depending on the execution environment |
+| timeout           | `number`                                                            | The number of milliseconds to wait for before executing the batched queries                                                                                                                                             |
+| maxOperationCount | `number`                                                            | The maximum number of operations to be included in a single batch                                                                                                                                                       |
+| exclude           | `(operation: ClientPluginOperation, ctx: PluginContext) => boolean` | If returns true, the operation won't be batched and will be fetched in a single non-batched request                                                                                                                     |
 
 ## Code
 
