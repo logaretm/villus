@@ -18,6 +18,7 @@
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@changesets/cli": "^2.26.2",
     "@commitlint/cli": "^17.7.1",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@rollup/plugin-typescript": "^11.1.2",
@@ -47,7 +48,6 @@
     "gzip-size": "^7.0.0",
     "husky": "^8.0.3",
     "jsdom": "^22.1.0",
-    "lerna": "^7.1.5",
     "lint-staged": "^14.0.0",
     "mkdirp": "^3.0.1",
     "msw": "^1.2.3",
