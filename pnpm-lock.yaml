@@ -189,7 +189,7 @@ importers:
   packages/batch:
     dependencies:
       villus:
-        specifier: ^3.1.0
+        specifier: ^3.2.0
         version: link:../villus
 
   packages/multipart:
@@ -198,7 +198,7 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       villus:
-        specifier: ^3.1.0
+        specifier: ^3.2.0
         version: link:../villus
     devDependencies:
       '@types/extract-files':
