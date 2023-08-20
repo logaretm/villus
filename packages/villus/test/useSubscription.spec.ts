@@ -138,7 +138,7 @@ test('Handles subscriptions with a custom reducer', async () => {
           }
 
           return [...oldMessages, response.data.message];
-        }
+        },
       );
 
       return { messages: data };
@@ -446,13 +446,11 @@ test('normalizes subscription queries', async () => {
   await flushPromises();
   expect(spy).toHaveBeenCalledTimes(1);
   expect(spy).toHaveBeenLastCalledWith(
-    print(
-      gql`
-        subscription {
-          newMessages
-        }
-      `
-    )
+    print(gql`
+      subscription {
+        newMessages
+      }
+    `),
   );
 });
 
@@ -469,7 +467,7 @@ test('ensure type compatability with graphql-ws', async () => {
             query: operation.query,
             variables: operation.variables,
           },
-          obs
+          obs,
         );
 
         return {

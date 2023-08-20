@@ -10,14 +10,14 @@ export const handlers: any[] = [
     return res(
       ctx.data({
         posts: new Array(5).fill(0).map((_, idx) => makePost(idx + 1)),
-      })
+      }),
     );
   }),
   graphql.query('Post', (req, res, ctx) => {
     return res(
       ctx.data({
         post: makePost(req.variables.id),
-      })
+      }),
     );
   }),
   graphql.query('QueryParseError', (req, res) => {
@@ -38,7 +38,7 @@ export const handlers: any[] = [
           message: 'Not authenticated',
           errorType: 'AuthenticationError',
         },
-      ])
+      ]),
     );
   }),
   graphql.query('ErrorWith500', (req, res, ctx) => {
@@ -49,7 +49,7 @@ export const handlers: any[] = [
           message: 'Not authenticated',
           errorType: 'AuthenticationError',
         },
-      ])
+      ]),
     );
   }),
   graphql.mutation('LikePost', (req, res, ctx) => {
@@ -62,7 +62,7 @@ export const handlers: any[] = [
           message: 'Not authenticated',
           errorType: 'AuthenticationError',
         },
-      ])
+      ]),
     );
   }),
   graphql.mutation('MutationParseError', (req, res) => {
@@ -90,7 +90,7 @@ export const handlers: any[] = [
         }
 
         return handler.run(partReq);
-      })
+      }),
     );
 
     const batchedResponse = responses.map(d => {

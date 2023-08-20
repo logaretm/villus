@@ -49,7 +49,7 @@ test('throws if no plugins set the result for the operation', async () => {
   });
 
   await expect(client.executeQuery({ query: PostsQuery })).rejects.toThrow(
-    'Operation result was not set by any plugin, make sure you have default plugins configured or review documentation'
+    'Operation result was not set by any plugin, make sure you have default plugins configured or review documentation',
   );
 });
 
@@ -88,7 +88,7 @@ test('works as a Vue plugin', async () => {
   app.use(
     createClient({
       url: 'https://test.com/graphql',
-    })
+    }),
   );
 
   document.body.innerHTML = `<div id="app"></div>`;

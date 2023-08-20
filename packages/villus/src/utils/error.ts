@@ -29,7 +29,7 @@ function normalizeGqlError(error: any): GraphQLError {
       error.positions,
       error.path,
       error,
-      error.extensions || {}
+      error.extensions || {},
     );
   }
 

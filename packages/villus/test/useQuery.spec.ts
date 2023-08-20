@@ -94,7 +94,10 @@ describe('useQuery()', () => {
     {
       __apiType?: DocumentTypeDecoration<TResult, TVariables>['__apiType'];
 
-      constructor(private value: string, public __meta__?: { hash: string }) {
+      constructor(
+        private value: string,
+        public __meta__?: { hash: string },
+      ) {
         super(value);
       }
 
@@ -1192,7 +1195,7 @@ describe('useQuery()', () => {
           body: expect.anything(),
           method: 'POST',
           headers: expect.objectContaining(ctx),
-        })
+        }),
       );
     });
   });
@@ -1204,9 +1207,9 @@ describe('useQuery()', () => {
         return res(
           ctx.data({
             posts,
-          })
+          }),
         );
-      })
+      }),
     );
 
     mount({
@@ -1395,12 +1398,12 @@ describe('useQuery()', () => {
       expect(spies[0]).toHaveBeenCalledWith(
         expect.objectContaining({
           posts: expect.any(Array),
-        })
+        }),
       );
       expect(spies[1]).toHaveBeenCalledWith(
         expect.objectContaining({
           posts: expect.any(Array),
-        })
+        }),
       );
 
       expect(errorSpy).not.toHaveBeenCalled();
@@ -1460,7 +1463,7 @@ describe('useQuery()', () => {
       expect(spies[0]).toHaveBeenCalledWith(
         expect.objectContaining({
           posts: expect.any(Array),
-        })
+        }),
       );
 
       expect(spies[1]).not.toHaveBeenCalled();

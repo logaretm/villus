@@ -64,7 +64,7 @@ export function batch(opts?: Partial<BatchOptions>) {
                 body: response.body,
               },
               oIdx,
-              new Error('Received empty response for this operation from server')
+              new Error('Received empty response for this operation from server'),
             );
             return;
           }
@@ -74,7 +74,7 @@ export function batch(opts?: Partial<BatchOptions>) {
               body: opResult,
               ...resInit,
             },
-            oIdx
+            oIdx,
           );
         });
       } catch (err) {
@@ -113,7 +113,7 @@ export function batch(opts?: Partial<BatchOptions>) {
                   networkError: err,
                 }),
               },
-              true
+              true,
             );
             return;
           }
@@ -127,7 +127,7 @@ export function batch(opts?: Partial<BatchOptions>) {
                 data,
                 error,
               },
-              true
+              true,
             );
             return;
           }
@@ -137,7 +137,7 @@ export function batch(opts?: Partial<BatchOptions>) {
               data,
               error: response.body.errors ? new CombinedError({ response, graphqlErrors: response.body.errors }) : null,
             },
-            true
+            true,
           );
         },
         body: opContext.body as string,

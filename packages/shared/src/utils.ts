@@ -5,7 +5,7 @@ import { DocumentNode, print } from 'graphql';
  * Normalizes a query string or object to a string.
  */
 export function normalizeQuery(
-  query: string | DocumentNode | TypedDocumentNode | DocumentTypeDecoration<any, any>
+  query: string | DocumentNode | TypedDocumentNode | DocumentTypeDecoration<any, any>,
 ): string | null {
   if (typeof query === 'string') {
     return query;

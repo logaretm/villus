@@ -37,7 +37,7 @@ export type OperationType = 'query' | 'mutation' | 'subscription';
 
 export type AfterQueryCallback = (
   result: OperationResult,
-  ctx: { response?: ParsedResponse<unknown> }
+  ctx: { response?: ParsedResponse<unknown> },
 ) => void | Promise<void>;
 
 export interface QueryOperation<TData, TVars> extends Operation<TData, TVars> {

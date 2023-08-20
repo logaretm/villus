@@ -88,7 +88,7 @@ export class Client {
     operation: Operation<TData, TVars> | OperationWithCachePolicy<TData, TVars>,
     type: OperationType,
     queryContext?: QueryExecutionContext,
-    onResultChanged?: OnResultChangedCallback<TData>
+    onResultChanged?: OnResultChangedCallback<TData>,
   ): Promise<OperationResult<TData>> {
     let result: OperationResult<TData> | undefined;
     const opContext: FetchOptions = {
@@ -140,8 +140,8 @@ export class Client {
       if (!result) {
         reject(
           new Error(
-            'Operation result was not set by any plugin, make sure you have default plugins configured or review documentation'
-          )
+            'Operation result was not set by any plugin, make sure you have default plugins configured or review documentation',
+          ),
         );
         return;
       }
@@ -168,20 +168,20 @@ export class Client {
   public async executeQuery<TData = any, TVars = QueryVariables>(
     operation: Omit<QueryOperation<TData, TVars>, 'type'>,
     queryContext?: QueryExecutionContext,
-    onResultChanged?: OnResultChangedCallback<TData>
+    onResultChanged?: OnResultChangedCallback<TData>,
   ): Promise<OperationResult<TData>> {
     return this.execute<TData, TVars>(operation, 'query', queryContext, onResultChanged);
   }
 
   public async executeMutation<TData = any, TVars = QueryVariables>(
     operation: Omit<MutationOperation<TData, TVars>, 'type'>,
-    queryContext?: QueryExecutionContext
+    queryContext?: QueryExecutionContext,
   ): Promise<OperationResult<TData>> {
     return this.execute<TData, TVars>(operation, 'mutation', queryContext);
   }
 
   public async executeSubscription<TData = any, TVars = QueryVariables>(
-    operation: Omit<SubscriptionOperation<TData, TVars>, 'type'>
+    operation: Omit<SubscriptionOperation<TData, TVars>, 'type'>,
   ) {
     const result = await this.execute<TData, TVars>(operation, 'subscription');
 
@@ -243,7 +243,7 @@ export function resolveClient(): Client {
 
   if (client === null || client === undefined) {
     throw new Error(
-      'Cannot detect villus Client, did you forget to call `useClient`? Alternatively, you can explicitly pass a client as the `manualClient` argument.'
+      'Cannot detect villus Client, did you forget to call `useClient`? Alternatively, you can explicitly pass a client as the `manualClient` argument.',
     );
   }
 

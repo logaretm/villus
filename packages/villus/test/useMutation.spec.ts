@@ -227,7 +227,7 @@ test('runs mutations with custom headers per mutation', async () => {
         body: expect.anything(),
         method: 'POST',
         headers: expect.objectContaining(ctx),
-      })
+      }),
     );
   });
 });

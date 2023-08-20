@@ -28,7 +28,7 @@ export interface MutationApi<TData, TVars> {
 
 export function useMutation<TData = any, TVars = QueryVariables>(
   query: Operation<TData, TVars>['query'],
-  opts?: Partial<MutationExecutionOptions<TData>>
+  opts?: Partial<MutationExecutionOptions<TData>>,
 ): MutationApi<TData, TVars> {
   const client = opts?.client ?? resolveClient();
   const data: Ref<TData | null> = ref(null);
@@ -47,7 +47,7 @@ export function useMutation<TData = any, TVars = QueryVariables>(
         variables: vars as TVars, // FIXME: fix this casting
         clearCacheTags: [...(opts?.clearCacheTags || []), ...(opts?.refetchTags || [])],
       },
-      unref(opts?.context)
+      unref(opts?.context),
     );
 
     lastPendingOperation = pendingExecution;

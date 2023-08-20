@@ -5,7 +5,7 @@ import { QueryVariables } from '../../../shared/src';
 
 export function unravel<TVars = QueryVariables>(
   signal: QueryPredicateOrSignal<TVars> | undefined,
-  vars: MaybeRef<TVars>
+  vars: MaybeRef<TVars>,
 ) {
   if (isRef(signal)) {
     return signal.value;
@@ -32,15 +32,18 @@ export function isWatchable<T>(val: unknown): val is Ref<T> {
 }
 
 export function arrayToExistHash<T extends string | number>(items: T[]): Record<string, boolean> {
-  return items.reduce((acc, item) => {
-    acc[String(item)] = true;
+  return items.reduce(
+    (acc, item) => {
+      acc[String(item)] = true;
 
-    return acc;
-  }, {} as Record<string, boolean>);
+      return acc;
+    },
+    {} as Record<string, boolean>,
+  );
 }
 
 export function debounceAsync<TFunction extends (...args: any) => Promise<any>, TResult = ReturnType<TFunction>>(
-  inner: TFunction
+  inner: TFunction,
 ): (...args: Parameters<TFunction>) => Promise<TResult> {
   let resolves: any[] = [];
   let ticking = false;

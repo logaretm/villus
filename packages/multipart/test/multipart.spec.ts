@@ -17,7 +17,7 @@ test('handles single file uploads', async () => {
       });
 
       const { data, error, execute } = useMutation(
-        'mutation Upload ($file: Upload!) { singleUpload (file: $file) { path } }'
+        'mutation Upload ($file: Upload!) { singleUpload (file: $file) { path } }',
       );
 
       async function upload() {
@@ -50,6 +50,6 @@ test('handles single file uploads', async () => {
       body: expect.any(FormData),
       method: 'POST',
       headers: expect.objectContaining({}),
-    })
+    }),
   );
 });

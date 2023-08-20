@@ -26,7 +26,7 @@ export const defaultReducer: Reducer = val => val.data;
 
 export function useSubscription<TData = any, TResult = TData, TVars = QueryVariables>(
   opts: SubscriptionCompositeOptions<TData, TVars, TResult>,
-  reduce: Reducer<TData, TResult> = defaultReducer
+  reduce: Reducer<TData, TResult> = defaultReducer,
 ) {
   const client = opts.client ?? resolveClient();
   const { query, variables, paused, skip } = opts;

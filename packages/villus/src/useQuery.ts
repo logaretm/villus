@@ -44,7 +44,7 @@ export interface BaseQueryApi<TData = any, TVars = QueryVariables> {
   onData(handler: DataHookHandler<TData>): UnregisterHookFn;
   onError(handler: ErrorHookHandler): UnregisterHookFn;
   execute(
-    overrideOpts?: Partial<QueryExecutionOpts<TVars>>
+    overrideOpts?: Partial<QueryExecutionOpts<TVars>>,
   ): Promise<{ data: TData | null; error: CombinedError | null }>;
 }
 
@@ -53,7 +53,7 @@ export interface QueryApi<TData, TVars> extends BaseQueryApi<TData, TVars> {
 }
 
 function useQuery<TData = any, TVars = QueryVariables>(
-  opts: QueryCompositeOptions<TData, TVars>
+  opts: QueryCompositeOptions<TData, TVars>,
 ): QueryApi<TData, TVars> {
   const client = opts?.client ?? resolveClient();
   if (opts.tags) {
@@ -132,7 +132,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
         tags: opts?.tags,
       },
       unref(opts?.context),
-      onResultChanged
+      onResultChanged,
     );
 
     lastPendingOperation = pendingExecution;
@@ -170,7 +170,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
         if (shouldExecute && isStale.value) {
           execute();
         }
-      }
+      },
     );
   }
 
@@ -193,7 +193,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
         isStale.value = true;
         executeIfNotPaused();
       },
-      { deep: true }
+      { deep: true },
     );
   }
 
@@ -225,7 +225,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
 }
 
 function normalizeOptions<TData, TVars>(
-  opts: Partial<QueryCompositeOptions<TData, TVars>>
+  opts: Partial<QueryCompositeOptions<TData, TVars>>,
 ): QueryCompositeOptions<TData, TVars> {
   const defaultOpts = {
     variables: {} as TVars,

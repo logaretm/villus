@@ -90,7 +90,7 @@ describe('batch plugin', () => {
     server.use(
       rest.post('https://test.com/graphql', async (req, res, ctx) => {
         return res(ctx.status(200), ctx.json(null));
-      })
+      }),
     );
 
     mount({
@@ -219,7 +219,7 @@ describe('batch plugin', () => {
           headers: expect.objectContaining({
             'X-CUSTOM-HEADER': 'TEST',
           }),
-        })
+        }),
       );
     });
   });
