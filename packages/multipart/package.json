@@ -23,10 +23,10 @@
     "api"
   ],
   "dependencies": {
-    "extract-files": "^13.0.0",
+    "extract-files": "^11.0.0",
     "villus": "^3.1.0"
   },
   "devDependencies": {
-    "@types/extract-files": "^8.1.0"
+    "@types/extract-files": "^8.1.1"
   }
 }

@@ -195,14 +195,14 @@ importers:
   packages/multipart:
     dependencies:
       extract-files:
-        specifier: ^13.0.0
-        version: 13.0.0
+        specifier: ^11.0.0
+        version: 11.0.0
       villus:
         specifier: ^3.1.0
         version: link:../villus
     devDependencies:
       '@types/extract-files':
-        specifier: ^8.1.0
+        specifier: ^8.1.1
         version: 8.1.1
 
   packages/villus: {}
@@ -3581,6 +3581,7 @@ packages:
 
   /color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
+    requiresBuild: true
     dependencies:
       color-name: 1.1.3
 
@@ -3592,6 +3593,7 @@ packages:
 
   /color-name@1.1.3:
     resolution: {integrity: sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw==}
+    requiresBuild: true
 
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
@@ -4692,11 +4694,9 @@ packages:
       tmp: 0.0.33
     dev: true
 
-  /extract-files@13.0.0:
-    resolution: {integrity: sha512-FXD+2Tsr8Iqtm3QZy1Zmwscca7Jx3mMC5Crr+sEP1I303Jy1CYMuYCm7hRTplFNg3XdUavErkxnTzpaqdSoi6g==}
-    engines: {node: ^14.17.0 || ^16.0.0 || >= 18.0.0}
-    dependencies:
-      is-plain-obj: 4.1.0
+  /extract-files@11.0.0:
+    resolution: {integrity: sha512-FuoE1qtbJ4bBVvv94CC7s0oTnKUGvQs+Rjf1L2SJFfS+HTVVjhPFtehPdQ0JiGPqVNfSSZvL5yzHHQq2Z4WNhQ==}
+    engines: {node: ^12.20 || >= 14.13}
     dev: false
 
   /fast-deep-equal@3.1.3:
