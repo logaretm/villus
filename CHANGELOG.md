@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.2.0
+
+### Minor Changes
+
+- 559556d: feat: expose normalize query and add batching exclusion filter
+
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
@@ -10,10 +16,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - support typed document strings ([62e5c56](https://github.com/logaretm/villus/commit/62e5c56db55ae6659b75470a3173285fed601ce7))
 
 # [3.0.0](https://github.com/logaretm/villus/compare/v2.2.1...v3.0.0) (2023-03-20)
-
-### Bug Fixes
-
-- reference packages ([c6622cb](https://github.com/logaretm/villus/commit/c6622cbdc237faf8fc7581cb6cdbb969912f15d7))
 
 ### Features
 
@@ -59,7 +61,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [2.0.1](https://github.com/logaretm/villus/compare/v1.2.5...v2.0.1) (2022-10-23)
 
-**Note:** Version bump only for package villus-monorepo
+**Note:** Version bump only for package villus
 
 # [2.0.0](https://github.com/logaretm/villus/compare/v1.2.5...v2.0.0) (2022-08-07)
 
@@ -75,7 +77,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.2.5](https://github.com/logaretm/villus/compare/v1.2.4...v1.2.5) (2022-07-31)
 
-**Note:** Version bump only for package villus-monorepo
+**Note:** Version bump only for package villus
 
 ## [1.2.4](https://github.com/logaretm/villus/compare/v1.2.3...v1.2.4) (2022-07-11)
 
@@ -85,13 +87,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.2.3](https://github.com/logaretm/villus/compare/v1.2.2...v1.2.3) (2022-07-03)
 
-### Features
-
-- added batch max op limit ([6b38c1c](https://github.com/logaretm/villus/commit/6b38c1c58b5ad686c3d198aca726c42dc655ae60))
+**Note:** Version bump only for package villus
 
 ## [1.2.2](https://github.com/logaretm/villus/compare/v1.2.1...v1.2.2) (2022-06-13)
 
-**Note:** Version bump only for package villus-monorepo
+**Note:** Version bump only for package villus
 
 ## [1.2.1](https://github.com/logaretm/villus/compare/v1.2.0...v1.2.1) (2022-06-03)
 
@@ -122,7 +122,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.0.1](https://github.com/logaretm/villus/compare/v1.0.0...v1.0.1) (2021-11-06)
 
-**Note:** Version bump only for package villus-monorepo
+**Note:** Version bump only for package villus
 
 # [1.0.0](https://github.com/logaretm/villus/compare/v1.0.0-rc.21...v1.0.0) (2021-10-18)
 
@@ -133,13 +133,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [1.0.0-rc.21](https://github.com/logaretm/villus/compare/v1.0.0-rc.20...v1.0.0-rc.21) (2021-08-26)
 
-### Bug Fixes
-
-- handle possible empty responses ([bc96bf8](https://github.com/logaretm/villus/commit/bc96bf849fe2a1797170ff5a693899be6fd9f260))
+**Note:** Version bump only for package villus
 
 # [1.0.0-rc.20](https://github.com/logaretm/villus/compare/v1.0.0-rc.19...v1.0.0-rc.20) (2021-08-07)
 
-**Note:** Version bump only for package villus-monorepo
+**Note:** Version bump only for package villus
 
 # [1.0.0-rc.19](https://github.com/logaretm/villus/compare/v1.0.0-rc.18...v1.0.0-rc.19) (2021-07-25)
 
@@ -155,15 +153,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [1.0.0-rc.17](https://github.com/logaretm/villus/compare/v1.0.0-rc.16...v1.0.0-rc.17) (2021-05-12)
 
-### ☠️ Breaking
-
-Dropped support for Vue 2.x and removed usage of `vue-demi`, this was decided because half of the codebase didn't work with Vue 2 (HOC) and reactivity caveats of Vue 2 no longer applies to Vue 3 which is limiting.
+**Note:** Version bump only for package villus
 
 # [1.0.0-rc.16](https://github.com/logaretm/villus/compare/v1.0.0-rc.15...v1.0.0-rc.16) (2021-04-15)
 
-### Bug Fixes
-
-- normalize the multipart queries closes [#112](https://github.com/logaretm/villus/issues/112) ([#113](https://github.com/logaretm/villus/issues/113)) ([c54fd0e](https://github.com/logaretm/villus/commit/c54fd0e80f8d05a4a115630e8b7c83bd2c58a5f3))
+**Note:** Version bump only for package villus
 
 # [1.0.0-rc.15](https://github.com/logaretm/villus/compare/v1.0.0-rc.14...v1.0.0-rc.15) (2021-03-06)
 
@@ -183,7 +177,6 @@ Dropped support for Vue 2.x and removed usage of `vue-demi`, this was decided be
 ### Bug Fixes
 
 - ensure fetch recongizes partial error responses ([6c0a6fa](https://github.com/logaretm/villus/commit/6c0a6fa81a57131c9c23758435a1143f3fafd33d))
-- handle batched respones with non 200 codes closes [#104](https://github.com/logaretm/villus/issues/104) ([5cb088d](https://github.com/logaretm/villus/commit/5cb088df59d0b0d64b71a27b21181a1e50e9e57e))
 
 # [1.0.0-rc.12](https://github.com/logaretm/villus/compare/v1.0.0-beta.0...v1.0.0-rc.12) (2021-02-16)
 
@@ -193,7 +186,6 @@ Dropped support for Vue 2.x and removed usage of `vue-demi`, this was decided be
 - ensure executeopts arg is optional ([f3f4bca](https://github.com/logaretm/villus/commit/f3f4bca64121938d22329ed70f5d6dceb1693121))
 - expose villus client symbol for testing ([141bf97](https://github.com/logaretm/villus/commit/141bf9717250894d58a71ce3dd8a28160677b229))
 - fetchonMounted typo ([09c3de4](https://github.com/logaretm/villus/commit/09c3de457e4a4b30742e5f315b1241b0961681fb))
-- handle network errors for the batch plugin closes [#86](https://github.com/logaretm/villus/issues/86) ([39a92aa](https://github.com/logaretm/villus/commit/39a92aa35a0ae54c772b317d35cd73d84548ec62))
 - handle non 200 error responses closes [#49](https://github.com/logaretm/villus/issues/49) ([0950fa8](https://github.com/logaretm/villus/commit/0950fa8a82060a02871d4eb027841eb0ecb31f96))
 - only resubscribe if the query/vars change closes [#94](https://github.com/logaretm/villus/issues/94) ([739b75e](https://github.com/logaretm/villus/commit/739b75e8e140fa418011672ba081bf10a4611237))
 - prevent running the query onMounted when suspended closes [#56](https://github.com/logaretm/villus/issues/56) ([27385b6](https://github.com/logaretm/villus/commit/27385b66e196a43e6ab64800183a693939f5320a))
@@ -201,48 +193,204 @@ Dropped support for Vue 2.x and removed usage of `vue-demi`, this was decided be
 - safe access to the provides property ([73efd25](https://github.com/logaretm/villus/commit/73efd25399988ea3615e208fff16ef8fbcd5d7e1))
 - type import path ([9c7c12c](https://github.com/logaretm/villus/commit/9c7c12ce0bbf8f1cf2d88b6b1b2d56a1b21299ba))
 - type the patched useResult ([31fe56b](https://github.com/logaretm/villus/commit/31fe56b89f9f8d02c48c02beec4227618cc6f2d8))
-- typing issue ([18de818](https://github.com/logaretm/villus/commit/18de8186566d36a43999c8fb0cab51ccd3102e0a))
 - typing of operation in fetch plugin ([2dc8173](https://github.com/logaretm/villus/commit/2dc81738c784f00373a95d70bd75a38a3e35d62d))
 - use QueryVariables as default type for subscription forwarder [#93](https://github.com/logaretm/villus/issues/93) ([3791251](https://github.com/logaretm/villus/commit/37912514ce7f5fe1123d0f2c46c95963c67203ef))
 - use standard execution result for subscription forwarder closes [#93](https://github.com/logaretm/villus/issues/93) ([9ced480](https://github.com/logaretm/villus/commit/9ced480d387edb8d1d8893cc88d3ae0e856a897c))
-- weird linting issue ([e0141d5](https://github.com/logaretm/villus/commit/e0141d512b65ab4b5ec2e714caa57c716fd53491))
 
 ### Features
 
 - add install method to client ([#83](https://github.com/logaretm/villus/issues/83)) ([397bbdb](https://github.com/logaretm/villus/commit/397bbdb612a4bacfd5f3b9242d48b2ec94ccde14))
-- added basic implementation of multipart fetcher ([bca5ee8](https://github.com/logaretm/villus/commit/bca5ee857a0c9583850d4f23e673c3467321044f))
-- added cache-only policy closes [#30](https://github.com/logaretm/villus/issues/30) ([ef194b7](https://github.com/logaretm/villus/commit/ef194b7395f1ea24130647cea50e318b10b71aff))
 - added context per query basis closes [#96](https://github.com/logaretm/villus/issues/96) ([8248b06](https://github.com/logaretm/villus/commit/8248b06674a4bf2757f0025740d7b775945acc09))
 - added dedup test ([8b12141](https://github.com/logaretm/villus/commit/8b1214155b0bd8c4ff1c89734af8ba1d6e2838f1))
-- added edit page helper and new dark mode settings ([27f05eb](https://github.com/logaretm/villus/commit/27f05eb99ca65cc0eb64e7a0d9822dd513de3690))
 - allow adding other hash items to the query key helper ([5d18e8a](https://github.com/logaretm/villus/commit/5d18e8a7c3016cc9adef0bacfe43076878654a73))
 - avoid deduping mutations and subscriptions ([3bb9642](https://github.com/logaretm/villus/commit/3bb9642990b8fac1352964c965b6483ad0626655))
 - changed the signature of provider and useClient ([b4fa6d9](https://github.com/logaretm/villus/commit/b4fa6d953a4997554497253bf520d401c571d4b2))
-- draft the plugin api and implement fetch and cache plugins ([15d6adc](https://github.com/logaretm/villus/commit/15d6adc0a165cd9f420d3440d449026c7869bcde))
 - enhance suspense query suspense API and allow override query vars ([c38e574](https://github.com/logaretm/villus/commit/c38e574a12801cf8e15b05c37637bc62b1cae9b4))
 - export plugins types ([598a65f](https://github.com/logaretm/villus/commit/598a65fec909ae273aa2bb588e0d9e3d306dee88))
 - expose getQueryKey helper ([26548d5](https://github.com/logaretm/villus/commit/26548d575d579bd1cff44c7cbacc93c07e06fee8))
 - expose new definePlugin type helper ([6f79a97](https://github.com/logaretm/villus/commit/6f79a97b040f132cdbea97a7e6050043f21b2195))
-- generate query key on client level ([84ebccb](https://github.com/logaretm/villus/commit/84ebccbad54d1a015717ed58e587a86da49e83e1))
 - implement dedup plugin ([eb0f0a3](https://github.com/logaretm/villus/commit/eb0f0a36947aec6a5cf02a0b395acfe32f63f1d8))
 - implement response context closes [#62](https://github.com/logaretm/villus/issues/62) ([04cae29](https://github.com/logaretm/villus/commit/04cae29a8ba6163127a6da4985e37585084763ce))
 - initial isFetching ([#74](https://github.com/logaretm/villus/issues/74)) ([ea043da](https://github.com/logaretm/villus/commit/ea043da2a4d25c81e772c2a8b9a8c9ddf33e6680))
 - re-execute subscriptions closes [#79](https://github.com/logaretm/villus/issues/79) ([0ec4680](https://github.com/logaretm/villus/commit/0ec46802c80788531a7b84c516eac9d879b076e8))
-- re-implement batch using the new plugins API ([861da91](https://github.com/logaretm/villus/commit/861da912029ba4caafb26a19cc92b20bb4e55d6a))
 - re-implement subscriptions as a plugin ([e5e790a](https://github.com/logaretm/villus/commit/e5e790a404eb0cc27a9320999c03484e8bf575d5))
 - remove initialIsFetching and sync it with fetchOnMount ([a1e75c4](https://github.com/logaretm/villus/commit/a1e75c4aeb800a2e22e123bb1c75271258ff09dc))
-- remove uneeded stop signal ([8f436a3](https://github.com/logaretm/villus/commit/8f436a3ce6e71f36d0f9f05de8c9fe01588c07f5))
 - rename lazy to fetchOnMount ([68b937e](https://github.com/logaretm/villus/commit/68b937ebfc91037494be33a67f643c22e11b5064))
 - rename pause and resume for queries to be more explicit ([ca9cf1e](https://github.com/logaretm/villus/commit/ca9cf1eb93aeff8a40cc9d85465e45089990d412))
 - rename pause prop to paused and watch its effect ([fca32d4](https://github.com/logaretm/villus/commit/fca32d4e03f57312340ca0cea6d6697eef21280a))
 - rename suspend prop to suspended for consistency ([06eaecd](https://github.com/logaretm/villus/commit/06eaecd8a5ac02f82d015511c8fb80db79150deb))
 - support typed document node ([9c166f6](https://github.com/logaretm/villus/commit/9c166f6bffa589ec580d8e8d6f2729ab17a662c0))
 - updated graphql dep closes [#65](https://github.com/logaretm/villus/issues/65) ([ef4be0a](https://github.com/logaretm/villus/commit/ef4be0afb8cba12a57c5cc128b999f570898fa69))
-- updated query component prop names ([d0fc40d](https://github.com/logaretm/villus/commit/d0fc40d7376c6e8cd3d7cfb02b03198e7e7d11f9))
 - upgrade Vue and provide a workaround for [#72](https://github.com/logaretm/villus/issues/72) ([6127f37](https://github.com/logaretm/villus/commit/6127f379adf743b691f48f9bc6d044553f9771b5))
-- use defineComponent helper with subscription ([ef7c16a](https://github.com/logaretm/villus/commit/ef7c16a4948b407f36523b037d58db41d9f50302))
-- use public API and add villus to deps ([4b98e79](https://github.com/logaretm/villus/commit/4b98e79d3e146da608a45d72ac81e00b6ba735ec))
-- use the defineComponent helper with Query component and omit redudencies ([d00e25b](https://github.com/logaretm/villus/commit/d00e25b8d924434ab44602d65788a2d4a9da5bda))
-- use the public plugin API and add villus to multipart deps ([77fb90f](https://github.com/logaretm/villus/commit/77fb90f71e400b3000dd18ffbfa7f355365c5c01))
 - **breaking:** signature updates ([#70](https://github.com/logaretm/villus/issues/70)) ([47937e8](https://github.com/logaretm/villus/commit/47937e8437cae6e78769dc7b0abfa2f4c41f5996))
+- updated query component prop names ([d0fc40d](https://github.com/logaretm/villus/commit/d0fc40d7376c6e8cd3d7cfb02b03198e7e7d11f9))
+- use defineComponent helper with subscription ([ef7c16a](https://github.com/logaretm/villus/commit/ef7c16a4948b407f36523b037d58db41d9f50302))
 - use the defineComponent helper with Mutation component ([eb72067](https://github.com/logaretm/villus/commit/eb7206783e898b710463c87f0cb2a2e880c659e9))
+- use the defineComponent helper with Query component and omit redudencies ([d00e25b](https://github.com/logaretm/villus/commit/d00e25b8d924434ab44602d65788a2d4a9da5bda))
+
+# [1.0.0-rc.11](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.10...villus@1.0.0-rc.11) (2021-01-20)
+
+### Bug Fixes
+
+- only resubscribe if the query/vars change closes [#94](https://github.com/logaretm/villus/issues/94) ([739b75e](https://github.com/logaretm/villus/commit/739b75e8e140fa418011672ba081bf10a4611237))
+- use QueryVariables as default type for subscription forwarder [#93](https://github.com/logaretm/villus/issues/93) ([3791251](https://github.com/logaretm/villus/commit/37912514ce7f5fe1123d0f2c46c95963c67203ef))
+- use standard execution result for subscription forwarder closes [#93](https://github.com/logaretm/villus/issues/93) ([9ced480](https://github.com/logaretm/villus/commit/9ced480d387edb8d1d8893cc88d3ae0e856a897c))
+
+# [1.0.0-rc.10](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.9...villus@1.0.0-rc.10) (2021-01-17)
+
+### Bug Fixes
+
+- ensure executeopts arg is optional ([f3f4bca](https://github.com/logaretm/villus/commit/f3f4bca64121938d22329ed70f5d6dceb1693121))
+
+# [1.0.0-rc.9](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.8...villus@1.0.0-rc.9) (2021-01-15)
+
+### Features
+
+- enhance suspense query suspense API and allow override query vars ([c38e574](https://github.com/logaretm/villus/commit/c38e574a12801cf8e15b05c37637bc62b1cae9b4))
+
+# [1.0.0-rc.8](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.7...villus@1.0.0-rc.8) (2021-01-05)
+
+### Bug Fixes
+
+- expose villus client symbol for testing ([141bf97](https://github.com/logaretm/villus/commit/141bf9717250894d58a71ce3dd8a28160677b229))
+
+# [1.0.0-rc.7](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.6...villus@1.0.0-rc.7) (2021-01-02)
+
+### Features
+
+- remove initialIsFetching and sync it with fetchOnMount ([a1e75c4](https://github.com/logaretm/villus/commit/a1e75c4aeb800a2e22e123bb1c75271258ff09dc))
+
+# [1.0.0-rc.6](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.5...villus@1.0.0-rc.6) (2020-11-26)
+
+### Features
+
+- add install method to client ([#83](https://github.com/logaretm/villus/issues/83)) ([397bbdb](https://github.com/logaretm/villus/commit/397bbdb612a4bacfd5f3b9242d48b2ec94ccde14))
+
+# [1.0.0-rc.5](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.4...villus@1.0.0-rc.5) (2020-11-25)
+
+### Bug Fixes
+
+- remove invalid import ([3bfdaf7](https://github.com/logaretm/villus/commit/3bfdaf77028549c22705f0a702bb84a4dcd1d66f))
+
+### Features
+
+- allow adding other hash items to the query key helper ([5d18e8a](https://github.com/logaretm/villus/commit/5d18e8a7c3016cc9adef0bacfe43076878654a73))
+- expose getQueryKey helper ([26548d5](https://github.com/logaretm/villus/commit/26548d575d579bd1cff44c7cbacc93c07e06fee8))
+- re-execute subscriptions closes [#79](https://github.com/logaretm/villus/issues/79) ([0ec4680](https://github.com/logaretm/villus/commit/0ec46802c80788531a7b84c516eac9d879b076e8))
+
+# [1.0.0-rc.4](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.3...villus@1.0.0-rc.4) (2020-11-01)
+
+### Features
+
+- expose new definePlugin type helper ([6f79a97](https://github.com/logaretm/villus/commit/6f79a97b040f132cdbea97a7e6050043f21b2195))
+
+# [1.0.0-rc.3](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.2...villus@1.0.0-rc.3) (2020-10-28)
+
+### Features
+
+- initial isFetching ([#74](https://github.com/logaretm/villus/issues/74)) ([ea043da](https://github.com/logaretm/villus/commit/ea043da2a4d25c81e772c2a8b9a8c9ddf33e6680))
+
+# [1.0.0-rc.2](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.1...villus@1.0.0-rc.2) (2020-10-27)
+
+### Bug Fixes
+
+- safe access to the provides property ([73efd25](https://github.com/logaretm/villus/commit/73efd25399988ea3615e208fff16ef8fbcd5d7e1))
+
+# [1.0.0-rc.1](https://github.com/logaretm/villus/compare/villus@1.0.0-rc.0...villus@1.0.0-rc.1) (2020-10-26)
+
+### Features
+
+- upgrade Vue and provide a workaround for [#72](https://github.com/logaretm/villus/issues/72) ([6127f37](https://github.com/logaretm/villus/commit/6127f379adf743b691f48f9bc6d044553f9771b5))
+
+# [1.0.0-rc.0](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.8...villus@1.0.0-rc.0) (2020-10-22)
+
+### Features
+
+- **breaking:** signature updates ([#70](https://github.com/logaretm/villus/issues/70)) ([47937e8](https://github.com/logaretm/villus/commit/47937e8437cae6e78769dc7b0abfa2f4c41f5996))
+
+# [1.0.0-beta.8](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.7...villus@1.0.0-beta.8) (2020-10-21)
+
+### Bug Fixes
+
+- type import path ([9c7c12c](https://github.com/logaretm/villus/commit/9c7c12ce0bbf8f1cf2d88b6b1b2d56a1b21299ba))
+- type the patched useResult ([31fe56b](https://github.com/logaretm/villus/commit/31fe56b89f9f8d02c48c02beec4227618cc6f2d8))
+
+### Features
+
+- added dedup test ([8b12141](https://github.com/logaretm/villus/commit/8b1214155b0bd8c4ff1c89734af8ba1d6e2838f1))
+- avoid deduping mutations and subscriptions ([3bb9642](https://github.com/logaretm/villus/commit/3bb9642990b8fac1352964c965b6483ad0626655))
+- implement dedup plugin ([eb0f0a3](https://github.com/logaretm/villus/commit/eb0f0a36947aec6a5cf02a0b395acfe32f63f1d8))
+- implement response context closes [#62](https://github.com/logaretm/villus/issues/62) ([04cae29](https://github.com/logaretm/villus/commit/04cae29a8ba6163127a6da4985e37585084763ce))
+- updated graphql dep closes [#65](https://github.com/logaretm/villus/issues/65) ([ef4be0a](https://github.com/logaretm/villus/commit/ef4be0afb8cba12a57c5cc128b999f570898fa69))
+
+# [1.0.0-beta.7](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.6...villus@1.0.0-beta.7) (2020-10-19)
+
+### Bug Fixes
+
+- typing of operation in fetch plugin ([2dc8173](https://github.com/logaretm/villus/commit/2dc81738c784f00373a95d70bd75a38a3e35d62d))
+
+### Features
+
+- support typed document node ([9c166f6](https://github.com/logaretm/villus/commit/9c166f6bffa589ec580d8e8d6f2729ab17a662c0))
+
+# [1.0.0-beta.6](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.5...villus@1.0.0-beta.6) (2020-10-09)
+
+### Bug Fixes
+
+- prevent running the query onMounted when suspended closes [#56](https://github.com/logaretm/villus/issues/56) ([27385b6](https://github.com/logaretm/villus/commit/27385b66e196a43e6ab64800183a693939f5320a))
+
+# [1.0.0-beta.5](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.4...villus@1.0.0-beta.5) (2020-10-09)
+
+### Bug Fixes
+
+- fetchonMounted typo ([09c3de4](https://github.com/logaretm/villus/commit/09c3de457e4a4b30742e5f315b1241b0961681fb))
+
+# [1.0.0-beta.4](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.3...villus@1.0.0-beta.4) (2020-10-07)
+
+### Bug Fixes
+
+- effect conditions for Query and Subscription components ([20f6803](https://github.com/logaretm/villus/commit/20f68035861916dffadbe11ea5a55739cc1e9ac8))
+
+### Features
+
+- re-implement subscriptions as a plugin ([e5e790a](https://github.com/logaretm/villus/commit/e5e790a404eb0cc27a9320999c03484e8bf575d5))
+- rename lazy to fetchOnMount ([68b937e](https://github.com/logaretm/villus/commit/68b937ebfc91037494be33a67f643c22e11b5064))
+- rename pause and resume for queries to be more explicit ([ca9cf1e](https://github.com/logaretm/villus/commit/ca9cf1eb93aeff8a40cc9d85465e45089990d412))
+- rename pause prop to paused and watch its effect ([fca32d4](https://github.com/logaretm/villus/commit/fca32d4e03f57312340ca0cea6d6697eef21280a))
+- rename suspend prop to suspended for consistency ([06eaecd](https://github.com/logaretm/villus/commit/06eaecd8a5ac02f82d015511c8fb80db79150deb))
+- updated query component prop names ([d0fc40d](https://github.com/logaretm/villus/commit/d0fc40d7376c6e8cd3d7cfb02b03198e7e7d11f9))
+- use defineComponent helper with subscription ([ef7c16a](https://github.com/logaretm/villus/commit/ef7c16a4948b407f36523b037d58db41d9f50302))
+- use the defineComponent helper with Mutation component ([eb72067](https://github.com/logaretm/villus/commit/eb7206783e898b710463c87f0cb2a2e880c659e9))
+- use the defineComponent helper with Query component and omit redudencies ([d00e25b](https://github.com/logaretm/villus/commit/d00e25b8d924434ab44602d65788a2d4a9da5bda))
+
+# [1.0.0-beta.3](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.2...villus@1.0.0-beta.3) (2020-10-05)
+
+**Note:** Version bump only for package villus
+
+# [1.0.0-beta.2](https://github.com/logaretm/villus/compare/villus@1.0.0-beta.1...villus@1.0.0-beta.2) (2020-10-02)
+
+**Note:** Version bump only for package villus
+
+# 1.0.0-beta.1 (2020-09-30)
+
+### Breaking Changes
+
+- deprecate the `context` and `fetch` options in favor of [custom plugins API](https://villus.logaretm.com/villus/guide/plugins)
+- deprecate the exported `batch` fetcher in favor of [`@villus/batch` plugin](https://villus.logaretm.com/villus/plugins/batch)
+- changed the signature of provider and useClient ([b4fa6d9](https://github.com/logaretm/villus/commit/b4fa6d953a4997554497253bf520d401c571d4b2)) due to conflicts with TypeScript typings
+
+### Bug Fixes
+
+- handle non 200 error responses closes [#49](https://github.com/logaretm/villus/issues/49) ([0950fa8](https://github.com/logaretm/villus/commit/0950fa8a82060a02871d4eb027841eb0ecb31f96))
+
+### Features
+
+#### Plugins API
+
+A large chunk of villus code has been re-written from scratch to use a pipeline-like operation transformers (plugins) similair to what apollo client and urql are doing with much less jargon and complexity, they are just a simple middleware performing operations on GraphQL queries as they go out or after execution.
+
+[Check the documentation here](https://villus.logaretm.com/villus/guide/plugins)
+
+#### `multipart` plugin
+
+The `multipart` plugin will enable support for graphql file upload, [check the documentation and examples here](https://villus.logaretm.com/villus/plugins/multipart)
