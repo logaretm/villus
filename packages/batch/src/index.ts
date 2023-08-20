@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql';
-import { CombinedError, definePlugin } from 'villus';
+import { ClientPluginContext, CombinedError, ClientPluginOperation, definePlugin, fetch as fetchPlugin } from 'villus';
 import {
   GraphQLResponse,
   makeFetchOptions,
@@ -13,6 +13,7 @@ interface BatchOptions {
   fetch?: typeof fetch;
   timeout: number;
   maxOperationCount: number;
+  exclude?: (op: ClientPluginOperation, ctx: ClientPluginContext) => boolean;
 }
 
 type BatchedGraphQLResponse = GraphQLResponse<unknown>[];
@@ -25,12 +26,17 @@ const defaultOpts = (): BatchOptions => ({
 
 export function batch(opts?: Partial<BatchOptions>) {
   const { fetch, timeout, maxOperationCount } = { ...defaultOpts(), ...(opts || {}) };
+  const fetchPluginInstance = fetchPlugin({ fetch });
 
   let operations: { resolveOp: (r: any, opIdx: number, err?: Error) => void; body: string }[] = [];
   let scheduledConsume: any;
 
   return definePlugin(function batchPlugin(ctx) {
     const { useResult, opContext, operation } = ctx;
+
+    if (opts?.exclude?.(ctx.operation, ctx)) {
+      return fetchPluginInstance(ctx);
+    }
 
     async function consume() {
       const pending = operations;

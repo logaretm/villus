@@ -22,3 +22,4 @@ export * from './types';
 export { VILLUS_CLIENT } from './symbols';
 export * from '../../shared/src/types';
 export { parseResponse, mergeFetchOpts, makeFetchOptions } from '../../shared/src/network';
+export { normalizeQuery } from '../../shared/src/utils';

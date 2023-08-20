@@ -5,9 +5,15 @@ import { rest } from 'msw';
 import { server } from '../../villus/test/mocks/server';
 import { batch } from '../src/index';
 import { mount } from '../../villus/test/helpers/mount';
-import { useClient, useQuery, definePlugin } from '../../villus/src';
+import { useClient, useQuery, definePlugin, normalizeQuery } from 'villus';
 import waitForExpect from 'wait-for-expect';
-import { PostQuery, PostsQuery, QueryErrorWith500, QueryWithNetworkError } from 'villus/test/mocks/queries';
+import {
+  PostQuery,
+  PostQueryWithDescription,
+  PostsQuery,
+  QueryErrorWith500,
+  QueryWithNetworkError,
+} from 'villus/test/mocks/queries';
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -221,6 +227,40 @@ describe('batch plugin', () => {
           }),
         }),
       );
+    });
+  });
+
+  test('certain operations can be un-batched', async () => {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+          use: [
+            batch({
+              exclude: op => {
+                const query = normalizeQuery(op.query);
+
+                return /query Posts/.test(query || '');
+              },
+            }),
+          ],
+        });
+
+        useQuery({ query: PostsQuery });
+        useQuery({ query: PostQuery });
+        useQuery({ query: PostQueryWithDescription });
+
+        return {};
+      },
+      template: `<div></div>`,
+    });
+
+    vi.advanceTimersByTime(100);
+    await flushPromises();
+
+    vi.useRealTimers();
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(2);
     });
   });
 });

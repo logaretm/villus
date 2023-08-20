@@ -4,6 +4,8 @@ export const PostsQueryWithDescription = `query Posts { posts { id title descrip
 
 export const PostQuery = `query Post ($id: Int) { post (id: $id) { id title } }`;
 
+export const PostQueryWithDescription = `query Post ($id: Int) { post (id: $id) { id title description } }`;
+
 export const QueryWithGqlError = `query QueryError { posts { id title } }`;
 
 export const QueryWithParseError = `query QueryParseError { posts { id title } }`;
