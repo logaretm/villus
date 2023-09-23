@@ -11,7 +11,7 @@ import DocTip from '@/components/DocTip.vue';
 
 `villus` handles subscriptions with the `useSubscription` function.
 
-To add support for subscriptions you need to add the `handleSubscriptions` plugin to the `useClient` plugin list, which in turn will call your subscription client. The plugin expects an a function that returns an object that follows the [observable spec](https://github.com/tc39/proposal-observable) to be returned, this function is called a **subscription forwarder**.
+To add support for subscriptions you need to add the `handleSubscriptions` plugin to the `useClient` plugin list, which in turn will call your subscription client. The plugin expects a function that returns an object that follows the [observable spec](https://github.com/tc39/proposal-observable) to be returned, this function is called a **subscription forwarder**.
 
 You can use [`graphql-ws`](https://github.com/enisdenjo/graphql-ws) package for your subscriptions implemented with websockets protocol, so one way to build your subscription forwarder is like this:
 
