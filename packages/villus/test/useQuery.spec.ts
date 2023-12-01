@@ -24,6 +24,21 @@ interface Post {
   title: string;
 }
 
+class TypedDocumentString<TResult, TVariables> extends String implements DocumentTypeDecoration<TResult, TVariables> {
+  __apiType?: DocumentTypeDecoration<TResult, TVariables>['__apiType'];
+
+  constructor(
+    private value: string,
+    public __meta__?: { hash: string },
+  ) {
+    super(value);
+  }
+
+  toString(): string & DocumentTypeDecoration<TResult, TVariables> {
+    return this.value;
+  }
+}
+
 describe('useQuery()', () => {
   test('executes hook queries on mounted', async () => {
     mount({
@@ -88,24 +103,6 @@ describe('useQuery()', () => {
   });
 
   test('accepts typed document strings', async () => {
-    class TypedDocumentString<TResult, TVariables>
-      extends String
-      implements DocumentTypeDecoration<TResult, TVariables>
-    {
-      __apiType?: DocumentTypeDecoration<TResult, TVariables>['__apiType'];
-
-      constructor(
-        private value: string,
-        public __meta__?: { hash: string },
-      ) {
-        super(value);
-      }
-
-      toString(): string & DocumentTypeDecoration<TResult, TVariables> {
-        return this.value;
-      }
-    }
-
     mount({
       setup() {
         useClient({
@@ -1494,6 +1491,46 @@ describe('useQuery()', () => {
     await waitForExpect(() => {
       expect(spies[0]).toHaveBeenCalledWith(expect.any(CombinedError));
       expect(spies[1]).not.toHaveBeenCalled();
+    });
+  });
+
+  test('maps data using the data mapper in the second argument', async () => {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { data, error } = useQuery(
+          {
+            query: new TypedDocumentString<{ posts: Post[] }, never>(`
+            query Posts {
+              posts {
+                id
+                title
+              }
+            }
+          `),
+          },
+          ({ data }) => {
+            return data?.posts.map(p => p.id) || [];
+          },
+        );
+
+        return { data, error };
+      },
+      template: `
+    <div>'
+      <ul v-if="data">
+        <li v-for="post in data" :key="post">{{ post }}</li>
+      </ul>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(document.querySelectorAll('li').length).toBe(5);
+      expect(document.querySelector('ul')?.textContent).toBe('12345');
     });
   });
 });

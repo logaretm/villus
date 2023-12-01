@@ -36,8 +36,8 @@ export type ErrorHookHandler = (error: CombinedError) => unknown;
 
 type UnregisterHookFn = () => void;
 
-export interface BaseQueryApi<TData = any, TVars = QueryVariables> {
-  data: Ref<TData | null>;
+export interface BaseQueryApi<TData = any, TVars = QueryVariables, TMappedData = TData | null> {
+  data: Ref<TMappedData>;
   isFetching: Ref<boolean>;
   isDone: Ref<boolean>;
   error: Ref<CombinedError | null>;
@@ -48,13 +48,20 @@ export interface BaseQueryApi<TData = any, TVars = QueryVariables> {
   ): Promise<{ data: TData | null; error: CombinedError | null }>;
 }
 
-export interface QueryApi<TData, TVars> extends BaseQueryApi<TData, TVars> {
-  then(onFulfilled: (value: BaseQueryApi<TData, TVars>) => any): Promise<BaseQueryApi<TData, TVars>>;
+export type DataMapper<TData = any, TResult = TData> = (value: OperationResult<TData>) => TResult;
+
+const defaultMapper = (val: OperationResult) => val.data;
+
+export interface QueryApi<TData, TVars, TMappedData = TData | null> extends BaseQueryApi<TData, TVars, TMappedData> {
+  then(
+    onFulfilled: (value: BaseQueryApi<TData, TVars, TMappedData>) => any,
+  ): Promise<BaseQueryApi<TData, TVars, TMappedData>>;
 }
 
-function useQuery<TData = any, TVars = QueryVariables>(
+function useQuery<TData = any, TVars = QueryVariables, TMappedData = TData | null>(
   opts: QueryCompositeOptions<TData, TVars>,
-): QueryApi<TData, TVars> {
+  mapData: DataMapper<TData, TMappedData> = defaultMapper as DataMapper<TData, TMappedData>,
+): QueryApi<TData, TVars, TMappedData> {
   const client = opts?.client ?? resolveClient();
   if (opts.tags) {
     const id = client.registerTaggedQuery(opts.tags, async () => {
@@ -77,7 +84,8 @@ function useQuery<TData = any, TVars = QueryVariables>(
     onError: errorHook,
   } = normalizeOptions(opts);
   let currentFetchOnMount = fetchOnMount;
-  const data: Ref<TData | null> = ref(null);
+  const data: Ref<TMappedData> = ref(defaultMapper({ data: null, error: null }));
+  let lastResult: OperationResult<TData> = { data: null, error: null };
   const isFetching = ref<boolean>(fetchOnMount ?? false);
   const isDone = ref(false);
   const isStale = ref(true);
@@ -107,7 +115,7 @@ function useQuery<TData = any, TVars = QueryVariables>(
       executeErrorHooks(result.error);
     }
 
-    data.value = result.data as TData;
+    data.value = mapData(result);
     error.value = result.error;
   }
 
@@ -118,8 +126,8 @@ function useQuery<TData = any, TVars = QueryVariables>(
       isFetching.value = false;
 
       return {
-        data: data.value,
-        error: error.value,
+        data: lastResult?.data || null,
+        error: lastResult?.error || null,
       };
     }
 
@@ -143,13 +151,14 @@ function useQuery<TData = any, TVars = QueryVariables>(
       return { data: res.data as TData, error: res.error };
     }
 
+    lastResult = res;
     onResultChanged(res);
     isDone.value = true;
     isFetching.value = false;
     isStale.value = false;
     lastPendingOperation = undefined;
 
-    return { data: data.value, error: error.value };
+    return { data: res.data, error: res.error };
   }
 
   function executeIfNotPaused() {
@@ -215,7 +224,9 @@ function useQuery<TData = any, TVars = QueryVariables>(
 
   return {
     ...api,
-    async then(onFulfilled: (value: BaseQueryApi<TData, TVars>) => any): Promise<BaseQueryApi<TData, TVars>> {
+    async then(
+      onFulfilled: (value: BaseQueryApi<TData, TVars, TMappedData>) => any,
+    ): Promise<BaseQueryApi<TData, TVars, TMappedData>> {
       currentFetchOnMount = false;
       await api.execute();
 
