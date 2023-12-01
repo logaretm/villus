@@ -5,6 +5,8 @@ import sitemap from '@astrojs/sitemap';
 import vue from '@astrojs/vue';
 import highlight from './highlight';
 
+import partytown from '@astrojs/partytown';
+
 // https://astro.build/config
 export default defineConfig({
   site: process.env.NODE_ENV === 'production' ? 'https://villus.logaretm.com' : 'http://localhost:3000',
@@ -13,6 +15,11 @@ export default defineConfig({
     sitemap(),
     mdx({
       remarkPlugins: [remarkGfm, highlight],
+    }),
+    partytown({
+      config: {
+        forward: ['dataLayer.push'],
+      },
     }),
   ],
 });

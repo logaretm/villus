@@ -18,4 +18,12 @@ const metaTags = generateMetaTags({
     <meta content={t.content} name={t.name} property={t.property} >
   ))}
   <script is:inline src="/loadTheme.js"></script>
+  <script type="text/partytown" src="https://www.googletagmanager.com/gtag/js?id=G-4B3ZD2EWVX"></script>
+  <script type="text/partytown">
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4B3ZD2EWVX');
+  </script>
 </head>
