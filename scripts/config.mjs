@@ -1,9 +1,9 @@
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import typescript from '@rollup/plugin-typescript';
-import replace from 'rollup-plugin-replace';
-import commonjs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
