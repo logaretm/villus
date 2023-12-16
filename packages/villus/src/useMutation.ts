@@ -4,7 +4,7 @@ import { CombinedError } from './utils';
 import { Operation, QueryVariables } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
-interface MutationExecutionOptions<TData> {
+export interface MutationExecutionOptions<TData> {
   context: MaybeRef<QueryExecutionContext>;
   client?: Client;
   clearCacheTags?: string[];
