@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.3.0
+
+### Minor Changes
+
+- 877cb15: feat: add query data mapper
+
 ## 3.2.0
 
 ### Minor Changes
