@@ -1,35 +1,29 @@
 # villus
 
 <p align="center">
-  <img width="80%" src="https://raw.githubusercontent.com/logaretm/villus/main/logo.png">
+  <img width="200" src="https://raw.githubusercontent.com/logaretm/villus/main/logo.png">
 </p>
 
 <p align="center">
-
-<a target="_blank" href="https://www.npmjs.com/package/villus">
-  <img src="https://img.shields.io/npm/v/villus.svg?label=&color=05bda8">
-</a>
-
-<a target="_blank" href="https://npm-stat.com/charts.html?package=villus">
-  <img src="https://img.shields.io/npm/dm/villus.svg?color=05bd6d&label=">
-</a>
-
-<a href="https://villus.logaretm.com/" target="_blank">
-  <img src="https://img.shields.io/badge/-docs%20and%20demos-009f53">
-</a>
-
-<a href="https://github.com/sponsors/logaretm">
-  <img src="https://img.shields.io/badge/-%E2%99%A5%20Sponsors-ec5cc6">
-
-</a>
-
+  <a target="_blank" href="https://www.npmjs.com/package/villus">
+    <img src="https://img.shields.io/npm/v/villus.svg?label=&color=05bda8">
+  </a>
+  <a target="_blank" href="https://npm-stat.com/charts.html?package=villus">
+    <img src="https://img.shields.io/npm/dm/villus.svg?color=05bd6d&label=">
+  </a>
+  <a href="https://villus.logaretm.com/" target="_blank">
+    <img src="https://img.shields.io/badge/-docs%20and%20demos-009f53">
+  </a>
+  <a href="https://github.com/sponsors/logaretm">
+    <img src="https://img.shields.io/badge/-%E2%99%A5%20Sponsors-ec5cc6">
+  </a>
 </p>
 
 <h6 align="center">Villus is a finger-like structures in the small intestine. They help to absorb digested food.</h6>
 
+<p align="center">
 A small and fast GraphQL client for **Vue.js**
-
-This is forked from my previous work at [vue-gql](https://github.com/baianat/vue-gql) before they decide to go for a different direction with this library.
+</p>
 
 <p align="center">
   <a href="https://github.com/sponsors/logaretm">
@@ -90,7 +84,7 @@ Or because villus is so simple, you can use it via CDN:
 
 Configure the GraphQL client for your root component:
 
-```vue[App.vue]
+```vue
 <script setup>
 import { useClient } from 'villus';
 
