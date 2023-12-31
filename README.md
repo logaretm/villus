@@ -1,7 +1,7 @@
 # villus
 
 <p align="center">
-  <img width="80%" src="https://raw.githubusercontent.com/logaretm/villus/main/logo.png">
+  <img width="25%" src="https://raw.githubusercontent.com/logaretm/villus/main/logo.png">
 </p>
 
 <p align="center">
