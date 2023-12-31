@@ -11,7 +11,7 @@
   <a target="_blank" href="https://npm-stat.com/charts.html?package=villus">
     <img src="https://img.shields.io/npm/dm/villus.svg?color=05bd6d&label=">
   </a>
-  <a href="https://villus.logaretm.com/" target="_blank">
+  <a href="https://villus.dev/" target="_blank">
     <img src="https://img.shields.io/badge/-docs%20and%20demos-009f53">
   </a>
   <a href="https://github.com/sponsors/logaretm">
@@ -57,7 +57,7 @@ You can read more about it in the [announcement post](https://logaretm.com/blog/
 
 ## Documentation
 
-You can find the [documentation here](https://villus.logaretm.com/)
+You can find the [documentation here](https://villus.dev/)
 
 ## Quick Start
 
@@ -122,7 +122,7 @@ const { data } = useQuery({
 </script>
 ```
 
-`villus` makes frequent tasks such as re-fetching, caching, deduplication, mutations, and subscriptions a breeze. It has even built-in `Suspense` support with Vue 3! Consult the [documentation](https://villus.logaretm.com) for more use-cases and examples.
+`villus` makes frequent tasks such as re-fetching, caching, deduplication, mutations, and subscriptions a breeze. It has even built-in `Suspense` support with Vue 3! Consult the [documentation](https://villus.dev) for more use-cases and examples.
 
 ## Compatibility
 
@@ -132,7 +132,7 @@ This library is compatible with Vue 3.0+ or 2.7+
 
 ## Examples
 
-Live examples can be found [here](https://villus.logaretm.com/examples/basic-query)
+Live examples can be found [here](https://villus.dev/examples/basic-query)
 
 ## License
 

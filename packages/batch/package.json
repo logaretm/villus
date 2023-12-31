@@ -12,7 +12,7 @@
     "dist/*.js",
     "dist/batch.d.ts"
   ],
-  "homepage": "https://villus.logaretm.com/",
+  "homepage": "https://villus.dev/",
   "repository": "https://github.com/logaretm/villus",
   "sideEffects": false,
   "dependencies": {

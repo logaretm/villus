@@ -12,7 +12,7 @@
     "dist/*.js",
     "dist/multipart.d.ts"
   ],
-  "homepage": "https://villus.logaretm.com/",
+  "homepage": "https://villus.dev/",
   "repository": "https://github.com/logaretm/villus",
   "sideEffects": false,
   "keywords": [

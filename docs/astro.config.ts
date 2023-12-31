@@ -9,7 +9,7 @@ import partytown from '@astrojs/partytown';
 
 // https://astro.build/config
 export default defineConfig({
-  site: process.env.NODE_ENV === 'production' ? 'https://villus.logaretm.com' : 'http://localhost:3000',
+  site: process.env.NODE_ENV === 'production' ? 'https://villus.dev' : 'http://localhost:3000',
   integrations: [
     vue(),
     sitemap(),

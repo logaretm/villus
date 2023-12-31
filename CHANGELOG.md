@@ -381,8 +381,8 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Breaking Changes
 
-- deprecate the `context` and `fetch` options in favor of [custom plugins API](https://villus.logaretm.com/villus/guide/plugins)
-- deprecate the exported `batch` fetcher in favor of [`@villus/batch` plugin](https://villus.logaretm.com/villus/plugins/batch)
+- deprecate the `context` and `fetch` options in favor of [custom plugins API](https://villus.dev/villus/guide/plugins)
+- deprecate the exported `batch` fetcher in favor of [`@villus/batch` plugin](https://villus.dev/villus/plugins/batch)
 - changed the signature of provider and useClient ([b4fa6d9](https://github.com/logaretm/villus/commit/b4fa6d953a4997554497253bf520d401c571d4b2)) due to conflicts with TypeScript typings
 
 ### Bug Fixes
@@ -395,8 +395,8 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 A large chunk of villus code has been re-written from scratch to use a pipeline-like operation transformers (plugins) similair to what apollo client and urql are doing with much less jargon and complexity, they are just a simple middleware performing operations on GraphQL queries as they go out or after execution.
 
-[Check the documentation here](https://villus.logaretm.com/villus/guide/plugins)
+[Check the documentation here](https://villus.dev/villus/guide/plugins)
 
 #### `multipart` plugin
 
-The `multipart` plugin will enable support for graphql file upload, [check the documentation and examples here](https://villus.logaretm.com/villus/plugins/multipart)
+The `multipart` plugin will enable support for graphql file upload, [check the documentation and examples here](https://villus.dev/villus/plugins/multipart)
