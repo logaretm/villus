@@ -6,7 +6,14 @@ import { server } from './mocks/server';
 import flushPromises from 'flush-promises';
 import waitForExpect from 'wait-for-expect';
 import { mount } from './helpers/mount';
-import { useClient, useQuery, cache as cachePlugin, fetch as fetchPlugin, CombinedError } from '../src/index';
+import {
+  useClient,
+  useQuery,
+  cache as cachePlugin,
+  fetch as fetchPlugin,
+  CombinedError,
+  DocumentDecoration,
+} from '../src/index';
 import {
   PostsQuery,
   QueryWithGqlError,
@@ -17,15 +24,14 @@ import {
   PostsQueryWithDescription,
 } from './mocks/queries';
 import { graphql } from 'msw';
-import { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
 
 interface Post {
   id: number;
   title: string;
 }
 
-class TypedDocumentString<TResult, TVariables> extends String implements DocumentTypeDecoration<TResult, TVariables> {
-  __apiType?: DocumentTypeDecoration<TResult, TVariables>['__apiType'];
+class TypedDocumentString<TResult, TVariables> extends String implements DocumentDecoration<TResult, TVariables> {
+  __apiType?: DocumentDecoration<TResult, TVariables>['__apiType'];
 
   constructor(
     private value: string,
@@ -34,7 +40,7 @@ class TypedDocumentString<TResult, TVariables> extends String implements Documen
     super(value);
   }
 
-  toString(): string & DocumentTypeDecoration<TResult, TVariables> {
+  toString(): string & DocumentDecoration<TResult, TVariables> {
     return this.value;
   }
 }

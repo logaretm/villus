@@ -1,12 +1,10 @@
-import type { TypedDocumentNode, DocumentTypeDecoration } from '@graphql-typed-document-node/core';
 import { DocumentNode, print } from 'graphql';
+import { DocumentDecoration } from './types';
 
 /**
  * Normalizes a query string or object to a string.
  */
-export function normalizeQuery(
-  query: string | DocumentNode | TypedDocumentNode | DocumentTypeDecoration<any, any>,
-): string | null {
+export function normalizeQuery(query: string | DocumentNode | DocumentDecoration<any, any>): string | null {
   if (typeof query === 'string') {
     return query;
   }

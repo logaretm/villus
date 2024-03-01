@@ -1,5 +1,22 @@
-import type { TypedDocumentNode, DocumentTypeDecoration } from '@graphql-typed-document-node/core';
 import { DocumentNode } from 'graphql';
+
+export interface DocumentDecoration<
+  Result = {
+    [key: string]: any;
+  },
+  Variables = {
+    [key: string]: any;
+  },
+> {
+  /** Type to support `@graphql-typed-document-node/core`
+   * @internal
+   */
+  __apiType?: (variables: Variables) => Result;
+  /** Type to support `TypedQueryDocumentNode` from `graphql`
+   * @internal
+   */
+  __ensureTypesOfVariablesAndResultMatching?: (variables: Variables) => Result;
+}
 
 export interface GraphQLResponse<TData> {
   data: TData;
@@ -20,7 +37,7 @@ export interface ParsedResponse<TData> {
 }
 
 export interface Operation<TData, TVars> {
-  query: string | DocumentNode | TypedDocumentNode<TData, TVars> | DocumentTypeDecoration<TData, TVars>;
+  query: string | DocumentNode | DocumentDecoration<TData, TVars>;
   variables?: TVars;
 }
 
