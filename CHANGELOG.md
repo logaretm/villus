@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.4.0
+
+### Minor Changes
+
+- 56d1e18: feat: add support for gql.tada
+
 ## 3.3.0
 
 ### Minor Changes

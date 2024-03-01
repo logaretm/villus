@@ -1,5 +1,12 @@
 # Change Log
 
+## 3.4.0
+
+### Patch Changes
+
+- Updated dependencies [56d1e18]
+  - villus@3.4.0
+
 ## 3.3.0
 
 ### Patch Changes
