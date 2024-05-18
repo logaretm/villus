@@ -4,7 +4,6 @@ import {
   onMounted,
   onBeforeUnmount,
   watch,
-  isRef,
   getCurrentInstance,
   computed,
   MaybeRefOrGetter,
@@ -117,7 +116,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     });
   }
 
-  if (isRef(query)) {
+  if (isWatchable(query)) {
     watch(query, subscribe);
   }
 

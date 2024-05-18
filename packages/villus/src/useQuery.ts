@@ -1,4 +1,4 @@
-import { isRef, onMounted, Ref, ref, watch, getCurrentInstance, onBeforeUnmount, MaybeRefOrGetter, toValue } from 'vue';
+import { onMounted, Ref, ref, watch, getCurrentInstance, onBeforeUnmount, MaybeRefOrGetter, toValue } from 'vue';
 import stringify from 'fast-json-stable-stringify';
 import { CachePolicy, OperationResult, QueryExecutionContext, QueryPredicateOrSignal } from './types';
 import { hash, CombinedError, isWatchable, unravel, useCallback } from './utils';
@@ -161,7 +161,7 @@ function useQuery<TData = any, TVars = QueryVariables, TMappedData = TData | nul
     }
   }
 
-  if (isRef(query)) {
+  if (isWatchable(query)) {
     watch(query, executeIfNotPaused);
   }
 
