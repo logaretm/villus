@@ -29,10 +29,6 @@ export interface ObservableLike<T> {
   subscribe(observer: ObserverLike<T>): Unsubscribable;
 }
 
-export type MaybeRef<T> = T | Ref<T>;
-
-export type MaybeLazyOrRef<T> = MaybeRef<T> | (() => T);
-
 export type OperationType = 'query' | 'mutation' | 'subscription';
 
 export type AfterQueryCallback = (

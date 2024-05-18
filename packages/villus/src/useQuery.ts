@@ -1,21 +1,14 @@
-import { isRef, onMounted, Ref, ref, unref, watch, getCurrentInstance, onBeforeUnmount } from 'vue';
+import { isRef, onMounted, Ref, ref, watch, getCurrentInstance, onBeforeUnmount, MaybeRefOrGetter, toValue } from 'vue';
 import stringify from 'fast-json-stable-stringify';
-import {
-  CachePolicy,
-  MaybeLazyOrRef,
-  MaybeRef,
-  OperationResult,
-  QueryExecutionContext,
-  QueryPredicateOrSignal,
-} from './types';
-import { hash, CombinedError, unwrap, isWatchable, unravel, useCallback } from './utils';
+import { CachePolicy, OperationResult, QueryExecutionContext, QueryPredicateOrSignal } from './types';
+import { hash, CombinedError, isWatchable, unravel, useCallback } from './utils';
 import { Operation, QueryVariables } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
 export interface QueryCompositeOptions<TData, TVars> {
-  query: MaybeRef<Operation<TData, TVars>['query']>;
-  variables?: MaybeLazyOrRef<TVars>;
-  context?: MaybeRef<QueryExecutionContext>;
+  query: MaybeRefOrGetter<Operation<TData, TVars>['query']>;
+  variables?: MaybeRefOrGetter<TVars>;
+  context?: MaybeRefOrGetter<QueryExecutionContext>;
   cachePolicy?: CachePolicy;
   fetchOnMount?: boolean;
   client?: Client;
@@ -120,7 +113,7 @@ function useQuery<TData = any, TVars = QueryVariables, TMappedData = TData | nul
   }
 
   async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
-    const vars = unwrap(variables) || ({} as TVars);
+    const vars = toValue(variables) || ({} as TVars);
     // result won't change if execution is skipped
     if (unravel(skip, vars)) {
       isFetching.value = false;
@@ -134,12 +127,12 @@ function useQuery<TData = any, TVars = QueryVariables, TMappedData = TData | nul
     isFetching.value = true;
     const pendingExecution = client.executeQuery<TData, TVars>(
       {
-        query: isRef(query) ? query.value : query,
-        variables: unwrap(overrideOpts?.variables || vars),
+        query: toValue(query),
+        variables: toValue(overrideOpts?.variables || vars),
         cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
         tags: opts?.tags,
       },
-      unref(opts?.context),
+      toValue(opts?.context),
       onResultChanged,
     );
 
@@ -190,7 +183,7 @@ function useQuery<TData = any, TVars = QueryVariables, TMappedData = TData | nul
     }
 
     watch(
-      () => unwrap(variables),
+      () => toValue(variables),
       newValue => {
         const id = hash(stringify(newValue));
         // prevents duplicate queries.

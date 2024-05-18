@@ -1,11 +1,11 @@
-import { ref, Ref, unref, nextTick } from 'vue';
-import { MaybeRef, OperationResult, QueryExecutionContext } from './types';
+import { ref, Ref, nextTick, MaybeRefOrGetter, toValue } from 'vue';
+import { OperationResult, QueryExecutionContext } from './types';
 import { CombinedError } from './utils';
 import { Operation, QueryVariables } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
 export interface MutationExecutionOptions<TData> {
-  context: MaybeRef<QueryExecutionContext>;
+  context: MaybeRefOrGetter<QueryExecutionContext>;
   client?: Client;
   clearCacheTags?: string[];
   refetchTags?: string[];
@@ -47,7 +47,7 @@ export function useMutation<TData = any, TVars = QueryVariables>(
         variables: vars as TVars, // FIXME: fix this casting
         clearCacheTags: [...(opts?.clearCacheTags || []), ...(opts?.refetchTags || [])],
       },
-      unref(opts?.context),
+      toValue(opts?.context),
     );
 
     lastPendingOperation = pendingExecution;

@@ -1,19 +1,23 @@
-import { ref, Ref, onMounted, unref, onBeforeUnmount, watch, isRef, getCurrentInstance, computed } from 'vue';
 import {
-  Unsubscribable,
-  OperationResult,
-  MaybeRef,
-  StandardOperationResult,
-  QueryPredicateOrSignal,
-  MaybeLazyOrRef,
-} from './types';
-import { CombinedError, isWatchable, unravel, unwrap, debounceAsync, isEqual } from './utils';
+  ref,
+  Ref,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  isRef,
+  getCurrentInstance,
+  computed,
+  MaybeRefOrGetter,
+  toValue,
+} from 'vue';
+import { Unsubscribable, OperationResult, StandardOperationResult, QueryPredicateOrSignal } from './types';
+import { CombinedError, isWatchable, debounceAsync, isEqual, unravel } from './utils';
 import { Operation, QueryVariables } from '../../shared/src';
 import { Client, resolveClient } from './client';
 
 interface SubscriptionCompositeOptions<TData, TVars, TResult = TData> {
-  query: MaybeRef<Operation<TData, TVars>['query']>;
-  variables?: MaybeLazyOrRef<TVars>;
+  query: MaybeRefOrGetter<Operation<TData, TVars>['query']>;
+  variables?: MaybeRefOrGetter<TVars>;
   skip?: QueryPredicateOrSignal<TVars>;
   paused?: QueryPredicateOrSignal<TVars>;
   client?: Client;
@@ -54,8 +58,8 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
 
     isFetching.value = true;
     const result = await client.executeSubscription<TData, TVars>({
-      query: unref(query),
-      variables: unwrap(variables),
+      query: toValue(query),
+      variables: toValue(variables),
     });
 
     observer = result.subscribe({
@@ -100,7 +104,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   vm && onBeforeUnmount(unsubscribe);
 
   function shouldSkip() {
-    return unravel(skip, unwrap(variables) || {});
+    return unravel(skip, toValue(variables) || ({} as TVars));
   }
 
   if (isWatchable(paused)) {

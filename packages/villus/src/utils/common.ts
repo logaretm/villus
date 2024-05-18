@@ -1,30 +1,21 @@
-import { isReactive, isRef, Ref, unref, nextTick } from 'vue';
-import { MaybeLazyOrRef, QueryPredicateOrSignal, MaybeRef } from '../types';
+import { isReactive, isRef, Ref, nextTick, MaybeRefOrGetter, toValue } from 'vue';
+import { QueryPredicateOrSignal } from '../types';
 import stringify from 'fast-json-stable-stringify';
 import { QueryVariables } from '../../../shared/src';
 
 export function unravel<TVars = QueryVariables>(
   signal: QueryPredicateOrSignal<TVars> | undefined,
-  vars: MaybeRef<TVars>,
+  vars: MaybeRefOrGetter<TVars>,
 ) {
   if (isRef(signal)) {
     return signal.value;
   }
 
   if (typeof signal === 'function') {
-    return signal(unref(vars));
+    return signal(toValue(vars));
   }
 
   return signal;
-}
-
-export function unwrap<TValue>(val: MaybeLazyOrRef<TValue>) {
-  if (isRef(val)) {
-    return unref(val);
-  }
-
-  // TODO: typescript bug to fix here
-  return typeof val === 'function' ? (val as any)() : val;
 }
 
 export function isWatchable<T>(val: unknown): val is Ref<T> {
