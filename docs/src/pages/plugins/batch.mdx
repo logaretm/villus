@@ -71,7 +71,7 @@ Batching is done by waiting for a specific time which is `10ms` by default since
 
 You can configure that time window by passing a `timeout` option to the `batch` function configuration:
 
-```vue{7}
+```vue {7}
 <script setup>
 import { useClient } from 'villus';
 import { batch } from '@villus/batch';
@@ -91,7 +91,7 @@ You can also introduce a limit on how many operations can be executed in a batch
 
 You can configure the batch limit by passing a `maxOperationCount` option to the `batch` function configuration:
 
-```vue{7}
+```vue {7}
 <script setup>
 import { useClient } from 'villus';
 import { batch } from '@villus/batch';
@@ -109,7 +109,7 @@ By default, it is `10`.
 
 You can also exclude certain operations from being batched by passing an `exclude` option to the `batch` function configuration:
 
-```vue{7,8}
+```vue {7,8}
 <script setup>
 import { useClient } from 'villus';
 import { batch } from '@villus/batch';

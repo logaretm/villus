@@ -32,7 +32,7 @@ const subscriptionsHandler = handleSubscriptions(operation => {
           query: operation.query,
           variables: operation.variables,
         },
-        obs
+        obs,
       );
 
       return {
@@ -126,7 +126,7 @@ to understand the difference between a mapper and a reducer check the next coupl
 
 In the following example, the passed function only extracts the `lastMessage` field out from the response data. That means it only returns a mapped version of the last result recieved.
 
-```vue{19-22}
+```vue {19-22}
 <script setup>
 import { useSubscription } from 'villus';
 
@@ -148,7 +148,7 @@ const { data: lastMessage } = useSubscription(
   ({ data }) => {
     // remember that data can be null
     return data?.lastMessage;
-  }
+  },
 );
 
 // anywhere
@@ -158,7 +158,7 @@ lastMessage.value; // { id: 1, from: 'someone', message: 'hello' }
 
 This is useful for subscriptions that represent a live state for something on your API. You are not limited to mapping the results in a specific way, for example if you want to return a boolean, you can do so:
 
-```vue{17-19}
+```vue {17-19}
 <script setup>
 import { useSubscription } from 'villus';
 
@@ -176,8 +176,8 @@ const { data: hasUnread } = useSubscription(
     query: UnreadMessages,
   },
   ({ data }) => {
-    return data?.unreadMessages.length > 1
-  }
+    return data?.unreadMessages.length > 1;
+  },
 );
 
 // anywhere
@@ -193,7 +193,7 @@ The reducer is a subscription handler that aggregates past and future results in
 
 Here is the last example with a custom reducer:
 
-```vue{19-29}
+```vue {19-29}
 <script setup>
 import { useSubscription } from 'villus';
 
@@ -222,7 +222,7 @@ const { data: messages } = useSubscription(
 
     // combine old and incoming messages
     return [...oldValue, response.data.newMessages];
-  }
+  },
 );
 
 messages.value; // { id, from, message }[]

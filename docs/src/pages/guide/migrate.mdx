@@ -22,9 +22,9 @@ This makes the reducer more flexible as it can now be used as either a callback 
 
 Here is how to migrate:
 
-```diff
-- function reduceMessages(old, incoming) {
-+ function reduceMessages(incoming, old) {
+```js
+function reduceMessages(old, incoming) {  // [!code --]
+function reduceMessages(incoming, old) {  // [!code ++]
   // reduce values
 }
 ```
@@ -35,13 +35,13 @@ For consistency, the recently introduced `onSuccess` option on `useQuery` has be
 
 Here is how to migrate:
 
-```diff
+```js
 import { useQuery } from 'villus';
 
 useQuery({
   query: GetPostById,
   variables,
--  onSuccess: data => console.log(data),
-+  onData: data => console.log(data),
+  onSuccess: data => console.log(data), // [!code --]
+  onData: data => console.log(data), // [!code ++]
 });
 ```

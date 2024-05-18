@@ -16,7 +16,7 @@ The `useClient` composition API function allows your components to define a Grap
 
 To create a GraphQL client with the composition API:
 
-```vue[App.vue]
+```vue
 <script setup>
 import { useClient } from 'villus';
 
@@ -32,7 +32,7 @@ Internally it uses `provide/inject` API to inject the client into your component
 
 You can use `createClient` function result as a Vue plugin that conveniently adds a `villus` client to your app root.
 
-```js[main.js]
+```js
 import { createClient } from 'villus';
 import { createApp } from 'vue';
 

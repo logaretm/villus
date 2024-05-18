@@ -105,21 +105,21 @@
       @apply flex flex-col w-full;
     }
 
-    &.with-line-highlights {
+    &.has-highlighted {
       .line {
         @apply transition-all duration-300;
       }
 
-      .line:not(.is-highlighted) {
+      .line:not(.highlighted) {
         @apply filter grayscale opacity-40 brightness-100;
       }
 
       &:hover {
-        .line:not(.is-highlighted) {
+        .line:not(.highlighted) {
           @apply filter-none opacity-100;
         }
 
-        .line.is-highlighted {
+        .line.highlighted {
           background-color: var(--code-line-highlight);
         }
       }
@@ -130,6 +130,30 @@
         @apply block pr-2;
         padding-left: 1.4rem;
         line-height: 1.6;
+
+        &.diff {
+          &.add {
+            @apply !bg-green-500/15;
+            * {
+              @apply !bg-transparent;
+            }
+            &::before {
+              @apply text-green-400;
+              content: '+';
+            }
+          }
+
+          &.remove {
+            @apply !bg-red-500/15;
+            * {
+              @apply !bg-transparent !opacity-70;
+            }
+            &::before {
+              @apply text-red-400;
+              content: '-';
+            }
+          }
+        }
 
         &::before {
           @apply select-none;

@@ -484,7 +484,7 @@ You can specify a different strategy on different levels:
 
 You can set the default policy on the client level when you are [building the GraphQL client](/client.md) by passing `cachePolicy` option to either:
 
-```vue{6}
+```vue {6}
 <script setup>
 import { useClient } from 'villus';
 
@@ -606,7 +606,7 @@ You can use `useQuery` with the `Suspense` API component shipped in Vue 3.x.
 
 To utilize the suspense feature, you need to `await` the `useQuery` function and it returns the exact same API after executing the query:
 
-```vue[Listing.vue]
+```vue
 <template>
   <ul>
     <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
