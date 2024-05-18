@@ -24,7 +24,14 @@
     "paths": {
       "@/*": ["packages/*/src"],
       "~/*": ["packages/*/test"]
-    }
+    },
+    "plugins": [
+      {
+        "name": "@0no-co/graphqlsp",
+        "schema": "./packages/villus/test/mocks/schema.graphql",
+        "tadaOutputLocation": "./packages/villus/test/mocks/graphql-env.d.ts"
+      }
+    ]
   },
   "include": ["packages/*/src", "packages/*/tests"]
 }

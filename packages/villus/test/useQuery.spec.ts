@@ -23,6 +23,7 @@ import {
   PostsQueryWithDescription,
 } from './mocks/queries';
 import { graphql } from 'msw';
+import { graphql as tada } from 'gql.tada';
 
 interface Post {
   id: number;
@@ -115,7 +116,7 @@ describe('useQuery()', () => {
         });
 
         const { data } = useQuery({
-          query: new TypedDocumentString(`
+          query: new TypedDocumentString<{ posts: Post[] }, any>(`
             query Posts {
               posts {
                 id
@@ -123,6 +124,42 @@ describe('useQuery()', () => {
               }
             }
           `),
+        });
+
+        return { data };
+      },
+      template: `
+    <div>
+      <ul v-if="data">
+        <li v-for="post in data.posts" :key="post.id">{{ post.title }}</li>
+      </ul>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(document.querySelectorAll('li').length).toBe(5);
+    });
+  });
+
+  test('accepts tada document nodes', async () => {
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const query = tada(`
+            query Posts {
+              posts {
+                id
+                title
+              }
+            }
+          `);
+
+        const { data } = useQuery({
+          query,
         });
 
         return { data };

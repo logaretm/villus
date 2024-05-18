@@ -21,6 +21,7 @@
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@0no-co/graphqlsp": "^1.12.3",
     "@changesets/cli": "^2.27.2",
     "@commitlint/cli": "^19.3.0",
     "@eslint/js": "^9.3.0",
@@ -50,6 +51,7 @@
     "flush-promises": "^1.0.2",
     "fs-extra": "^11.2.0",
     "globals": "^15.2.0",
+    "gql.tada": "^1.7.5",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.16.0",
