@@ -18,7 +18,6 @@ export function mount(component: Record<string, any>) {
       return;
     }
 
-    // eslint-disable-next-line no-console
     console.error(err);
   };
   document.body.innerHTML = `<div id="app"></div>`;

@@ -3,7 +3,7 @@ import remarkGfm from 'remark-gfm';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import vue from '@astrojs/vue';
-import highlight from './highlight';
+import highlight from './src/highlight';
 
 import partytown from '@astrojs/partytown';
 

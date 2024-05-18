@@ -1,5 +1,5 @@
 // prettier.config.js or .prettierrc.js
-module.exports = {
+export default {
   printWidth: 120,
   tabWidth: 2,
   semi: true,

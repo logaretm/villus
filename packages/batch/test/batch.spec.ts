@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 import flushPromises from 'flush-promises';
 import { test, expect, vi, beforeEach, afterEach, describe } from 'vitest';
 import { rest } from 'msw';

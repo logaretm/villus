@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 import { ref, computed, reactive } from 'vue';
 import { test, expect, describe, vi } from 'vitest';
 import gql from 'graphql-tag';

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 import { test, expect } from 'vitest';
 import { computed, defineComponent, ref } from 'vue';
 import flushPromises from 'flush-promises';

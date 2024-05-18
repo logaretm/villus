@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 import flushPromises from 'flush-promises';
 import { test, expect } from 'vitest';
 import { multipart } from '../src/index';

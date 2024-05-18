@@ -69,7 +69,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
 
         handleResponse(response);
       },
-      // eslint-disable-next-line
+
       complete() {},
       error(err) {
         if (isPaused.value) {
