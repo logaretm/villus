@@ -22,6 +22,7 @@ interface SubscriptionCompositeOptions<TData, TVars, TResult = TData> {
   paused?: QueryPredicateOrSignal<TVars>;
   client?: Client;
   initialData?: TResult;
+  subscribeOnMount?: boolean;
 }
 
 export type Reducer<TData = any, TResult = TData> = (value: OperationResult<TData>, prev: TResult | null) => TResult;
@@ -34,6 +35,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
 ) {
   const client = opts.client ?? resolveClient();
   const { query, variables, paused, skip } = opts;
+  const subscribeOnMount = opts.subscribeOnMount ?? true;
   const data = ref<TResult | null>(opts?.initialData ?? reduce({ data: null, error: null }, null));
   const error: Ref<CombinedError | null> = ref(null);
   const isPaused = computed(() => unravel(paused, variables as TVars));
@@ -96,7 +98,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   }
 
   const vm = getCurrentInstance();
-  if (!isPaused.value && !shouldSkip()) {
+  if (!isPaused.value && !shouldSkip() && subscribeOnMount) {
     vm ? onMounted(subscribe) : subscribe();
   }
 
@@ -137,7 +139,16 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     });
   }
 
-  return { data, error, paused: isPaused, isFetching };
+  return {
+    data,
+    error,
+    paused: isPaused,
+    isFetching,
+    subscribe: () => {
+      subscribe();
+    },
+    unsubscribe,
+  };
 }
 
 /**

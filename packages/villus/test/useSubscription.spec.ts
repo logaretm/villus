@@ -542,3 +542,59 @@ test('isFetching is set to true until initial data is received', async () => {
   await flushPromises();
   expect(document.querySelector('span')?.textContent).toBe('false');
 });
+
+test('can subscribe/unsubscribe on demand', async () => {
+  const unSubSpy = vi.fn();
+  const subSpy = vi.fn(() => {
+    const obs = makeObservable();
+
+    return {
+      subscribe(...args: any[]) {
+        const { unsubscribe: unsub } = (obs as any).subscribe(...args);
+
+        return {
+          unsubscribe: () => {
+            unSubSpy();
+            unsub();
+          },
+        };
+      },
+    };
+  });
+
+  let subscription!: ReturnType<typeof useSubscription>;
+  mount({
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        use: [handleSubscriptions(subSpy), ...defaultPlugins()],
+      });
+
+      subscription = useSubscription<Message>({
+        query: `subscription { newMessages }`,
+        subscribeOnMount: false,
+      });
+
+      return { messages: subscription.data };
+    },
+    template: `
+      <div>
+        <div v-if="messages">
+          <span>{{ messages.id }}</span>
+        </div>
+      </div>
+    `,
+  });
+
+  await flushPromises();
+  await expect(subSpy).not.toHaveBeenCalled();
+  subscription?.subscribe();
+  await flushPromises();
+  await expect(subSpy).toHaveBeenCalledTimes(1);
+  vi.advanceTimersByTime(501);
+  await flushPromises();
+  expect(document.querySelector('span')?.textContent).toBe('4');
+  subscription?.unsubscribe();
+  await flushPromises();
+  await expect(unSubSpy).toHaveBeenCalledTimes(1);
+});
