@@ -2,7 +2,7 @@ import { normalizeQuery } from '../../shared/src/utils';
 import { ClientPlugin, ClientPluginOperation, ObservableLike, StandardOperationResult, MaybePromise } from './types';
 
 export type SubscriptionForwarder<TData = any> = (
-  operation: ClientPluginOperation & { query: string },
+  operation: Omit<ClientPluginOperation, 'query'> & { query: string },
 ) => MaybePromise<ObservableLike<StandardOperationResult<TData>>>;
 
 export function handleSubscriptions(forwarder: SubscriptionForwarder): ClientPlugin {
