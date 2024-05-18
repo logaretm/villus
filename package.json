@@ -15,7 +15,8 @@
     "build": "node scripts/build.mjs",
     "postversion": "npm run build",
     "format": "prettier ./packages/**/*.ts --write",
-    "typecheck": "pnpm tsc --noEmit --project ./tsconfig.json --skipLibCheck"
+    "typecheck": "pnpm tsc --noEmit --project ./tsconfig.json --skipLibCheck",
+    "prepare": "husky"
   },
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",
