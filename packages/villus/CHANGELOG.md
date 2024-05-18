@@ -1,5 +1,17 @@
 # Change Log
 
+## 3.5.0
+
+### Minor Changes
+
+- e5c9e85: feat: added on demand subscription model
+
+### Patch Changes
+
+- 8b02c12: fix(types): subscription forwarded should receive a string always
+- 5c9a789: feat: accept several options as RefOrGetter
+- b81eec6: fix: watch the query if it is a getter
+
 ## 3.4.0
 
 ### Minor Changes

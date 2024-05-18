@@ -1,5 +1,15 @@
 # Change Log
 
+## 3.5.0
+
+### Patch Changes
+
+- Updated dependencies [e5c9e85]
+- Updated dependencies [8b02c12]
+- Updated dependencies [5c9a789]
+- Updated dependencies [b81eec6]
+  - villus@3.5.0
+
 ## 3.4.0
 
 ### Patch Changes
