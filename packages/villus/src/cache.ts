@@ -77,6 +77,12 @@ export function cache(): ClientPlugin & { clearCache(tags?: string | string[]): 
   }
 
   cachePlugin.clearCache = clearCache;
+  
+  cachPlugin.setCacheResult = function (operation, result) {
+    // getQueryKey imported from utils
+    const key = operation.key || getQueryKey(operation);
+    setCacheResult({ key, ...operation }, result);
+  }
 
   return cachePlugin;
 }
