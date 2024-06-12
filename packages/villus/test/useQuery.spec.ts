@@ -696,6 +696,53 @@ describe('useQuery()', () => {
     });
   });
 
+  test('can skip execution given a callback that gets variables', async () => {
+    const variables = ref({ id: 13 });
+    mount({
+      setup() {
+        useClient({
+          url: 'https://test.com/graphql',
+        });
+
+        const { data, execute, isFetching } = useQuery({
+          query: PostQuery,
+          variables,
+          skip: (variables) => variables.id < 13,
+        });
+
+        return { data, execute, isFetching };
+      },
+      template: `
+    <div>
+      <div v-if="data">
+        <h1>{{ data.post.title }}</h1>
+      </div>
+      <span id="fetching">{{ isFetching }}</span>
+      <button @click="execute({ variables: { id: 14 }})"></button>
+    </div>`,
+    });
+
+    await flushPromises();
+    await waitForExpect(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('h1')?.textContent).toContain('13');
+    });
+
+    variables.value = { id: 12 };
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(1);
+    // data didn't change
+    expect(document.querySelector('h1')?.textContent).toContain('13');
+
+    // explicit execution will work because it overrides variables
+    document.querySelector('button')?.dispatchEvent(new Event('click'));
+    await flushPromises();
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(document.querySelector('h1')?.textContent).toContain('14');
+    expect(document.querySelector('#fetching')?.textContent).toBe('false');
+  });
+
+
   test('can pause execution given a pause ref', async () => {
     const paused = ref(false);
     const variables = ref({ id: 12 });
