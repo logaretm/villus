@@ -113,7 +113,7 @@ function useQuery<TData = any, TVars = QueryVariables, TMappedData = TData | nul
   }
 
   async function execute(overrideOpts?: Partial<QueryExecutionOpts<TVars>>) {
-    const vars = toValue(variables) || ({} as TVars);
+    const vars = toValue(overrideOpts?.variables || variables) || ({} as TVars);
     // result won't change if execution is skipped
     if (unravel(skip, vars)) {
       isFetching.value = false;
@@ -128,7 +128,7 @@ function useQuery<TData = any, TVars = QueryVariables, TMappedData = TData | nul
     const pendingExecution = client.executeQuery<TData, TVars>(
       {
         query: toValue(query),
-        variables: toValue(overrideOpts?.variables || vars),
+        variables: vars,
         cachePolicy: overrideOpts?.cachePolicy || cachePolicy,
         tags: opts?.tags,
       },
