@@ -1,6 +1,6 @@
 {
   "name": "@villus/batch",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "description": "Batch queries plugin for villus graphql client",
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",
@@ -16,7 +16,7 @@
   "repository": "https://github.com/logaretm/villus",
   "sideEffects": false,
   "dependencies": {
-    "villus": "^3.5.0"
+    "villus": "^3.5.1"
   },
   "keywords": [
     "VueJS",
