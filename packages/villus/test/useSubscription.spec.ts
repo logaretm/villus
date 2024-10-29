@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import { mount } from './helpers/mount';
 import { makeObservable, tick } from './helpers/observer';
 import { defaultPlugins, handleSubscriptions, useClient, useSubscription } from '../src/index';
-import { computed, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { print } from 'graphql';
 import { createClient } from 'graphql-ws';
 
@@ -597,4 +597,71 @@ test('can subscribe/unsubscribe on demand', async () => {
   subscription?.unsubscribe();
   await flushPromises();
   await expect(unSubSpy).toHaveBeenCalledTimes(1);
+});
+
+test('can disable unsubscribe on unmount', async () => {
+  const unSubSpy = vi.fn();
+  const subSpy = vi.fn(() => {
+    const obs = makeObservable();
+
+    return {
+      subscribe(...args: any[]) {
+        const { unsubscribe: unsub } = (obs as any).subscribe(...args);
+
+        return {
+          unsubscribe: () => {
+            unSubSpy();
+            unsub();
+          },
+        };
+      },
+    };
+  });
+
+  const show = ref(true);
+  const Subscription = defineComponent({
+    setup() {
+      const subscription = useSubscription<Message>({
+        query: `subscription { newMessages }`,
+        unsubscribeOnUnmount: false,
+      });
+
+      return { messages: subscription.data };
+    },
+    template: `
+      <div>
+        <div v-if="messages">
+          <span>{{ messages.id }}</span>
+        </div>
+      </div>
+    `,
+  });
+
+  mount({
+    components: {
+      Subscription,
+    },
+    setup() {
+      useClient({
+        url: 'https://test.com/graphql',
+        use: [handleSubscriptions(subSpy), ...defaultPlugins()],
+      });
+
+      return { show };
+    },
+    template: `
+      <div>
+        <Subscription v-if="show" />
+      </div>
+    `,
+  });
+
+  await flushPromises();
+  await expect(subSpy).toHaveBeenCalledTimes(1);
+  vi.advanceTimersByTime(501);
+  await flushPromises();
+  expect(document.querySelector('span')?.textContent).toBe('4');
+  show.value = false;
+  await flushPromises();
+  await expect(unSubSpy).not.toHaveBeenCalled();
 });

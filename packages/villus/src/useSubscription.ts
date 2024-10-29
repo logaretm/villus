@@ -22,6 +22,7 @@ interface SubscriptionCompositeOptions<TData, TVars, TResult = TData> {
   client?: Client;
   initialData?: TResult;
   subscribeOnMount?: boolean;
+  unsubscribeOnUnmount?: boolean;
 }
 
 export type Reducer<TData = any, TResult = TData> = (value: OperationResult<TData>, prev: TResult | null) => TResult;
@@ -35,6 +36,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
   const client = opts.client ?? resolveClient();
   const { query, variables, paused, skip } = opts;
   const subscribeOnMount = opts.subscribeOnMount ?? true;
+  const unsubscribeOnUnmount = opts.unsubscribeOnUnmount ?? true;
   const data = ref<TResult | null>(opts?.initialData ?? reduce({ data: null, error: null }, null));
   const error: Ref<CombinedError | null> = ref(null);
   const isPaused = computed(() => unravel(paused, variables as TVars));
@@ -101,8 +103,10 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     vm ? onMounted(subscribe) : subscribe();
   }
 
-  // TODO: if outside of setup, it should be recommend manually pause it(or some action else)
-  vm && onBeforeUnmount(unsubscribe);
+  if (vm && unsubscribeOnUnmount) {
+    // TODO: if outside of setup, it should be recommend manually pause it(or some action else)
+    onBeforeUnmount(unsubscribe);
+  }
 
   function shouldSkip() {
     return unravel(skip, toValue(variables) || ({} as TVars));
@@ -138,6 +142,10 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
     });
   }
 
+  function isSubscribed() {
+    return !!observer;
+  }
+
   return {
     data,
     error,
@@ -147,6 +155,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
       subscribe();
     },
     unsubscribe,
+    isSubscribed,
   };
 }
 
