@@ -12,7 +12,7 @@ import {
   PostsQuery,
   QueryErrorWith500,
   QueryWithNetworkError,
-} from 'villus/test/mocks/queries';
+} from '../../villus/test/mocks/queries';
 
 beforeEach(() => {
   vi.useFakeTimers();

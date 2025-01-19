@@ -1,6 +1,14 @@
 /* eslint-disable */
 /* prettier-ignore */
 
+export type introspection_types = {
+    'Boolean': unknown;
+    'ID': unknown;
+    'Post': { kind: 'OBJECT'; name: 'Post'; fields: { 'content': { name: 'content'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'String'; ofType: null; }; } }; 'id': { name: 'id'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'ID'; ofType: null; }; } }; 'title': { name: 'title'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'String'; ofType: null; }; } }; }; };
+    'Query': { kind: 'OBJECT'; name: 'Query'; fields: { 'posts': { name: 'posts'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'LIST'; name: never; ofType: { kind: 'NON_NULL'; name: never; ofType: { kind: 'OBJECT'; name: 'Post'; ofType: null; }; }; }; } }; }; };
+    'String': unknown;
+};
+
 /** An IntrospectionQuery representation of your schema.
  *
  * @remarks
@@ -14,13 +22,7 @@ export type introspection = {
   query: 'Query';
   mutation: never;
   subscription: never;
-  types: {
-    'Boolean': unknown;
-    'ID': unknown;
-    'Post': { kind: 'OBJECT'; name: 'Post'; fields: { 'content': { name: 'content'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'String'; ofType: null; }; } }; 'id': { name: 'id'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'ID'; ofType: null; }; } }; 'title': { name: 'title'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'String'; ofType: null; }; } }; }; };
-    'Query': { kind: 'OBJECT'; name: 'Query'; fields: { 'posts': { name: 'posts'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'LIST'; name: never; ofType: { kind: 'NON_NULL'; name: never; ofType: { kind: 'OBJECT'; name: 'Post'; ofType: null; }; }; }; } }; }; };
-    'String': unknown;
-  };
+  types: introspection_types;
 };
 
 import * as gqlTada from 'gql.tada';
