@@ -59,7 +59,7 @@ async function createConfig(pkg, format) {
 
   // An import assertion in a dynamic import
   const { default: info } = await import(path.resolve(__dirname, `../packages/${pkg}/package.json`), {
-    assert: {
+    with: {
       type: 'json',
     },
   });
