@@ -5,7 +5,7 @@ import path, { dirname } from 'path';
 import fs from 'fs-extra';
 import { rollup } from 'rollup';
 import dts from 'rollup-plugin-dts';
-import tsconfig from '../tsconfig.json' assert { type: 'json' };
+import tsconfig from '../tsconfig.json' with { type: 'json' };
 import { pkgNameMap } from './config.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
