@@ -29,17 +29,29 @@ export type Reducer<TData = any, TResult = TData> = (value: OperationResult<TDat
 
 export const defaultReducer: Reducer = val => val.data;
 
+export interface SubscriptionReturns<TData = any, TResult = TData> {
+  data: Ref<TResult | null>;
+  error: Ref<CombinedError | null>;
+  paused: Ref<boolean>;
+  isFetching: Ref<boolean>;
+  subscribe: () => void;
+  unsubscribe: () => void;
+  isSubscribed: () => boolean;
+}
+
 export function useSubscription<TData = any, TResult = TData, TVars = QueryVariables>(
   opts: SubscriptionCompositeOptions<TData, TVars, TResult>,
   reduce: Reducer<TData, TResult> = defaultReducer,
-) {
+): SubscriptionReturns<TData, TResult> {
   const client = opts.client ?? resolveClient();
   const { query, variables, paused, skip } = opts;
   const subscribeOnMount = opts.subscribeOnMount ?? true;
   const unsubscribeOnUnmount = opts.unsubscribeOnUnmount ?? true;
-  const data = ref<TResult | null>(opts?.initialData ?? reduce({ data: null, error: null }, null));
+  const data: Ref<TResult | null> = ref(
+    opts?.initialData ?? reduce({ data: null, error: null }, null),
+  ) as Ref<TResult | null>;
   const error: Ref<CombinedError | null> = ref(null);
-  const isPaused = computed(() => unravel(paused, variables as TVars));
+  const isPaused = computed(() => unravel(paused, variables as TVars) ?? false);
   const isFetching = ref(true);
 
   function handleResponse(result: OperationResult<TData>) {
@@ -100,6 +112,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
 
   const vm = getCurrentInstance();
   if (!isPaused.value && !shouldSkip() && subscribeOnMount) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     vm ? onMounted(subscribe) : subscribe();
   }
 
@@ -138,6 +151,7 @@ export function useSubscription<TData = any, TResult = TData, TVars = QueryVaria
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       value ? unsubscribe() : subscribe();
     });
   }

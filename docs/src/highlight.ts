@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { getHighlighter } from 'shiki';
 import {
   transformerNotationDiff,
@@ -8,12 +7,12 @@ import {
   transformerMetaHighlight,
   parseMetaHighlightString,
 } from '@shikijs/transformers';
-import { transformerTwoslash } from '@shikijs/twoslash';
-import { createTwoslasher } from 'twoslash-vue';
+// import { transformerTwoslash } from '@shikijs/twoslash';
+// import { createTwoslasher } from 'twoslash-vue';
 import { JSDOM } from 'jsdom';
 import { visit } from 'unist-util-visit';
 import theme from './theme.json';
-import light from './light-theme.json';
+// import light from './light-theme.json';
 
 const dom = new JSDOM();
 const document = dom.window.document;
@@ -30,7 +29,7 @@ const highlighterPromise = getHighlighter({
   langs: ['js', 'ts', 'vue', 'graphql', 'jsx', 'css', 'sh', 'yaml', 'json', 'vue-html', 'vue', 'html'],
 });
 
-const twoslasher = createTwoslasher();
+// const twoslasher = createTwoslasher();
 
 const getConfig = (lang: string, meta: string) => ({
   lang: lang,

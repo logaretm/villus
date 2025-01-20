@@ -211,6 +211,7 @@ function useQuery<TData = any, TVars = QueryVariables, TMappedData = TData | nul
   const vm = getCurrentInstance();
   if (currentFetchOnMount) {
     if (!paused || !isCurrentlyPaused()) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       vm ? onMounted(() => execute()) : execute();
     }
   }
