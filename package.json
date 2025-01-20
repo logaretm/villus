@@ -16,7 +16,11 @@
     "postversion": "npm run build",
     "format": "prettier ./packages/**/*.ts --write",
     "typecheck": "pnpm tsc --noEmit --project ./tsconfig.json --skipLibCheck",
-    "prepare": "husky"
+    "prepare": "husky",
+    "ci:copy-mds": "tsx scripts/copy-mds.ts",
+    "ci:publish": "pnpm build && pnpm publish --provenance --access public -r",
+    "ci:version": "pnpm changeset version && pnpm ci:copy-mds",
+    "ci:tag": "tsx ./scripts/tag-release.ts"
   },
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",
