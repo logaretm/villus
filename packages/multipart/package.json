@@ -24,7 +24,7 @@
   ],
   "dependencies": {
     "extract-files": "^11.0.0",
-    "villus": "^3.5.2"
+    "villus": "workspace:*"
   },
   "devDependencies": {
     "@types/extract-files": "^8.1.3"

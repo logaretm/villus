@@ -216,8 +216,8 @@ importers:
   packages/batch:
     dependencies:
       villus:
-        specifier: ^3.5.1
-        version: 3.5.1(graphql@16.10.0)(vue@3.5.13(typescript@5.7.3))
+        specifier: workspace:*
+        version: link:../villus
 
   packages/multipart:
     dependencies:
@@ -225,8 +225,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       villus:
-        specifier: ^3.5.1
-        version: 3.5.1(graphql@16.10.0)(vue@3.5.13(typescript@5.7.3))
+        specifier: workspace:*
+        version: link:../villus
     devDependencies:
       '@types/extract-files':
         specifier: ^8.1.3
@@ -5176,12 +5176,6 @@ packages:
 
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
-
-  villus@3.5.1:
-    resolution: {integrity: sha512-vE9B9IImsqkVU/reSiPgRO8p4aC5Z/rb2UjLjRJBP0zBeyHtid84ewH0/NAw02OIFyFCJh+i/1C5oXuLfggPQQ==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-      vue: ^3.0.0 || ^2.7.0
 
   vite-hot-client@0.2.4:
     resolution: {integrity: sha512-a1nzURqO7DDmnXqabFOliz908FRmIppkBKsJthS8rbe8hBEXwEwe4C3Pp33Z1JoFCYfVL4kTOMLKk0ZZxREIeA==}
@@ -11381,11 +11375,6 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
-
-  villus@3.5.1(graphql@16.10.0)(vue@3.5.13(typescript@5.7.3)):
-    dependencies:
-      graphql: 16.10.0
-      vue: 3.5.13(typescript@5.7.3)
 
   vite-hot-client@0.2.4(vite@5.4.11(@types/node@22.10.7)(terser@5.37.0)):
     dependencies:
