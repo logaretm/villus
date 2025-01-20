@@ -39,6 +39,6 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['packages/villus/dist/*', 'packages/batch/dist/*', 'packages/multipart/dist/*'],
+    ignores: ['packages/villus/dist/*', 'packages/batch/dist/*', 'packages/multipart/dist/*', '*.d.ts'],
   },
 );
