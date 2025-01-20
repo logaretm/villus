@@ -5,6 +5,7 @@
   "module": "dist/villus.esm.js",
   "unpkg": "dist/villus.js",
   "main": "dist/villus.js",
+  "repository": "https://github.com/logaretm/villus",
   "types": "dist/villus.d.ts",
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",
