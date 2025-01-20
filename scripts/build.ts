@@ -4,9 +4,9 @@ import fs from 'fs-extra';
 import { rollup } from 'rollup';
 import chalk from 'chalk';
 import * as Terser from 'terser';
-import { createConfig } from './config.mjs';
-import { reportSize } from './info.mjs';
-import { generateDts } from './generate-dts.mjs';
+import { createConfig } from './config';
+import { reportSize } from './info';
+import { generateDts } from './generate-dts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -38,7 +38,7 @@ async function build(pkg) {
     const outputPath = path.join(pkgout, bundleName);
     fs.outputFileSync(outputPath, code);
     const stats = reportSize({ code, path: outputPath });
-     
+
     console.log(`${chalk.green('Output File:')} ${bundleName} ${stats}`);
 
     if (format === 'umd') {

@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 import { rollup } from 'rollup';
 import dts from 'rollup-plugin-dts';
 import tsconfig from '../tsconfig.json' with { type: 'json' };
-import { pkgNameMap } from './config.mjs';
+import { pkgNameMap } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,7 +15,7 @@ export async function generateDts(pkg) {
   console.log(chalk.cyan(`Generating Declaration Files for ${pkg} ...`));
   const declarationDir = `../packages/${pkg}/dist/types`;
 
-  const options = {
+  const options: any = {
     ...tsconfig,
     declaration: true,
     declarationMap: false,
@@ -52,7 +52,7 @@ async function bundleDts(declarationDir, pkg) {
   }
 
   // Generate .d.ts rollup
-  const config = {
+  const config: any = {
     input: entry,
     output: { file: `packages/${pkg}/dist/${pkgNameMap[pkg]}.d.ts`, format: 'es' },
     plugins: [dts()],

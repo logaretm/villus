@@ -66,7 +66,7 @@ async function createConfig(pkg, format) {
 
   const { version } = info;
 
-  const config = {
+  const config: any = {
     input: {
       input: path.resolve(__dirname, `../packages/${pkg}/src/index.ts`),
       external: pkgExternals[pkg],
