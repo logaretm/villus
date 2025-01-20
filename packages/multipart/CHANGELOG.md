@@ -1,5 +1,12 @@
 # Change Log
 
+## 3.5.2
+
+### Patch Changes
+
+- Updated dependencies [0851c7d]
+  - villus@3.5.2
+
 ## 3.5.1
 
 ### Patch Changes
